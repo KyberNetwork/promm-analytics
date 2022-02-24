@@ -1,8 +1,8 @@
-## Uniswap Info V3
+## KyberSwap ProMM Analytics
 
-An open sourced interface for Uniswap V3 analytics. 
+An open sourced interface for ProMM Analytics.
 
-Info URL: https://info.uniswap.org/#/
+URL: https://promm-analytics.kyberswap.com/#/
 
 ## Development
 

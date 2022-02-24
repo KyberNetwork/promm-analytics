@@ -1,5 +1,4 @@
 import React from 'react'
-import v3 from '../../assets/images/whitev3.svg'
 import styled, { keyframes, css } from 'styled-components'
 
 const rotate = keyframes`
@@ -80,7 +79,7 @@ export const LocalLoader = ({ fill }: { fill: boolean }) => {
   return (
     <Wrapper fill={fill ? 1 : 0}>
       <AnimatedImg>
-        <img src={v3} alt="loading-icon" />
+        <img src={'/favicon.svg'} alt="loading-icon" />
       </AnimatedImg>
     </Wrapper>
   )

@@ -6,6 +6,20 @@ export interface Colors {
   white: Color
   black: Color
 
+  text: Color
+  textReverse: Color
+  subText: Color
+  disabledText: Color
+  apr: Color
+
+  background: Color
+  buttonBlack: Color
+  tableHeader: Color
+  buttonGray: Color
+  border: Color
+
+  primary: Color
+
   // text
   text1: Color
   text2: Color

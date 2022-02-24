@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { StyledInternalLink, TYPE } from 'theme'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { AutoColumn } from 'components/Column'
-import { EthereumNetworkInfo } from '../../constants/networks'
+import { EthereumNetworkInfo } from 'constants/networks'
 
 const Container = styled.div`
   position: relative;

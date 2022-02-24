@@ -1,6 +1,6 @@
 {
-  "name": "@uniswap/interface",
-  "description": "Uniswap Interface",
+  "name": "@kyberswap/promm-analytics",
+  "description": "KyberSwap ProMM Analytics",
   "homepage": ".",
   "private": true,
   "devDependencies": {

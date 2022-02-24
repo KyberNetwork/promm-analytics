@@ -23,7 +23,7 @@ export type NetworkInfo = {
 
 export const EthereumNetworkInfo: NetworkInfo = {
   id: SupportedNetwork.ETHEREUM,
-  route: '',
+  route: 'ethereum',
   name: 'Ethereum',
   bgColor: '#fc077d',
   primaryColor: '#fc077d',
