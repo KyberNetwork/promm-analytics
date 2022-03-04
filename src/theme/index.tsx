@@ -53,6 +53,7 @@ export function colors(darkMode: boolean): Colors {
 
     primary: '#31CB9E',
 
+    // TODO
     // text
     text1: darkMode ? '#FFFFFF' : '#000000',
     text2: darkMode ? '#C3C5CB' : '#565A69',
