@@ -8,6 +8,8 @@ import {
   optimismBlockClient,
   polygonBlockClient,
   polygonClient,
+  rinkebyClient,
+  rinkebyBlockClient,
 } from 'apollo/client'
 import { NetworkInfo, SupportedNetwork } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
@@ -134,6 +136,8 @@ export function useDataClient(): ApolloClient<NormalizedCacheObject> {
       return optimismClient
     case SupportedNetwork.POLYGON:
       return polygonClient
+    case SupportedNetwork.RINKEBY:
+      return rinkebyClient
     default:
       return client
   }
@@ -151,6 +155,8 @@ export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
       return optimismBlockClient
     case SupportedNetwork.POLYGON:
       return polygonBlockClient
+    case SupportedNetwork.RINKEBY:
+      return rinkebyBlockClient
     default:
       return blockClient
   }

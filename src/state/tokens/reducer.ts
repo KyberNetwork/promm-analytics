@@ -66,6 +66,7 @@ export interface TokensState {
 
 export const initialState: TokensState = {
   byAddress: {
+    [SupportedNetwork.RINKEBY]: {},
     [SupportedNetwork.ETHEREUM]: {},
     [SupportedNetwork.ARBITRUM]: {},
     [SupportedNetwork.OPTIMISM]: {},

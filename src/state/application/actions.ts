@@ -9,6 +9,7 @@ export type PopupContent = {
     newList: TokenList
     auto: boolean
   }
+  txn?: { hash: string; success: boolean; summary: string }
 }
 
 export enum ApplicationModal {

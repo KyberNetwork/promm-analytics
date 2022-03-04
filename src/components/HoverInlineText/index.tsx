@@ -11,7 +11,7 @@ const TextWrapper = styled.div<{
 }>`
   position: relative;
   margin-left: ${({ margin }) => margin && '4px'};
-  color: ${({ theme, link, color }) => (link ? theme.blue1 : color ?? theme.text1)};
+  color: ${({ theme, link, color }) => (link ? theme.blue1 : color ?? theme.primary)};
   font-size: ${({ fontSize }) => fontSize ?? 'inherit'};
 
   :hover {

@@ -1,4 +1,3 @@
-import Row from 'components/Row'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -12,7 +11,7 @@ export const PageButtons = styled.div`
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.primary};
   opacity: ${(props) => (props.faded ? 0.3 : 1)};
   padding: 0 20px;
   user-select: none;
@@ -23,7 +22,7 @@ export const Arrow = styled.div<{ faded: boolean }>`
 
 export const Break = styled.div`
   height: 1px;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme }) => theme.border};
   width: 100%;
 `
 

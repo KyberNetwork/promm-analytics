@@ -7,7 +7,7 @@ import { useAllTokenData, useTokenDatas } from 'state/tokens/hooks'
 import { notEmpty } from 'utils'
 import { useSavedTokens } from 'state/user/hooks'
 import { DarkGreyCard } from 'components/Card'
-import TopTokenMovers from 'components/tokens/TopTokenMovers'
+import { Text } from 'rebass'
 
 export default function TokensOverview() {
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function TokensOverview() {
   return (
     <PageWrapper>
       <AutoColumn gap="lg">
-        <TYPE.main>Your Watchlist</TYPE.main>
+        {/*<TYPE.main>Your Watchlist</TYPE.main>
         {savedTokens.length > 0 ? (
           <TokenTable tokenDatas={watchListTokens} />
         ) : (
@@ -36,15 +36,10 @@ export default function TokensOverview() {
             <TYPE.main>Saved tokens will appear here</TYPE.main>
           </DarkGreyCard>
         )}
-        <HideSmall>
-          <DarkGreyCard style={{ paddingTop: '12px' }}>
-            <AutoColumn gap="md">
-              <TYPE.mediumHeader fontSize="16px">Top Movers</TYPE.mediumHeader>
-              <TopTokenMovers />
-            </AutoColumn>
-          </DarkGreyCard>
-        </HideSmall>
-        <TYPE.main>All Tokens</TYPE.main>
+        */}
+        <Text fontWeight="500" fontSize="24px">
+          Top Tokens
+        </Text>
         <TokenTable tokenDatas={formattedTokens} />
       </AutoColumn>
     </PageWrapper>
