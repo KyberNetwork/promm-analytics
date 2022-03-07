@@ -13,11 +13,11 @@ const Base = styled(RebassButton)<{
   borderRadius?: string
   altDisabledStyle?: boolean
 }>`
-  padding: ${({ padding }) => (padding ? padding : '8px 16px')};
+  padding: ${({ padding }) => (padding ? padding : '10px 16px')};
   width: ${({ width }) => (width ? width : '100%')};
   font-weight: 500;
   text-align: center;
-  border-radius: 12px;
+  border-radius: 999px;
   border-radius: ${({ borderRadius }) => borderRadius && borderRadius};
   outline: none;
   border: 1px solid transparent;
@@ -40,22 +40,22 @@ const Base = styled(RebassButton)<{
 `
 
 export const ButtonPrimary = styled(Base)<{ bgColor?: string }>`
-  background-color: ${({ theme, bgColor }) => bgColor ?? theme.primary1};
-  color: white;
+  background-color: ${({ theme, bgColor }) => bgColor ?? theme.primary};
+  color: ${({ theme }) => theme.textReverse};
   &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary1)};
-    background-color: ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary1)};
+    box-shadow: 0 0 0 1pt ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary)};
+    background-color: ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary)};
   }
   &:hover {
-    background-color: ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary1)};
+    background-color: ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary)};
   }
   &:active {
-    box-shadow: 0 0 0 1pt ${({ theme, bgColor }) => darken(0.1, bgColor ?? theme.primary1)};
-    background-color: ${({ theme, bgColor }) => darken(0.1, bgColor ?? theme.primary1)};
+    box-shadow: 0 0 0 1pt ${({ theme, bgColor }) => darken(0.1, bgColor ?? theme.primary)};
+    background-color: ${({ theme, bgColor }) => darken(0.1, bgColor ?? theme.primary)};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle, disabled }) =>
-      altDisabledStyle ? (disabled ? theme.bg3 : theme.primary1) : theme.bg3};
+      altDisabledStyle ? (disabled ? theme.bg3 : theme.primary) : theme.bg3};
     color: ${({ theme, altDisabledStyle, disabled }) =>
       altDisabledStyle ? (disabled ? theme.text3 : 'white') : theme.text3};
     cursor: auto;
@@ -185,18 +185,14 @@ export const ButtonUNIGradient = styled(ButtonPrimary)`
 `
 
 export const ButtonOutlined = styled(Base)`
-  border: 1px solid ${({ theme }) => theme.bg2};
+  border: 1px solid ${({ theme }) => theme.primary};
   background-color: transparent;
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.primary};
 
-  &:focus {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
-  }
   &:hover {
     box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
-  }
-  &:active {
-    box-shadow: 0 0 0 1px ${({ theme }) => theme.bg4};
+    background-color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.textReverse};
   }
   &:disabled {
     opacity: 50%;
@@ -407,7 +403,7 @@ export const SavedIcon = ({
   const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={theme.text2} fill={fill ? theme.text2 : 'transparent'} size={size} />
+      <Star stroke={theme.subText} fill={fill ? theme.subText : 'transparent'} size={size} />
     </HoverIcon>
   )
 }

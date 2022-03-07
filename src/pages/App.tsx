@@ -43,7 +43,7 @@ const BodyWrapper = styled.div`
 
   @media (max-width: 1080px) {
     padding-top: 2rem;
-    margin-top: 140px;
+    margin-top: 0;
   }
 `
 

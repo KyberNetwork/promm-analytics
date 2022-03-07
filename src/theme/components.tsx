@@ -120,7 +120,7 @@ export const StyledInternalLink = styled(Link)<{ fontSize?: string }>`
 const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.primary1};
+  color: ${({ theme }) => theme.primary};
   font-weight: 500;
   display: inline;
   flex-direction: center;

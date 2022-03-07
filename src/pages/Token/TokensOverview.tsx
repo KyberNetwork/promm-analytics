@@ -1,12 +1,9 @@
 import React, { useMemo, useEffect } from 'react'
 import { PageWrapper } from 'pages/styled'
 import { AutoColumn } from 'components/Column'
-import { TYPE, HideSmall } from 'theme'
 import TokenTable from 'components/tokens/TokenTable'
 import { useAllTokenData, useTokenDatas } from 'state/tokens/hooks'
 import { notEmpty } from 'utils'
-import { useSavedTokens } from 'state/user/hooks'
-import { DarkGreyCard } from 'components/Card'
 import { Text } from 'rebass'
 
 export default function TokensOverview() {
@@ -21,9 +18,6 @@ export default function TokensOverview() {
       .map((t) => t.data)
       .filter(notEmpty)
   }, [allTokens])
-
-  const [savedTokens] = useSavedTokens()
-  const watchListTokens = useTokenDatas(savedTokens)
 
   return (
     <PageWrapper>

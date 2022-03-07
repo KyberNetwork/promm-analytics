@@ -20,7 +20,7 @@ export interface LogoProps {
 export default function Percent({
   value,
   decimals = 2,
-  fontSize = '16px',
+  fontSize = '14px',
   fontWeight = 500,
   wrap = false,
   simple = false,

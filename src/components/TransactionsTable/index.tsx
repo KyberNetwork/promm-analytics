@@ -18,6 +18,8 @@ import { OptimismNetworkInfo } from 'constants/networks'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
+  overflow: hidden;
+  padding: 0;
 `
 
 const ResponsiveGrid = styled.div`
@@ -64,6 +66,11 @@ const ResponsiveGrid = styled.div`
   }
 `
 
+const TableHeader = styled(ResponsiveGrid)`
+  background: ${({ theme }) => theme.tableHeader};
+  padding: 18px 20px;
+`
+
 const SortText = styled.button<{ active: boolean }>`
   cursor: pointer;
   font-weight: ${({ active }) => (active ? 500 : 400)};
@@ -98,7 +105,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   return (
     <ResponsiveGrid>
       <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
-        <Label color={color ?? theme.blue1} fontWeight={400}>
+        <Label color={color ?? theme.primary} fontWeight={400}>
           {transaction.type === TransactionType.MINT
             ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
             : transaction.type === TransactionType.SWAP
@@ -118,7 +125,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       <Label end={1} fontWeight={400}>
         <ExternalLink
           href={getEtherscanLink(1, transaction.sender, 'address', activeNetwork)}
-          style={{ color: color ?? theme.blue1 }}
+          style={{ color: color ?? theme.primary }}
         >
           {shortenAddress(transaction.sender)}
         </ExternalLink>
@@ -202,65 +209,64 @@ export default function TransactionTable({
 
   return (
     <Wrapper>
-      <AutoColumn gap="16px">
-        <ResponsiveGrid>
-          <RowFixed>
-            <SortText
-              onClick={() => {
-                setTxFilter(undefined)
-              }}
-              active={txFilter === undefined}
-            >
-              All
-            </SortText>
-            <SortText
-              onClick={() => {
-                setTxFilter(TransactionType.SWAP)
-              }}
-              active={txFilter === TransactionType.SWAP}
-            >
-              Swaps
-            </SortText>
-            <SortText
-              onClick={() => {
-                setTxFilter(TransactionType.MINT)
-              }}
-              active={txFilter === TransactionType.MINT}
-            >
-              Adds
-            </SortText>
-            <SortText
-              onClick={() => {
-                setTxFilter(TransactionType.BURN)
-              }}
-              active={txFilter === TransactionType.BURN}
-            >
-              Removes
-            </SortText>
-          </RowFixed>
-          <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
-            Total Value {arrow(SORT_FIELD.amountUSD)}
-          </ClickableText>
-          <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
-            Token Amount {arrow(SORT_FIELD.amountToken0)}
-          </ClickableText>
-          <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
-            Token Amount {arrow(SORT_FIELD.amountToken1)}
-          </ClickableText>
-          <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.sender)}>
-            Account {arrow(SORT_FIELD.sender)}
-          </ClickableText>
-          <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
-            Time {arrow(SORT_FIELD.timestamp)}
-          </ClickableText>
-        </ResponsiveGrid>
-        <Break />
+      <TableHeader>
+        <RowFixed>
+          <SortText
+            onClick={() => {
+              setTxFilter(undefined)
+            }}
+            active={txFilter === undefined}
+          >
+            All
+          </SortText>
+          <SortText
+            onClick={() => {
+              setTxFilter(TransactionType.SWAP)
+            }}
+            active={txFilter === TransactionType.SWAP}
+          >
+            Swaps
+          </SortText>
+          <SortText
+            onClick={() => {
+              setTxFilter(TransactionType.MINT)
+            }}
+            active={txFilter === TransactionType.MINT}
+          >
+            Adds
+          </SortText>
+          <SortText
+            onClick={() => {
+              setTxFilter(TransactionType.BURN)
+            }}
+            active={txFilter === TransactionType.BURN}
+          >
+            Removes
+          </SortText>
+        </RowFixed>
+        <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
+          Total Value {arrow(SORT_FIELD.amountUSD)}
+        </ClickableText>
+        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
+          Token Amount {arrow(SORT_FIELD.amountToken0)}
+        </ClickableText>
+        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
+          Token Amount {arrow(SORT_FIELD.amountToken1)}
+        </ClickableText>
+        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.sender)}>
+          Account {arrow(SORT_FIELD.sender)}
+        </ClickableText>
+        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
+          Time {arrow(SORT_FIELD.timestamp)}
+        </ClickableText>
+      </TableHeader>
 
+      <AutoColumn gap="16px" style={{ padding: '20px' }}>
         {sortedTransactions.map((t, i) => {
           if (t) {
             return (
               <React.Fragment key={i}>
-                <DataRow transaction={t} color={color} />
+                <DataRow transaction={t} />
                 <Break />
               </React.Fragment>
             )
