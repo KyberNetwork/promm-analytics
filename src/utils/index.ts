@@ -6,7 +6,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Fraction, Percent, Token } from '@uniswap/sdk-core'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { SupportedChainId } from 'constants/chains'
-import { ArbitrumNetworkInfo, NetworkInfo, PolygonNetworkInfo } from 'constants/networks'
+import { ArbitrumNetworkInfo, NetworkInfo, PolygonNetworkInfo, RinkebyNetworkInfo } from 'constants/networks'
 import JSBI from 'jsbi'
 import { ROUTER_ADDRESS } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
@@ -44,6 +44,8 @@ export function getEtherscanLink(
       ? 'https://arbiscan.io/'
       : networkVersion === OptimismNetworkInfo
       ? 'https://optimistic.etherscan.io'
+      : networkVersion === RinkebyNetworkInfo
+      ? `https://rinkeby.etherscan.io`
       : `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
 
   if (networkVersion === OptimismNetworkInfo) {
@@ -158,7 +160,7 @@ export function isTokenOnList(tokenAddressMap: TokenAddressMap, token?: Token): 
 }
 
 export function feeTierPercent(fee: number): string {
-  return (fee / 10000).toPrecision(1) + '%'
+  return (fee / 100).toPrecision(1) + '%'
 }
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {

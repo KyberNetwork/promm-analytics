@@ -12,7 +12,7 @@ import Percent from 'components/Percent'
 import { HideMedium, HideSmall, StyledInternalLink } from '../../theme/components'
 import TokenTable from 'components/tokens/TokenTable'
 import PoolTable from 'components/pools/PoolTable'
-import { PageWrapper, ThemedBackgroundGlobal } from 'pages/styled'
+import { PageWrapper } from 'pages/styled'
 import { unixToDate } from 'utils/date'
 import BarChart from 'components/BarChart/alt'
 import { useAllPoolData } from 'state/pools/hooks'
@@ -229,7 +229,7 @@ export default function Home() {
           <TYPE.main>Top Tokens</TYPE.main>
           <StyledInternalLink to="tokens">Explore</StyledInternalLink>
         </RowBetween>
-        <TokenTable tokenDatas={formattedTokens} />
+        <TokenTable tokenDatas={formattedTokens} maxItems={10} />
         <RowBetween>
           <TYPE.main>Top Pools</TYPE.main>
           <StyledInternalLink to="pools">Explore</StyledInternalLink>

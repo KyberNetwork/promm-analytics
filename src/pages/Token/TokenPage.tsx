@@ -9,20 +9,19 @@ import {
 } from 'state/tokens/hooks'
 import styled from 'styled-components'
 import { useColor } from 'hooks/useColor'
-import ReactGA from 'react-ga'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
 import { shortenAddress, getEtherscanLink, currentTimestamp } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import Loader, { LocalLoader } from 'components/Loader'
-import { ExternalLink, Download } from 'react-feather'
+import { ExternalLink, Plus } from 'react-feather'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
-import { ButtonPrimary, ButtonGray, SavedIcon } from 'components/Button'
+import { ButtonPrimary, SavedIcon, ButtonOutlined } from 'components/Button'
 import { DarkGreyCard, LightGreyCard } from 'components/Card'
 import { usePoolDatas } from 'state/pools/hooks'
 import PoolTable from 'components/pools/PoolTable'
@@ -39,13 +38,11 @@ import dayjs from 'dayjs'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { EthereumNetworkInfo } from 'constants/networks'
-import { GenericImageWrapper } from 'components/Logo'
-// import { SmallOptionButton } from '../../components/Button'
-import { useCMCLink } from 'hooks/useCMCLink'
-import CMCLogo from '../../assets/images/cmc.png'
+import { Flex } from 'rebass'
+import Loading from 'components/Loader/Loading'
 
 const PriceText = styled(TYPE.label)`
-  font-size: 36px;
+  font-size: 24px;
   line-height: 0.8;
 `
 
@@ -61,6 +58,13 @@ const ContentLayout = styled.div`
   }
 `
 
+const InfoLayout = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  justify-content: space-between;
+`
+
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
@@ -68,13 +72,6 @@ const ResponsiveRow = styled(RowBetween)`
     row-gap: 24px;
     width: 100%:
   `};
-`
-
-const StyledCMCLogo = styled.img`
-  height: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `
 
 enum ChartView {
@@ -107,9 +104,6 @@ export default function TokenPage({
   const poolDatas = usePoolDatas(poolsForToken ?? [])
   const transactions = useTokenTransactions(address)
   const chartData = useTokenChartData(address)
-
-  // check for link to CMC
-  const cmcLink = useCMCLink(address)
 
   // format for chart component
   const formattedTvlData = useMemo(() => {
@@ -182,99 +176,88 @@ export default function TokenPage({
               <RowBetween>
                 <AutoRow gap="4px">
                   <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                    <TYPE.main>{`Home > `}</TYPE.main>
+                    <TYPE.main>{`Home → `}</TYPE.main>
                   </StyledInternalLink>
                   <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens'}>
                     <TYPE.label>{` Tokens `}</TYPE.label>
                   </StyledInternalLink>
-                  <TYPE.main>{` > `}</TYPE.main>
+                  <TYPE.main>{` → `}</TYPE.main>
                   <TYPE.label>{` ${tokenData.symbol} `}</TYPE.label>
                   <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
-                    <TYPE.main>{` (${shortenAddress(address)}) `}</TYPE.main>
+                    <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
                   </StyledExternalLink>
                 </AutoRow>
                 <RowFixed align="center" justify="center">
-                  <SavedIcon fill={savedTokens.includes(address)} onClick={() => addSavedToken(address)} />
-                  {cmcLink && (
-                    <StyledExternalLink
-                      href={cmcLink}
-                      style={{ marginLeft: '12px' }}
-                      onClickCapture={() => {
-                        ReactGA.event({
-                          category: 'CMC',
-                          action: 'CMC token page click',
-                        })
-                      }}
-                    >
-                      <StyledCMCLogo src={CMCLogo} />
-                    </StyledExternalLink>
-                  )}
-                  <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
-                    <ExternalLink stroke={theme.text2} size={'17px'} style={{ marginLeft: '12px' }} />
-                  </StyledExternalLink>
+                  {/* TODO: add search component */}
                 </RowFixed>
               </RowBetween>
               <ResponsiveRow align="flex-end">
                 <AutoColumn gap="md">
                   <RowFixed gap="lg">
-                    <CurrencyLogo address={address} />
-                    <TYPE.label ml={'10px'} fontSize="20px">
+                    <CurrencyLogo address={address} size="32px" />
+                    <TYPE.label ml={'10px'} fontSize="32px">
                       {tokenData.name}
                     </TYPE.label>
-                    <TYPE.main ml={'6px'} fontSize="20px">
+                    <TYPE.label ml={'6px'} fontSize="32px">
                       ({tokenData.symbol})
-                    </TYPE.main>
-                    {activeNetwork === EthereumNetworkInfo ? null : (
-                      <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size={'26px'} />
-                    )}
+                    </TYPE.label>
+                    <RowFlat style={{ marginLeft: '16px', marginTop: '8px' }}>
+                      <PriceText mr="10px"> {formatDollarAmount(tokenData.priceUSD)}</PriceText>
+                      <Percent value={tokenData.priceUSDChange} />
+                    </RowFlat>
                   </RowFixed>
-                  <RowFlat style={{ marginTop: '8px' }}>
-                    <PriceText mr="10px"> {formatDollarAmount(tokenData.priceUSD)}</PriceText>
-                    (<Percent value={tokenData.priceUSDChange} />)
-                  </RowFlat>
                 </AutoColumn>
-                {activeNetwork !== EthereumNetworkInfo ? null : (
-                  <RowFixed>
-                    <StyledExternalLink href={`https://app.uniswap.org/#/add/${address}`}>
-                      <ButtonGray width="170px" mr="12px" height={'100%'} style={{ height: '44px' }}>
-                        <RowBetween>
-                          <Download size={24} />
-                          <div style={{ display: 'flex', alignItems: 'center' }}>Add Liquidity</div>
-                        </RowBetween>
-                      </ButtonGray>
-                    </StyledExternalLink>
-                    <StyledExternalLink href={`https://app.uniswap.org/#/swap?inputCurrency=${address}`}>
-                      <ButtonPrimary width="100px" bgColor={backgroundColor} style={{ height: '44px' }}>
-                        Trade
-                      </ButtonPrimary>
-                    </StyledExternalLink>
-                  </RowFixed>
-                )}
+                <RowFixed>
+                  <SavedIcon fill={savedTokens.includes(address)} onClick={() => addSavedToken(address)} />
+                  <StyledExternalLink href={`https://kyberswap.com/#/proamm/add/${address}`}>
+                    <ButtonOutlined width="max-content" mx="12px" height={'100%'} style={{ height: '38px' }}>
+                      <RowBetween>
+                        <Plus size={20} />
+                        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}>Add Liquidity</div>
+                      </RowBetween>
+                    </ButtonOutlined>
+                  </StyledExternalLink>
+                  <StyledExternalLink href={`https://kyberswap.com/#/swap?inputCurrency=${address}`}>
+                    <ButtonPrimary width="100px" style={{ height: '38px' }}>
+                      Trade
+                    </ButtonPrimary>
+                  </StyledExternalLink>
+                </RowFixed>
               </ResponsiveRow>
             </AutoColumn>
             <ContentLayout>
-              <DarkGreyCard>
-                <AutoColumn gap="lg">
-                  <AutoColumn gap="4px">
-                    <TYPE.main fontWeight={400}>TVL</TYPE.main>
+              <InfoLayout>
+                <DarkGreyCard>
+                  <AutoColumn gap="16px">
+                    <Flex justifyContent="space-between">
+                      <TYPE.label fontSize="14px">Total Value Locked</TYPE.label>
+                      <Percent value={tokenData.tvlUSDChange} />
+                    </Flex>
                     <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.tvlUSD)}</TYPE.label>
-                    <Percent value={tokenData.tvlUSDChange} />
                   </AutoColumn>
-                  <AutoColumn gap="4px">
-                    <TYPE.main fontWeight={400}>24h Trading Vol</TYPE.main>
+                </DarkGreyCard>
+                <DarkGreyCard>
+                  <AutoColumn gap="16px">
+                    <Flex justifyContent="space-between">
+                      <TYPE.label fontSize="14px">24h Trading Vol</TYPE.label>
+                      <Percent value={tokenData.volumeUSDChange} />
+                    </Flex>
                     <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.volumeUSD)}</TYPE.label>
-                    <Percent value={tokenData.volumeUSDChange} />
                   </AutoColumn>
-                  <AutoColumn gap="4px">
-                    <TYPE.main fontWeight={400}>7d Trading Vol</TYPE.main>
+                </DarkGreyCard>
+                <DarkGreyCard>
+                  <AutoColumn gap="16px">
+                    <TYPE.label fontSize="14px">7d Trading Vol</TYPE.label>
                     <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.volumeUSDWeek)}</TYPE.label>
                   </AutoColumn>
-                  <AutoColumn gap="4px">
-                    <TYPE.main fontWeight={400}>24h Fees</TYPE.main>
+                </DarkGreyCard>
+                <DarkGreyCard>
+                  <AutoColumn gap="16px">
+                    <TYPE.label fontSize="14px">24h Fees</TYPE.label>
                     <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
                   </AutoColumn>
-                </AutoColumn>
-              </DarkGreyCard>
+                </DarkGreyCard>
+              </InfoLayout>
               <DarkGreyCard>
                 <RowBetween align="flex-start">
                   <AutoColumn>
@@ -326,7 +309,7 @@ export default function TokenPage({
                 {view === ChartView.TVL ? (
                   <LineChart
                     data={formattedTvlData}
-                    color={backgroundColor}
+                    color={theme.primary}
                     minHeight={340}
                     value={latestValue}
                     label={valueLabel}
@@ -336,7 +319,7 @@ export default function TokenPage({
                 ) : view === ChartView.VOL ? (
                   <BarChart
                     data={formattedVolumeData}
-                    color={backgroundColor}
+                    color={theme.primary}
                     minHeight={340}
                     value={latestValue}
                     label={valueLabel}
@@ -349,10 +332,12 @@ export default function TokenPage({
                       data={adjustedToCurrent}
                       setValue={setLatestValue}
                       setLabel={setValueLabel}
-                      color={backgroundColor}
+                      color={theme.primary}
                     />
                   ) : (
-                    <LocalLoader fill={false} />
+                    <Flex width="100%" height="80%" justifyContent="center" alignItems="center">
+                      <Loading size={120} />
+                    </Flex>
                   )
                 ) : null}
                 {/* <RowBetween width="100%">
@@ -386,18 +371,18 @@ export default function TokenPage({
                 </RowBetween> */}
               </DarkGreyCard>
             </ContentLayout>
-            <TYPE.main>Pools</TYPE.main>
-            <DarkGreyCard>
-              <PoolTable poolDatas={poolDatas} />
-            </DarkGreyCard>
-            <TYPE.main>Transactions</TYPE.main>
-            <DarkGreyCard>
-              {transactions ? (
-                <TransactionTable transactions={transactions} color={backgroundColor} />
-              ) : (
-                <LocalLoader fill={false} />
-              )}
-            </DarkGreyCard>
+            <TYPE.label fontSize="18px">Pools</TYPE.label>
+            <PoolTable poolDatas={poolDatas} />
+            <TYPE.label fontSize="18px">Transactions</TYPE.label>
+            {transactions ? (
+              <TransactionTable transactions={transactions} color={backgroundColor} />
+            ) : (
+              <DarkGreyCard>
+                <Flex justifyContent="center">
+                  <Loading size={120} />
+                </Flex>
+              </DarkGreyCard>
+            )}
           </AutoColumn>
         )
       ) : (

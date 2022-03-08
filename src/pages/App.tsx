@@ -7,7 +7,6 @@ import Home from './Home'
 import PoolsOverview from './Pool/PoolsOverview'
 import TokensOverview from './Token/TokensOverview'
 import { RedirectInvalidToken } from './Token/redirects'
-import { LocalLoader } from 'components/Loader'
 import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
 import { useActiveNetworkVersion, useSubgraphStatus } from 'state/application/hooks'
@@ -44,7 +43,7 @@ const BodyWrapper = styled.div`
 
   @media (max-width: 1080px) {
     padding-top: 2rem;
-    margin-top: 140px;
+    margin-top: 0;
   }
 `
 

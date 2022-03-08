@@ -3,7 +3,7 @@ import { Box } from 'rebass/styled-components'
 
 const Card = styled(Box)<{ width?: string; padding?: string; border?: string; borderRadius?: string }>`
   width: ${({ width }) => width ?? '100%'};
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 1rem;
   padding: ${({ padding }) => padding};
   border: ${({ border }) => border};
@@ -25,7 +25,8 @@ export const GreyCard = styled(Card)`
 `
 
 export const DarkGreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.bg0};
+  background-color: ${({ theme }) => theme.background};
+  border: 1px solid ${({ theme }) => theme.border};
 `
 
 export const OutlineCard = styled(Card)`
@@ -66,9 +67,10 @@ export const ScrollableX = styled.div`
 
 export const GreyBadge = styled(Card)`
   width: fit-content;
-  border-radius: 8px;
+  border-radius: 4px;
   background: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.text};
   padding: 4px 6px;
   font-weight: 400;
+  font-size: 12px;
 `

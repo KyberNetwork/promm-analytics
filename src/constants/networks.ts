@@ -4,6 +4,7 @@ import ETHEREUM_LOGO_URL from '../assets/images/ethereum-logo.png'
 import POLYGON_LOGO_URL from '../assets/images/polygon-logo.png'
 
 export enum SupportedNetwork {
+  RINKEBY,
   ETHEREUM,
   ARBITRUM,
   OPTIMISM,
@@ -19,6 +20,16 @@ export type NetworkInfo = {
   primaryColor: string
   secondaryColor: string
   blurb?: string
+}
+
+export const RinkebyNetworkInfo: NetworkInfo = {
+  id: SupportedNetwork.RINKEBY,
+  route: 'rinkeby',
+  name: 'Rinkeby',
+  bgColor: '#fc077d',
+  primaryColor: '#fc077d',
+  secondaryColor: '#2172E5',
+  imageURL: ETHEREUM_LOGO_URL,
 }
 
 export const EthereumNetworkInfo: NetworkInfo = {
@@ -65,6 +76,7 @@ export const PolygonNetworkInfo: NetworkInfo = {
 }
 
 export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [
+  RinkebyNetworkInfo,
   EthereumNetworkInfo,
   PolygonNetworkInfo,
   OptimismNetworkInfo,

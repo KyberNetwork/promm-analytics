@@ -1,13 +1,10 @@
 import React, { useEffect, useMemo } from 'react'
+import { Text } from 'rebass'
 import { PageWrapper } from 'pages/styled'
 import { AutoColumn } from 'components/Column'
-import { TYPE } from 'theme'
 import PoolTable from 'components/pools/PoolTable'
-import { useAllPoolData, usePoolDatas } from 'state/pools/hooks'
+import { useAllPoolData } from 'state/pools/hooks'
 import { notEmpty } from 'utils'
-import { useSavedPools } from 'state/user/hooks'
-import { DarkGreyCard } from 'components/Card'
-// import TopPoolMovers from 'components/pools/TopPoolMovers'
 
 export default function PoolPage() {
   useEffect(() => {
@@ -22,20 +19,17 @@ export default function PoolPage() {
       .filter(notEmpty)
   }, [allPoolData])
 
-  const [savedPools] = useSavedPools()
-  const watchlistPools = usePoolDatas(savedPools)
-
   return (
     <PageWrapper>
       <AutoColumn gap="lg">
-        <TYPE.main>Your Watchlist</TYPE.main>
-        {watchlistPools.length > 0 ? (
+        {/* <TYPE.main>Your Watchlist</TYPE.main> */}
+        {/* watchlistPools.length > 0 ? (
           <PoolTable poolDatas={watchlistPools} />
         ) : (
           <DarkGreyCard>
             <TYPE.main>Saved pools will appear here</TYPE.main>
           </DarkGreyCard>
-        )}
+        ) */}
         {/* <HideSmall>
           <DarkGreyCard style={{ paddingTop: '12px' }}>
             <AutoColumn gap="md">
@@ -44,8 +38,10 @@ export default function PoolPage() {
             </AutoColumn>
           </DarkGreyCard>
         </HideSmall> */}
-        <TYPE.main>All Pools</TYPE.main>
-        <PoolTable poolDatas={poolDatas} />
+        <Text fontWeight="500" fontSize="24px">
+          All Pools
+        </Text>
+        <PoolTable poolDatas={poolDatas} maxItems={15} />
       </AutoColumn>
     </PageWrapper>
   )

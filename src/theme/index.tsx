@@ -53,6 +53,7 @@ export function colors(darkMode: boolean): Colors {
 
     primary: '#31CB9E',
 
+    // TODO
     // text
     text1: darkMode ? '#FFFFFF' : '#000000',
     text2: darkMode ? '#C3C5CB' : '#565A69',
@@ -147,16 +148,16 @@ const TextWrapper = styled(Text)<{ color: keyof Colors }>`
 
 export const TYPE = {
   main(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text2'} {...props} />
+    return <TextWrapper fontWeight={500} color={'subText'} {...props} />
   },
   link(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'primary1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'primary'} {...props} />
   },
   label(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'text'} {...props} />
   },
   black(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={500} color={'text'} {...props} />
   },
   white(props: TextProps) {
     return <TextWrapper fontWeight={500} color={'white'} {...props} />

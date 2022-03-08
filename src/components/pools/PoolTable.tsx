@@ -19,6 +19,8 @@ import { useActiveNetworkVersion } from 'state/application/hooks'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
+  overflow: hidden;
+  padding: 0;
 `
 
 const ResponsiveGrid = styled.div`
@@ -50,6 +52,11 @@ const ResponsiveGrid = styled.div`
   }
 `
 
+const TableHeader = styled(ResponsiveGrid)`
+  background: ${({ theme }) => theme.tableHeader};
+  padding: 18px 20px;
+`
+
 const LinkWrapper = styled(Link)`
   text-decoration: none;
   :hover {
@@ -67,6 +74,7 @@ const SORT_FIELD = {
 
 const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => {
   const [activeNetwork] = useActiveNetworkVersion()
+  const theme = useTheme()
 
   return (
     <LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
@@ -75,9 +83,9 @@ const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => 
         <Label fontWeight={400}>
           <RowFixed>
             <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} />
-            <TYPE.label ml="8px">
+            <Label color={theme.primary} ml="8px">
               {poolData.token0.symbol}/{poolData.token1.symbol}
-            </TYPE.label>
+            </Label>
             <GreyBadge ml="10px" fontSize="14px">
               {feeTierPercent(poolData.feeTier)}
             </GreyBadge>
@@ -157,8 +165,8 @@ export default function PoolTable({ poolDatas, maxItems = MAX_ITEMS }: { poolDat
   return (
     <Wrapper>
       {sortedPools.length > 0 ? (
-        <AutoColumn gap="16px">
-          <ResponsiveGrid>
+        <>
+          <TableHeader>
             <Label color={theme.text2}>#</Label>
             <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.feeTier)}>
               Pool {arrow(SORT_FIELD.feeTier)}
@@ -172,37 +180,39 @@ export default function PoolTable({ poolDatas, maxItems = MAX_ITEMS }: { poolDat
             <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSDWeek)}>
               Volume 7D {arrow(SORT_FIELD.volumeUSDWeek)}
             </ClickableText>
-          </ResponsiveGrid>
-          <Break />
-          {sortedPools.map((poolData, i) => {
-            if (poolData) {
-              return (
-                <React.Fragment key={i}>
-                  <DataRow index={(page - 1) * MAX_ITEMS + i} poolData={poolData} />
-                  <Break />
-                </React.Fragment>
-              )
-            }
-            return null
-          })}
-          <PageButtons>
-            <div
-              onClick={() => {
-                setPage(page === 1 ? page : page - 1)
-              }}
-            >
-              <Arrow faded={page === 1 ? true : false}>←</Arrow>
-            </div>
-            <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
-            <div
-              onClick={() => {
-                setPage(page === maxPage ? page : page + 1)
-              }}
-            >
-              <Arrow faded={page === maxPage ? true : false}>→</Arrow>
-            </div>
-          </PageButtons>
-        </AutoColumn>
+          </TableHeader>
+
+          <AutoColumn gap="16px" style={{ padding: '20px' }}>
+            {sortedPools.map((poolData, i) => {
+              if (poolData) {
+                return (
+                  <React.Fragment key={i}>
+                    <DataRow index={(page - 1) * MAX_ITEMS + i} poolData={poolData} />
+                    <Break />
+                  </React.Fragment>
+                )
+              }
+              return null
+            })}
+            <PageButtons>
+              <div
+                onClick={() => {
+                  setPage(page === 1 ? page : page - 1)
+                }}
+              >
+                <Arrow faded={page === 1 ? true : false}>←</Arrow>
+              </div>
+              <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
+              <div
+                onClick={() => {
+                  setPage(page === maxPage ? page : page + 1)
+                }}
+              >
+                <Arrow faded={page === maxPage ? true : false}>→</Arrow>
+              </div>
+            </PageButtons>
+          </AutoColumn>
+        </>
       ) : (
         <LoadingRows>
           <div />

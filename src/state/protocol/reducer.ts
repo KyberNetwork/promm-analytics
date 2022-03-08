@@ -34,6 +34,12 @@ export interface ProtocolState {
 }
 
 export const initialState: ProtocolState = {
+  [SupportedNetwork.RINKEBY]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
   [SupportedNetwork.ETHEREUM]: {
     data: undefined,
     chartData: undefined,
@@ -71,6 +77,7 @@ export default createReducer(initialState, (builder) =>
       state[networkId].chartData = chartData
     })
     .addCase(updateTransactions, (state, { payload: { transactions, networkId } }) => {
-      state[networkId].transactions = transactions
+      // TODO viet-nv
+      state[networkId].transactions = transactions || {}
     })
 )

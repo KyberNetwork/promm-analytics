@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import { save, load } from 'redux-localstorage-simple'
 
 import application from './application/reducer'
@@ -22,11 +22,12 @@ const store = configureStore({
     tokens,
     pools,
   },
-  middleware: [...getDefaultMiddleware({ thunk: false, immutableCheck: false }), save({ states: PERSISTED_KEYS })],
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(save({ states: PERSISTED_KEYS })),
   preloadedState: load({ states: PERSISTED_KEYS }),
 })
 
 store.dispatch(updateVersion())
+// setupListeners(store.dispatch)
 
 export default store
 
