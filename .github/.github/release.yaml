@@ -31,10 +31,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Node.js 16.x
+      - name: Set up Node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 12.x
 
       - name: Restore node_modules
         uses: actions/cache@v2
@@ -159,7 +159,7 @@ jobs:
 
       - name: Create tag
         run: |
-          git tag --annotate --message "ProMM Analytics - $VERSION_TAG" "$VERSION_TAG"
+          git tag --annotate --message "DMM Interface - $VERSION_TAG" "$VERSION_TAG"
           git push origin "refs/tags/$VERSION_TAG"
 
       - name: Create release
@@ -168,4 +168,4 @@ jobs:
           repo_token: ${{ secrets.GH_PAT }}
           automatic_release_tag: ${{ env.VERSION_TAG }}
           prerelease: false
-          title: 'ProMM Analytics - ${{ env.VERSION_TAG }}'
+          title: 'DMM Interface - ${{ env.VERSION_TAG }}'
