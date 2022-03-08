@@ -85,10 +85,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Set up Node.js 12.x
+      - name: Set up Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@master
@@ -118,7 +118,7 @@ jobs:
         env:
           CI: false
           REACT_APP_VERSION: ${{ needs.prepare.outputs.head_sha }}
-        run: yarn build-production
+        run: yarn build
 
       - name: Docker build and push
         uses: docker/build-push-action@v2
@@ -126,10 +126,10 @@ jobs:
           context: .
           push: true
           labels: |
-            org.label-schema.schema-version=1.0
-            org.label-schema.vcs-ref=${{ needs.prepare.outputs.head_sha }}
-            org.label-schema.version=${{ needs.prepare.outputs.image_tag }}
-            org.label-schema.name=${{ env.SERVICE }}
+            kyber.network.schema-version=1.0
+            kyber.network.vcs-ref=${{ needs.prepare.outputs.head_sha }}
+            kyber.network.version=${{ needs.prepare.outputs.image_tag }}
+            kyber.network.name=${{ env.SERVICE }}
           tags: |
             ${{ needs.prepare.outputs.image_name }}:${{ needs.prepare.outputs.image_tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
