@@ -7,7 +7,7 @@ import { feeTierPercent, getEtherscanLink } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
-import Loader, { LocalLoader } from 'components/Loader'
+import Loader from 'components/Loader'
 import { ExternalLink, Download } from 'react-feather'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
@@ -30,6 +30,8 @@ import { useActiveNetworkVersion } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
 import { GenericImageWrapper } from 'components/Logo'
+import Loading from 'components/Loader/Loading'
+import { Flex } from 'rebass'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -361,10 +363,17 @@ export default function PoolPage({
               )}
             </DarkGreyCard>
           </ContentLayout>
-          <TYPE.main fontSize="24px">Transactions</TYPE.main>
-          <DarkGreyCard>
-            {transactions ? <TransactionTable transactions={transactions} /> : <LocalLoader fill={false} />}
-          </DarkGreyCard>
+
+          <TYPE.label fontSize="18px">Transactions</TYPE.label>
+          {transactions ? (
+            <TransactionTable transactions={transactions} />
+          ) : (
+            <DarkGreyCard>
+              <Flex justifyContent="center">
+                <Loading size={120} />
+              </Flex>
+            </DarkGreyCard>
+          )}
         </AutoColumn>
       ) : (
         <Loader />

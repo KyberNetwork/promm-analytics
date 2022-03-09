@@ -17,10 +17,6 @@ export const ButtonText = styled.button`
   :hover {
     opacity: 0.7;
   }
-
-  :focus {
-    text-decoration: underline;
-  }
 `
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
@@ -99,7 +95,7 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
 export const StyledInternalLink = styled(Link)<{ fontSize?: string }>`
   text-decoration: none;
   cursor: pointer;
-  color: inherit;
+  color: ${({ theme }) => theme.primary};
   font-weight: 500;
   font-size: ${({ fontSize }) => fontSize ?? '16px'};
 
@@ -218,10 +214,12 @@ export function ExternalLink({
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       // don't prevent default, don't redirect if it's a new tab
       if (target === '_blank' || event.ctrlKey || event.metaKey) {
+        event.stopPropagation()
         ReactGA.outboundLink({ label: href }, () => {
           console.debug('Fired outbound link event', href)
         })
       } else {
+        event.stopPropagation()
         event.preventDefault()
         // send a ReactGA event and then trigger a location change
         ReactGA.outboundLink({ label: href }, () => {
