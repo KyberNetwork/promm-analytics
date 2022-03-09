@@ -2,14 +2,14 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { ExternalLink as ExternalLinkRaw } from 'theme'
 
-export const MenuItem = styled(Link)<{ active: boolean }>`
+export const MenuItem = styled(Link)<{ isActive: boolean }>`
   display: flex;
   text-decoration: none;
   gap: 8px;
   align-items: center;
   font-weight: 500;
   font-size: 1rem;
-  color: ${({ theme, active }) => (active ? theme.primary : theme.subText)};
+  color: ${({ theme, isActive }) => (isActive ? theme.primary : theme.subText)};
   @media (hover: hover) {
     :hover {
       color: ${({ theme }) => theme.text};

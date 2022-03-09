@@ -393,6 +393,10 @@ const HoverIcon = styled.div`
     cursor: pointer;
     opacity: 0.6;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    display: none
+    `}
 `
 
 export const SavedIcon = ({

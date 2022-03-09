@@ -7,10 +7,12 @@ const TextWrapper = styled.div<{
   link: boolean
   fontSize?: string
   adjustSize?: boolean
+  color?: string
 }>`
   position: relative;
   margin-left: ${({ margin }) => margin && '4px'};
   font-size: ${({ fontSize }) => fontSize ?? 'inherit'};
+  color: ${({ color, theme }) => color || theme.text};
 
   :hover {
     cursor: pointer;
@@ -28,6 +30,7 @@ const HoverInlineText = ({
   adjustSize = false,
   fontSize,
   link,
+  color,
   ...rest
 }: {
   text: string
@@ -53,6 +56,7 @@ const HoverInlineText = ({
           margin={margin}
           adjustSize={adjustSize}
           link={!!link}
+          color={color}
           fontSize={fontSize}
           {...rest}
         >
@@ -63,7 +67,7 @@ const HoverInlineText = ({
   }
 
   return (
-    <TextWrapper margin={margin} adjustSize={adjustSize} link={!!link} fontSize={fontSize} {...rest}>
+    <TextWrapper margin={margin} adjustSize={adjustSize} link={!!link} color={color} fontSize={fontSize} {...rest}>
       {text}
     </TextWrapper>
   )

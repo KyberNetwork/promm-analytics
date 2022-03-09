@@ -191,18 +191,18 @@ function SideNav() {
           <Flex alignItems="center" sx={{ gap: width && width < MEDIA_WIDTHS.upToExtraSmall ? '16px' : '24px' }}>
             <MenuItem
               to={networkPrefix(activeNetwork)}
-              active={pathname === '/' || pathname === networkPrefix(activeNetwork)}
+              isActive={pathname === '/' || pathname === networkPrefix(activeNetwork)}
             >
               <TrendingUp size={16} />
               Summary
             </MenuItem>
 
-            <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} active={pathname.includes('tokens')}>
+            <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} isActive={pathname.includes('tokens')}>
               <Disc size={16} />
               Tokens
             </MenuItem>
 
-            <MenuItem to={networkPrefix(activeNetwork) + 'pools'} active={pathname.includes('pools')}>
+            <MenuItem to={networkPrefix(activeNetwork) + 'pools'} isActive={pathname.includes('pools')}>
               <PieChart size={16} />
               Pools
             </MenuItem>
@@ -263,18 +263,18 @@ function SideNav() {
           <MenuWrapper>
             <MenuItem
               to={networkPrefix(activeNetwork)}
-              active={pathname === '/' || pathname === networkPrefix(activeNetwork)}
+              isActive={pathname === '/' || pathname === networkPrefix(activeNetwork)}
             >
               <TrendingUp size={16} />
               Summary
             </MenuItem>
 
-            <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} active={pathname.includes('tokens')}>
+            <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} isActive={pathname.includes('tokens')}>
               <Disc size={16} />
               Tokens
             </MenuItem>
 
-            <MenuItem to={networkPrefix(activeNetwork) + 'pools'} active={pathname.includes('pools')}>
+            <MenuItem to={networkPrefix(activeNetwork) + 'pools'} isActive={pathname.includes('pools')}>
               <PieChart size={16} />
               Pools
             </MenuItem>

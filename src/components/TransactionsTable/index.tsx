@@ -15,6 +15,7 @@ import useTheme from 'hooks/useTheme'
 import HoverInlineText from 'components/HoverInlineText'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { OptimismNetworkInfo } from 'constants/networks'
+import { ToggleElementFree, ToggleWrapper } from 'components/Toggle'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -140,11 +141,9 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
 export default function TransactionTable({
   transactions,
   maxItems = 10,
-  color,
 }: {
   transactions: Transaction[]
   maxItems?: number
-  color?: string
 }) {
   // theming
   const theme = useTheme()
@@ -210,40 +209,44 @@ export default function TransactionTable({
   return (
     <Wrapper>
       <TableHeader>
-        <RowFixed>
-          <SortText
+        <ToggleWrapper>
+          <ToggleElementFree
+            fontSize="12px"
             onClick={() => {
               setTxFilter(undefined)
             }}
-            active={txFilter === undefined}
+            isActive={txFilter === undefined}
           >
             All
-          </SortText>
-          <SortText
+          </ToggleElementFree>
+          <ToggleElementFree
+            fontSize="12px"
             onClick={() => {
               setTxFilter(TransactionType.SWAP)
             }}
-            active={txFilter === TransactionType.SWAP}
+            isActive={txFilter === TransactionType.SWAP}
           >
             Swaps
-          </SortText>
-          <SortText
+          </ToggleElementFree>
+          <ToggleElementFree
+            fontSize="12px"
             onClick={() => {
               setTxFilter(TransactionType.MINT)
             }}
-            active={txFilter === TransactionType.MINT}
+            isActive={txFilter === TransactionType.MINT}
           >
             Adds
-          </SortText>
-          <SortText
+          </ToggleElementFree>
+          <ToggleElementFree
+            fontSize="12px"
             onClick={() => {
               setTxFilter(TransactionType.BURN)
             }}
-            active={txFilter === TransactionType.BURN}
+            isActive={txFilter === TransactionType.BURN}
           >
             Removes
-          </SortText>
-        </RowFixed>
+          </ToggleElementFree>
+        </ToggleWrapper>
         <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
           Total Value {arrow(SORT_FIELD.amountUSD)}
         </ClickableText>

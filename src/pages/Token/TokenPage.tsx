@@ -16,7 +16,7 @@ import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import Loader, { LocalLoader } from 'components/Loader'
 import { ExternalLink, Plus } from 'react-feather'
-import { ExternalLink as StyledExternalLink } from '../../theme/components'
+import { ExternalLink as StyledExternalLink, HideMedium, HideSmall, OnlyMedium } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { formatDollarAmount } from 'utils/numbers'
@@ -37,7 +37,6 @@ import { MonoSpace } from 'components/shared'
 import dayjs from 'dayjs'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import { EthereumNetworkInfo } from 'constants/networks'
 import { Flex } from 'rebass'
 import Loading from 'components/Loader/Loading'
 
@@ -52,10 +51,10 @@ const ContentLayout = styled.div`
   grid-template-columns: 260px 1fr;
   grid-gap: 1em;
 
-  @media screen and (max-width: 800px) {
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
-  }
+  `}
 `
 
 const InfoLayout = styled.div`
@@ -72,6 +71,13 @@ const ResponsiveRow = styled(RowBetween)`
     row-gap: 24px;
     width: 100%:
   `};
+`
+
+const Label = styled(TYPE.label)`
+  font-size: 32px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 24px;
+  `}
 `
 
 enum ChartView {
@@ -195,16 +201,14 @@ export default function TokenPage({
                 <AutoColumn gap="md">
                   <RowFixed gap="lg">
                     <CurrencyLogo address={address} size="32px" />
-                    <TYPE.label ml={'10px'} fontSize="32px">
-                      {tokenData.name}
-                    </TYPE.label>
-                    <TYPE.label ml={'6px'} fontSize="32px">
-                      ({tokenData.symbol})
-                    </TYPE.label>
-                    <RowFlat style={{ marginLeft: '16px', marginTop: '8px' }}>
-                      <PriceText mr="10px"> {formatDollarAmount(tokenData.priceUSD)}</PriceText>
-                      <Percent value={tokenData.priceUSDChange} />
-                    </RowFlat>
+                    <Label ml={'10px'}>{tokenData.name}</Label>
+                    <Label ml={'6px'}>({tokenData.symbol})</Label>
+                    <HideMedium>
+                      <RowFlat style={{ marginLeft: '16px', marginTop: '8px' }}>
+                        <PriceText mr="10px"> {formatDollarAmount(tokenData.priceUSD)}</PriceText>
+                        <Percent value={tokenData.priceUSDChange} />
+                      </RowFlat>
+                    </HideMedium>
                   </RowFixed>
                 </AutoColumn>
                 <RowFixed>
@@ -230,6 +234,18 @@ export default function TokenPage({
             </AutoColumn>
             <ContentLayout>
               <InfoLayout>
+                <OnlyMedium>
+                  <DarkGreyCard>
+                    <AutoColumn gap="16px">
+                      <Flex justifyContent="space-between">
+                        <TYPE.label fontSize="14px">Price</TYPE.label>
+                        <Percent value={tokenData.priceUSDChange} />
+                      </Flex>
+                      <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.priceUSD)}</TYPE.label>
+                    </AutoColumn>
+                  </DarkGreyCard>
+                </OnlyMedium>
+
                 <DarkGreyCard>
                   <AutoColumn gap="16px">
                     <Flex justifyContent="space-between">
@@ -378,7 +394,7 @@ export default function TokenPage({
             <PoolTable poolDatas={poolDatas} />
             <TYPE.label fontSize="18px">Transactions</TYPE.label>
             {transactions ? (
-              <TransactionTable transactions={transactions} color={backgroundColor} />
+              <TransactionTable transactions={transactions} />
             ) : (
               <DarkGreyCard>
                 <Flex justifyContent="center">

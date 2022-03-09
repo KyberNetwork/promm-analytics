@@ -78,17 +78,17 @@ export default function Menu() {
 
       {open && (
         <MenuFlyout>
-          <MenuItem to="/" active={pathname === '/'}>
+          <MenuItem to="/" isActive={pathname === '/'}>
             <TrendingUp size={16} />
             Summary
           </MenuItem>
 
-          <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} active={pathname.includes('tokens')}>
+          <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} isActive={pathname.includes('tokens')}>
             <Disc size={16} />
             Tokens
           </MenuItem>
 
-          <MenuItem to={networkPrefix(activeNetwork) + 'pools'} active={pathname.includes('pools')}>
+          <MenuItem to={networkPrefix(activeNetwork) + 'pools'} isActive={pathname.includes('pools')}>
             <PieChart size={16} />
             Pools
           </MenuItem>

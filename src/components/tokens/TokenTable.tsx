@@ -91,7 +91,7 @@ const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) 
           </ExtraSmallOnly>
           <HideExtraSmall style={{ marginLeft: '10px' }}>
             <RowFixed>
-              <HoverInlineText text={tokenData.name} />
+              <HoverInlineText color={theme.primary} text={tokenData.name} />
               <Label ml="8px" color={theme.subText}>
                 ({tokenData.symbol})
               </Label>

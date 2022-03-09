@@ -296,8 +296,9 @@ export const CustomLightSpinner = styled(Spinner)<{ size: string }>`
 `
 
 export const OnlyMedium = styled.span`
+  display: none;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    display: none;
+    display: block
   `};
 `
 
