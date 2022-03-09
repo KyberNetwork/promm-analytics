@@ -9,7 +9,7 @@ import { useProtocolData, useProtocolChartData, useProtocolTransactions } from '
 import { DarkGreyCard } from 'components/Card'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
-import { HideMedium, HideSmall, StyledInternalLink } from '../../theme/components'
+import { ButtonText, HideMedium, HideSmall, StyledInternalLink } from '../../theme/components'
 import TokenTable from 'components/tokens/TokenTable'
 import PoolTable from 'components/pools/PoolTable'
 import { PageWrapper } from 'pages/styled'
@@ -24,6 +24,8 @@ import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useTransformedVolumeData } from 'hooks/chart'
 import { SmallOptionButton } from 'components/Button'
 import { VolumeWindow } from 'types'
+import useAggregatorVolume from 'hooks/useAggregatorVolume'
+import { Text } from 'rebass'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -31,6 +33,16 @@ const ChartWrapper = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
   `};
+`
+
+const StatisticWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    flex-direction: column
+    `}
 `
 
 export default function Home() {
@@ -115,25 +127,78 @@ export default function Home() {
 
   const [volumeWindow, setVolumeWindow] = useState(VolumeWindow.daily)
 
+  const [showTotalVol, setShowTotalVol] = useState(true)
+  const aggregatorVol = useAggregatorVolume()
+
   return (
     <PageWrapper>
       {/* <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} /> */}
       <AutoColumn gap="16px">
-        <TYPE.main>Uniswap Overview</TYPE.main>
+        <TYPE.label fontSize="24px">Summary</TYPE.label>
+
+        <StatisticWrapper>
+          <DarkGreyCard>
+            <AutoColumn gap="8px">
+              <RowBetween>
+                <TYPE.main fontSize="12px">Trading Volume</TYPE.main>
+
+                <RowFixed>
+                  <ButtonText
+                    onClick={() => setShowTotalVol(true)}
+                    style={{ fontWeight: 500, fontSize: '12px', color: showTotalVol ? theme.primary : theme.subText }}
+                  >
+                    All time
+                  </ButtonText>
+                  <ButtonText
+                    onClick={() => setShowTotalVol(false)}
+                    style={{
+                      fontWeight: 500,
+                      marginLeft: '8px',
+                      fontSize: '12px',
+                      color: !showTotalVol ? theme.primary : theme.subText,
+                    }}
+                  >
+                    24H
+                  </ButtonText>
+                </RowFixed>
+              </RowBetween>
+              <RowFixed mr="20px">
+                <Text fontWeight="500" fontSize="18px">
+                  {formatDollarAmount(showTotalVol ? aggregatorVol.totalVolume : aggregatorVol.last24hVolume)}
+                </Text>
+              </RowFixed>
+            </AutoColumn>
+          </DarkGreyCard>
+          <DarkGreyCard>
+            <TYPE.main fontSize="12px">Fees 24H</TYPE.main>
+            <RowBetween style={{ marginTop: '8px' }}>
+              <TYPE.label fontSize="18px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
+              <Percent simple value={protocolData?.feeChange} wrap={true} />
+            </RowBetween>
+          </DarkGreyCard>
+          <DarkGreyCard>
+            <TYPE.main fontSize="12px">Transactions (24H)</TYPE.main>
+            <RowBetween style={{ marginTop: '8px' }}>
+              <TYPE.label fontSize="18px">{protocolData?.txCount}</TYPE.label>
+              <Percent simple value={protocolData?.txCountChange} wrap={true} />
+            </RowBetween>
+          </DarkGreyCard>
+        </StatisticWrapper>
+
         <ResponsiveRow>
           <ChartWrapper>
             <LineChart
               data={formattedTvlData}
               height={220}
               minHeight={332}
-              color={activeNetwork.primaryColor}
+              color={theme.primary}
               value={liquidityHover}
               label={leftLabel}
               setValue={setLiquidityHover}
               setLabel={setLeftLabel}
               topLeft={
                 <AutoColumn gap="4px">
-                  <TYPE.mediumHeader fontSize="16px">TVL</TYPE.mediumHeader>
+                  <TYPE.label fontSize="16px">TVL</TYPE.label>
                   <TYPE.largeHeader fontSize="32px">
                     <MonoSpace>{formatDollarAmount(liquidityHover, 2, true)} </MonoSpace>
                   </TYPE.largeHeader>
@@ -155,7 +220,7 @@ export default function Home() {
                   ? weeklyVolumeData
                   : formattedVolumeData
               }
-              color={theme.blue1}
+              color={theme.primary}
               setValue={setVolumeHover}
               setLabel={setRightLabel}
               value={volumeHover}
@@ -187,7 +252,7 @@ export default function Home() {
               }
               topLeft={
                 <AutoColumn gap="4px">
-                  <TYPE.mediumHeader fontSize="16px">Volume 24H</TYPE.mediumHeader>
+                  <TYPE.label fontSize="16px">Volume 24H</TYPE.label>
                   <TYPE.largeHeader fontSize="32px">
                     <MonoSpace> {formatDollarAmount(volumeHover, 2)}</MonoSpace>
                   </TYPE.largeHeader>
@@ -199,46 +264,20 @@ export default function Home() {
             />
           </ChartWrapper>
         </ResponsiveRow>
-        <HideSmall>
-          <DarkGreyCard>
-            <RowBetween>
-              <RowFixed>
-                <RowFixed mr="20px">
-                  <TYPE.main mr="4px">Volume 24H: </TYPE.main>
-                  <TYPE.label mr="4px">{formatDollarAmount(protocolData?.volumeUSD)}</TYPE.label>
-                  <Percent value={protocolData?.volumeUSDChange} wrap={true} />
-                </RowFixed>
-                <RowFixed mr="20px">
-                  <TYPE.main mr="4px">Fees 24H: </TYPE.main>
-                  <TYPE.label mr="4px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
-                  <Percent value={protocolData?.feeChange} wrap={true} />
-                </RowFixed>
-                <HideMedium>
-                  <RowFixed mr="20px">
-                    <TYPE.main mr="4px">TVL: </TYPE.main>
-                    <TYPE.label mr="4px">{formatDollarAmount(protocolData?.tvlUSD)}</TYPE.label>
-                    <TYPE.main></TYPE.main>
-                    <Percent value={protocolData?.tvlUSDChange} wrap={true} />
-                  </RowFixed>
-                </HideMedium>
-              </RowFixed>
-            </RowBetween>
-          </DarkGreyCard>
-        </HideSmall>
         <RowBetween>
-          <TYPE.main>Top Tokens</TYPE.main>
+          <TYPE.label>Top Tokens</TYPE.label>
           <StyledInternalLink to="tokens">Explore</StyledInternalLink>
         </RowBetween>
         <TokenTable tokenDatas={formattedTokens} maxItems={10} />
         <RowBetween>
-          <TYPE.main>Top Pools</TYPE.main>
+          <TYPE.label>Top Pools</TYPE.label>
           <StyledInternalLink to="pools">Explore</StyledInternalLink>
         </RowBetween>
         <PoolTable poolDatas={poolDatas} />
         <RowBetween>
-          <TYPE.main>Transactions</TYPE.main>
+          <TYPE.label>Transactions</TYPE.label>
         </RowBetween>
-        {transactions ? <TransactionsTable transactions={transactions} /> : null}
+        {transactions ? <TransactionsTable transactions={transactions} maxItems={5} /> : null}
       </AutoColumn>
     </PageWrapper>
   )

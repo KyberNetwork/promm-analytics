@@ -17,10 +17,6 @@ export const ButtonText = styled.button`
   :hover {
     opacity: 0.7;
   }
-
-  :focus {
-    text-decoration: underline;
-  }
 `
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
@@ -99,7 +95,7 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
 export const StyledInternalLink = styled(Link)<{ fontSize?: string }>`
   text-decoration: none;
   cursor: pointer;
-  color: inherit;
+  color: ${({ theme }) => theme.primary};
   font-weight: 500;
   font-size: ${({ fontSize }) => fontSize ?? '16px'};
 
