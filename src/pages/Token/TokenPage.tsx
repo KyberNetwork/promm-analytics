@@ -87,7 +87,7 @@ export default function TokenPage({
     params: { address },
   },
 }: RouteComponentProps<{ address: string }>) {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   address = address.toLowerCase()
   // theming
@@ -208,7 +208,10 @@ export default function TokenPage({
                   </RowFixed>
                 </AutoColumn>
                 <RowFixed>
-                  <SavedIcon fill={savedTokens.includes(address)} onClick={() => addSavedToken(address)} />
+                  <SavedIcon
+                    fill={!!savedTokens?.[activeNetwork.id]?.[address]}
+                    onClick={() => addSavedToken(activeNetwork.id, tokenData)}
+                  />
                   <StyledExternalLink href={`https://kyberswap.com/#/proamm/add/${address}`}>
                     <ButtonOutlined width="max-content" mx="12px" height={'100%'} style={{ height: '38px' }}>
                       <RowBetween>

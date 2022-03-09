@@ -71,7 +71,7 @@ export function useFetchedTokenDatas(
       }
     | undefined
 } {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const { dataClient } = useClients()
 
   // get blocks from historic timestamps

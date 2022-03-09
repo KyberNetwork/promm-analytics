@@ -19,6 +19,8 @@ import HoverInlineText from 'components/HoverInlineText'
 import { TOKEN_HIDE, POOL_HIDE } from '../../constants/index'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
+import { TokenData } from 'state/tokens/reducer'
+import { PoolData } from 'state/pools/reducer'
 
 const Container = styled.div`
   position: relative;
@@ -155,7 +157,7 @@ const OptionButton = styled.div<{ enabled: boolean }>`
 
 const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
   const history = useHistory()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   const ref = useRef<HTMLInputElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -211,19 +213,21 @@ const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
   }
 
   // get date for watchlist
-  const watchListTokenData = useTokenDatas(savedTokens)
-  const watchListPoolData = usePoolDatas(savedPools)
+  // const watchListTokenData = useTokenDatas(savedTokens)
+  // const watchListPoolData = usePoolDatas(savedPools)
 
   // filter on view
   const [showWatchlist, setShowWatchlist] = useState(false)
-  const tokensForList = useMemo(
-    () => (showWatchlist ? watchListTokenData ?? [] : tokens.sort((t0, t1) => (t0.volumeUSD > t1.volumeUSD ? -1 : 1))),
-    [showWatchlist, tokens, watchListTokenData]
-  )
-  const poolForList = useMemo(
-    () => (showWatchlist ? watchListPoolData ?? [] : pools.sort((p0, p1) => (p0.volumeUSD > p1.volumeUSD ? -1 : 1))),
-    [pools, showWatchlist, watchListPoolData]
-  )
+  // const tokensForList = useMemo(
+  //   () => (showWatchlist ? watchListTokenData ?? [] : tokens.sort((t0, t1) => (t0.volumeUSD > t1.volumeUSD ? -1 : 1))),
+  //   [showWatchlist, tokens, watchListTokenData]
+  // )
+  // const poolForList = useMemo(
+  //   () => (showWatchlist ? watchListPoolData ?? [] : pools.sort((p0, p1) => (p0.volumeUSD > p1.volumeUSD ? -1 : 1))),
+  //   [pools, showWatchlist, watchListPoolData]
+  // )
+  const tokensForList: TokenData[] = []
+  const poolForList: PoolData[] = []
 
   return (
     <Hotkeys keyName="command+/" onKeyDown={handleDown}>
@@ -292,10 +296,11 @@ const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                           id="watchlist-icon"
                           size={'16px'}
                           style={{ marginLeft: '8px' }}
-                          fill={savedTokens.includes(t.address)}
+                          // fill={savedTokens.includes(t.address)}
+                          fill
                           onClick={(e) => {
                             e.stopPropagation()
-                            addSavedToken(t.address)
+                            // addSavedToken(t.address)
                           }}
                         />
                       </RowFixed>
@@ -360,10 +365,11 @@ const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                           id="watchlist-icon"
                           size={'16px'}
                           style={{ marginLeft: '10px' }}
-                          fill={savedPools.includes(p.address)}
+                          // fill={savedPools.includes(p.address)}
+                          fill
                           onClick={(e) => {
                             e.stopPropagation()
-                            addSavedPool(p.address)
+                            // addSavedPool(p.address)
                           }}
                         />
                       </RowFixed>

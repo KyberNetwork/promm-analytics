@@ -75,6 +75,14 @@ export const PolygonNetworkInfo: NetworkInfo = {
   blurb: '',
 }
 
+export const NetworkMap: { [id in SupportedNetwork]: NetworkInfo } = {
+  [SupportedNetwork.RINKEBY]: RinkebyNetworkInfo,
+  [SupportedNetwork.ETHEREUM]: EthereumNetworkInfo,
+  [SupportedNetwork.POLYGON]: PolygonNetworkInfo,
+  [SupportedNetwork.OPTIMISM]: OptimismNetworkInfo,
+  [SupportedNetwork.ARBITRUM]: ArbitrumNetworkInfo,
+}
+
 export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [
   RinkebyNetworkInfo,
   EthereumNetworkInfo,

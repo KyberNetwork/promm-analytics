@@ -11,20 +11,13 @@ import {
   rinkebyClient,
   rinkebyBlockClient,
 } from 'apollo/client'
-import { NetworkInfo, SupportedNetwork } from 'constants/networks'
+import { EthereumNetworkInfo, NetworkInfo, SupportedNetwork, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import {
-  addPopup,
-  ApplicationModal,
-  PopupContent,
-  removePopup,
-  setOpenModal,
-  updateActiveNetworkVersion,
-  updateSubgraphStatus,
-} from './actions'
+import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, updateSubgraphStatus } from './actions'
 
 export function useBlockNumber(): number | undefined {
   const { chainId } = useActiveWeb3React()
@@ -111,22 +104,23 @@ export function useSubgraphStatus(): [
   return [status, update]
 }
 
-// returns a function that allows adding a popup
-export function useActiveNetworkVersion(): [NetworkInfo, (activeNetworkVersion: NetworkInfo) => void] {
-  const dispatch = useDispatch()
-  const activeNetwork = useSelector((state: AppState) => state.application.activeNetworkVersion)
-  const update = useCallback(
-    (activeNetworkVersion: NetworkInfo) => {
-      dispatch(updateActiveNetworkVersion({ activeNetworkVersion }))
-    },
-    [dispatch]
-  )
-  return [activeNetwork, update]
+export function useActiveNetworkVersion(): NetworkInfo {
+  const location = useLocation()
+
+  const network = useMemo(() => {
+    return (
+      SUPPORTED_NETWORK_VERSIONS.find((n) => {
+        return location.pathname.includes(n.route.toLocaleLowerCase())
+      }) || EthereumNetworkInfo
+    )
+  }, [location.pathname])
+
+  return network
 }
 
 // get the apollo client related to the active network
 export function useDataClient(): ApolloClient<NormalizedCacheObject> {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   switch (activeNetwork.id) {
     case SupportedNetwork.ETHEREUM:
       return client
@@ -145,7 +139,7 @@ export function useDataClient(): ApolloClient<NormalizedCacheObject> {
 
 // get the apollo client related to the active network for fetching blocks
 export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   switch (activeNetwork.id) {
     case SupportedNetwork.ETHEREUM:
       return blockClient

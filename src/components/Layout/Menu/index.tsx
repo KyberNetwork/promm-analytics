@@ -67,7 +67,7 @@ export default function Menu() {
   const toggle = useToggleModal(ApplicationModal.MENU)
   useOnClickOutside(node, open ? toggle : undefined)
   const { pathname } = useLocation()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451

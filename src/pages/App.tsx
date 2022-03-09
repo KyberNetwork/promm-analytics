@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import Popups from '../components/Popups'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
@@ -11,15 +11,16 @@ import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
 import { useActiveNetworkVersion, useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
-import { SUPPORTED_NETWORK_VERSIONS, EthereumNetworkInfo, OptimismNetworkInfo } from 'constants/networks'
+import { OptimismNetworkInfo } from 'constants/networks'
 import SideNav from 'components/Layout/SideNav'
 import Loading from 'components/Loader/Loading'
 import { Flex } from 'rebass'
+import PinnedData from 'components/PinnedData'
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
   display: grid;
-  grid-template-columns: 208px 1fr;
+  grid-template-columns: ${({ open }) => (open ? '208px 1fr 220px' : '208px 1fr 64px')};
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     grid-template-columns: 1fr;
@@ -76,28 +77,14 @@ const WarningBanner = styled.div`
 const BLOCK_DIFFERENCE_THRESHOLD = 30
 
 export default function App() {
+  const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     setTimeout(() => setLoading(false), 1300)
   }, [])
 
-  // update network based on route
-  // TEMP - find better way to do this
-  const location = useLocation()
-  const [activeNetwork, setActiveNetwork] = useActiveNetworkVersion()
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setActiveNetwork(EthereumNetworkInfo)
-    } else {
-      SUPPORTED_NETWORK_VERSIONS.map((n) => {
-        if (location.pathname.includes(n.route.toLocaleLowerCase())) {
-          setActiveNetwork(n)
-        }
-      })
-    }
-  }, [location.pathname, setActiveNetwork])
-
+  const activeNetwork = useActiveNetworkVersion()
   // subgraph health
   const [subgraphStatus] = useSubgraphStatus()
 
@@ -142,7 +129,7 @@ export default function App() {
               </DarkGreyCard>
             </BodyWrapper>
           ) : (
-            <ContentWrapper>
+            <ContentWrapper open={savedOpen}>
               <SideNav />
               <BodyWrapper>
                 <Popups />
@@ -155,6 +142,7 @@ export default function App() {
                 </Switch>
                 <Marginer />
               </BodyWrapper>
+              <PinnedData open={savedOpen} setSavedOpen={setSavedOpen} />
             </ContentWrapper>
           )}
         </>

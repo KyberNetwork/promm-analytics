@@ -100,7 +100,7 @@ export function usePoolDatas(
 } {
   // get client
   const { dataClient } = useClients()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = useDeltaTimestamps()

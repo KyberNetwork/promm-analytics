@@ -100,7 +100,7 @@ export function useEthPrices(): EthPrices | undefined {
   const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
 
   // index on active network
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const indexedPrices = prices?.[activeNetwork.id]
 
   const formattedBlocks = useMemo(() => {

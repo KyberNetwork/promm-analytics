@@ -43,7 +43,7 @@ export function useFetchedSubgraphStatus(): {
   syncedBlock: number | undefined
   headBlock: number | undefined
 } {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   const { loading, error, data } = useQuery<HealthResponse>(SUBGRAPH_HEALTH, {
     client: healthClient,

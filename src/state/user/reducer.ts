@@ -1,4 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
+import { PoolData } from 'state/pools/reducer'
+import { TokenData } from 'state/tokens/reducer'
 import { updateVersion } from '../global/actions'
 import {
   addSerializedPair,
@@ -36,8 +38,16 @@ export interface UserState {
     }
   }
 
-  savedTokens: string[]
-  savedPools: string[]
+  savedTokens: {
+    [chainId: number]: {
+      [tokenAddress: string]: TokenData
+    }
+  }
+  savedPools: {
+    [chainId: number]: {
+      [poolAddress: string]: PoolData
+    }
+  }
 
   timestamp: number
   URLWarningVisible: boolean
@@ -81,26 +91,40 @@ export default createReducer(initialState, (builder) =>
       delete state.tokens[chainId][address]
       state.timestamp = currentTimestamp()
     })
-    .addCase(addSavedToken, (state, { payload: { address } }) => {
-      if (!state.savedTokens || !state.savedTokens.includes(address)) {
-        const newTokens = state.savedTokens ?? []
-        newTokens.push(address)
+    .addCase(addSavedToken, (state, { payload: { networkId, token } }) => {
+      if (Array.isArray(state.savedTokens)) {
+        state.savedTokens = {}
+      }
+      if (!state.savedTokens?.[networkId]?.[token.address]) {
+        const tokenByChain = state.savedTokens?.[networkId] || {}
+        tokenByChain[token.address] = token
+        const newTokens = {
+          ...(state.savedTokens || {}),
+          [networkId]: tokenByChain,
+        }
         state.savedTokens = newTokens
       }
       // toggle for delete
-      else if (state.savedTokens && state.savedTokens.includes(address)) {
-        const newTokens = state.savedTokens.filter((x) => x !== address)
-        state.savedTokens = newTokens
+      else {
+        delete state.savedTokens[networkId][token.address]
       }
     })
-    .addCase(addSavedPool, (state, { payload: { address } }) => {
-      if (!state.savedPools || !state.savedPools.includes(address)) {
-        const newPools = state.savedPools ?? []
-        newPools.push(address)
+    .addCase(addSavedPool, (state, { payload: { networkId, pool } }) => {
+      if (Array.isArray(state.savedPools)) {
+        state.savedPools = {}
+      }
+      if (!state.savedPools?.[networkId]?.[pool.address]) {
+        const poolByChain = state.savedPools?.[networkId] || {}
+        poolByChain[pool.address] = pool
+        const newPools = {
+          ...(state.savedPools || {}),
+          [networkId]: poolByChain,
+        }
         state.savedPools = newPools
-      } else if (state.savedPools && state.savedPools.includes(address)) {
-        const newPools = state.savedPools.filter((x) => x !== address)
-        state.savedPools = newPools
+      }
+      // toggle for delete
+      else {
+        delete state.savedPools[networkId][pool.address]
       }
     })
     .addCase(addSerializedPair, (state, { payload: { serializedPair } }) => {

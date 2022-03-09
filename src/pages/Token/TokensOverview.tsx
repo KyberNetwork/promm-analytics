@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from 'react'
 import { PageWrapper } from 'pages/styled'
 import { AutoColumn } from 'components/Column'
 import TokenTable from 'components/tokens/TokenTable'
-import { useAllTokenData, useTokenDatas } from 'state/tokens/hooks'
+import { useAllTokenData } from 'state/tokens/hooks'
 import { notEmpty } from 'utils'
 import { Text } from 'rebass'
 

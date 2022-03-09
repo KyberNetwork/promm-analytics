@@ -33,7 +33,7 @@ export function useBlocksFromTimestamps(
     | undefined
   error: boolean
 } {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const [blocks, setBlocks] = useState<any>()
   const [error, setError] = useState(false)
 

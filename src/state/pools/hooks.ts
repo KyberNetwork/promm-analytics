@@ -14,13 +14,13 @@ import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
 export function useAllPoolData(): {
   [address: string]: { data: PoolData | undefined; lastUpdated: number | undefined }
 } {
-  const [network] = useActiveNetworkVersion()
+  const network = useActiveNetworkVersion()
   return useSelector((state: AppState) => state.pools.byAddress[network.id] ?? {})
 }
 
 export function useUpdatePoolData(): (pools: PoolData[]) => void {
   const dispatch = useDispatch<AppDispatch>()
-  const [network] = useActiveNetworkVersion()
+  const network = useActiveNetworkVersion()
   return useCallback((pools: PoolData[]) => dispatch(updatePoolData({ pools, networkId: network.id })), [
     dispatch,
     network.id,
@@ -29,7 +29,7 @@ export function useUpdatePoolData(): (pools: PoolData[]) => void {
 
 export function useAddPoolKeys(): (addresses: string[]) => void {
   const dispatch = useDispatch<AppDispatch>()
-  const [network] = useActiveNetworkVersion()
+  const network = useActiveNetworkVersion()
   return useCallback((poolAddresses: string[]) => dispatch(addPoolKeys({ poolAddresses, networkId: network.id })), [
     dispatch,
     network.id,
@@ -72,7 +72,7 @@ export function usePoolDatas(poolAddresses: string[]): PoolData[] {
  */
 export function usePoolChartData(address: string): PoolChartEntry[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.id]?.[address])
   const chartData = pool?.chartData
@@ -104,7 +104,7 @@ export function usePoolChartData(address: string): PoolChartEntry[] | undefined 
  */
 export function usePoolTransactions(address: string): Transaction[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.id]?.[address])
   const transactions = pool?.transactions
   const [error, setError] = useState(false)
@@ -132,7 +132,7 @@ export function usePoolTickData(
   address: string
 ): [PoolTickData | undefined, (poolAddress: string, tickData: PoolTickData) => void] {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.id]?.[address])
   const tickData = pool.tickData
 

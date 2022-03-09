@@ -26,13 +26,13 @@ dayjs.extend(utc)
 export function useAllTokenData(): {
   [address: string]: { data: TokenData | undefined; lastUpdated: number | undefined }
 } {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   return useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.id] ?? {})
 }
 
 export function useUpdateTokenData(): (tokens: TokenData[]) => void {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   return useCallback(
     (tokens: TokenData[]) => {
@@ -44,7 +44,7 @@ export function useUpdateTokenData(): (tokens: TokenData[]) => void {
 
 export function useAddTokenKeys(): (addresses: string[]) => void {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   return useCallback(
     (tokenAddresses: string[]) => dispatch(addTokenKeys({ tokenAddresses, networkId: activeNetwork.id })),
     [activeNetwork.id, dispatch]
@@ -101,7 +101,7 @@ export function useTokenData(address: string | undefined): TokenData | undefined
  */
 export function usePoolsForToken(address: string): string[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.id]?.[address])
   const poolsForToken = token.poolAddresses
   const [error, setError] = useState(false)
@@ -133,7 +133,7 @@ export function usePoolsForToken(address: string): string[] | undefined {
  */
 export function useTokenChartData(address: string): TokenChartEntry[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.id]?.[address])
   const chartData = token.chartData
   const [error, setError] = useState(false)
@@ -169,7 +169,7 @@ export function useTokenPriceData(
   timeWindow: OpUnitType
 ): PriceChartEntry[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.id]?.[address])
   const priceData = token.priceData[interval]
   const [error, setError] = useState(false)
@@ -233,7 +233,7 @@ export function useTokenPriceData(
  */
 export function useTokenTransactions(address: string): Transaction[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.id]?.[address])
   const transactions = token.transactions
   const [error, setError] = useState(false)

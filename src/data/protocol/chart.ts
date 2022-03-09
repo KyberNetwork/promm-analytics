@@ -141,7 +141,7 @@ export function useFetchGlobalChartData(): {
   const [error, setError] = useState(false)
   const { dataClient } = useClients()
 
-  const [activeNetworkVersion] = useActiveNetworkVersion()
+  const activeNetworkVersion = useActiveNetworkVersion()
   const indexedData = data?.[activeNetworkVersion.id]
 
   useEffect(() => {

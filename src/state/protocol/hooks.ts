@@ -8,7 +8,7 @@ import { useActiveNetworkVersion } from 'state/application/hooks'
 import { useFetchAggregateProtocolData } from 'data/protocol/overview'
 
 export function useProtocolData(): [ProtocolData | undefined, (protocolData: ProtocolData) => void] {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const protocolData: ProtocolData | undefined = useSelector(
     (state: AppState) => state.protocol[activeNetwork.id]?.data
   )
@@ -22,7 +22,7 @@ export function useProtocolData(): [ProtocolData | undefined, (protocolData: Pro
 }
 
 export function useProtocolChartData(): [ChartDayData[] | undefined, (chartData: ChartDayData[]) => void] {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const chartData: ChartDayData[] | undefined = useSelector(
     (state: AppState) => state.protocol[activeNetwork.id]?.chartData
   )
@@ -36,7 +36,7 @@ export function useProtocolChartData(): [ChartDayData[] | undefined, (chartData:
 }
 
 export function useProtocolTransactions(): [Transaction[] | undefined, (transactions: Transaction[]) => void] {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const transactions: Transaction[] | undefined = useSelector(
     (state: AppState) => state.protocol[activeNetwork.id]?.transactions
   )

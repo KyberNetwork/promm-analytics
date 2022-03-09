@@ -34,13 +34,13 @@ ReactDOM.render(
     <FixedGlobalStyle />
     <ApolloProvider client={client}>
       <Provider store={store}>
-        <Updaters />
-        <ThemeProvider>
-          <ThemedGlobalStyle />
-          <HashRouter>
+        <HashRouter>
+          <Updaters />
+          <ThemeProvider>
+            <ThemedGlobalStyle />
             <App />
-          </HashRouter>
-        </ThemeProvider>
+          </ThemeProvider>
+        </HashRouter>
       </Provider>
     </ApolloProvider>
   </StrictMode>,

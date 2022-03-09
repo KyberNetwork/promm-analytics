@@ -40,7 +40,7 @@ export default function Home() {
 
   const theme = useTheme()
 
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   const [protocolData] = useProtocolData()
   const [chartData] = useProtocolChartData()

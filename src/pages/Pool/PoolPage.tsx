@@ -79,7 +79,7 @@ export default function PoolPage({
     params: { address },
   },
 }: RouteComponentProps<{ address: string }>) {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -159,7 +159,10 @@ export default function PoolPage({
               )} `}</TYPE.label>
             </AutoRow>
             <RowFixed gap="10px" align="center">
-              <SavedIcon fill={savedPools.includes(address)} onClick={() => addSavedPool(address)} />
+              <SavedIcon
+                fill={!!savedPools[activeNetwork.id]?.[poolData.address]}
+                onClick={() => addSavedPool(activeNetwork.id, poolData)}
+              />
               <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
                 <ExternalLink stroke={theme.text2} size={'17px'} style={{ marginLeft: '12px' }} />
               </StyledExternalLink>

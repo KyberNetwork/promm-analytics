@@ -95,6 +95,7 @@ const loadingAnimation = keyframes`
 `
 
 export const LoadingRows = styled.div`
+  padding: 16px;
   display: grid;
   min-width: 75%;
   max-width: 100%;

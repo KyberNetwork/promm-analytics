@@ -13,6 +13,10 @@ import {
   addSavedPool,
 } from './actions'
 import { useAppSelector } from 'hooks/useAppDispatch'
+import { PoolData } from 'state/pools/reducer'
+import { useActiveNetworkVersion } from 'state/application/hooks'
+import { TokenData } from 'state/tokens/reducer'
+import { SupportedNetwork } from 'constants/networks'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -70,28 +74,44 @@ export function useAddUserToken(): (token: Token) => void {
   )
 }
 
-export function useSavedTokens(): [string[], (address: string) => void] {
+export function useSavedTokens(): [
+  {
+    [chainId: number]: {
+      [tokenAddress: string]: TokenData
+    }
+  },
+  (id: SupportedNetwork, token: TokenData) => void
+] {
   const dispatch = useDispatch<AppDispatch>()
-  const savedTokens = useSelector((state: AppState) => state.user.savedTokens)
+  const savedTokens = useSelector((state: AppState) => state.user.savedTokens) || {}
+
   const updatedSavedTokens = useCallback(
-    (address: string) => {
-      dispatch(addSavedToken({ address }))
+    (id: SupportedNetwork, token: TokenData) => {
+      dispatch(addSavedToken({ networkId: id, token }))
     },
     [dispatch]
   )
-  return [savedTokens ?? [], updatedSavedTokens]
+  return [savedTokens, updatedSavedTokens]
 }
 
-export function useSavedPools(): [string[], (address: string) => void] {
+export function useSavedPools(): [
+  {
+    [chainId: number]: {
+      [address: string]: PoolData
+    }
+  },
+  (id: SupportedNetwork, pool: PoolData) => void
+] {
   const dispatch = useDispatch<AppDispatch>()
+
   const savedPools = useSelector((state: AppState) => state.user.savedPools)
   const updateSavedPools = useCallback(
-    (address: string) => {
-      dispatch(addSavedPool({ address }))
+    (id: SupportedNetwork, pool: PoolData) => {
+      dispatch(addSavedPool({ networkId: id, pool }))
     },
     [dispatch]
   )
-  return [savedPools ?? [], updateSavedPools]
+  return [savedPools ?? {}, updateSavedPools]
 }
 
 export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {

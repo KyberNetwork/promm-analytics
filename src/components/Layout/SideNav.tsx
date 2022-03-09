@@ -130,7 +130,7 @@ const NetworkItem = styled.div<{ active: boolean }>`
 
 function SideNav() {
   const theme = useTheme()
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const { pathname } = useLocation()
   const [showNetworkModal, setShowNetworkModal] = useState(false)
   const [tab, setTab] = useState<1 | 2>(1)

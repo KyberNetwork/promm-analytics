@@ -82,7 +82,7 @@ const GreenDot = styled.div`
 `
 
 export default function NetworkDropdown() {
-  const [activeNetwork] = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworkVersion()
   const theme = useTheme()
 
   const [showMenu, setShowMenu] = useState(false)
