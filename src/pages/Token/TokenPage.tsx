@@ -14,8 +14,8 @@ import { shortenAddress, getEtherscanLink, currentTimestamp } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
-import Loader, { LocalLoader } from 'components/Loader'
-import { ExternalLink, Plus } from 'react-feather'
+import Loader from 'components/Loader'
+import { Plus } from 'react-feather'
 import { ExternalLink as StyledExternalLink, HideMedium, HideSmall, OnlyMedium } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -217,14 +217,16 @@ export default function TokenPage({
                     onClick={() => addSavedToken(activeNetwork.id, tokenData)}
                   />
                   <StyledExternalLink href={`https://kyberswap.com/#/proamm/add/${address}`}>
-                    <ButtonOutlined width="max-content" mx="12px" height={'100%'} style={{ height: '38px' }}>
+                    <ButtonOutlined width="max-content" mr="12px" height={'100%'} style={{ height: '38px' }}>
                       <RowBetween>
                         <Plus size={20} />
                         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}>Add Liquidity</div>
                       </RowBetween>
                     </ButtonOutlined>
                   </StyledExternalLink>
-                  <StyledExternalLink href={`https://kyberswap.com/#/swap?inputCurrency=${address}`}>
+                  <StyledExternalLink
+                    href={`https://kyberswap.com/#/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
+                  >
                     <ButtonPrimary width="100px" style={{ height: '38px' }}>
                       Trade
                     </ButtonPrimary>

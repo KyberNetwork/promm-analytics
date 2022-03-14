@@ -388,6 +388,7 @@ const HoverIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 12px;
   z-index: 9999;
   :hover {
     cursor: pointer;

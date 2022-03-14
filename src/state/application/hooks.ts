@@ -4,8 +4,6 @@ import {
   arbitrumClient,
   blockClient,
   client,
-  optimismClient,
-  optimismBlockClient,
   polygonBlockClient,
   polygonClient,
   rinkebyClient,
@@ -126,8 +124,6 @@ export function useDataClient(): ApolloClient<NormalizedCacheObject> {
       return client
     case SupportedNetwork.ARBITRUM:
       return arbitrumClient
-    case SupportedNetwork.OPTIMISM:
-      return optimismClient
     case SupportedNetwork.POLYGON:
       return polygonClient
     case SupportedNetwork.RINKEBY:
@@ -145,8 +141,6 @@ export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
       return blockClient
     case SupportedNetwork.ARBITRUM:
       return arbitrumBlockClient
-    case SupportedNetwork.OPTIMISM:
-      return optimismBlockClient
     case SupportedNetwork.POLYGON:
       return polygonBlockClient
     case SupportedNetwork.RINKEBY:

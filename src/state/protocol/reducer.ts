@@ -52,12 +52,6 @@ export const initialState: ProtocolState = {
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [SupportedNetwork.OPTIMISM]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
   [SupportedNetwork.POLYGON]: {
     data: undefined,
     chartData: undefined,

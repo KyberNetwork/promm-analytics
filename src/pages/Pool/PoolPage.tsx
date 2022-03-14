@@ -3,18 +3,18 @@ import { RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
-import { feeTierPercent, getEtherscanLink } from 'utils'
+import { feeTierPercent, getEtherscanLink, shortenAddress } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import Loader from 'components/Loader'
-import { ExternalLink, Download } from 'react-feather'
+import { ExternalLink, Download, Plus } from 'react-feather'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { formatDollarAmount, formatAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
-import { ButtonPrimary, ButtonGray, SavedIcon } from 'components/Button'
+import { ButtonPrimary, ButtonGray, SavedIcon, ButtonOutlined } from 'components/Button'
 import { DarkGreyCard, GreyCard, GreyBadge } from 'components/Card'
 import { usePoolDatas, usePoolChartData, usePoolTransactions } from 'state/pools/hooks'
 import LineChart from 'components/LineChart/alt'
@@ -28,7 +28,7 @@ import DensityChart from 'components/DensityChart'
 import { MonoSpace } from 'components/shared'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import { ArbitrumNetworkInfo, EthereumNetworkInfo } from 'constants/networks'
+import { ArbitrumNetworkInfo } from 'constants/networks'
 import { GenericImageWrapper } from 'components/Logo'
 import Loading from 'components/Loader/Loading'
 import { Flex } from 'rebass'
@@ -44,9 +44,18 @@ const ContentLayout = styled.div`
   }
 `
 
+const InfoLayout = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  justify-content: space-between;
+`
+
 const TokenButton = styled(GreyCard)`
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.border}
+  background: ${({ theme }) => theme.background};
   :hover {
     cursor: pointer;
     opacity: 0.6;
@@ -54,7 +63,8 @@ const TokenButton = styled(GreyCard)`
 `
 
 const ResponsiveRow = styled(RowBetween)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  column-gap: 10px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     flex-direction: column;
     align-items: flex-start;
     row-gap: 24px;
@@ -147,29 +157,22 @@ export default function PoolPage({
       <ThemedBackground backgroundColor={backgroundColor} />
       {poolData ? (
         <AutoColumn gap="32px">
-          <RowBetween>
-            <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <TYPE.main>{`Home > `}</TYPE.main>
-              </StyledInternalLink>
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'pools'}>
-                <TYPE.label>{` Pools `}</TYPE.label>
-              </StyledInternalLink>
-              <TYPE.main>{` > `}</TYPE.main>
-              <TYPE.label>{` ${poolData.token0.symbol} / ${poolData.token1.symbol} ${feeTierPercent(
-                poolData.feeTier
-              )} `}</TYPE.label>
-            </AutoRow>
-            <RowFixed gap="10px" align="center">
-              <SavedIcon
-                fill={!!savedPools[activeNetwork.id]?.[poolData.address]}
-                onClick={() => addSavedPool(activeNetwork.id, poolData)}
-              />
-              <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
-                <ExternalLink stroke={theme.text2} size={'17px'} style={{ marginLeft: '12px' }} />
-              </StyledExternalLink>
-            </RowFixed>
-          </RowBetween>
+          <AutoRow gap="4px">
+            <StyledInternalLink to={networkPrefix(activeNetwork)}>
+              <TYPE.main>{`Home → `}</TYPE.main>
+            </StyledInternalLink>
+            <StyledInternalLink to={networkPrefix(activeNetwork) + 'pools'}>
+              <TYPE.label>{` Pools `}</TYPE.label>
+            </StyledInternalLink>
+            <TYPE.main>{` → `}</TYPE.main>
+            <TYPE.label>{` ${poolData.token0.symbol}/${poolData.token1.symbol} ${feeTierPercent(
+              poolData.feeTier
+            )} `}</TYPE.label>
+
+            <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
+              <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
+            </StyledExternalLink>
+          </AutoRow>
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>
@@ -178,11 +181,9 @@ export default function PoolPage({
                   ml="8px"
                   mr="8px"
                   fontSize="24px"
-                >{` ${poolData.token0.symbol} / ${poolData.token1.symbol} `}</TYPE.label>
+                >{` ${poolData.token0.symbol}/${poolData.token1.symbol} `}</TYPE.label>
                 <GreyBadge>{feeTierPercent(poolData.feeTier)}</GreyBadge>
-                {activeNetwork === EthereumNetworkInfo ? null : (
-                  <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size={'26px'} />
-                )}
+                <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size={'26px'} />
               </RowFixed>
               <ResponsiveRow>
                 <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + poolData.token0.address}>
@@ -198,7 +199,7 @@ export default function PoolPage({
                   </TokenButton>
                 </StyledInternalLink>
                 <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + poolData.token1.address}>
-                  <TokenButton ml="10px">
+                  <TokenButton>
                     <RowFixed>
                       <CurrencyLogo address={poolData.token1.address} size={'20px'} />
                       <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width={'fit-content'}>
@@ -211,72 +212,84 @@ export default function PoolPage({
                 </StyledInternalLink>
               </ResponsiveRow>
             </AutoColumn>
-            {activeNetwork !== EthereumNetworkInfo ? null : (
-              <RowFixed>
-                <StyledExternalLink
-                  href={`https://app.uniswap.org/#/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
-                >
-                  <ButtonGray width="170px" mr="12px" style={{ height: '44px' }}>
-                    <RowBetween>
-                      <Download size={24} />
-                      <div style={{ display: 'flex', alignItems: 'center' }}>Add Liquidity</div>
-                    </RowBetween>
-                  </ButtonGray>
-                </StyledExternalLink>
-                <StyledExternalLink
-                  href={`https://app.uniswap.org/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}`}
-                >
-                  <ButtonPrimary width="100px" style={{ height: '44px' }}>
-                    Trade
-                  </ButtonPrimary>
-                </StyledExternalLink>
-              </RowFixed>
-            )}
+            <RowFixed>
+              <SavedIcon
+                fill={!!savedPools[activeNetwork.id]?.[poolData.address]}
+                onClick={() => addSavedPool(activeNetwork.id, poolData)}
+              />
+
+              <StyledExternalLink
+                href={`https://kyberswap.com./#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}?networkId=${activeNetwork.chainId}`}
+              >
+                <ButtonOutlined width="max-content" mr="12px" style={{ height: '38px' }}>
+                  <RowBetween>
+                    <Plus size={20} />
+                    <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}>Add Liquidity</div>
+                  </RowBetween>
+                </ButtonOutlined>
+              </StyledExternalLink>
+              <StyledExternalLink
+                href={`https://kyberswap.com/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
+              >
+                <ButtonPrimary width="100px" style={{ height: '38px' }}>
+                  Trade
+                </ButtonPrimary>
+              </StyledExternalLink>
+            </RowFixed>
           </ResponsiveRow>
+
           <ContentLayout>
-            <DarkGreyCard>
-              <AutoColumn gap="lg">
-                <GreyCard padding="16px">
-                  <AutoColumn gap="md">
-                    <TYPE.main>Total Tokens Locked</TYPE.main>
-                    <RowBetween>
-                      <RowFixed>
-                        <CurrencyLogo address={poolData.token0.address} size={'20px'} />
-                        <TYPE.label fontSize="14px" ml="8px">
-                          {poolData.token0.symbol}
-                        </TYPE.label>
-                      </RowFixed>
-                      <TYPE.label fontSize="14px">{formatAmount(poolData.tvlToken0)}</TYPE.label>
-                    </RowBetween>
-                    <RowBetween>
-                      <RowFixed>
-                        <CurrencyLogo address={poolData.token1.address} size={'20px'} />
-                        <TYPE.label fontSize="14px" ml="8px">
-                          {poolData.token1.symbol}
-                        </TYPE.label>
-                      </RowFixed>
-                      <TYPE.label fontSize="14px">{formatAmount(poolData.tvlToken1)}</TYPE.label>
-                    </RowBetween>
-                  </AutoColumn>
-                </GreyCard>
-                <AutoColumn gap="4px">
-                  <TYPE.main fontWeight={400}>TVL</TYPE.main>
+            <InfoLayout>
+              <DarkGreyCard>
+                <AutoColumn gap="md">
+                  <TYPE.label fontSize="14px">Total Tokens Locked</TYPE.label>
+                  <RowBetween>
+                    <RowFixed>
+                      <CurrencyLogo address={poolData.token0.address} size={'20px'} />
+                      <TYPE.label fontSize="14px" ml="8px">
+                        {poolData.token0.symbol}
+                      </TYPE.label>
+                    </RowFixed>
+                    <TYPE.label fontSize="14px">{formatAmount(poolData.tvlToken0)}</TYPE.label>
+                  </RowBetween>
+                  <RowBetween>
+                    <RowFixed>
+                      <CurrencyLogo address={poolData.token1.address} size={'20px'} />
+                      <TYPE.label fontSize="14px" ml="8px">
+                        {poolData.token1.symbol}
+                      </TYPE.label>
+                    </RowFixed>
+                    <TYPE.label fontSize="14px">{formatAmount(poolData.tvlToken1)}</TYPE.label>
+                  </RowBetween>
+                </AutoColumn>
+              </DarkGreyCard>
+              <DarkGreyCard>
+                <AutoColumn gap="16px">
+                  <RowBetween>
+                    <TYPE.label fontSize="14px">TVL</TYPE.label>
+                    <Percent value={poolData.tvlUSDChange} />
+                  </RowBetween>
                   <TYPE.label fontSize="24px">{formatDollarAmount(poolData.tvlUSD)}</TYPE.label>
-                  <Percent value={poolData.tvlUSDChange} />
                 </AutoColumn>
-                <AutoColumn gap="4px">
-                  <TYPE.main fontWeight={400}>Volume 24h</TYPE.main>
+              </DarkGreyCard>
+              <DarkGreyCard>
+                <AutoColumn gap="16px">
+                  <RowBetween>
+                    <TYPE.label fontSize="14px">Volume 24h</TYPE.label>
+                    <Percent value={poolData.volumeUSDChange} />
+                  </RowBetween>
                   <TYPE.label fontSize="24px">{formatDollarAmount(poolData.volumeUSD)}</TYPE.label>
-                  <Percent value={poolData.volumeUSDChange} />
                 </AutoColumn>
-                <AutoColumn gap="4px">
-                  <TYPE.main fontWeight={400}>24h Fees</TYPE.main>
+              </DarkGreyCard>
+              <DarkGreyCard>
+                <AutoColumn gap="16px">
+                  <TYPE.label fontSize="14px">24h Fees</TYPE.label>
                   <TYPE.label fontSize="24px">
                     {formatDollarAmount(poolData.volumeUSD * (poolData.feeTier / 1000000))}
                   </TYPE.label>
                 </AutoColumn>
-              </AutoColumn>
-            </DarkGreyCard>
+              </DarkGreyCard>
+            </InfoLayout>
             <DarkGreyCard>
               <ToggleRow align="flex-start">
                 <AutoColumn>
@@ -332,7 +345,7 @@ export default function PoolPage({
                 <LineChart
                   data={formattedTvlData}
                   setLabel={setValueLabel}
-                  color={backgroundColor}
+                  color={theme.primary}
                   minHeight={340}
                   setValue={setLatestValue}
                   value={latestValue}

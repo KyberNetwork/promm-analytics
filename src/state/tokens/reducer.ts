@@ -69,7 +69,6 @@ export const initialState: TokensState = {
     [SupportedNetwork.RINKEBY]: {},
     [SupportedNetwork.ETHEREUM]: {},
     [SupportedNetwork.ARBITRUM]: {},
-    [SupportedNetwork.OPTIMISM]: {},
     [SupportedNetwork.POLYGON]: {},
   },
 }

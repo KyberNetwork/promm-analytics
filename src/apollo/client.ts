@@ -91,49 +91,6 @@ export const arbitrumBlockClient = new ApolloClient({
   },
 })
 
-export const optimismClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/ianlapham/optimism-post-regenesis',
-  cache: new InMemoryCache({
-    typePolicies: {
-      Token: {
-        // Singleton types that have no identifying field can use an empty
-        // array for their keyFields.
-        keyFields: false,
-      },
-      Pool: {
-        // Singleton types that have no identifying field can use an empty
-        // array for their keyFields.
-        keyFields: false,
-      },
-    },
-  }),
-  queryDeduplication: true,
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: 'no-cache',
-    },
-    query: {
-      fetchPolicy: 'no-cache',
-      errorPolicy: 'all',
-    },
-  },
-})
-
-export const optimismBlockClient = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/ianlapham/uni-testing-subgraph',
-  cache: new InMemoryCache(),
-  queryDeduplication: true,
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: 'cache-first',
-    },
-    query: {
-      fetchPolicy: 'cache-first',
-      errorPolicy: 'all',
-    },
-  },
-})
-
 export const polygonClient = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-polygon',
   cache: new InMemoryCache({

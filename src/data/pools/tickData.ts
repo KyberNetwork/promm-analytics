@@ -1,21 +1,22 @@
 import gql from 'graphql-tag'
 import JSBI from 'jsbi'
 import keyBy from 'lodash.keyby'
-import { TickMath, tickToPrice } from '@uniswap/v3-sdk'
+import { TickMath, tickToPrice } from '@vutien/dmm-v3-sdk'
 import { Token } from '@uniswap/sdk-core'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 
 const PRICE_FIXED_DIGITS = 4
 const DEFAULT_SURROUNDING_TICKS = 300
+
 const FEE_TIER_TO_TICK_SPACING = (feeTier: string): number => {
   switch (feeTier) {
-    case '10000':
-      return 200
-    case '3000':
-      return 60
-    case '500':
-      return 10
     case '100':
+      return 100
+    case '30':
+      return 30
+    case '5':
+      return 10
+    case '1':
       return 1
     default:
       throw Error(`Tick spacing for fee tier ${feeTier} undefined.`)

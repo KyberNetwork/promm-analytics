@@ -3534,7 +3534,7 @@
   resolved "https://registry.yarnpkg.com/@uniswap/v3-core/-/v3-core-1.0.0.tgz#6c24adacc4c25dceee0ba3ca142b35adbd7e359d"
   integrity sha512-kSC4djMGKMHj7sLMYVnn61k9nu+lHjMIxgg9CDQT+s2QYLoA56GbSK9Oxr+qJXzzygbkrmuY6cwgP6cW2JXPFA==
 
-"@uniswap/v3-periphery@^1.0.1", "@uniswap/v3-periphery@^1.1.1":
+"@uniswap/v3-periphery@^1.0.1", "@uniswap/v3-periphery@^1.1.1", "@uniswap/v3-periphery@^1.3.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@uniswap/v3-periphery/-/v3-periphery-1.4.0.tgz#9abb733fc596916718070c688b5f426fd8d01fe3"
   integrity sha512-OXikenS40UIEa2XxQ+TyGpFFcTOfSW8eH3Ngy7sGOYp+7yr6uGU2UzomeTsqzagBEAXUDTwxqkk9oUS1KtWTUw==
@@ -3567,6 +3567,30 @@
     "@openzeppelin/contracts" "3.4.1-solc-0.7-2"
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
+
+"@vutien/dmm-v3-sdk@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@vutien/dmm-v3-sdk/-/dmm-v3-sdk-0.0.31.tgz#94276f9ed6f1563b86de2f5af625aa5cbd63f3a1"
+  integrity sha512-SLO1+045NjUW/Ga4Jg32WL5yjQ3vAYvWDYZPMhd36Vw8WohsRtBC/jceT+8uNOJOnKcrsug6GZKbhTKnL/o6qA==
+  dependencies:
+    "@ethersproject/abi" "^5.0.12"
+    "@ethersproject/solidity" "^5.0.9"
+    "@uniswap/v3-periphery" "^1.3.0"
+    "@vutien/sdk-core" "^0.0.10"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+
+"@vutien/sdk-core@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@vutien/sdk-core/-/sdk-core-0.0.10.tgz#2ab788165357d12c30562eb66b5dcead1012ad2b"
+  integrity sha512-h91WK/iGPVe72Q8dftkEgiAmdvPiNWIp67TiIKl+oaVXcUKsC5x9qKgLFD+7F9nrrVBqXiCa9WvN07TaaLc+Tw==
+  dependencies:
+    "@ethersproject/address" "^5.0.2"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.4"
+    tiny-invariant "^1.1.0"
+    toformat "^2.0.0"
 
 "@vx/axis@^0.0.179":
   version "0.0.179"

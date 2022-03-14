@@ -83,7 +83,6 @@ export const initialState: PoolsState = {
     [SupportedNetwork.RINKEBY]: {},
     [SupportedNetwork.ETHEREUM]: {},
     [SupportedNetwork.ARBITRUM]: {},
-    [SupportedNetwork.OPTIMISM]: {},
     [SupportedNetwork.POLYGON]: {},
   },
 }
