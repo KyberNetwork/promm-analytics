@@ -57,10 +57,10 @@ export const ToggleWrapper = styled.button<{ width?: string }>`
   display: flex;
   align-items: center;
   width: ${({ width }) => width ?? '100%'}
-  padding: 1px;
   background: ${({ theme }) => theme.buttonBlack};
   border-radius: 999px;
-  border: ${({ theme }) => '2px solid ' + theme.buttonBlack};
+  border: none;
+  padding: 0;
   cursor: pointer;
   outline: none;
   color: ${({ theme }) => theme.text};

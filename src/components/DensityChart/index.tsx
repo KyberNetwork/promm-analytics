@@ -1,19 +1,20 @@
 import { fetchTicksSurroundingPrice, TickProcessed } from 'data/pools/tickData'
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { BarChart, Bar, LabelList, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import Loader from 'components/Loader'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
 import { usePoolDatas, usePoolTickData } from 'state/pools/hooks'
 import { MAX_UINT128 } from '../../constants/index'
 import { isAddress } from 'utils'
-import { Pool, TickMath, TICK_SPACINGS, FeeAmount } from '@uniswap/v3-sdk'
+import { Pool, TickMath, TICK_SPACINGS, FeeAmount } from '@vutien/dmm-v3-sdk'
 import { PoolData } from 'state/pools/reducer'
 import { CurrentPriceLabel } from './CurrentPriceLabel'
 import CustomToolTip from './CustomToolTip'
-import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { Token, CurrencyAmount } from '@vutien/sdk-core'
 import JSBI from 'jsbi'
 import { useClients } from 'state/application/hooks'
+import Loading from 'components/Loader/Loading'
+import { Flex } from 'rebass'
 
 const Wrapper = styled.div`
   position: relative;
@@ -35,7 +36,7 @@ const ControlsWrapper = styled.div`
 const ActionButton = styled.div<{ disabled?: boolean }>`
   width: 32x;
   border-radius: 50%;
-  background-color: black;
+  background-color: ${({ theme }) => theme.buttonBlack};
   padding: 4px 8px;
   display: flex;
   justify-content: center;
@@ -43,7 +44,6 @@ const ActionButton = styled.div<{ disabled?: boolean }>`
   font-weight: 500;
   align-items: center;
   opacity: ${({ disabled }) => (disabled ? 0.4 : 0.9)};
-  background-color: ${({ theme, disabled }) => (disabled ? theme.bg3 : theme.bg2)};
   user-select: none;
 
   :hover {
@@ -241,7 +241,11 @@ export default function DensityChart({ address }: DensityChartProps) {
   }, [address])
 
   if (!poolTickData) {
-    return <Loader />
+    return (
+      <Flex justifyContent="center" alignItems="center" height="60%">
+        <Loading />
+      </Flex>
+    )
   }
 
   const CustomBar = ({
@@ -294,7 +298,7 @@ export default function DensityChart({ address }: DensityChartProps) {
               }}
             >
               {zoomedData?.map((entry, index) => {
-                return <Cell key={`cell-${index}`} fill={entry.isCurrent ? theme.pink1 : theme.blue1} />
+                return <Cell key={`cell-${index}`} fill={entry.isCurrent ? theme.pink1 : theme.primary} />
               })}
               <LabelList
                 dataKey="activeLiquidity"
@@ -305,7 +309,9 @@ export default function DensityChart({ address }: DensityChartProps) {
           </BarChart>
         </ResponsiveContainer>
       ) : (
-        <Loader />
+        <Flex justifyContent="center" alignItems="center" height="70%">
+          <Loading />
+        </Flex>
       )}
       <ControlsWrapper>
         <ActionButton disabled={false} onClick={handleZoomOut}>

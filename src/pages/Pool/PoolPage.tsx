@@ -241,7 +241,7 @@ export default function PoolPage({
           <ContentLayout>
             <InfoLayout>
               <DarkGreyCard>
-                <AutoColumn gap="md">
+                <AutoColumn gap="16px">
                   <TYPE.label fontSize="14px">Total Tokens Locked</TYPE.label>
                   <RowBetween>
                     <RowFixed>
@@ -354,7 +354,7 @@ export default function PoolPage({
               ) : view === ChartView.VOL ? (
                 <BarChart
                   data={formattedVolumeData}
-                  color={backgroundColor}
+                  color={theme.primary}
                   minHeight={340}
                   setValue={setLatestValue}
                   setLabel={setValueLabel}
@@ -364,7 +364,7 @@ export default function PoolPage({
               ) : view === ChartView.FEES ? (
                 <BarChart
                   data={formattedFeesUSD}
-                  color={backgroundColor}
+                  color={theme.primary}
                   minHeight={340}
                   setValue={setLatestValue}
                   setLabel={setValueLabel}

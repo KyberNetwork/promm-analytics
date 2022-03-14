@@ -11,7 +11,7 @@ import { formatAmount } from 'utils/numbers'
 const TooltipWrapper = styled(LightCard)`
   padding: 12px;
   width: 320px;
-  opacity: 0.6;
+  opacity: 0.8;
   font-size: 12px;
   z-index: 10;
 `

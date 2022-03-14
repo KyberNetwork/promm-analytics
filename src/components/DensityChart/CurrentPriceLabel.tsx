@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   color: white;
   width: fit-content;
   font-size: 14px;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.buttonBlack};
 `
 
 interface LabelProps {

@@ -13,7 +13,7 @@ const FEE_TIER_TO_TICK_SPACING = (feeTier: string): number => {
     case '100':
       return 100
     case '30':
-      return 30
+      return 60
     case '5':
       return 10
     case '1':
@@ -98,6 +98,7 @@ const fetchInitializedTicks = async (
   let surroundingTicks: Tick[] = []
   let surroundingTicksResult: Tick[] = []
   let skip = 0
+
   do {
     const { data, error, loading } = await client.query<SurroundingTicksResult>({
       query: tickQuery,
@@ -190,7 +191,8 @@ export const fetchTicksSurroundingPrice = async (
     },
   } = poolResult
 
-  const poolCurrentTickIdx = parseInt(poolCurrentTick)
+  // TODO: check this code, why current tick is null
+  const poolCurrentTickIdx = parseInt(poolCurrentTick || '0')
   const tickSpacing = FEE_TIER_TO_TICK_SPACING(feeTier)
 
   // The pools current tick isn't necessarily a tick that can actually be initialized.
