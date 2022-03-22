@@ -308,60 +308,70 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                             if (index === 0 || openPair === id)
                               return (
                                 <React.Fragment key={poolData.address}>
-                                  <LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
-                                    <ResponsiveGrid>
-                                      <Label fontWeight={400}>
-                                        <AutoColumn gap="8px">
-                                          <RowFixed>
-                                            <Label>{shortenAddress(poolData.address)}</Label>
-                                            <CopyHelper toCopy={poolData.address} />
-                                          </RowFixed>
-                                          <Text fontSize="12px" color={theme.subText}>
-                                            Fee = {feeTierPercent(poolData.feeTier)}
-                                          </Text>
-                                        </AutoColumn>
-                                      </Label>
-                                      <Label end={1} fontWeight={400}>
-                                        {formatDollarAmount(poolData.tvlUSD)}
-                                      </Label>
-                                      <Label>{/* TODO: apr */}</Label>
-                                      <Label end={1} fontWeight={400}>
-                                        {formatDollarAmount(poolData.volumeUSD)}
-                                      </Label>
-                                      <Label end={1} fontWeight={400}>
-                                        {formatDollarAmount(poolData.volumeUSD * (poolData.feeTier / 1000000))}
-                                      </Label>
+                                  <ResponsiveGrid
+                                    onClick={(e) => {
+                                      e.preventDefault()
+                                      e.stopPropagation()
+                                      if (pair.length === 1) {
+                                        return
+                                      }
 
-                                      <Flex justifyContent="flex-end">
-                                        <ExternalLink
-                                          href={`https://kyberswap.com/#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
-                                        >
-                                          <Add>
-                                            <Plus color={theme.primary} size="16px" />
-                                          </Add>
-                                        </ExternalLink>
-                                        <OpenPair
-                                          hide={index !== 0}
-                                          role="button"
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            e.stopPropagation()
-                                            if (pair.length === 1) {
-                                              return
-                                            }
+                                      setOpenPair((prev) => (prev === id ? '' : id))
+                                    }}
+                                  >
+                                    <Label fontWeight={400}>
+                                      <AutoColumn gap="8px">
+                                        <RowFixed>
+                                          <LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
+                                            <Label color={theme.primary}>{shortenAddress(poolData.address)}</Label>
+                                          </LinkWrapper>
+                                          <CopyHelper toCopy={poolData.address} />
+                                        </RowFixed>
+                                        <Text fontSize="12px" color={theme.subText}>
+                                          Fee = {feeTierPercent(poolData.feeTier)}
+                                        </Text>
+                                      </AutoColumn>
+                                    </Label>
+                                    <Label end={1} fontWeight={400}>
+                                      {formatDollarAmount(poolData.tvlUSD)}
+                                    </Label>
+                                    <Label>{/* TODO: apr */}</Label>
+                                    <Label end={1} fontWeight={400}>
+                                      {formatDollarAmount(poolData.volumeUSD)}
+                                    </Label>
+                                    <Label end={1} fontWeight={400}>
+                                      {formatDollarAmount(poolData.volumeUSD * (poolData.feeTier / 1000000))}
+                                    </Label>
 
-                                            setOpenPair((prev) => (prev === id ? '' : id))
-                                          }}
-                                        >
-                                          {openPair === `${pair[0].token0.address}_${pair[0].token1.address}` ? (
-                                            <ChevronUp color={theme.text} />
-                                          ) : (
-                                            <ChevronDown color={pair.length === 1 ? theme.disabledText : theme.text} />
-                                          )}
-                                        </OpenPair>
-                                      </Flex>
-                                    </ResponsiveGrid>
-                                  </LinkWrapper>
+                                    <Flex justifyContent="flex-end">
+                                      <ExternalLink
+                                        href={`https://kyberswap.com/#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
+                                      >
+                                        <Add>
+                                          <Plus color={theme.primary} size="16px" />
+                                        </Add>
+                                      </ExternalLink>
+                                      <OpenPair
+                                        hide={index !== 0}
+                                        role="button"
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          e.stopPropagation()
+                                          if (pair.length === 1) {
+                                            return
+                                          }
+
+                                          setOpenPair((prev) => (prev === id ? '' : id))
+                                        }}
+                                      >
+                                        {openPair === `${pair[0].token0.address}_${pair[0].token1.address}` ? (
+                                          <ChevronUp color={theme.text} />
+                                        ) : (
+                                          <ChevronDown color={pair.length === 1 ? theme.disabledText : theme.text} />
+                                        )}
+                                      </OpenPair>
+                                    </Flex>
+                                  </ResponsiveGrid>
                                   {index !== pair.length - 1 && openPair === id && <Break />}
                                 </React.Fragment>
                               )

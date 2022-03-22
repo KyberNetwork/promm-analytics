@@ -20,6 +20,7 @@ import Modal from 'components/Modal'
 import { ButtonEmpty } from 'components/Button'
 import { SUPPORTED_NETWORK_VERSIONS } from 'constants/networks'
 import { useDarkModeManager } from 'state/user/hooks'
+import Wallet from 'components/Icons/Wallet'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -277,6 +278,11 @@ function SideNav() {
             <MenuItem to={networkPrefix(activeNetwork) + 'pools'} isActive={pathname.includes('pools')}>
               <PieChart size={16} />
               Pools
+            </MenuItem>
+
+            <MenuItem to={networkPrefix(activeNetwork) + 'accounts'} isActive={pathname.includes('accounts')}>
+              <Wallet />
+              Wallet Analytics
             </MenuItem>
 
             <Divider />

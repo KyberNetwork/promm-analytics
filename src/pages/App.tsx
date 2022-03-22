@@ -15,6 +15,8 @@ import SideNav from 'components/Layout/SideNav'
 import Loading from 'components/Loader/Loading'
 import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
+import AccountsOverview from './Accounts/AccountsOverview'
+import AccountPage from './Accounts/AccountPage'
 
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
@@ -137,6 +139,8 @@ export default function App() {
                   <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
                   <Route exact strict path="/:networkID?/tokens/:address" component={RedirectInvalidToken} />
                   <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
+                  <Route exact strict path="/:networkID?/accounts" component={AccountsOverview} />
+                  <Route exact strict path="/:networkID?/accounts/:address" component={AccountPage} />
                   <Route exact path="/:networkID?" component={Home} />
                 </Switch>
                 <Marginer />

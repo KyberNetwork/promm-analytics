@@ -16,7 +16,7 @@ import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import Loader from 'components/Loader'
 import { Plus } from 'react-feather'
-import { ExternalLink as StyledExternalLink, HideMedium, HideSmall, OnlyMedium } from '../../theme/components'
+import { ExternalLink as StyledExternalLink, HideMedium, OnlyMedium } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { formatDollarAmount } from 'utils/numbers'
@@ -172,7 +172,10 @@ export default function TokenPage({
         !tokenData.exists ? (
           <LightGreyCard style={{ textAlign: 'center' }}>
             No pool has been created with this token yet. Create one
-            <StyledExternalLink style={{ marginLeft: '4px' }} href={`https://app.uniswap.org/#/add/${address}`}>
+            <StyledExternalLink
+              style={{ marginLeft: '4px' }}
+              href={`https://kyberswap.com/#/proamm/add/${address}?networkId=${activeNetwork.chainId}`}
+            >
               here.
             </StyledExternalLink>
           </LightGreyCard>
