@@ -1,7 +1,6 @@
 import React, { Suspense, useState, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import Popups from '../components/Popups'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Home from './Home'
 import PoolsOverview from './Pool/PoolsOverview'
@@ -133,7 +132,6 @@ export default function App() {
             <ContentWrapper open={savedOpen}>
               <SideNav />
               <BodyWrapper>
-                <Popups />
                 <Switch>
                   <Route exact strict path="/:networkID?/pools/:address" component={PoolPage} />
                   <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />

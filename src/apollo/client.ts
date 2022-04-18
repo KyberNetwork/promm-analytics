@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 
 export const healthClient = new ApolloClient({
   uri: 'https://api.thegraph.com/index-node/graphql',
@@ -162,7 +163,7 @@ export const rinkebyClient = new ApolloClient({
   },
 })
 
-export const rinkebyBlockClient = new ApolloClient({
+export const rinkebyBlockClient: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/billjhlee/rinkeby-blocks',
   cache: new InMemoryCache(),
   queryDeduplication: true,

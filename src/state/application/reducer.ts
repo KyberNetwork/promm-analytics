@@ -1,19 +1,11 @@
 import { createReducer, nanoid } from '@reduxjs/toolkit'
-import {
-  addPopup,
-  PopupContent,
-  removePopup,
-  updateBlockNumber,
-  updateSubgraphStatus,
-  ApplicationModal,
-  setOpenModal,
-} from './actions'
+import { ChainId } from 'constants/networks'
+import { PopupContent, updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal } from './actions'
 
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
 export interface ApplicationState {
-  readonly blockNumber: { readonly [chainId: number]: number }
-  readonly popupList: PopupList
+  readonly blockNumber: { readonly [chainId in ChainId]?: number }
   readonly openModal: ApplicationModal | null
   readonly subgraphStatus: {
     available: boolean | null
@@ -25,7 +17,6 @@ export interface ApplicationState {
 
 const initialState: ApplicationState = {
   blockNumber: {},
-  popupList: [],
   openModal: null,
   subgraphStatus: {
     available: null,
@@ -35,46 +26,20 @@ const initialState: ApplicationState = {
   // activeNetworkVersion: EthereumNetworkInfo,
 }
 
-export default createReducer(
-  initialState,
-  (builder) =>
-    builder
-      .addCase(updateBlockNumber, (state, action) => {
-        const { chainId, blockNumber } = action.payload
-        if (typeof state.blockNumber[chainId] !== 'number') {
-          state.blockNumber[chainId] = blockNumber
-        } else {
-          state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
-        }
-      })
-      .addCase(setOpenModal, (state, action) => {
-        state.openModal = action.payload
-      })
-      .addCase(addPopup, (state, { payload: { content, key, removeAfterMs = 15000 } }) => {
-        state.popupList = (key ? state.popupList.filter((popup) => popup.key !== key) : state.popupList).concat([
-          {
-            key: key || nanoid(),
-            show: true,
-            content,
-            removeAfterMs,
-          },
-        ])
-      })
-      .addCase(removePopup, (state, { payload: { key } }) => {
-        state.popupList.forEach((p) => {
-          if (p.key === key) {
-            p.show = false
-          }
-        })
-      })
-      .addCase(updateSubgraphStatus, (state, { payload: { available, syncedBlock, headBlock } }) => {
-        state.subgraphStatus = {
-          available,
-          syncedBlock,
-          headBlock,
-        }
-      })
-  // .addCase(updateActiveNetworkVersion, (state, { payload: { activeNetworkVersion } }) => {
-  //   state.activeNetworkVersion = activeNetworkVersion
-  // })
+export default createReducer(initialState, (builder) =>
+  builder
+    .addCase(updateBlockNumber, (state, action) => {
+      const { chainId, blockNumber } = action.payload
+      state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId] || 0)
+    })
+    .addCase(setOpenModal, (state, action) => {
+      state.openModal = action.payload
+    })
+    .addCase(updateSubgraphStatus, (state, { payload: { available, syncedBlock, headBlock } }) => {
+      state.subgraphStatus = {
+        available,
+        syncedBlock,
+        headBlock,
+      }
+    })
 )

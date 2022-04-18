@@ -8,7 +8,7 @@ import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
 import { Divider } from 'components/Layout/styled'
 import { useSavedPools, useSavedTokens } from 'state/user/hooks'
-import { NetworkMap, SupportedNetwork } from 'constants/networks'
+import { ChainId, NETWORKS_INFO, SupportedNetwork } from 'constants/networks'
 import { networkPrefix } from 'utils/networkPrefix'
 import HoverInlineText from 'components/HoverInlineText'
 
@@ -82,13 +82,13 @@ function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (valu
 
       <ScrollableDiv>
         <Text fontWeight="500">Tokens</Text>
-        {Object.keys(NetworkMap).map((key) => {
-          const id: SupportedNetwork = Number(key)
+        {Object.values(NETWORKS_INFO).map((networkInfo) => {
+          const id = networkInfo.chainId
           const tokens = Object.values(savedTokens[id] || {})
           return tokens.map((token) => (
             <Flex marginTop="16px" key={id + '-' + token.address} justifyContent="space-between" alignItems="center">
-              <TagItem role="button" to={networkPrefix(NetworkMap[id]) + `tokens/${token.address}`}>
-                <img src={NetworkMap[id].imageURL} width="16px" height="16px" alt="" />
+              <TagItem role="button" to={networkPrefix(networkInfo) + `tokens/${token.address}`}>
+                <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
                 {token.symbol}
               </TagItem>
               <X color={theme.subText} role="button" onClick={() => updatedSavedTokens(id, token)} size={24} />
@@ -102,13 +102,13 @@ function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (valu
           Pools
         </Text>
 
-        {Object.keys(NetworkMap).map((key) => {
-          const id: SupportedNetwork = Number(key)
+        {Object.values(NETWORKS_INFO).map((networkInfo) => {
+          const id = networkInfo.chainId
           const pools = Object.values(savedPools[id] || {})
           return pools.map((pool) => (
             <Flex marginTop="16px" key={id + '-' + pool.address} justifyContent="space-between" alignItems="center">
-              <TagItem role="button" to={networkPrefix(NetworkMap[id]) + `pools/${pool.address}`}>
-                <img src={NetworkMap[id].imageURL} width="16px" height="16px" alt="" />
+              <TagItem role="button" to={networkPrefix(networkInfo) + `pools/${pool.address}`}>
+                <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
                 <HoverInlineText
                   maxCharacters={18}
                   text={`${pool.token0.symbol}/${pool.token1.symbol} (${pool.feeTier / 100}%)`}

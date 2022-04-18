@@ -1,5 +1,5 @@
 import { RowFixed, RowBetween } from 'components/Row'
-import { PolygonNetworkInfo, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks'
+import { PolygonNetworkInfo, NETWORKS_INFO } from 'constants/networks'
 import useTheme from 'hooks/useTheme'
 import React, { useState, useRef } from 'react'
 import { ChevronDown } from 'react-feather'
@@ -112,25 +112,28 @@ export default function NetworkDropdown() {
             <TYPE.main color={theme.text3} fontWeight={600} fontSize="16px">
               Select network
             </TYPE.main>
-            {SUPPORTED_NETWORK_VERSIONS.map((n) => {
+            {Object.values(NETWORKS_INFO).map((networkInfo) => {
               return (
-                <StyledInternalLink key={n.id} to={`${n === EthereumNetworkInfo ? '' : '/' + n.route}/`}>
+                <StyledInternalLink
+                  key={networkInfo.id}
+                  to={`${networkInfo === EthereumNetworkInfo ? '' : '/' + networkInfo.route}/`}
+                >
                   <NetworkRow
                     onClick={() => {
                       setShowMenu(false)
                     }}
-                    active={activeNetwork.id === n.id}
+                    active={activeNetwork.id === networkInfo.id}
                   >
                     <RowFixed>
                       <LogaContainer>
-                        <LogoWrapper src={n.imageURL} />
-                        {activeNetwork.id === n.id && <GreenDot />}
+                        <LogoWrapper src={networkInfo.imageURL} />
+                        {activeNetwork.id === networkInfo.id && <GreenDot />}
                       </LogaContainer>
                       <TYPE.main ml="12px" color={theme.white}>
-                        {n.name}
+                        {networkInfo.name}
                       </TYPE.main>
                     </RowFixed>
-                    {n.blurb && <Badge>{n.blurb}</Badge>}
+                    {networkInfo.blurb && <Badge>{networkInfo.blurb}</Badge>}
                   </NetworkRow>
                 </StyledInternalLink>
               )

@@ -6,15 +6,15 @@ declare module 'jazzicon' {
 
 declare module 'fortmatic'
 
-interface Window {
-  ethereum?: {
-    isMetaMask?: true
-    on?: (...args: any[]) => void
-    removeListener?: (...args: any[]) => void
-    autoRefreshOnNetworkChange?: boolean
-  }
-  web3?: {}
-}
+// interface Window {
+//   ethereum?: {
+//     isMetaMask?: true
+//     on?: (...args: any[]) => void
+//     removeListener?: (...args: any[]) => void
+//     autoRefreshOnNetworkChange?: boolean
+//   }
+//   web3?: {}
+// }
 
 declare module 'content-hash' {
   declare function decode(x: string): string

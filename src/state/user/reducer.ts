@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
+import { ChainId } from 'constants/networks'
 import { PoolData } from 'state/pools/reducer'
 import { TokenData } from 'state/tokens/reducer'
 import { updateVersion } from '../global/actions'
@@ -26,25 +27,25 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   tokens: {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       [address: string]: SerializedToken
     }
   }
 
   pairs: {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       // keyed by token0Address:token1Address
       [key: string]: SerializedPair
     }
   }
 
   savedTokens: {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       [tokenAddress: string]: TokenData
     }
   }
   savedPools: {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       [poolAddress: string]: PoolData
     }
   }
@@ -62,8 +63,8 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   tokens: {},
   pairs: {},
-  savedTokens: [],
-  savedPools: [],
+  savedTokens: {},
+  savedPools: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
 }

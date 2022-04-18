@@ -1,7 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import {
   addSerializedToken,
@@ -16,7 +15,7 @@ import { useAppSelector } from 'hooks/useAppDispatch'
 import { PoolData } from 'state/pools/reducer'
 import { useActiveNetworkVersion } from 'state/application/hooks'
 import { TokenData } from 'state/tokens/reducer'
-import { SupportedNetwork } from 'constants/networks'
+import { ChainId } from 'constants/networks'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -76,17 +75,17 @@ export function useAddUserToken(): (token: Token) => void {
 
 export function useSavedTokens(): [
   {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       [tokenAddress: string]: TokenData
     }
   },
-  (id: SupportedNetwork, token: TokenData) => void
+  (id: ChainId, token: TokenData) => void
 ] {
   const dispatch = useDispatch<AppDispatch>()
   const savedTokens = useSelector((state: AppState) => state.user.savedTokens) || {}
 
   const updatedSavedTokens = useCallback(
-    (id: SupportedNetwork, token: TokenData) => {
+    (id: ChainId, token: TokenData) => {
       dispatch(addSavedToken({ networkId: id, token }))
     },
     [dispatch]
@@ -96,17 +95,17 @@ export function useSavedTokens(): [
 
 export function useSavedPools(): [
   {
-    [chainId: number]: {
+    [chainId in ChainId]: {
       [address: string]: PoolData
     }
   },
-  (id: SupportedNetwork, pool: PoolData) => void
+  (id: ChainId, pool: PoolData) => void
 ] {
   const dispatch = useDispatch<AppDispatch>()
 
   const savedPools = useSelector((state: AppState) => state.user.savedPools)
   const updateSavedPools = useCallback(
-    (id: SupportedNetwork, pool: PoolData) => {
+    (id: ChainId, pool: PoolData) => {
       dispatch(addSavedPool({ networkId: id, pool }))
     },
     [dispatch]
@@ -114,24 +113,14 @@ export function useSavedPools(): [
   return [savedPools ?? {}, updateSavedPools]
 }
 
-export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
+export function useRemoveUserAddedToken(): (chainId: ChainId, address: string) => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
-    (chainId: number, address: string) => {
+    (chainId: ChainId, address: string) => {
       dispatch(removeSerializedToken({ chainId, address }))
     },
     [dispatch]
   )
-}
-
-export function useUserAddedTokens(): Token[] {
-  const { chainId } = useActiveWeb3React()
-  const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
-
-  return useMemo(() => {
-    if (!chainId) return []
-    return Object.values(serializedTokensMap?.[chainId] ?? {}).map(deserializeToken)
-  }, [serializedTokensMap, chainId])
 }
 
 export function useURLWarningVisible(): boolean {

@@ -18,7 +18,7 @@ import Menu from './Menu'
 import { ExternalLink, MenuItem, Divider, ExternalMenu } from './styled'
 import Modal from 'components/Modal'
 import { ButtonEmpty } from 'components/Button'
-import { SUPPORTED_NETWORK_VERSIONS } from 'constants/networks'
+import { NETWORKS_INFO } from 'constants/networks'
 import { useDarkModeManager } from 'state/user/hooks'
 import Wallet from 'components/Icons/Wallet'
 
@@ -163,7 +163,7 @@ function SideNav() {
         </TabWrapper>
 
         <NetworkList>
-          {SUPPORTED_NETWORK_VERSIONS.map((network) => (
+          {Object.values(NETWORKS_INFO).map((network) => (
             <StyledInternalLink key={network.id} to={`/${network.route}/`}>
               <NetworkItem
                 active={tab === 1 && network.id === activeNetwork.id}

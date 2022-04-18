@@ -8,17 +8,20 @@ import sortByListPriority from 'utils/listSort'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
 // import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import { WrappedTokenInfo } from './wrappedTokenInfo'
+import { ChainId } from 'constants/networks'
 
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
   id: string
 }
 
-export type TokenAddressMap = Readonly<{
-  [chainId: number]: Readonly<{
-    [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList }
-  }>
-}>
+export type TokenAddressMap = Readonly<
+  {
+    [chainId in ChainId]?: Readonly<{
+      [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList }
+    }>
+  }
+>
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>
@@ -38,7 +41,7 @@ function listToTokenMap(list: TokenList): TokenAddressMap {
       return tokenMap
     }
     if (!tokenMap[token.chainId]) tokenMap[token.chainId] = {}
-    tokenMap[token.chainId][token.address] = {
+    tokenMap[token.chainId]![token.address] = {
       token,
       list,
     }
@@ -66,13 +69,13 @@ export function useAllLists(): {
  * @param map1 the base token map
  * @param map2 the map of additioanl tokens to add to the base map
  */
-export function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
-  const chainIds = Object.keys(
+function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
+  const chainIds: ChainId[] = Object.keys(
     Object.keys(map1)
       .concat(Object.keys(map2))
-      .reduce<{ [chainId: string]: true }>((memo, value) => {
-        memo[value] = true
-        return memo
+      .reduce<{ [chainId: string]: true }>((acc, value) => {
+        acc[value] = true
+        return acc
       }, {})
   ).map((id) => parseInt(id))
 

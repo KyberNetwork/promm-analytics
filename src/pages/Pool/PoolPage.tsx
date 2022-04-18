@@ -169,7 +169,7 @@ export default function PoolPage({
               poolData.feeTier
             )} `}</TYPE.label>
 
-            <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
+            <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
               <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
             </StyledExternalLink>
           </AutoRow>
@@ -214,8 +214,8 @@ export default function PoolPage({
             </AutoColumn>
             <RowFixed>
               <SavedIcon
-                fill={!!savedPools[activeNetwork.id]?.[poolData.address]}
-                onClick={() => addSavedPool(activeNetwork.id, poolData)}
+                fill={!!savedPools[activeNetwork.chainId]?.[poolData.address]}
+                onClick={() => addSavedPool(activeNetwork.chainId, poolData)}
               />
 
               <StyledExternalLink

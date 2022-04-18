@@ -1,27 +1,10 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import {
-  arbitrumBlockClient,
-  arbitrumClient,
-  blockClient,
-  client,
-  polygonBlockClient,
-  polygonClient,
-  rinkebyClient,
-  rinkebyBlockClient,
-} from 'apollo/client'
-import { EthereumNetworkInfo, NetworkInfo, SupportedNetwork, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks'
+import { EthereumNetworkInfo, NetworkInfo, NETWORKS_INFO } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, updateSubgraphStatus } from './actions'
-
-export function useBlockNumber(): number | undefined {
-  const { chainId } = useActiveWeb3React()
-
-  return useSelector((state: AppState) => state.application.blockNumber[chainId ?? -1])
-}
+import { ApplicationModal, PopupContent, setOpenModal, updateSubgraphStatus } from './actions'
 
 export function useModalOpen(modal: ApplicationModal): boolean {
   const openModal = useSelector((state: AppState) => state.application.openModal)
@@ -53,35 +36,6 @@ export function useToggleSettingsMenu(): () => void {
 }
 
 // returns a function that allows adding a popup
-export function useAddPopup(): (content: PopupContent, key?: string) => void {
-  const dispatch = useDispatch()
-
-  return useCallback(
-    (content: PopupContent, key?: string) => {
-      dispatch(addPopup({ content, key }))
-    },
-    [dispatch]
-  )
-}
-
-// returns a function that allows removing a popup via its key
-export function useRemovePopup(): (key: string) => void {
-  const dispatch = useDispatch()
-  return useCallback(
-    (key: string) => {
-      dispatch(removePopup({ key }))
-    },
-    [dispatch]
-  )
-}
-
-// get the list of active popups
-export function useActivePopups(): AppState['application']['popupList'] {
-  const list = useSelector((state: AppState) => state.application.popupList)
-  return useMemo(() => list.filter((item) => item.show), [list])
-}
-
-// returns a function that allows adding a popup
 export function useSubgraphStatus(): [
   {
     available: boolean | null
@@ -105,49 +59,14 @@ export function useSubgraphStatus(): [
 export function useActiveNetworkVersion(): NetworkInfo {
   const location = useLocation()
 
-  const network = useMemo(() => {
-    return (
-      SUPPORTED_NETWORK_VERSIONS.find((n) => {
-        return location.pathname.includes(n.route.toLocaleLowerCase())
-      }) || EthereumNetworkInfo
-    )
-  }, [location.pathname])
+  const network = useMemo(
+    () =>
+      Object.values(NETWORKS_INFO).find((network) => location.pathname.split('/')[1] === network.route) ||
+      EthereumNetworkInfo,
+    [location.pathname]
+  )
 
   return network
-}
-
-// get the apollo client related to the active network
-export function useDataClient(): ApolloClient<NormalizedCacheObject> {
-  const activeNetwork = useActiveNetworkVersion()
-  switch (activeNetwork.id) {
-    case SupportedNetwork.ETHEREUM:
-      return client
-    case SupportedNetwork.ARBITRUM:
-      return arbitrumClient
-    case SupportedNetwork.POLYGON:
-      return polygonClient
-    case SupportedNetwork.RINKEBY:
-      return rinkebyClient
-    default:
-      return client
-  }
-}
-
-// get the apollo client related to the active network for fetching blocks
-export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
-  const activeNetwork = useActiveNetworkVersion()
-  switch (activeNetwork.id) {
-    case SupportedNetwork.ETHEREUM:
-      return blockClient
-    case SupportedNetwork.ARBITRUM:
-      return arbitrumBlockClient
-    case SupportedNetwork.POLYGON:
-      return polygonBlockClient
-    case SupportedNetwork.RINKEBY:
-      return rinkebyBlockClient
-    default:
-      return blockClient
-  }
 }
 
 // Get all required subgraph clients
@@ -155,8 +74,10 @@ export function useClients(): {
   dataClient: ApolloClient<NormalizedCacheObject>
   blockClient: ApolloClient<NormalizedCacheObject>
 } {
-  const dataClient = useDataClient()
-  const blockClient = useBlockClient()
+  const activeNetwork = useActiveNetworkVersion()
+
+  const dataClient = activeNetwork.client
+  const blockClient = activeNetwork.blockClient
   return {
     dataClient,
     blockClient,

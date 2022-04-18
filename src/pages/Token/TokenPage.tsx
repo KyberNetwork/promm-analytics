@@ -192,7 +192,7 @@ export default function TokenPage({
                   </StyledInternalLink>
                   <TYPE.main>{` → `}</TYPE.main>
                   <TYPE.label>{` ${tokenData.symbol} `}</TYPE.label>
-                  <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
+                  <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
                     <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
                   </StyledExternalLink>
                 </AutoRow>

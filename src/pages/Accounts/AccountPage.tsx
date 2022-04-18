@@ -114,7 +114,7 @@ export default function AccountPage({
                   <TYPE.label>{` Accounts `}</TYPE.label>
                 </StyledInternalLink>
                 <TYPE.main>{` → `}</TYPE.main>
-                <StyledExternalLink href={getEtherscanLink(1, address, 'address', activeNetwork)}>
+                <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
                   <TYPE.link>{shortenAddress(address)}</TYPE.link>
                 </StyledExternalLink>
               </AutoRow>
@@ -129,7 +129,7 @@ export default function AccountPage({
                 {/*   fill={!!savedTokens?.[activeNetwork.id]?.[address]} */}
                 {/*   onClick={() => addSavedToken(activeNetwork.id, tokenData)} */}
                 {/* /> */}
-                <StyledExternalLink href={getEtherscanLink(activeNetwork.chainId, address, 'address', activeNetwork)}>
+                <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
                   <ButtonPrimary width="fit-content" style={{ height: '38px' }}>
                     View on Explorer
                   </ButtonPrimary>
