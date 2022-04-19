@@ -77,7 +77,7 @@ const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => 
   const theme = useTheme()
 
   return (
-    <LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
+    <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + poolData.address}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{index + 1}</Label>
         <Label fontWeight={400}>

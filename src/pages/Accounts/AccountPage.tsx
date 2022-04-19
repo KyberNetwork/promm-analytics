@@ -160,7 +160,7 @@ export default function AccountPage({
                           </Label>
                         </RowFixed>
                       </Label>
-                      <LinkWrapper to={'pools/' + item.pool.id}>
+                      <LinkWrapper to={'pool/' + item.pool.id}>
                         <Label end={1} color={theme.primary}>
                           {shortenAddress(item.pool.id)}
                         </Label>

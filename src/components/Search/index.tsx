@@ -13,8 +13,6 @@ import { feeTierPercent } from 'utils'
 import { useSavedTokens, useSavedPools } from 'state/user/hooks'
 import { SavedIcon } from 'components/Button'
 import { useHistory } from 'react-router-dom'
-import { useTokenDatas } from 'state/tokens/hooks'
-import { usePoolDatas } from 'state/pools/hooks'
 import HoverInlineText from 'components/HoverInlineText'
 import { TOKEN_HIDE, POOL_HIDE } from '../../constants/index'
 import { useActiveNetworkVersion } from 'state/application/hooks'
@@ -285,7 +283,7 @@ const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
               .slice(0, tokensShown)
               .map((t, i) => {
                 return (
-                  <HoverRowLink onClick={() => handleNav(networkPrefix(activeNetwork) + 'tokens/' + t.address)} key={i}>
+                  <HoverRowLink onClick={() => handleNav(networkPrefix(activeNetwork) + 'token/' + t.address)} key={i}>
                     <ResponsiveGrid>
                       <RowFixed>
                         <CurrencyLogo address={t.address} />
@@ -353,7 +351,7 @@ const Search = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
               .slice(0, poolsShown)
               .map((p, i) => {
                 return (
-                  <HoverRowLink onClick={() => handleNav(networkPrefix(activeNetwork) + 'pools/' + p.address)} key={i}>
+                  <HoverRowLink onClick={() => handleNav(networkPrefix(activeNetwork) + 'pool/' + p.address)} key={i}>
                     <ResponsiveGrid key={i}>
                       <RowFixed>
                         <DoubleCurrencyLogo address0={p.token0.address} address1={p.token1.address} />

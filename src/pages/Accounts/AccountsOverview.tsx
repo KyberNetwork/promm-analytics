@@ -117,7 +117,7 @@ export default function AccountsOverview() {
                 <React.Fragment key={item.id}>
                   <ResponsiveGrid>
                     <Label>{index + 1}</Label>
-                    <LinkWrapper to={'accounts/' + item.owner}>
+                    <LinkWrapper to={'account/' + item.owner}>
                       <Label color={theme.primary}>{item.owner}</Label>
                     </LinkWrapper>
                     <Label end={1}>
@@ -128,7 +128,7 @@ export default function AccountsOverview() {
                         </Label>
                       </RowFixed>
                     </Label>
-                    <LinkWrapper to={'pools/' + item.pool.id}>
+                    <LinkWrapper to={'pool/' + item.pool.id}>
                       <Label end={1} color={theme.primary}>
                         {shortenAddress(item.pool.id)}
                       </Label>

@@ -84,12 +84,12 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(addSerializedToken, (state, { payload: { serializedToken } }) => {
       state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
-      state.tokens[serializedToken.chainId][serializedToken.address] = serializedToken
+      state.tokens[serializedToken.chainId]![serializedToken.address] = serializedToken
       state.timestamp = currentTimestamp()
     })
     .addCase(removeSerializedToken, (state, { payload: { address, chainId } }) => {
       state.tokens[chainId] = state.tokens[chainId] || {}
-      delete state.tokens[chainId][address]
+      delete state.tokens[chainId]![address]
       state.timestamp = currentTimestamp()
     })
     .addCase(addSavedToken, (state, { payload: { networkId, token } }) => {
@@ -107,7 +107,7 @@ export default createReducer(initialState, (builder) =>
       }
       // toggle for delete
       else {
-        delete state.savedTokens[networkId][token.address]
+        delete state.savedTokens[networkId]![token.address]
       }
     })
     .addCase(addSavedPool, (state, { payload: { networkId, pool } }) => {
@@ -125,7 +125,7 @@ export default createReducer(initialState, (builder) =>
       }
       // toggle for delete
       else {
-        delete state.savedPools[networkId][pool.address]
+        delete state.savedPools[networkId]![pool.address]
       }
     })
     .addCase(addSerializedPair, (state, { payload: { serializedPair } }) => {
@@ -135,15 +135,15 @@ export default createReducer(initialState, (builder) =>
       ) {
         const chainId = serializedPair.token0.chainId
         state.pairs[chainId] = state.pairs[chainId] || {}
-        state.pairs[chainId][pairKey(serializedPair.token0.address, serializedPair.token1.address)] = serializedPair
+        state.pairs[chainId]![pairKey(serializedPair.token0.address, serializedPair.token1.address)] = serializedPair
       }
       state.timestamp = currentTimestamp()
     })
     .addCase(removeSerializedPair, (state, { payload: { chainId, tokenAAddress, tokenBAddress } }) => {
       if (state.pairs[chainId]) {
         // just delete both keys if either exists
-        delete state.pairs[chainId][pairKey(tokenAAddress, tokenBAddress)]
-        delete state.pairs[chainId][pairKey(tokenBAddress, tokenAAddress)]
+        delete state.pairs[chainId]![pairKey(tokenAAddress, tokenBAddress)]
+        delete state.pairs[chainId]![pairKey(tokenBAddress, tokenAAddress)]
       }
       state.timestamp = currentTimestamp()
     })

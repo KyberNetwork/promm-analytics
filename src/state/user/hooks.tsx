@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
 import {
@@ -11,9 +11,7 @@ import {
   addSavedToken,
   addSavedPool,
 } from './actions'
-import { useAppSelector } from 'hooks/useAppDispatch'
 import { PoolData } from 'state/pools/reducer'
-import { useActiveNetworkVersion } from 'state/application/hooks'
 import { TokenData } from 'state/tokens/reducer'
 import { ChainId } from 'constants/networks'
 
@@ -95,7 +93,7 @@ export function useSavedTokens(): [
 
 export function useSavedPools(): [
   {
-    [chainId in ChainId]: {
+    [chainId in ChainId]?: {
       [address: string]: PoolData
     }
   },

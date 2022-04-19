@@ -216,8 +216,8 @@ export default function TokenPage({
                 </AutoColumn>
                 <RowFixed>
                   <SavedIcon
-                    fill={!!savedTokens?.[activeNetwork.id]?.[address]}
-                    onClick={() => addSavedToken(activeNetwork.id, tokenData)}
+                    fill={!!savedTokens?.[activeNetwork.chainId]?.[address]}
+                    onClick={() => addSavedToken(activeNetwork.chainId, tokenData)}
                   />
                   <StyledExternalLink href={`https://kyberswap.com/#/proamm/add/${address}`}>
                     <ButtonOutlined width="max-content" mr="12px" height={'100%'} style={{ height: '38px' }}>

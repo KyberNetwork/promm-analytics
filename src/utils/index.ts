@@ -1,6 +1,5 @@
 import { getAddress } from '@ethersproject/address'
-import { SupportedChainId } from 'constants/chains'
-import { ArbitrumNetworkInfo, ChainId, NetworkInfo, PolygonNetworkInfo, RinkebyNetworkInfo } from 'constants/networks'
+import { NetworkInfo } from 'constants/networks'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {

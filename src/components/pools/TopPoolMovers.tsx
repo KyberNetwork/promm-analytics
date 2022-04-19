@@ -29,7 +29,7 @@ const Wrapper = styled(GreyCard)`
 
 const DataCard = ({ poolData }: { poolData: PoolData }) => {
   return (
-    <Container to={'pools/' + poolData.address}>
+    <Container to={'pool/' + poolData.address}>
       <Wrapper>
         <AutoColumn gap="sm">
           <RowFixed>

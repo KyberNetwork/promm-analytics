@@ -37,7 +37,7 @@ export const ScrollableRow = styled.div`
 
 const DataCard = ({ tokenData }: { tokenData: TokenData }) => {
   return (
-    <CardWrapper to={'tokens/' + tokenData.address}>
+    <CardWrapper to={'token/' + tokenData.address}>
       <GreyCard padding="16px">
         <RowFixed>
           <CurrencyLogo address={tokenData.address} size="32px" />

@@ -252,7 +252,7 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                         {isOpen[id] &&
                           pair.map((poolData, i) => (
                             <React.Fragment key={poolData.address}>
-                              <LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
+                              <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + poolData.address}>
                                 <GridWrapper
                                   role="button"
                                   style={{ padding: '16px 20px', background: theme.tableHeader }}
@@ -322,7 +322,7 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                                     <Label fontWeight={400}>
                                       <AutoColumn gap="8px">
                                         <RowFixed>
-                                          <LinkWrapper to={networkPrefix(activeNetwork) + 'pools/' + poolData.address}>
+                                          <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + poolData.address}>
                                             <Label color={theme.primary}>{shortenAddress(poolData.address)}</Label>
                                           </LinkWrapper>
                                           <CopyHelper toCopy={poolData.address} />

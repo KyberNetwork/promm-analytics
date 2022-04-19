@@ -186,7 +186,7 @@ export default function PoolPage({
                 <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size={'26px'} />
               </RowFixed>
               <ResponsiveRow>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + poolData.token0.address}>
+                <StyledInternalLink to={networkPrefix(activeNetwork) + 'token/' + poolData.token0.address}>
                   <TokenButton>
                     <RowFixed>
                       <CurrencyLogo address={poolData.token0.address} size={'20px'} />
@@ -198,7 +198,7 @@ export default function PoolPage({
                     </RowFixed>
                   </TokenButton>
                 </StyledInternalLink>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens/' + poolData.token1.address}>
+                <StyledInternalLink to={networkPrefix(activeNetwork) + 'token/' + poolData.token1.address}>
                   <TokenButton>
                     <RowFixed>
                       <CurrencyLogo address={poolData.token1.address} size={'20px'} />

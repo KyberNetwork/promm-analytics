@@ -87,7 +87,7 @@ function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (valu
           const tokens = Object.values(savedTokens[id] || {})
           return tokens.map((token) => (
             <Flex marginTop="16px" key={id + '-' + token.address} justifyContent="space-between" alignItems="center">
-              <TagItem role="button" to={networkPrefix(networkInfo) + `tokens/${token.address}`}>
+              <TagItem role="button" to={networkPrefix(networkInfo) + `token/${token.address}`}>
                 <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
                 {token.symbol}
               </TagItem>
@@ -107,7 +107,7 @@ function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (valu
           const pools = Object.values(savedPools[id] || {})
           return pools.map((pool) => (
             <Flex marginTop="16px" key={id + '-' + pool.address} justifyContent="space-between" alignItems="center">
-              <TagItem role="button" to={networkPrefix(networkInfo) + `pools/${pool.address}`}>
+              <TagItem role="button" to={networkPrefix(networkInfo) + `pool/${pool.address}`}>
                 <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
                 <HoverInlineText
                   maxCharacters={18}

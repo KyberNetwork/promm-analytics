@@ -133,12 +133,12 @@ export default function App() {
               <SideNav />
               <BodyWrapper>
                 <Switch>
-                  <Route exact strict path="/:networkID?/pools/:address" component={PoolPage} />
+                  <Route exact strict path="/:networkID?/pool/:address" component={PoolPage} />
                   <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
-                  <Route exact strict path="/:networkID?/tokens/:address" component={RedirectInvalidToken} />
+                  <Route exact strict path="/:networkID?/token/:address" component={RedirectInvalidToken} />
                   <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
                   <Route exact strict path="/:networkID?/accounts" component={AccountsOverview} />
-                  <Route exact strict path="/:networkID?/accounts/:address" component={AccountPage} />
+                  <Route exact strict path="/:networkID?/account/:address" component={AccountPage} />
                   <Route exact path="/:networkID?" component={Home} />
                 </Switch>
                 <Marginer />
