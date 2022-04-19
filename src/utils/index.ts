@@ -54,3 +54,7 @@ export function feeTierPercent(fee: number): string {
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined
 }
+
+export function isAllChain(networkInfos: NetworkInfo[]) {
+  return networkInfos.length > 1
+}

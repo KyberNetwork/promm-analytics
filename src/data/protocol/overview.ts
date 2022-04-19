@@ -11,7 +11,7 @@ import { client, blockClient, arbitrumClient, arbitrumBlockClient } from 'apollo
 export const GLOBAL_DATA = (block?: string) => {
   const queryString = ` query uniswapFactories {
       factories(
-       ${block !== undefined ? `block: { number: ${block}}` : ``} 
+       ${block !== undefined ? `block: { number: ${block}}` : ``}
        first: 1, subgraphError: allow) {
         txCount
         totalVolumeUSD
@@ -40,7 +40,7 @@ export function useFetchProtocolData(
   data: ProtocolData | undefined
 } {
   // get appropriate clients if override needed
-  const { dataClient, blockClient } = useClients()
+  const { dataClient, blockClient } = useClients()[0]
   const activeDataClient = dataClientOverride ?? dataClient
   const activeBlockClient = blockClientOverride ?? blockClient
 

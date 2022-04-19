@@ -3,7 +3,7 @@ import { useDeltaTimestamps } from 'utils/queries'
 import { useState, useEffect, useMemo } from 'react'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 
 export interface EthPrices {
   current: number
@@ -94,14 +94,14 @@ async function fetchEthPrices(
 export function useEthPrices(): EthPrices | undefined {
   const [prices, setPrices] = useState<{ [network: string]: EthPrices | undefined }>()
   const [error, setError] = useState(false)
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   const [t24, t48, tWeek] = useDeltaTimestamps()
   const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
 
   // index on active network
-  const activeNetwork = useActiveNetworkVersion()
-  const indexedPrices = prices?.[activeNetwork.id]
+  const activeNetwork = useActiveNetworks()[0]
+  const indexedPrices = prices?.[activeNetwork.chainId]
 
   const formattedBlocks = useMemo(() => {
     if (blocks) {
@@ -117,14 +117,14 @@ export function useEthPrices(): EthPrices | undefined {
         setError(true)
       } else if (data) {
         setPrices({
-          [activeNetwork.id]: data,
+          [activeNetwork.chainId]: data,
         })
       }
     }
     if (!indexedPrices && !error && formattedBlocks) {
       fetch()
     }
-  }, [error, prices, formattedBlocks, blockError, dataClient, indexedPrices, activeNetwork.id])
+  }, [error, prices, formattedBlocks, blockError, dataClient, indexedPrices, activeNetwork.chainId])
 
-  return prices?.[activeNetwork.id]
+  return prices?.[activeNetwork.chainId]
 }

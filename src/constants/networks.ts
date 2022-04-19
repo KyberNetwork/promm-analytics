@@ -14,13 +14,6 @@ import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg'
 import ETHEREUM_LOGO_URL from '../assets/images/ethereum-logo.png'
 import POLYGON_LOGO_URL from '../assets/images/polygon-logo.png'
 
-export enum SupportedNetwork {
-  RINKEBY,
-  ETHEREUM,
-  ARBITRUM,
-  POLYGON,
-}
-
 export enum ChainId {
   ETHEREUM = 1,
   // ROPSTEN = 3,
@@ -43,7 +36,6 @@ export enum ChainId {
 }
 
 export type NetworkInfo = {
-  id: SupportedNetwork
   chainId: ChainId
   route: string
   name: string
@@ -54,11 +46,11 @@ export type NetworkInfo = {
   blurb?: string
   client: ApolloClient<NormalizedCacheObject>
   blockClient: ApolloClient<NormalizedCacheObject>
+  subgraphName: string
   etherscanUrl: string
 }
 
 export const RinkebyNetworkInfo: NetworkInfo = {
-  id: SupportedNetwork.RINKEBY,
   chainId: ChainId.RINKEBY,
   route: 'rinkeby',
   name: 'Rinkeby',
@@ -68,11 +60,11 @@ export const RinkebyNetworkInfo: NetworkInfo = {
   imageURL: ETHEREUM_LOGO_URL,
   client: rinkebyClient,
   blockClient: rinkebyBlockClient,
+  subgraphName: 'viet-nv/promm-rinkeby',
   etherscanUrl: 'https://rinkeby.etherscan.io',
 }
 
 export const EthereumNetworkInfo: NetworkInfo = {
-  id: SupportedNetwork.ETHEREUM,
   chainId: ChainId.ETHEREUM,
   route: 'ethereum',
   name: 'Ethereum',
@@ -82,11 +74,11 @@ export const EthereumNetworkInfo: NetworkInfo = {
   imageURL: ETHEREUM_LOGO_URL,
   client: client,
   blockClient: blockClient,
+  subgraphName: 'uniswap/uniswap-v3',
   etherscanUrl: 'https://etherscan.io',
 }
 
 export const ArbitrumNetworkInfo: NetworkInfo = {
-  id: SupportedNetwork.ARBITRUM,
   chainId: ChainId.ARBITRUM,
   route: 'arbitrum',
   name: 'Arbitrum',
@@ -97,11 +89,11 @@ export const ArbitrumNetworkInfo: NetworkInfo = {
   blurb: 'Beta',
   client: arbitrumClient,
   blockClient: arbitrumBlockClient,
+  subgraphName: 'ianlapham/arbitrum-minimal',
   etherscanUrl: 'https://arbiscan.io',
 }
 
 export const PolygonNetworkInfo: NetworkInfo = {
-  id: SupportedNetwork.POLYGON,
   chainId: ChainId.POLYGON,
   route: 'polygon',
   name: 'Polygon',
@@ -112,10 +104,18 @@ export const PolygonNetworkInfo: NetworkInfo = {
   blurb: '',
   client: polygonClient,
   blockClient: polygonBlockClient,
+  subgraphName: 'ianlapham/uniswap-v3-polygon',
   etherscanUrl: 'https://polygonscan.com',
 }
 
-export const NETWORKS_INFO: { [id in ChainId]: NetworkInfo } = {
+export const NETWORKS_INFO_LIST: NetworkInfo[] = [
+  EthereumNetworkInfo,
+  RinkebyNetworkInfo,
+  ArbitrumNetworkInfo,
+  PolygonNetworkInfo,
+]
+
+export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
   [ChainId.RINKEBY]: RinkebyNetworkInfo,
   [ChainId.ARBITRUM]: ArbitrumNetworkInfo,

@@ -85,7 +85,7 @@ const initialState = {
 
 export default function DensityChart({ address }: DensityChartProps) {
   const theme = useTheme()
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   // poolData
   const poolData: PoolData = usePoolDatas([address])[0]

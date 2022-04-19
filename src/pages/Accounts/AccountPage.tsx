@@ -15,7 +15,7 @@ import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import TransactionTable from 'components/TransactionsTable'
 import { Arrow, Break, PageButtons } from 'components/shared'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { Flex } from 'rebass'
 import Loading from 'components/Loader/Loading'
@@ -71,7 +71,7 @@ export default function AccountPage({
     params: { address },
   },
 }: RouteComponentProps<{ address: string }>) {
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()[0]
 
   address = address.toLowerCase()
   // theming

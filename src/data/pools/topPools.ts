@@ -25,7 +25,7 @@ export function useTopPoolAddresses(): {
   error: boolean
   addresses: string[] | undefined
 } {
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
   const { loading, error, data } = useQuery<TopPoolsResponse>(TOP_POOLS, {
     client: dataClient,
     fetchPolicy: 'cache-first',

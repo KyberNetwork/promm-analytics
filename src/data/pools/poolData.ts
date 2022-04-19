@@ -5,7 +5,7 @@ import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 
 export const POOLS_BULK = (block: number | undefined, pools: string[]) => {
   let poolString = `[`
@@ -26,14 +26,14 @@ export const POOLS_BULK = (block: number | undefined, pools: string[]) => {
         tick
         token0 {
             id
-            symbol 
+            symbol
             name
             decimals
             derivedETH
         }
         token1 {
             id
-            symbol 
+            symbol
             name
             decimals
             derivedETH
@@ -99,8 +99,8 @@ export function usePoolDatas(
     | undefined
 } {
   // get client
-  const { dataClient } = useClients()
-  const activeNetwork = useActiveNetworkVersion()
+  const { dataClient } = useClients()[0]
+  const activeNetwork = useActiveNetworks()[0]
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = useDeltaTimestamps()

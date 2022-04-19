@@ -7,7 +7,7 @@ import { useClients } from 'state/application/hooks'
 
 export default function Updater(): null {
   // client for data fetching
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   const [protocolData, updateProtocolData] = useProtocolData()
   const { data: fetchedProtocolData, error, loading } = useFetchProtocolData()

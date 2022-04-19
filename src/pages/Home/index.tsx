@@ -20,7 +20,7 @@ import { notEmpty } from 'utils'
 import TransactionsTable from '../../components/TransactionsTable'
 import { useAllTokenData } from 'state/tokens/hooks'
 import { MonoSpace } from 'components/shared'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { useTransformedVolumeData } from 'hooks/chart'
 import { SmallOptionButton } from 'components/Button'
 import { VolumeWindow } from 'types'
@@ -52,7 +52,7 @@ export default function Home() {
 
   const theme = useTheme()
 
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()
 
   const [protocolData] = useProtocolData()
   const [chartData] = useProtocolChartData()

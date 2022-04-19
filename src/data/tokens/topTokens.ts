@@ -25,7 +25,7 @@ export function useTopTokenAddresses(): {
   error: boolean
   addresses: string[] | undefined
 } {
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   const { loading, error, data } = useQuery<TopTokensResponse>(TOP_TOKENS, { client: dataClient })
 

@@ -26,9 +26,9 @@ export const Break = styled.div`
   width: 100%;
 `
 
-export const FixedSpan = styled.span<{ width?: string | null }>`
-  width: ${({ width }) => width ?? ''};
-`
+// export const FixedSpan = styled.span<{ width?: string | null }>`
+//   width: ${({ width }) => width ?? ''};
+// `
 
 export const MonoSpace = styled.span`
   font-variant-numeric: tabular-nums;

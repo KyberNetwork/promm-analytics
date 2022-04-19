@@ -15,6 +15,8 @@ import { PageButtons, Arrow, Break } from 'components/shared'
 import HoverInlineText from '../HoverInlineText'
 import useTheme from 'hooks/useTheme'
 import { TOKEN_HIDE } from '../../constants/index'
+import { useActiveNetworks } from 'state/application/hooks'
+import { networkPrefix } from 'utils/networkPrefix'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -75,9 +77,10 @@ const ResponsiveLogo = styled(CurrencyLogo)`
 `
 
 const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) => {
+  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
   const theme = useTheme()
   return (
-    <LinkWrapper to={'token/' + tokenData.address}>
+    <LinkWrapper to={networkPrefix(activeNetworks) + 'token/' + tokenData.address}>
       <ResponsiveGrid>
         <Label>{index + 1}</Label>
         <Label>

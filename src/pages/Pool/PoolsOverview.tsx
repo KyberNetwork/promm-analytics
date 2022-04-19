@@ -7,7 +7,7 @@ import { notEmpty } from 'utils'
 import { PoolData } from 'state/pools/reducer'
 import PairTable from 'components/pools/PairTable'
 
-export default function PoolPage() {
+export default function PoolOverview() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -37,22 +37,6 @@ export default function PoolPage() {
   return (
     <PageWrapper>
       <AutoColumn gap="lg">
-        {/* <TYPE.main>Your Watchlist</TYPE.main> */}
-        {/* watchlistPools.length > 0 ? (
-          <PoolTable poolDatas={watchlistPools} />
-        ) : (
-          <DarkGreyCard>
-            <TYPE.main>Saved pools will appear here</TYPE.main>
-          </DarkGreyCard>
-        ) */}
-        {/* <HideSmall>
-          <DarkGreyCard style={{ paddingTop: '12px' }}>
-            <AutoColumn gap="md">
-              <TYPE.mediumHeader fontSize="16px">Trending by 24H Volume</TYPE.mediumHeader>
-              <TopPoolMovers />
-            </AutoColumn>
-          </DarkGreyCard>
-        </HideSmall> */}
         <Text fontWeight="500" fontSize="24px">
           All Pools
         </Text>

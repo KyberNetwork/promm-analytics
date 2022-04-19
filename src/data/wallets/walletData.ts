@@ -94,7 +94,7 @@ export function useFetchedPositionsDatas(): {
   error: boolean
   data: PositionFields[] | undefined
 } {
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   const allPoolData = useAllPoolData()
 
@@ -117,7 +117,7 @@ export function useFetchedPositionsDatas(): {
 }
 
 export function useFetchedUserPositionData(address: string) {
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
   const { loading, error, data } = useQuery<PositionDataResponse>(USER_POSITIONS(address), {
     client: dataClient,
   })
@@ -203,7 +203,7 @@ export function useUserTransactions(
   error: boolean
   data: any[]
 } {
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   const { loading, error, data } = useQuery(GLOBAL_TRANSACTIONS, {
     client: dataClient,

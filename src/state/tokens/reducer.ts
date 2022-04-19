@@ -9,7 +9,7 @@ import {
 } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { PriceChartEntry, Transaction } from 'types'
-import { SupportedNetwork } from 'constants/networks'
+import { ChainId } from 'constants/networks'
 
 export type TokenData = {
   // token is in some pool on uniswap
@@ -66,10 +66,10 @@ export interface TokensState {
 
 export const initialState: TokensState = {
   byAddress: {
-    [SupportedNetwork.RINKEBY]: {},
-    [SupportedNetwork.ETHEREUM]: {},
-    [SupportedNetwork.ARBITRUM]: {},
-    [SupportedNetwork.POLYGON]: {},
+    [ChainId.RINKEBY]: {},
+    [ChainId.ETHEREUM]: {},
+    [ChainId.ARBITRUM]: {},
+    [ChainId.POLYGON]: {},
   },
 }
 

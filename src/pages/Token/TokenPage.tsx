@@ -35,7 +35,7 @@ import { useSavedTokens } from 'state/user/hooks'
 import { ONE_HOUR_SECONDS, TimeWindow } from 'constants/intervals'
 import { MonoSpace } from 'components/shared'
 import dayjs from 'dayjs'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { Flex } from 'rebass'
 import Loading from 'components/Loader/Loading'
@@ -93,7 +93,7 @@ export default function TokenPage({
     params: { address },
   },
 }: RouteComponentProps<{ address: string }>) {
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()[0]
 
   address = address.toLowerCase()
   // theming
@@ -364,35 +364,6 @@ export default function TokenPage({
                     </Flex>
                   )
                 ) : null}
-                {/* <RowBetween width="100%">
-                  <div> </div>
-                  <AutoRow gap="4px" width="fit-content">
-                    <SmallOptionButton
-                      active={timeWindow === TimeWindow.DAY}
-                      onClick={() => setTimeWindow(TimeWindow.DAY)}
-                    >
-                      24H
-                    </SmallOptionButton>
-                    <SmallOptionButton
-                      active={timeWindow === TimeWindow.WEEK}
-                      onClick={() => setTimeWindow(TimeWindow.WEEK)}
-                    >
-                      1W
-                    </SmallOptionButton>
-                    <SmallOptionButton
-                      active={timeWindow === TimeWindow.MONTH}
-                      onClick={() => setTimeWindow(TimeWindow.MONTH)}
-                    >
-                      1M
-                    </SmallOptionButton>
-                    <SmallOptionButton
-                      active={timeWindow === TimeWindow.DAY}
-                      onClick={() => setTimeWindow(TimeWindow.DAY)}
-                    >
-                      All
-                    </SmallOptionButton>
-                  </AutoRow>
-                </RowBetween> */}
               </DarkGreyCard>
             </ContentLayout>
             <TYPE.label fontSize="18px">Pools</TYPE.label>

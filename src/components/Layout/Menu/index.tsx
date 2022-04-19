@@ -3,7 +3,7 @@ import { Menu as MenuIcon, TrendingUp, Disc, PieChart, Repeat, Activity } from '
 import styled from 'styled-components'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
-import { useModalOpen, useToggleModal, useActiveNetworkVersion } from 'state/application/hooks'
+import { useModalOpen, useToggleModal, useActiveNetworks } from 'state/application/hooks'
 
 import { useLocation } from 'react-router-dom'
 import { networkPrefix } from 'utils/networkPrefix'
@@ -67,7 +67,7 @@ export default function Menu() {
   const toggle = useToggleModal(ApplicationModal.MENU)
   useOnClickOutside(node, open ? toggle : undefined)
   const { pathname } = useLocation()
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetworks = useActiveNetworks()[0]
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
@@ -83,12 +83,12 @@ export default function Menu() {
             Summary
           </MenuItem>
 
-          <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} isActive={pathname.includes('tokens')}>
+          <MenuItem to={networkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('tokens')}>
             <Disc size={16} />
             Tokens
           </MenuItem>
 
-          <MenuItem to={networkPrefix(activeNetwork) + 'pools'} isActive={pathname.includes('pools')}>
+          <MenuItem to={networkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
             <PieChart size={16} />
             Pools
           </MenuItem>

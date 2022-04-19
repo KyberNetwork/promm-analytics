@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 import { useState, useEffect, useMemo } from 'react'
 import { splitQuery } from 'utils/queries'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 
 export const GET_BLOCKS = (timestamps: string[]) => {
@@ -33,21 +33,21 @@ export function useBlocksFromTimestamps(
     | undefined
   error: boolean
 } {
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()[0]
   const [blocks, setBlocks] = useState<any>()
   const [error, setError] = useState(false)
 
-  const { blockClient } = useClients()
+  const { blockClient } = useClients()[0]
   const activeBlockClient = blockClientOverride ?? blockClient
 
   // derive blocks based on active network
-  const networkBlocks = blocks?.[activeNetwork.id]
+  const networkBlocks = blocks?.[activeNetwork.chainId]
 
   useEffect(() => {
     async function fetchData() {
       const results = await splitQuery(GET_BLOCKS, activeBlockClient, [], timestamps)
       if (results) {
-        setBlocks({ ...(blocks ?? {}), [activeNetwork.id]: results })
+        setBlocks({ ...(blocks ?? {}), [activeNetwork.chainId]: results })
       } else {
         setError(true)
       }
@@ -58,8 +58,8 @@ export function useBlocksFromTimestamps(
   })
 
   const blocksFormatted = useMemo(() => {
-    if (blocks?.[activeNetwork.id]) {
-      const networkBlocks = blocks?.[activeNetwork.id]
+    if (blocks?.[activeNetwork.chainId]) {
+      const networkBlocks = blocks?.[activeNetwork.chainId]
       const formatted = []
       for (const t in networkBlocks) {
         if (networkBlocks[t].length > 0) {
@@ -72,7 +72,7 @@ export function useBlocksFromTimestamps(
       return formatted
     }
     return undefined
-  }, [activeNetwork.id, blocks])
+  }, [activeNetwork.chainId, blocks])
 
   return {
     blocks: blocksFormatted,

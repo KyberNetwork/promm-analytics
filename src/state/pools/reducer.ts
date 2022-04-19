@@ -4,7 +4,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { SerializedToken } from 'state/user/actions'
 import { Transaction } from 'types'
 import { PoolTickData } from 'data/pools/tickData'
-import { SupportedNetwork } from 'constants/networks'
+import { ChainId } from 'constants/networks'
 
 export interface Pool {
   address: string
@@ -80,10 +80,10 @@ export interface PoolsState {
 
 export const initialState: PoolsState = {
   byAddress: {
-    [SupportedNetwork.RINKEBY]: {},
-    [SupportedNetwork.ETHEREUM]: {},
-    [SupportedNetwork.ARBITRUM]: {},
-    [SupportedNetwork.POLYGON]: {},
+    [ChainId.RINKEBY]: {},
+    [ChainId.ETHEREUM]: {},
+    [ChainId.ARBITRUM]: {},
+    [ChainId.POLYGON]: {},
   },
 }
 

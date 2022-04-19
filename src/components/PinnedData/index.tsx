@@ -2,13 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { RowBetween } from '../Row'
-import { AutoColumn } from '../Column'
 import { Bookmark, ChevronRight, X } from 'react-feather'
 import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
 import { Divider } from 'components/Layout/styled'
 import { useSavedPools, useSavedTokens } from 'state/user/hooks'
-import { ChainId, NETWORKS_INFO, SupportedNetwork } from 'constants/networks'
+import { NETWORKS_INFO_LIST } from 'constants/networks'
 import { networkPrefix } from 'utils/networkPrefix'
 import HoverInlineText from 'components/HoverInlineText'
 
@@ -58,8 +57,12 @@ const TagItem = styled(Link)`
   align-items: center;
   text-decoration: none;
 `
+type PinnedDataPropType = {
+  open: boolean
+  setSavedOpen: (value: boolean) => void
+}
 
-function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (value: boolean) => void }) {
+const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSavedOpen }: PinnedDataPropType) => {
   const theme = useTheme()
 
   const [savedTokens, updatedSavedTokens] = useSavedTokens()
@@ -82,7 +85,7 @@ function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (valu
 
       <ScrollableDiv>
         <Text fontWeight="500">Tokens</Text>
-        {Object.values(NETWORKS_INFO).map((networkInfo) => {
+        {NETWORKS_INFO_LIST.map((networkInfo) => {
           const id = networkInfo.chainId
           const tokens = Object.values(savedTokens[id] || {})
           return tokens.map((token) => (
@@ -102,7 +105,7 @@ function PinnedData({ open, setSavedOpen }: { open: boolean; setSavedOpen: (valu
           Pools
         </Text>
 
-        {Object.values(NETWORKS_INFO).map((networkInfo) => {
+        {NETWORKS_INFO_LIST.map((networkInfo) => {
           const id = networkInfo.chainId
           const pools = Object.values(savedPools[id] || {})
           return pools.map((pool) => (

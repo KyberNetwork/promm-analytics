@@ -7,7 +7,7 @@ import { get2DayChange } from 'utils/data'
 import { TokenData } from 'state/tokens/reducer'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { formatTokenSymbol, formatTokenName } from 'utils/tokens'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 
 export const TOKENS_BULK = (block: number | undefined, tokens: string[]) => {
   let tokenString = `[`
@@ -71,8 +71,8 @@ export function useFetchedTokenDatas(
       }
     | undefined
 } {
-  const activeNetwork = useActiveNetworkVersion()
-  const { dataClient } = useClients()
+  const activeNetworks = useActiveNetworks()[0]
+  const { dataClient } = useClients()[0]
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = useDeltaTimestamps()
@@ -198,8 +198,8 @@ export function useFetchedTokenDatas(
     accum[address] = {
       exists: !!current,
       address,
-      name: current ? formatTokenName(address, current.name, activeNetwork) : '',
-      symbol: current ? formatTokenSymbol(address, current.symbol, activeNetwork) : '',
+      name: current ? formatTokenName(address, current.name, activeNetworks) : '',
+      symbol: current ? formatTokenSymbol(address, current.symbol, activeNetworks) : '',
       volumeUSD,
       volumeUSDChange,
       volumeUSDWeek,

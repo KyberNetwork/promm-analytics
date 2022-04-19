@@ -1,8 +1,9 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { EthereumNetworkInfo, NetworkInfo, NETWORKS_INFO } from 'constants/networks'
+import { EthereumNetworkInfo, NetworkInfo, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
+import { isAllChain } from 'utils'
 import { AppDispatch, AppState } from '../index'
 import { ApplicationModal, PopupContent, setOpenModal, updateSubgraphStatus } from './actions'
 
@@ -56,30 +57,37 @@ export function useSubgraphStatus(): [
   return [status, update]
 }
 
-export function useActiveNetworkVersion(): NetworkInfo {
+export function useActiveNetworks(): NetworkInfo[] {
   const location = useLocation()
+  const networkFromURL = location.pathname.split('/')[1]
+  const networks = useMemo(() => {
+    const networkInfoFromURL = networkFromURL
+      ? NETWORKS_INFO_LIST.find((network) => networkFromURL === network.route)
+      : null
+    return networkInfoFromURL ? [networkInfoFromURL] : NETWORKS_INFO_LIST
+  }, [networkFromURL])
 
-  const network = useMemo(
-    () =>
-      Object.values(NETWORKS_INFO).find((network) => location.pathname.split('/')[1] === network.route) ||
-      EthereumNetworkInfo,
-    [location.pathname]
-  )
+  return networks
+}
 
-  return network
+export function useActiveNetworkUtils(): { isAllChain: boolean } {
+  const activeNetworks = useActiveNetworks()
+  return {
+    isAllChain: isAllChain(activeNetworks),
+  }
 }
 
 // Get all required subgraph clients
 export function useClients(): {
   dataClient: ApolloClient<NormalizedCacheObject>
   blockClient: ApolloClient<NormalizedCacheObject>
-} {
-  const activeNetwork = useActiveNetworkVersion()
+}[] {
+  const activeNetwork = useActiveNetworks()
 
-  const dataClient = activeNetwork.client
-  const blockClient = activeNetwork.blockClient
-  return {
-    dataClient,
-    blockClient,
-  }
+  // const dataClient = activeNetwork.map((network) => network.client)
+  // const blockClient = activeNetwork.map((network) => network.blockClient)
+  return activeNetwork.map((network) => ({
+    dataClient: network.client,
+    blockClient: network.blockClient,
+  }))
 }

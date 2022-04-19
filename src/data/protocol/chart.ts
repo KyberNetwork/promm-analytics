@@ -5,7 +5,7 @@ import utc from 'dayjs/plugin/utc'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { arbitrumClient } from 'apollo/client'
 
 // format dayjs with the libraries that we need
@@ -128,17 +128,17 @@ export function useFetchGlobalChartData(): {
 } {
   const [data, setData] = useState<{ [network: string]: ChartDayData[] | undefined }>()
   const [error, setError] = useState(false)
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
-  const activeNetworkVersion = useActiveNetworkVersion()
-  const indexedData = data?.[activeNetworkVersion.id]
+  const activeNetworks = useActiveNetworks()[0]
+  const indexedData = data?.[activeNetworks.chainId]
 
   useEffect(() => {
     async function fetch() {
       const { data, error } = await fetchChartData(dataClient)
       if (data && !error) {
         setData({
-          [activeNetworkVersion.id]: data,
+          [activeNetworks.chainId]: data,
         })
       } else if (error) {
         setError(true)
@@ -147,7 +147,7 @@ export function useFetchGlobalChartData(): {
     if (!indexedData && !error) {
       fetch()
     }
-  }, [data, error, dataClient, indexedData, activeNetworkVersion.id])
+  }, [data, error, dataClient, indexedData, activeNetworks.chainId])
 
   return {
     error,

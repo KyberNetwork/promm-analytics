@@ -120,11 +120,11 @@ export function useActiveListUrls(): string[] | undefined {
   )
 }
 
-export function useInactiveListUrls(): string[] {
-  const lists = useAllLists()
-  const allActiveListUrls = useActiveListUrls()
-  return Object.keys(lists).filter((url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS.includes(url))
-}
+// export function useInactiveListUrls(): string[] {
+//   const lists = useAllLists()
+//   const allActiveListUrls = useActiveListUrls()
+//   return Object.keys(lists).filter((url) => !allActiveListUrls?.includes(url) && !UNSUPPORTED_LIST_URLS.includes(url))
+// }
 
 // get all the tokens from active lists, combine with local default tokens
 export function useCombinedActiveList(): TokenAddressMap {
@@ -134,10 +134,10 @@ export function useCombinedActiveList(): TokenAddressMap {
 }
 
 // all tokens from inactive lists
-export function useCombinedInactiveList(): TokenAddressMap {
-  const allInactiveListUrls: string[] = useInactiveListUrls()
-  return useCombinedTokenMapFromUrls(allInactiveListUrls)
-}
+// export function useCombinedInactiveList(): TokenAddressMap {
+//   const allInactiveListUrls: string[] = useInactiveListUrls()
+//   return useCombinedTokenMapFromUrls(allInactiveListUrls)
+// }
 
 // list of tokens not supported on interface, used to show warnings and prevent swaps and adds
 export function useUnsupportedTokenList(): TokenAddressMap {

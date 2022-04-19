@@ -14,7 +14,7 @@ import { Label, ClickableText } from 'components/Text'
 import { PageButtons, Arrow, Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
 import { networkPrefix } from 'utils/networkPrefix'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { Text, Flex } from 'rebass'
 import CopyHelper from 'components/Copy'
 import { ChevronDown, ChevronUp, Plus } from 'react-feather'
@@ -180,7 +180,7 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
     }
   }, [pairDatas, isOpen])
 
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetworks = useActiveNetworks()[0] // TODO namgold: handle all chain view
   if (!pairDatas) {
     return <Loader />
   }
@@ -252,7 +252,7 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                         {isOpen[id] &&
                           pair.map((poolData, i) => (
                             <React.Fragment key={poolData.address}>
-                              <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + poolData.address}>
+                              <LinkWrapper to={networkPrefix(activeNetworks) + 'pool/' + poolData.address}>
                                 <GridWrapper
                                   role="button"
                                   style={{ padding: '16px 20px', background: theme.tableHeader }}
@@ -322,7 +322,7 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                                     <Label fontWeight={400}>
                                       <AutoColumn gap="8px">
                                         <RowFixed>
-                                          <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + poolData.address}>
+                                          <LinkWrapper to={networkPrefix(activeNetworks) + 'pool/' + poolData.address}>
                                             <Label color={theme.primary}>{shortenAddress(poolData.address)}</Label>
                                           </LinkWrapper>
                                           <CopyHelper toCopy={poolData.address} />

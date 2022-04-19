@@ -26,7 +26,7 @@ import TransactionTable from 'components/TransactionsTable'
 import { useSavedPools } from 'state/user/hooks'
 import DensityChart from 'components/DensityChart'
 import { MonoSpace } from 'components/shared'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { ArbitrumNetworkInfo } from 'constants/networks'
 import { GenericImageWrapper } from 'components/Logo'
@@ -91,7 +91,7 @@ export default function PoolPage({
     params: { address },
   },
 }: RouteComponentProps<{ address: string }>) {
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()[0]
 
   useEffect(() => {
     window.scrollTo(0, 0)

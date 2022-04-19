@@ -12,7 +12,7 @@ import { ExternalLink, TYPE } from 'theme'
 import { PageButtons, Arrow, Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
 import HoverInlineText from 'components/HoverInlineText'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle'
 
 const Wrapper = styled(DarkGreyCard)`
@@ -70,21 +70,6 @@ const TableHeader = styled(ResponsiveGrid)`
   padding: 18px 20px;
 `
 
-const SortText = styled.button<{ active: boolean }>`
-  cursor: pointer;
-  font-weight: ${({ active }) => (active ? 500 : 400)};
-  margin-right: 0.75rem !important;
-  border: none;
-  background-color: transparent;
-  font-size: 1rem;
-  padding: 0px;
-  color: ${({ active, theme }) => (active ? theme.text1 : theme.text3)};
-  outline: none;
-  @media screen and (max-width: 600px) {
-    font-size: 14px;
-  }
-`
-
 const SORT_FIELD = {
   amountUSD: 'amountUSD',
   timestamp: 'timestamp',
@@ -98,12 +83,12 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   const abs1 = Math.abs(transaction.amountToken1)
   const outputTokenSymbol = transaction.amountToken0 < 0 ? transaction.token0Symbol : transaction.token1Symbol
   const inputTokenSymbol = transaction.amountToken1 < 0 ? transaction.token0Symbol : transaction.token1Symbol
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from transaction
   const theme = useTheme()
 
   return (
     <ResponsiveGrid>
-      <ExternalLink href={getEtherscanLink(activeNetwork, transaction.hash, 'transaction')}>
+      <ExternalLink href={getEtherscanLink(activeNetworks, transaction.hash, 'transaction')}>
         <Label color={color ?? theme.primary} fontWeight={400}>
           {transaction.type === TransactionType.MINT
             ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
@@ -123,7 +108,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
-          href={getEtherscanLink(activeNetwork, transaction.sender, 'address')}
+          href={getEtherscanLink(activeNetworks, transaction.sender, 'address')}
           style={{ color: color ?? theme.primary }}
         >
           {shortenAddress(transaction.sender)}

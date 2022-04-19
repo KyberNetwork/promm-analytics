@@ -15,7 +15,7 @@ import { PageButtons, Arrow, Break } from 'components/shared'
 import { POOL_HIDE } from '../../constants/index'
 import useTheme from 'hooks/useTheme'
 import { networkPrefix } from 'utils/networkPrefix'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -73,11 +73,11 @@ const SORT_FIELD = {
 }
 
 const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => {
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from poolData
   const theme = useTheme()
 
   return (
-    <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + poolData.address}>
+    <LinkWrapper to={networkPrefix(activeNetworks) + 'pool/' + poolData.address}>
       <ResponsiveGrid>
         <Label fontWeight={400}>{index + 1}</Label>
         <Label fontWeight={400}>

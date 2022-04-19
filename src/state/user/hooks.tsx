@@ -1,13 +1,13 @@
-import { Token } from '@uniswap/sdk-core'
+// import { Token } from '@uniswap/sdk-core'
 import { useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
 import {
-  addSerializedToken,
-  removeSerializedToken,
-  SerializedToken,
+  // addSerializedToken,
+  // removeSerializedToken,
+  // SerializedToken,
   updateUserDarkMode,
-  toggleURLWarning,
+  // toggleURLWarning,
   addSavedToken,
   addSavedPool,
 } from './actions'
@@ -15,25 +15,25 @@ import { PoolData } from 'state/pools/reducer'
 import { TokenData } from 'state/tokens/reducer'
 import { ChainId } from 'constants/networks'
 
-function serializeToken(token: Token): SerializedToken {
-  return {
-    chainId: token.chainId,
-    address: token.address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    name: token.name,
-  }
-}
+// function serializeToken(token: Token): SerializedToken {
+//   return {
+//     chainId: token.chainId,
+//     address: token.address,
+//     decimals: token.decimals,
+//     symbol: token.symbol,
+//     name: token.name,
+//   }
+// }
 
-function deserializeToken(serializedToken: SerializedToken): Token {
-  return new Token(
-    serializedToken.chainId,
-    serializedToken.address,
-    serializedToken.decimals,
-    serializedToken.symbol,
-    serializedToken.name
-  )
-}
+// function deserializeToken(serializedToken: SerializedToken): Token {
+//   return new Token(
+//     serializedToken.chainId,
+//     serializedToken.address,
+//     serializedToken.decimals,
+//     serializedToken.symbol,
+//     serializedToken.name
+//   )
+// }
 
 export function useIsDarkMode(): boolean {
   const { userDarkMode, matchesDarkMode } = useSelector<
@@ -61,15 +61,15 @@ export function useDarkModeManager(): [boolean, () => void] {
   return [darkMode, toggleSetDarkMode]
 }
 
-export function useAddUserToken(): (token: Token) => void {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (token: Token) => {
-      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
-    },
-    [dispatch]
-  )
-}
+// export function useAddUserToken(): (token: Token) => void {
+//   const dispatch = useDispatch<AppDispatch>()
+//   return useCallback(
+//     (token: Token) => {
+//       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
+//     },
+//     [dispatch]
+//   )
+// }
 
 export function useSavedTokens(): [
   {
@@ -111,21 +111,21 @@ export function useSavedPools(): [
   return [savedPools ?? {}, updateSavedPools]
 }
 
-export function useRemoveUserAddedToken(): (chainId: ChainId, address: string) => void {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (chainId: ChainId, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }))
-    },
-    [dispatch]
-  )
-}
+// export function useRemoveUserAddedToken(): (chainId: ChainId, address: string) => void {
+//   const dispatch = useDispatch<AppDispatch>()
+//   return useCallback(
+//     (chainId: ChainId, address: string) => {
+//       dispatch(removeSerializedToken({ chainId, address }))
+//     },
+//     [dispatch]
+//   )
+// }
 
-export function useURLWarningVisible(): boolean {
-  return useSelector((state: AppState) => state.user.URLWarningVisible)
-}
+// export function useURLWarningVisible(): boolean {
+//   return useSelector((state: AppState) => state.user.URLWarningVisible)
+// }
 
-export function useURLWarningToggle(): () => void {
-  const dispatch = useDispatch()
-  return useCallback(() => dispatch(toggleURLWarning()), [dispatch])
-}
+// export function useURLWarningToggle(): () => void {
+//   const dispatch = useDispatch()
+//   return useCallback(() => dispatch(toggleURLWarning()), [dispatch])
+// }

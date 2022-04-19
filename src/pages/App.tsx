@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Home from './Home'
@@ -8,7 +8,7 @@ import TokensOverview from './Token/TokensOverview'
 import { RedirectInvalidToken } from './Token/redirects'
 import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
-import { useActiveNetworkVersion, useSubgraphStatus } from 'state/application/hooks'
+import { useActiveNetworks, useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
 import SideNav from 'components/Layout/SideNav'
 import Loading from 'components/Loader/Loading'
@@ -16,6 +16,7 @@ import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
+import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
 
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
@@ -84,7 +85,7 @@ export default function App() {
     setTimeout(() => setLoading(false), 1300)
   }, [])
 
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()
   // subgraph health
   const [subgraphStatus] = useSubgraphStatus()
 
@@ -133,13 +134,14 @@ export default function App() {
               <SideNav />
               <BodyWrapper>
                 <Switch>
-                  <Route exact strict path="/:networkID?/pool/:address" component={PoolPage} />
                   <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
-                  <Route exact strict path="/:networkID?/token/:address" component={RedirectInvalidToken} />
+                  <Route exact strict path="/:networkID?/pool/:address" component={PoolPage} />
                   <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
+                  <Route exact strict path="/:networkID?/token/:address" component={RedirectInvalidToken} />
                   <Route exact strict path="/:networkID?/accounts" component={AccountsOverview} />
                   <Route exact strict path="/:networkID?/account/:address" component={AccountPage} />
-                  <Route exact path="/:networkID?" component={Home} />
+                  <Route exact path="/:networkID?/home" component={Home} />
+                  <Redirect to={`/${NETWORKS_INFO_MAP[ChainId.ETHEREUM].route}/home`} />
                 </Switch>
                 <Marginer />
               </BodyWrapper>
