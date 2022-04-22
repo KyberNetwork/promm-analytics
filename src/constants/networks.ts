@@ -48,9 +48,10 @@ export type NetworkInfo = {
   blockClient: ApolloClient<NormalizedCacheObject>
   subgraphName: string
   etherscanUrl: string
+  tokenListUrl: string
 }
 
-export const RinkebyNetworkInfo: NetworkInfo = {
+const RinkebyNetworkInfo: NetworkInfo = {
   chainId: ChainId.RINKEBY,
   route: 'rinkeby',
   name: 'Rinkeby',
@@ -62,9 +63,10 @@ export const RinkebyNetworkInfo: NetworkInfo = {
   blockClient: rinkebyBlockClient,
   subgraphName: 'viet-nv/promm-rinkeby',
   etherscanUrl: 'https://rinkeby.etherscan.io',
+  tokenListUrl: '',
 }
 
-export const EthereumNetworkInfo: NetworkInfo = {
+const EthereumNetworkInfo: NetworkInfo = {
   chainId: ChainId.ETHEREUM,
   route: 'ethereum',
   name: 'Ethereum',
@@ -76,9 +78,10 @@ export const EthereumNetworkInfo: NetworkInfo = {
   blockClient: blockClient,
   subgraphName: 'uniswap/uniswap-v3',
   etherscanUrl: 'https://etherscan.io',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/dmm-assets/main/tokenLists/ethereum.tokenlist.json',
 }
 
-export const ArbitrumNetworkInfo: NetworkInfo = {
+const ArbitrumNetworkInfo: NetworkInfo = {
   chainId: ChainId.ARBITRUM,
   route: 'arbitrum',
   name: 'Arbitrum',
@@ -91,9 +94,10 @@ export const ArbitrumNetworkInfo: NetworkInfo = {
   blockClient: arbitrumBlockClient,
   subgraphName: 'ianlapham/arbitrum-minimal',
   etherscanUrl: 'https://arbiscan.io',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/dmm-assets/main/tokenLists/arbitrum.tokenlist.json',
 }
 
-export const PolygonNetworkInfo: NetworkInfo = {
+const PolygonNetworkInfo: NetworkInfo = {
   chainId: ChainId.POLYGON,
   route: 'polygon',
   name: 'Polygon',
@@ -106,7 +110,11 @@ export const PolygonNetworkInfo: NetworkInfo = {
   blockClient: polygonBlockClient,
   subgraphName: 'ianlapham/uniswap-v3-polygon',
   etherscanUrl: 'https://polygonscan.com',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/dmm-assets/main/tokenLists/matic.tokenlist.json',
 }
+
+export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
+export const SHOW_NETWORKS = [ChainId.ETHEREUM, ChainId.POLYGON, ChainId.ARBITRUM]
 
 export const NETWORKS_INFO_LIST: NetworkInfo[] = [
   EthereumNetworkInfo,
@@ -121,5 +129,3 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ARBITRUM]: ArbitrumNetworkInfo,
   [ChainId.POLYGON]: PolygonNetworkInfo,
 }
-
-export const SHOW_NETWORKS = [EthereumNetworkInfo, PolygonNetworkInfo, ArbitrumNetworkInfo]

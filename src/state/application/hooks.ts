@@ -1,11 +1,10 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { EthereumNetworkInfo, NetworkInfo, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP } from 'constants/networks'
+import { NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 import { isAllChain } from 'utils'
 import { AppDispatch, AppState } from '../index'
-import { ApplicationModal, PopupContent, setOpenModal, updateSubgraphStatus } from './actions'
+import { ApplicationModal, setOpenModal, updateSubgraphStatus } from './actions'
 
 export function useModalOpen(modal: ApplicationModal): boolean {
   const openModal = useSelector((state: AppState) => state.application.openModal)
@@ -58,16 +57,8 @@ export function useSubgraphStatus(): [
 }
 
 export function useActiveNetworks(): NetworkInfo[] {
-  const location = useLocation()
-  const networkFromURL = location.pathname.split('/')[1]
-  const networks = useMemo(() => {
-    const networkInfoFromURL = networkFromURL
-      ? NETWORKS_INFO_LIST.find((network) => networkFromURL === network.route)
-      : null
-    return networkInfoFromURL ? [networkInfoFromURL] : NETWORKS_INFO_LIST
-  }, [networkFromURL])
-
-  return networks
+  const activeNetworksId = useSelector((state: AppState) => state.application.activeNetworksId)
+  return useMemo(() => activeNetworksId.map((id) => NETWORKS_INFO_MAP[id]), [activeNetworksId])
 }
 
 export function useActiveNetworkUtils(): { isAllChain: boolean } {

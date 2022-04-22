@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import {
   useTokenData,
   usePoolsForToken,
@@ -88,11 +88,8 @@ enum ChartView {
 
 const DEFAULT_TIME_WINDOW = TimeWindow.WEEK
 
-export default function TokenPage({
-  match: {
-    params: { address },
-  },
-}: RouteComponentProps<{ address: string }>) {
+export default function TokenPage() {
+  let { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
 
   address = address.toLowerCase()

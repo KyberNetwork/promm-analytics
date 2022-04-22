@@ -106,7 +106,7 @@ export default function DensityChart({ address }: DensityChartProps) {
   }, [formattedAddress1, poolData])
 
   // tick data tracking
-  const [poolTickData, updatePoolTickData] = usePoolTickData(address)
+  const [poolTickData, setPoolTickData] = usePoolTickData(address)
   const [ticksToFetch, setTicksToFetch] = useState(INITIAL_TICKS_TO_FETCH)
   const amountTicks = ticksToFetch * 2 + 1
 
@@ -117,13 +117,13 @@ export default function DensityChart({ address }: DensityChartProps) {
     async function fetch() {
       const { data } = await fetchTicksSurroundingPrice(address, dataClient, ticksToFetch)
       if (data) {
-        updatePoolTickData(address, data)
+        setPoolTickData(address, data)
       }
     }
     if (!poolTickData || (poolTickData && poolTickData.ticksProcessed.length < amountTicks)) {
       fetch()
     }
-  }, [address, poolTickData, updatePoolTickData, ticksToFetch, amountTicks, dataClient])
+  }, [address, poolTickData, setPoolTickData, ticksToFetch, amountTicks, dataClient])
 
   const [formattedData, setFormattedData] = useState<ChartEntry[] | undefined>()
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function DensityChart({ address }: DensityChartProps) {
             ]
             const pool =
               token0 && token1 && feeTier
-                ? new Pool(token0, token1, feeTier, sqrtPriceX96, t.liquidityActive, t.tickIdx, mockTicks)
+                ? new Pool(token0, token1, feeTier, sqrtPriceX96, t.liquidityActive, t.tickIdx, 12312312313, mockTicks) //todo namgold: check this 12312312313-ddieenf daij
                 : undefined
             const nextSqrtX96 = poolTickData.ticksProcessed[i - 1]
               ? TickMath.getSqrtRatioAtTick(poolTickData.ticksProcessed[i - 1].tickIdx)

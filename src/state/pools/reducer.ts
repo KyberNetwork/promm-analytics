@@ -80,8 +80,8 @@ export interface PoolsState {
 
 export const initialState: PoolsState = {
   byAddress: {
-    [ChainId.RINKEBY]: {},
     [ChainId.ETHEREUM]: {},
+    [ChainId.RINKEBY]: {},
     [ChainId.ARBITRUM]: {},
     [ChainId.POLYGON]: {},
   },

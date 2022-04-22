@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
@@ -28,7 +28,7 @@ import DensityChart from 'components/DensityChart'
 import { MonoSpace } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import { ArbitrumNetworkInfo } from 'constants/networks'
+import { ChainId } from 'constants/networks'
 import { GenericImageWrapper } from 'components/Logo'
 import Loading from 'components/Loader/Loading'
 import { Flex } from 'rebass'
@@ -86,11 +86,8 @@ enum ChartView {
   FEES,
 }
 
-export default function PoolPage({
-  match: {
-    params: { address },
-  },
-}: RouteComponentProps<{ address: string }>) {
+export default function PoolPage() {
+  const { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
 
   useEffect(() => {
@@ -323,7 +320,7 @@ export default function PoolPage({
                   >
                     TVL
                   </ToggleElementFree>
-                  {activeNetwork === ArbitrumNetworkInfo ? null : (
+                  {activeNetwork.chainId === ChainId.ARBITRUM ? null : (
                     <ToggleElementFree
                       isActive={view === ChartView.DENSITY}
                       fontSize="12px"

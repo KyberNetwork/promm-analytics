@@ -13,16 +13,32 @@ const USER_POSITIONS = (user: string) => {
     positions(where: {owner: "${user}"}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
       id
       owner
+      liquidity
       pool {
         id
+        feeTier
+        tick
+        liquidity
+        reinvestL
+        sqrtPrice
+      }
+      tickLower {
+        tickIdx
+      }
+      tickUpper {
+        tickIdx
       }
       token0 {
         id
         symbol
+        decimals
+        derivedETH
       }
       token1 {
         symbol
         id
+        decimals
+        derivedETH
       }
       amountDepositedUSD
       depositedToken1
@@ -66,16 +82,32 @@ export const TOP_POSITIONS = (poolIds: string[]) => {
 interface PositionFields {
   id: string
   owner: string
+  liquidity: string
   token0: {
     id: string
     symbol: string
+    decimals: string
+    derivedETH: string
   }
   token1: {
     id: string
     symbol: string
+    decimals: string
+    derivedETH: string
   }
   pool: {
     id: string
+    feeTier: string
+    liquidity: string
+    reinvestL: string
+    tick: string
+    sqrtPrice: string
+  }
+  tickLower: {
+    tickIdx: string
+  }
+  tickUpper: {
+    tickIdx: string
   }
   amountDepositedUSD: string
   depositedToken1: string

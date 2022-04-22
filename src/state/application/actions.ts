@@ -27,3 +27,4 @@ export const updateSubgraphStatus = createAction<{
   syncedBlock: number | undefined
   headBlock: number | undefined
 }>('application/updateSubgraphStatus')
+export const updateActiveNetwork = createAction<{ chainId: ChainId | 'allchain' }>('application/updateActiveNetwork')

@@ -18,11 +18,10 @@ import Menu from './Menu'
 import { ExternalLink, MenuItem, Divider, ExternalMenu } from './styled'
 import Modal from 'components/Modal'
 import { ButtonEmpty } from 'components/Button'
-import { SHOW_NETWORKS } from 'constants/networks'
+import { NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
 import { useDarkModeManager } from 'state/user/hooks'
 import Wallet from 'components/Icons/Wallet'
 import Kyber from '../../assets/svg/kyber.svg'
-import { useParsedLocation } from 'hooks/useParsedLocation'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -163,7 +162,7 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
 
 function SideNav() {
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()
+  const activeNetworks = useActiveNetworks() //todo namgold: useParams()
   const { isAllChain } = useActiveNetworkUtils()
   const { pathname } = useLocation()
   const [showNetworkModal, setShowNetworkModal] = useState(false)
@@ -173,8 +172,6 @@ function SideNav() {
   const { width } = useWindowSize()
 
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
-  const parsedLocation = useParsedLocation()
-  useEffect(() => console.log('parsedLocation changed:', parsedLocation), [parsedLocation])
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
       <NetworkModalContent>
@@ -194,19 +191,25 @@ function SideNav() {
           {/* <TabItem active={tab === 2} onClick={() => setTab(2)} role="button"> */}
           <TabItem active={tab === 2} role="button">
             <a href="https://analytics.kyberswap.com">V1 Analytics</a>
+            {/* todo namgold: disable link styling */}
           </TabItem>
         </TabWrapper>
 
         <NetworkList>
-          {SHOW_NETWORKS.map((network) => (
-            <StyledInternalLink key={network.chainId} to={`/${network.route}/`}>
+          {SHOW_NETWORKS.map((chainId) => (
+            <StyledInternalLink key={chainId} to={`/${NETWORKS_INFO_MAP[chainId].route}/home`}>
               <NetworkItem
-                active={!isAllChain && tab === 1 && network.chainId === activeNetworks[0].chainId}
-                key={network.chainId}
+                active={!isAllChain && tab === 1 && chainId === activeNetworks[0].chainId}
+                key={chainId}
                 onClick={() => setShowNetworkModal(false)}
               >
-                <img src={network.imageURL} width="24px" height="24px" alt={network.name} />
-                <Text>{network.name}</Text>
+                <img
+                  src={NETWORKS_INFO_MAP[chainId].imageURL}
+                  width="24px"
+                  height="24px"
+                  alt={NETWORKS_INFO_MAP[chainId].name}
+                />
+                <Text>{NETWORKS_INFO_MAP[chainId].name}</Text>
               </NetworkItem>
             </StyledInternalLink>
           ))}
@@ -225,20 +228,17 @@ function SideNav() {
           </Link>
 
           <Flex alignItems="center" sx={{ gap: width && width < MEDIA_WIDTHS.upToExtraSmall ? '16px' : '24px' }}>
-            <MenuItem
-              to={activeNetworkPrefix(activeNetworks)}
-              isActive={pathname === '/' || pathname === activeNetworkPrefix(activeNetworks)}
-            >
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'home'} isActive={pathname.endsWith('home')}>
               <TrendingUp size={16} />
               Summary
             </MenuItem>
 
-            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('tokens')}>
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('token')}>
               <Disc size={16} />
               Tokens
             </MenuItem>
 
-            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pool')}>
               <PieChart size={16} />
               Pools
             </MenuItem>
@@ -270,25 +270,22 @@ function SideNav() {
           <SelectNetworkButton onClick={() => setShowNetworkModal(true)} marginTop="1rem" />
 
           <MenuWrapper>
-            <MenuItem
-              to={activeNetworkPrefix(activeNetworks)}
-              isActive={pathname === '/' || pathname === activeNetworkPrefix(activeNetworks)}
-            >
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'home'} isActive={pathname.endsWith('home')}>
               <TrendingUp size={16} />
               Summary
             </MenuItem>
 
-            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('tokens')}>
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('token')}>
               <Disc size={16} />
               Tokens
             </MenuItem>
 
-            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pool')}>
               <PieChart size={16} />
               Pools
             </MenuItem>
 
-            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('accounts')}>
+            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
               <Wallet />
               Wallet Analytics
             </MenuItem>

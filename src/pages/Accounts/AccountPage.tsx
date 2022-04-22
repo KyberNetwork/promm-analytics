@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import React, { useState, useEffect, useMemo } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
@@ -10,7 +10,6 @@ import { TYPE, StyledInternalLink } from 'theme'
 import Loader from 'components/Loader'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
-import { formatDollarAmount } from 'utils/numbers'
 import { ButtonPrimary } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import TransactionTable from 'components/TransactionsTable'
@@ -22,6 +21,10 @@ import Loading from 'components/Loader/Loading'
 import { useFetchedUserPositionData, useUserTransactions } from 'data/wallets/walletData'
 import { Label } from 'components/Text'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
+import { Pool, Position } from '@vutien/dmm-v3-sdk'
+import { CurrencyAmount, Token } from '@vutien/sdk-core'
+import JSBI from 'jsbi'
+import { useEthPrices } from 'hooks/useEthPrices'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -66,11 +69,16 @@ const TableLabel = styled(Label)`
   font-size: 12px;
 `
 
-export default function AccountPage({
-  match: {
-    params: { address },
-  },
-}: RouteComponentProps<{ address: string }>) {
+type FormattedPosition = {
+  tokenId: string
+  address: string
+  valueUSD: number
+  token0Amount: number
+  token1Amount: number
+}
+
+export default function AccountPage() {
+  let { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
 
   address = address.toLowerCase()
@@ -85,6 +93,48 @@ export default function AccountPage({
   const transactions = useUserTransactions(address)
 
   const { data } = useFetchedUserPositionData(address)
+  const ethPriceUSD = useEthPrices()
+
+  const position: { [key: string]: FormattedPosition } = useMemo(() => {
+    const positionMap: { [key: string]: FormattedPosition } = {}
+
+    data?.map((p) => {
+      const token0 = new Token(activeNetwork.chainId, p.token0.id, Number(p.token0.decimals), p.token0.symbol)
+      const token1 = new Token(activeNetwork.chainId, p.token1.id, Number(p.token1.decimals), p.token1.symbol)
+
+      const pool = new Pool(
+        token0,
+        token1,
+        Number(p.pool.feeTier),
+        JSBI.BigInt(p.pool.sqrtPrice),
+        JSBI.BigInt(p.pool.liquidity),
+        JSBI.BigInt(p.pool.reinvestL),
+        Number(p.pool.tick)
+      )
+      const position = new Position({
+        pool,
+        liquidity: p.liquidity,
+        tickLower: Number(p.tickLower.tickIdx),
+        tickUpper: Number(p.tickUpper.tickIdx),
+      })
+
+      const token0Amount = parseFloat(
+        CurrencyAmount.fromRawAmount(position.pool.token0, position.amount0.quotient).toFixed()
+      )
+      const token1Amount = parseFloat(
+        CurrencyAmount.fromRawAmount(position.pool.token1, position.amount1.quotient).toFixed()
+      )
+
+      const token0Usd = token0Amount * (ethPriceUSD?.current || 0) * parseFloat(p.token0.derivedETH)
+      const token1Usd = token1Amount * (ethPriceUSD?.current || 0) * parseFloat(p.token1.derivedETH)
+
+      const userPositionUSD = token0Usd + token1Usd
+
+      positionMap[p.id] = { tokenId: p.id, address: p.pool.id, valueUSD: userPositionUSD, token0Amount, token1Amount }
+    })
+    return positionMap
+  }, [data, activeNetwork.chainId, ethPriceUSD])
+
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
 
@@ -119,7 +169,7 @@ export default function AccountPage({
                 </StyledExternalLink>
               </AutoRow>
               <RowFixed align="center" justify="center">
-                {/* TODO: add search component */}
+                {/* TODO namgold: add search component */}
               </RowFixed>
             </RowBetween>
             <ResponsiveRow align="flex-end">
@@ -165,9 +215,9 @@ export default function AccountPage({
                           {shortenAddress(item.pool.id)}
                         </Label>
                       </LinkWrapper>
-                      <Label end={1}>{formatDollarAmount(Number(item.amountDepositedUSD))}</Label>
-                      <Label end={1}>{item.depositedToken0}</Label>
-                      <Label end={1}>{item.depositedToken1}</Label>
+                      <Label end={1}>{position[item.id].valueUSD}</Label>
+                      <Label end={1}>{position[item.id].token0Amount}</Label>
+                      <Label end={1}>{position[item.id].token1Amount}</Label>
                     </ResponsiveGrid>
                     <Break />
                   </React.Fragment>

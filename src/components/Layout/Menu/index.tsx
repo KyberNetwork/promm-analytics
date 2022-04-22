@@ -10,6 +10,7 @@ import { networkPrefix } from 'utils/networkPrefix'
 import { MenuItem, ExternalMenu, Divider, ExternalLink } from '../styled'
 import ThemeToggle from 'components/ThemeToggle'
 import SocialLinks from 'components/SocialLinks'
+import Wallet from 'components/Icons/Wallet'
 
 const StyledMenuIcon = styled(MenuIcon)`
   stroke: ${({ theme }) => theme.text};
@@ -91,6 +92,11 @@ export default function Menu() {
           <MenuItem to={networkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
             <PieChart size={16} />
             Pools
+          </MenuItem>
+
+          <MenuItem to={networkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
+            <Wallet />
+            Wallet Analytics
           </MenuItem>
 
           <Divider />

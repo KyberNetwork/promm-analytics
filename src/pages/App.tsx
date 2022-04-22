@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Home from './Home'
@@ -16,7 +16,10 @@ import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
-import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
+import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP } from 'constants/networks'
+import { updateActiveNetwork } from 'state/application/actions'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'state'
 
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
@@ -77,6 +80,24 @@ const WarningBanner = styled.div`
 
 const BLOCK_DIFFERENCE_THRESHOLD = 30
 
+const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ children }) => {
+  const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
+
+  const networkInfoFromURL = NETWORKS_INFO_LIST.find((networkInfo) => networkInfo.route === currentNetworkURL)
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    if (!currentNetworkURL) {
+      dispatch(updateActiveNetwork({ chainId: 'allchain' }))
+    } else if (networkInfoFromURL) {
+      dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || 'allchain' }))
+    }
+  }, [currentNetworkURL, networkInfoFromURL, dispatch])
+  if (currentNetworkURL && !networkInfoFromURL) return <Redirect to="/home" />
+
+  return children
+}
+
 export default function App() {
   const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
@@ -134,13 +155,75 @@ export default function App() {
               <SideNav />
               <BodyWrapper>
                 <Switch>
-                  <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
-                  <Route exact strict path="/:networkID?/pool/:address" component={PoolPage} />
-                  <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
-                  <Route exact strict path="/:networkID?/token/:address" component={RedirectInvalidToken} />
-                  <Route exact strict path="/:networkID?/accounts" component={AccountsOverview} />
-                  <Route exact strict path="/:networkID?/account/:address" component={AccountPage} />
-                  <Route exact path="/:networkID?/home" component={Home} />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/pools"
+                    render={() => (
+                      <NetworkReader>
+                        <PoolsOverview />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/pool/:address"
+                    render={() => (
+                      <NetworkReader>
+                        <PoolPage />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/tokens"
+                    render={() => (
+                      <NetworkReader>
+                        <TokensOverview />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/token/:address"
+                    render={() => (
+                      <NetworkReader>
+                        <RedirectInvalidToken />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/accounts"
+                    render={() => (
+                      <NetworkReader>
+                        <AccountsOverview />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/account/:address"
+                    render={() => (
+                      <NetworkReader>
+                        <AccountPage />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/:networkID?/home"
+                    render={() => (
+                      <NetworkReader>
+                        <Home />
+                      </NetworkReader>
+                    )}
+                  />
                   <Redirect to={`/${NETWORKS_INFO_MAP[ChainId.ETHEREUM].route}/home`} />
                 </Switch>
                 <Marginer />

@@ -1,8 +1,6 @@
-import { createReducer, nanoid } from '@reduxjs/toolkit'
-import { ChainId } from 'constants/networks'
-import { PopupContent, updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal } from './actions'
-
-type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
+import { createReducer } from '@reduxjs/toolkit'
+import { ChainId, ALL_SUPPORT_NETWORKS_ID } from 'constants/networks'
+import { updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal, updateActiveNetwork } from './actions'
 
 export interface ApplicationState {
   readonly blockNumber: { readonly [chainId in ChainId]?: number }
@@ -12,7 +10,7 @@ export interface ApplicationState {
     syncedBlock: number | undefined
     headBlock: number | undefined
   }
-  // readonly activeNetworkVersion: NetworkInfo
+  activeNetworksId: ChainId[]
 }
 
 const initialState: ApplicationState = {
@@ -23,7 +21,7 @@ const initialState: ApplicationState = {
     syncedBlock: undefined,
     headBlock: undefined,
   },
-  // activeNetworkVersion: EthereumNetworkInfo,
+  activeNetworksId: [ChainId.ETHEREUM],
 }
 
 export default createReducer(initialState, (builder) =>
@@ -34,6 +32,19 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(setOpenModal, (state, action) => {
       state.openModal = action.payload
+    })
+    .addCase(updateActiveNetwork, (state, action) => {
+      const { chainId } = action.payload
+      if (chainId === 'allchain') {
+        return {
+          ...state,
+          activeNetworksId: ALL_SUPPORT_NETWORKS_ID,
+        }
+      }
+      return {
+        ...state,
+        activeNetworksId: [chainId as ChainId],
+      }
     })
     .addCase(updateSubgraphStatus, (state, { payload: { available, syncedBlock, headBlock } }) => {
       state.subgraphStatus = {

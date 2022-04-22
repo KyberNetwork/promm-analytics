@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router-dom'
 
 export function useParsedLocation() {
   const location = useLocation()
-  const { network: currentNetworkURL } = useParams<{ network: string }>()
+  const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
 
   const pathSplited = location.pathname.split('/').slice(currentNetworkURL ? 2 : 1)
   return useMemo(
