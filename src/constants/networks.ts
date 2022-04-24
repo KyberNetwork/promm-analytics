@@ -78,7 +78,7 @@ const EthereumNetworkInfo: NetworkInfo = {
   blockClient: blockClient,
   subgraphName: 'uniswap/uniswap-v3',
   etherscanUrl: 'https://etherscan.io',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/dmm-assets/main/tokenLists/ethereum.tokenlist.json',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ethereum.tokenlist.json',
 }
 
 const ArbitrumNetworkInfo: NetworkInfo = {
@@ -94,7 +94,7 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   blockClient: arbitrumBlockClient,
   subgraphName: 'ianlapham/arbitrum-minimal',
   etherscanUrl: 'https://arbiscan.io',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/dmm-assets/main/tokenLists/arbitrum.tokenlist.json',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/arbitrum.tokenlist.json',
 }
 
 const PolygonNetworkInfo: NetworkInfo = {
@@ -110,7 +110,7 @@ const PolygonNetworkInfo: NetworkInfo = {
   blockClient: polygonBlockClient,
   subgraphName: 'ianlapham/uniswap-v3-polygon',
   etherscanUrl: 'https://polygonscan.com',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/dmm-assets/main/tokenLists/matic.tokenlist.json',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/matic.tokenlist.json',
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
