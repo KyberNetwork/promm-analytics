@@ -138,17 +138,22 @@ export default function TransactionTable({
   // pagination
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+  // filter on txn type
+  const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
 
   useEffect(() => {
     let extraPages = 1
     if (transactions.length % maxItems === 0) {
       extraPages = 0
     }
-    setMaxPage(Math.floor(transactions.length / maxItems) + extraPages)
-  }, [maxItems, transactions])
-
-  // filter on txn type
-  const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
+    setMaxPage(
+      Math.floor(
+        transactions.filter((x) => {
+          return txFilter === undefined || x.type === txFilter
+        }).length / maxItems
+      ) + extraPages
+    )
+  }, [maxItems, transactions, txFilter])
 
   const sortedTransactions = useMemo(() => {
     return transactions
