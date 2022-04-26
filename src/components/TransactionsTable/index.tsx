@@ -157,10 +157,18 @@ export default function TransactionTable({
       ? transactions
           .slice()
           .sort((a, b) => {
+            let valueToCompareA = null
+            let valueToCompareB = null
+
             if (a && b) {
-              return a[sortField as keyof Transaction] > b[sortField as keyof Transaction]
-                ? (sortDirection ? -1 : 1) * 1
-                : (sortDirection ? -1 : 1) * -1
+              if (sortField === SORT_FIELD.amountToken0 || sortField === SORT_FIELD.amountToken1) {
+                valueToCompareA = Math.abs(a[sortField as keyof Transaction] as number)
+                valueToCompareB = Math.abs(b[sortField as keyof Transaction] as number)
+              } else {
+                valueToCompareA = a[sortField as keyof Transaction]
+                valueToCompareB = b[sortField as keyof Transaction]
+              }
+              return valueToCompareA > valueToCompareB ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
             } else {
               return -1
             }
