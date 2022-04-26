@@ -223,7 +223,7 @@ export default function TokenTable({
               if (data) {
                 return (
                   <React.Fragment key={i}>
-                    <DataRow index={(page - 1) * MAX_ITEMS + i} tokenData={data} />
+                    <DataRow index={(page - 1) * maxItems + i} tokenData={data} />
                     <Break />
                   </React.Fragment>
                 )

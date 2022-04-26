@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { AppState } from '../index'
 import sortByListPriority from 'utils/listSort'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
-// import { useFetchListCallback } from 'hooks/useFetchListCallback'
 import { WrappedTokenInfo } from './wrappedTokenInfo'
 import { ChainId } from 'constants/networks'
 

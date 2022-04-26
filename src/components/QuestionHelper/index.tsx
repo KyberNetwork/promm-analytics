@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { HelpCircle as Question, Info } from 'react-feather'
+import { Info } from 'react-feather'
 import styled from 'styled-components'
 import Tooltip from '../Tooltip'
 
