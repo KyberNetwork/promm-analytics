@@ -130,6 +130,15 @@ const NetworkItem = styled.div<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.textReverse : theme.subText)};
 `
 
+const LinkWrapper = styled.a`
+  text-decoration: none;
+  :hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  color: ${({ theme }) => theme.subText};
+`
+
 type SelectNetworkButtonPropType = {
   onClick: React.MouseEventHandler
   marginTop?: string
@@ -186,11 +195,11 @@ function SideNav() {
 
         <TabWrapper>
           <TabItem active={tab === 1} onClick={() => setTab(1)} role="button">
-            V2 Analytics
+            Analytics Elastic
           </TabItem>
           {/* <TabItem active={tab === 2} onClick={() => setTab(2)} role="button"> */}
           <TabItem active={tab === 2} role="button">
-            <a href="https://analytics.kyberswap.com">V1 Analytics</a>
+            <LinkWrapper href="https://analytics.kyberswap.com">Analytics Classic </LinkWrapper>
             {/* todo namgold: disable link styling */}
           </TabItem>
         </TabWrapper>
