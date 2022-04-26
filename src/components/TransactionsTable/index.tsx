@@ -147,11 +147,8 @@ export default function TransactionTable({
       extraPages = 0
     }
     setMaxPage(
-      Math.floor(
-        transactions.filter((x) => {
-          return txFilter === undefined || x.type === txFilter
-        }).length / maxItems
-      ) + extraPages
+      Math.floor(transactions.filter((x) => txFilter === undefined || x.type === txFilter).length / maxItems) +
+        extraPages
     )
   }, [maxItems, transactions, txFilter])
 
@@ -168,9 +165,7 @@ export default function TransactionTable({
               return -1
             }
           })
-          .filter((x) => {
-            return txFilter === undefined || x.type === txFilter
-          })
+          .filter((x) => txFilter === undefined || x.type === txFilter)
           .slice(maxItems * (page - 1), page * maxItems)
       : []
   }, [transactions, maxItems, page, sortField, sortDirection, txFilter])
