@@ -133,151 +133,159 @@ export default function Home() {
   return (
     <PageWrapper>
       {/* <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} /> */}
-      <AutoColumn gap="16px">
-        <TYPE.label fontSize="24px">Summary</TYPE.label>
+      <AutoColumn gap="40px">
+        <AutoColumn gap="32px">
+          <TYPE.label fontSize="24px">Summary</TYPE.label>
 
-        <StatisticWrapper>
-          <DarkGreyCard>
-            <AutoColumn gap="8px">
-              <RowBetween>
-                <TYPE.main fontSize="12px">Trading Volume</TYPE.main>
+          <StatisticWrapper>
+            <DarkGreyCard>
+              <AutoColumn gap="8px">
+                <RowBetween>
+                  <TYPE.main fontSize="12px">Trading Volume</TYPE.main>
 
-                <RowFixed>
-                  <ButtonText
-                    onClick={() => setShowTotalVol(true)}
-                    style={{ fontWeight: 500, fontSize: '12px', color: showTotalVol ? theme.primary : theme.subText }}
-                  >
-                    All time
-                  </ButtonText>
-                  <ButtonText
-                    onClick={() => setShowTotalVol(false)}
-                    style={{
-                      fontWeight: 500,
-                      marginLeft: '8px',
-                      fontSize: '12px',
-                      color: !showTotalVol ? theme.primary : theme.subText,
-                    }}
-                  >
-                    24H
-                  </ButtonText>
+                  <RowFixed>
+                    <ButtonText
+                      onClick={() => setShowTotalVol(true)}
+                      style={{ fontWeight: 500, fontSize: '12px', color: showTotalVol ? theme.primary : theme.subText }}
+                    >
+                      All time
+                    </ButtonText>
+                    <ButtonText
+                      onClick={() => setShowTotalVol(false)}
+                      style={{
+                        fontWeight: 500,
+                        marginLeft: '8px',
+                        fontSize: '12px',
+                        color: !showTotalVol ? theme.primary : theme.subText,
+                      }}
+                    >
+                      24H
+                    </ButtonText>
+                  </RowFixed>
+                </RowBetween>
+                <RowFixed mr="20px">
+                  <Text fontWeight="500" fontSize="18px">
+                    {formatDollarAmount(showTotalVol ? aggregatorVol.totalVolume : aggregatorVol.last24hVolume)}
+                  </Text>
                 </RowFixed>
+              </AutoColumn>
+            </DarkGreyCard>
+            <DarkGreyCard>
+              <TYPE.main fontSize="12px">Fees 24H</TYPE.main>
+              <RowBetween style={{ marginTop: '8px' }}>
+                <TYPE.label fontSize="18px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
+                <Percent simple value={protocolData?.feeChange} wrap={true} />
               </RowBetween>
-              <RowFixed mr="20px">
-                <Text fontWeight="500" fontSize="18px">
-                  {formatDollarAmount(showTotalVol ? aggregatorVol.totalVolume : aggregatorVol.last24hVolume)}
-                </Text>
-              </RowFixed>
-            </AutoColumn>
-          </DarkGreyCard>
-          <DarkGreyCard>
-            <TYPE.main fontSize="12px">Fees 24H</TYPE.main>
-            <RowBetween style={{ marginTop: '8px' }}>
-              <TYPE.label fontSize="18px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
-              <Percent simple value={protocolData?.feeChange} wrap={true} />
-            </RowBetween>
-          </DarkGreyCard>
-          <DarkGreyCard>
-            <TYPE.main fontSize="12px">Transactions (24H)</TYPE.main>
-            <RowBetween style={{ marginTop: '8px' }}>
-              <TYPE.label fontSize="18px">{protocolData?.txCount}</TYPE.label>
-              <Percent simple value={protocolData?.txCountChange} wrap={true} />
-            </RowBetween>
-          </DarkGreyCard>
-        </StatisticWrapper>
+            </DarkGreyCard>
+            <DarkGreyCard>
+              <TYPE.main fontSize="12px">Transactions (24H)</TYPE.main>
+              <RowBetween style={{ marginTop: '8px' }}>
+                <TYPE.label fontSize="18px">{protocolData?.txCount}</TYPE.label>
+                <Percent simple value={protocolData?.txCountChange} wrap={true} />
+              </RowBetween>
+            </DarkGreyCard>
+          </StatisticWrapper>
 
-        <ResponsiveRow>
-          <ChartWrapper>
-            <LineChart
-              data={formattedTvlData}
-              height={220}
-              minHeight={332}
-              color={theme.primary}
-              value={liquidityHover}
-              label={leftLabel}
-              setValue={setLiquidityHover}
-              setLabel={setLeftLabel}
-              topLeft={
-                <AutoColumn gap="4px">
-                  <TYPE.label fontSize="16px">TVL</TYPE.label>
-                  <TYPE.largeHeader fontSize="32px">
-                    <MonoSpace>{formatDollarAmount(liquidityHover, 2, true)} </MonoSpace>
-                  </TYPE.largeHeader>
-                  <TYPE.main fontSize="12px" height="14px">
-                    {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
-                  </TYPE.main>
-                </AutoColumn>
-              }
-            />
-          </ChartWrapper>
-          <ChartWrapper>
-            <BarChart
-              height={220}
-              minHeight={332}
-              data={
-                volumeWindow === VolumeWindow.monthly
-                  ? monthlyVolumeData
-                  : volumeWindow === VolumeWindow.weekly
-                  ? weeklyVolumeData
-                  : formattedVolumeData
-              }
-              color={theme.primary}
-              setValue={setVolumeHover}
-              setLabel={setRightLabel}
-              value={volumeHover}
-              label={rightLabel}
-              activeWindow={volumeWindow}
-              topRight={
-                <RowFixed style={{ marginLeft: '-40px', marginTop: '8px' }}>
-                  <SmallOptionButton
-                    active={volumeWindow === VolumeWindow.daily}
-                    onClick={() => setVolumeWindow(VolumeWindow.daily)}
-                  >
-                    D
-                  </SmallOptionButton>
-                  <SmallOptionButton
-                    active={volumeWindow === VolumeWindow.weekly}
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => setVolumeWindow(VolumeWindow.weekly)}
-                  >
-                    W
-                  </SmallOptionButton>
-                  <SmallOptionButton
-                    active={volumeWindow === VolumeWindow.monthly}
-                    style={{ marginLeft: '8px' }}
-                    onClick={() => setVolumeWindow(VolumeWindow.monthly)}
-                  >
-                    M
-                  </SmallOptionButton>
-                </RowFixed>
-              }
-              topLeft={
-                <AutoColumn gap="4px">
-                  <TYPE.label fontSize="16px">Volume 24H</TYPE.label>
-                  <TYPE.largeHeader fontSize="32px">
-                    <MonoSpace> {formatDollarAmount(volumeHover, 2)}</MonoSpace>
-                  </TYPE.largeHeader>
-                  <TYPE.main fontSize="12px" height="14px">
-                    {rightLabel ? <MonoSpace>{rightLabel} (UTC)</MonoSpace> : null}
-                  </TYPE.main>
-                </AutoColumn>
-              }
-            />
-          </ChartWrapper>
-        </ResponsiveRow>
-        <RowBetween>
-          <TYPE.label>Top Tokens</TYPE.label>
-          <StyledInternalLink to="tokens">Explore</StyledInternalLink>
-        </RowBetween>
-        <TokenTable tokenDatas={formattedTokens} maxItems={10} />
-        <RowBetween>
-          <TYPE.label>Top Pools</TYPE.label>
-          <StyledInternalLink to="pools">Explore</StyledInternalLink>
-        </RowBetween>
-        <PoolTable poolDatas={poolDatas} />
-        <RowBetween>
-          <TYPE.label>Transactions</TYPE.label>
-        </RowBetween>
-        {transactions ? <TransactionsTable transactions={transactions} maxItems={5} /> : null}
+          <ResponsiveRow>
+            <ChartWrapper>
+              <LineChart
+                data={formattedTvlData}
+                height={220}
+                minHeight={332}
+                color={theme.primary}
+                value={liquidityHover}
+                label={leftLabel}
+                setValue={setLiquidityHover}
+                setLabel={setLeftLabel}
+                topLeft={
+                  <AutoColumn gap="4px">
+                    <TYPE.label fontSize="16px">TVL</TYPE.label>
+                    <TYPE.largeHeader fontSize="32px">
+                      <MonoSpace>{formatDollarAmount(liquidityHover, 2, true)} </MonoSpace>
+                    </TYPE.largeHeader>
+                    <TYPE.main fontSize="12px" height="14px">
+                      {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
+                    </TYPE.main>
+                  </AutoColumn>
+                }
+              />
+            </ChartWrapper>
+            <ChartWrapper>
+              <BarChart
+                height={220}
+                minHeight={332}
+                data={
+                  volumeWindow === VolumeWindow.monthly
+                    ? monthlyVolumeData
+                    : volumeWindow === VolumeWindow.weekly
+                    ? weeklyVolumeData
+                    : formattedVolumeData
+                }
+                color={theme.primary}
+                setValue={setVolumeHover}
+                setLabel={setRightLabel}
+                value={volumeHover}
+                label={rightLabel}
+                activeWindow={volumeWindow}
+                topRight={
+                  <RowFixed style={{ marginLeft: '-40px', marginTop: '8px' }}>
+                    <SmallOptionButton
+                      active={volumeWindow === VolumeWindow.daily}
+                      onClick={() => setVolumeWindow(VolumeWindow.daily)}
+                    >
+                      D
+                    </SmallOptionButton>
+                    <SmallOptionButton
+                      active={volumeWindow === VolumeWindow.weekly}
+                      style={{ marginLeft: '8px' }}
+                      onClick={() => setVolumeWindow(VolumeWindow.weekly)}
+                    >
+                      W
+                    </SmallOptionButton>
+                    <SmallOptionButton
+                      active={volumeWindow === VolumeWindow.monthly}
+                      style={{ marginLeft: '8px' }}
+                      onClick={() => setVolumeWindow(VolumeWindow.monthly)}
+                    >
+                      M
+                    </SmallOptionButton>
+                  </RowFixed>
+                }
+                topLeft={
+                  <AutoColumn gap="4px">
+                    <TYPE.label fontSize="16px">Volume 24H</TYPE.label>
+                    <TYPE.largeHeader fontSize="32px">
+                      <MonoSpace> {formatDollarAmount(volumeHover, 2)}</MonoSpace>
+                    </TYPE.largeHeader>
+                    <TYPE.main fontSize="12px" height="14px">
+                      {rightLabel ? <MonoSpace>{rightLabel} (UTC)</MonoSpace> : null}
+                    </TYPE.main>
+                  </AutoColumn>
+                }
+              />
+            </ChartWrapper>
+          </ResponsiveRow>
+        </AutoColumn>
+        <AutoColumn gap="16px">
+          <RowBetween>
+            <TYPE.label>Top Tokens</TYPE.label>
+            <StyledInternalLink to="tokens">Explore</StyledInternalLink>
+          </RowBetween>
+          <TokenTable tokenDatas={formattedTokens} maxItems={10} />
+        </AutoColumn>
+        <AutoColumn gap="16px">
+          <RowBetween>
+            <TYPE.label>Top Pools</TYPE.label>
+            <StyledInternalLink to="pools">Explore</StyledInternalLink>
+          </RowBetween>
+          <PoolTable poolDatas={poolDatas} />
+        </AutoColumn>
+        <AutoColumn gap="16px">
+          <RowBetween>
+            <TYPE.label>Transactions</TYPE.label>
+          </RowBetween>
+          {transactions ? <TransactionsTable transactions={transactions} maxItems={5} /> : null}
+        </AutoColumn>
       </AutoColumn>
     </PageWrapper>
   )
