@@ -48,7 +48,7 @@ export function escapeRegExp(string: string): string {
 }
 
 export function feeTierPercent(fee: number): string {
-  return (fee / 100).toPrecision(1) + '%'
+  return (fee / 10000).toPrecision(1) + '%'
 }
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
