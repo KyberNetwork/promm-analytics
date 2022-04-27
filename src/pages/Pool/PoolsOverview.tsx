@@ -41,7 +41,7 @@ export default function PoolOverview() {
           All Pools
         </Text>
 
-        <PairTable pairDatas={pairDatas} maxItems={15} />
+        <PairTable pairDatas={pairDatas} />
       </AutoColumn>
     </PageWrapper>
   )
