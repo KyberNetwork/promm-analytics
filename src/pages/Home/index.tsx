@@ -290,7 +290,7 @@ export default function Home() {
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
-            <TableTitle>Transactions</TableTitle>
+            <TableTitle>Latest Transactions</TableTitle>
           </RowBetween>
           {transactions ? <TransactionsTable transactions={transactions} maxItems={5} /> : null}
         </AutoColumn>
