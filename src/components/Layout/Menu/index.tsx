@@ -108,7 +108,7 @@ export default function Menu() {
 
           <ExternalMenu href={'https://analytics.kyberswap.com'}>
             <Activity size={16} />
-            V1 Analytics
+            Classic Analytics
           </ExternalMenu>
 
           <Divider />

@@ -199,8 +199,7 @@ function SideNav() {
           </TabItem>
           {/* <TabItem active={tab === 2} onClick={() => setTab(2)} role="button"> */}
           <TabItem active={tab === 2} role="button">
-            <LinkWrapper href="https://analytics.kyberswap.com">Analytics Classic </LinkWrapper>
-            {/* todo namgold: disable link styling */}
+            <LinkWrapper href="https://analytics.kyberswap.com">Analytics Classic</LinkWrapper>
           </TabItem>
         </TabWrapper>
 
@@ -273,7 +272,7 @@ function SideNav() {
             <Text fontSize={16} fontWeight="500" color={theme.subText}>
               Select a network
             </Text>
-            <QuestionHelper text="You can switch between networks in our V2 and V1 Analytics here" />
+            <QuestionHelper text="You can switch between networks in our Elastic Analytics and Classic Analytics below" />
           </Flex>
 
           <SelectNetworkButton onClick={() => setShowNetworkModal(true)} marginTop="1rem" />
@@ -308,7 +307,7 @@ function SideNav() {
 
             <ExternalMenu href={'https://analytics.kyberswap.com'}>
               <Activity size={16} />
-              V1 Analytics
+              Classic Analytics
             </ExternalMenu>
           </MenuWrapper>
         </div>
