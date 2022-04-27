@@ -45,6 +45,10 @@ const StatisticWrapper = styled.div`
     `}
 `
 
+const TableTitle = styled(TYPE.label)`
+  font-size: 18px;
+`
+
 export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -268,21 +272,25 @@ export default function Home() {
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
-            <TYPE.label>Top Tokens</TYPE.label>
-            <StyledInternalLink to="tokens">Explore</StyledInternalLink>
+            <TableTitle>Top Tokens</TableTitle>
+            <StyledInternalLink to="tokens" fontSize="14px">
+              Explore
+            </StyledInternalLink>
           </RowBetween>
           <TokenTable tokenDatas={formattedTokens} maxItems={10} />
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
-            <TYPE.label>Top Pools</TYPE.label>
-            <StyledInternalLink to="pools">Explore</StyledInternalLink>
+            <TableTitle>Top Pools</TableTitle>
+            <StyledInternalLink to="pools" fontSize="14px">
+              Explore
+            </StyledInternalLink>
           </RowBetween>
           <PoolTable poolDatas={poolDatas} />
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
-            <TYPE.label>Transactions</TYPE.label>
+            <TableTitle>Transactions</TableTitle>
           </RowBetween>
           {transactions ? <TransactionsTable transactions={transactions} maxItems={5} /> : null}
         </AutoColumn>
