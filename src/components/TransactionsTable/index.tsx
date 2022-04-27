@@ -140,22 +140,23 @@ export default function TransactionTable({
   const [maxPage, setMaxPage] = useState(1)
   // filter on txn type
   const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
+  const filteredTxn = useMemo(() => transactions?.filter((x) => txFilter === undefined || x.type === txFilter) || [], [
+    transactions,
+    txFilter,
+  ])
 
   useEffect(() => {
     let extraPages = 1
-    if (transactions.length % maxItems === 0) {
+    if (filteredTxn.length % maxItems === 0) {
       extraPages = 0
     }
-    setMaxPage(
-      Math.floor(transactions.filter((x) => txFilter === undefined || x.type === txFilter).length / maxItems) +
-        extraPages
-    )
-  }, [maxItems, transactions, txFilter])
+    const newMaxPage = Math.floor(filteredTxn.length / maxItems) + extraPages
+    setMaxPage(newMaxPage)
+  }, [maxItems, filteredTxn, txFilter])
 
   const sortedTransactions = useMemo(() => {
-    return transactions
-      ? transactions
-          .slice()
+    return filteredTxn.length
+      ? filteredTxn
           .sort((a, b) => {
             let valueToCompareA = null
             let valueToCompareB = null
@@ -173,10 +174,9 @@ export default function TransactionTable({
               return -1
             }
           })
-          .filter((x) => txFilter === undefined || x.type === txFilter)
           .slice(maxItems * (page - 1), page * maxItems)
       : []
-  }, [transactions, maxItems, page, sortField, sortDirection, txFilter])
+  }, [filteredTxn, maxItems, page, sortField, sortDirection])
 
   const handleSort = useCallback(
     (newField: string) => {
@@ -193,7 +193,7 @@ export default function TransactionTable({
     [sortDirection, sortField]
   )
 
-  if (!transactions) {
+  if (!filteredTxn.length) {
     return <Loader />
   }
 
