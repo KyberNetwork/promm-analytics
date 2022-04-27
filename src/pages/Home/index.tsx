@@ -11,7 +11,6 @@ import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import { ButtonText, StyledInternalLink } from '../../theme/components'
 import TokenTable from 'components/tokens/TokenTable'
-import PoolTable from 'components/pools/PoolTable'
 import { PageWrapper } from 'pages/styled'
 import { unixToDate } from 'utils/date'
 import BarChart from 'components/BarChart/alt'
@@ -26,6 +25,8 @@ import { SmallOptionButton } from 'components/Button'
 import { VolumeWindow } from 'types'
 import useAggregatorVolume from 'hooks/useAggregatorVolume'
 import { Text } from 'rebass'
+import { PoolData } from 'state/pools/reducer'
+import PairTable from 'components/pools/PairTable'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -79,6 +80,19 @@ export default function Home() {
       .map((p) => p.data)
       .filter(notEmpty)
   }, [allPoolData])
+
+  const pairDatas = useMemo(() => {
+    const initPairs: { [pairId: string]: PoolData[] } = {}
+
+    const poolsGroupByPair = poolDatas.reduce((pairs, pool) => {
+      const pairId = pool.token0.address + '_' + pool.token1.address
+      return {
+        ...pairs,
+        [pairId]: [...(pairs[pairId] || []), pool].sort((a, b) => b.tvlUSD - a.tvlUSD),
+      }
+    }, initPairs)
+    return Object.values(poolsGroupByPair).sort((a, b) => b[0].tvlUSD - a[0].tvlUSD)
+  }, [poolDatas])
 
   // if hover value undefined, reset to current day value
   useEffect(() => {
@@ -286,7 +300,7 @@ export default function Home() {
               Explore
             </StyledInternalLink>
           </RowBetween>
-          <PoolTable poolDatas={poolDatas} />
+          <PairTable pairDatas={pairDatas} />
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>

@@ -24,7 +24,6 @@ import Percent from 'components/Percent'
 import { ButtonPrimary, SavedIcon, ButtonOutlined } from 'components/Button'
 import { DarkGreyCard, LightGreyCard } from 'components/Card'
 import { usePoolDatas } from 'state/pools/hooks'
-import PoolTable from 'components/pools/PoolTable'
 import LineChart from 'components/LineChart/alt'
 import { unixToDate } from 'utils/date'
 import { ToggleWrapper, ToggleElementFree } from 'components/Toggle/index'
@@ -39,6 +38,8 @@ import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { Flex } from 'rebass'
 import Loading from 'components/Loader/Loading'
+import PairTable from 'components/pools/PairTable'
+import { PoolData } from 'state/pools/reducer'
 
 const PriceText = styled(TYPE.label)`
   font-size: 24px;
@@ -107,6 +108,19 @@ export default function TokenPage() {
   const poolDatas = usePoolDatas(poolsForToken ?? [])
   const transactions = useTokenTransactions(address)
   const chartData = useTokenChartData(address)
+
+  const pairDatas = useMemo(() => {
+    const initPairs: { [pairId: string]: PoolData[] } = {}
+
+    const poolsGroupByPair = poolDatas.reduce((pairs, pool) => {
+      const pairId = pool.token0.address + '_' + pool.token1.address
+      return {
+        ...pairs,
+        [pairId]: [...(pairs[pairId] || []), pool].sort((a, b) => b.tvlUSD - a.tvlUSD),
+      }
+    }, initPairs)
+    return Object.values(poolsGroupByPair).sort((a, b) => b[0].tvlUSD - a[0].tvlUSD)
+  }, [poolDatas])
 
   // format for chart component
   const formattedTvlData = useMemo(() => {
@@ -364,7 +378,7 @@ export default function TokenPage() {
               </DarkGreyCard>
             </ContentLayout>
             <TYPE.label fontSize="18px">Pools</TYPE.label>
-            <PoolTable poolDatas={poolDatas} />
+            <PairTable pairDatas={pairDatas} />
             <TYPE.label fontSize="18px">Transactions</TYPE.label>
             {transactions ? (
               <TransactionTable transactions={transactions} />
