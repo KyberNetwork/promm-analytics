@@ -291,7 +291,7 @@ export default function Home() {
               Explore
             </StyledInternalLink>
           </RowBetween>
-          <TokenTable tokenDatas={formattedTokens} maxItems={10} />
+          <TokenTable tokenDatas={formattedTokens} maxItems={5} />
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
@@ -300,7 +300,7 @@ export default function Home() {
               Explore
             </StyledInternalLink>
           </RowBetween>
-          <PairTable pairDatas={pairDatas} />
+          <PairTable pairDatas={pairDatas} maxItems={5} />
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
