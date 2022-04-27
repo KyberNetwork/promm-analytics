@@ -195,11 +195,11 @@ function SideNav() {
 
         <TabWrapper>
           <TabItem active={tab === 1} onClick={() => setTab(1)} role="button">
-            Analytics Elastic
+            Elastic Analytics
           </TabItem>
           {/* <TabItem active={tab === 2} onClick={() => setTab(2)} role="button"> */}
           <TabItem active={tab === 2} role="button">
-            <LinkWrapper href="https://analytics.kyberswap.com">Analytics Classic</LinkWrapper>
+            <LinkWrapper href="https://analytics.kyberswap.com">Classic Analytics</LinkWrapper>
           </TabItem>
         </TabWrapper>
 
