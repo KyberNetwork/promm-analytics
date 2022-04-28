@@ -152,7 +152,8 @@ export default function TransactionTable({
     }
     const newMaxPage = Math.floor(filteredTxn.length / maxItems) + extraPages
     setMaxPage(newMaxPage)
-  }, [maxItems, filteredTxn, txFilter])
+    if (newMaxPage < page) setPage(newMaxPage)
+  }, [maxItems, filteredTxn, txFilter, page])
 
   const sortedTransactions = useMemo(() => {
     return filteredTxn.length
