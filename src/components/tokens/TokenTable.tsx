@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { ExtraSmallOnly, HideExtraSmall, TYPE } from 'theme'
+import { TYPE } from 'theme'
 import { DarkGreyCard } from 'components/Card'
 import { TokenData } from '../../state/tokens/reducer'
 import Loader, { LoadingRows } from 'components/Loader'
@@ -29,28 +29,28 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 20px 3fr repeat(4, 1fr);
+  grid-template-columns: 20px 2fr 85px repeat(4, 1fr);
 
   @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1.5fr repeat(3, 1fr);
-    & :nth-child(4) {
+    grid-template-columns: 20px 1fr 85px repeat(3, 1fr);
+    & :nth-child(7) {
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
-    grid-template-columns: 20px 1.5fr repeat(2, 1fr);
-    & :nth-child(6) {
+    grid-template-columns: 20px 1fr 85px repeat(2, 1fr);
+    & :nth-child(4) {
       display: none;
     }
   }
 
   @media screen and (max-width: 670px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 85px 1fr;
     > *:first-child {
       display: none;
     }
-    > *:nth-child(3) {
+    > *:nth-child(6) {
       display: none;
     }
   }
@@ -86,32 +86,25 @@ const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) 
         <Label>
           <RowFixed>
             <ResponsiveLogo address={tokenData.address} />
-          </RowFixed>
-          <ExtraSmallOnly style={{ marginLeft: '6px' }}>
-            <Label color={theme.primary} ml="8px">
-              {tokenData.symbol}
-            </Label>
-          </ExtraSmallOnly>
-          <HideExtraSmall style={{ marginLeft: '10px' }}>
-            <RowFixed>
+            <div style={{ marginLeft: '8px' }}>
               <HoverInlineText color={theme.primary} text={tokenData.name} />
-              <Label ml="8px" color={theme.subText}>
-                ({tokenData.symbol})
-              </Label>
-            </RowFixed>
-          </HideExtraSmall>
+            </div>
+          </RowFixed>
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {tokenData.symbol}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {formatDollarAmount(tokenData.tvlUSD)}
+        </Label>
+        <Label end={1} fontWeight={400}>
+          {formatDollarAmount(tokenData.volumeUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
           {formatDollarAmount(tokenData.priceUSD)}
         </Label>
         <Label end={1} fontWeight={400}>
           <Percent value={tokenData.priceUSDChange} fontWeight={400} />
-        </Label>
-        <Label end={1} fontWeight={400}>
-          {formatDollarAmount(tokenData.volumeUSD)}
-        </Label>
-        <Label end={1} fontWeight={400}>
-          {formatDollarAmount(tokenData.tvlUSD)}
         </Label>
       </ResponsiveGrid>
     </LinkWrapper>
@@ -120,6 +113,7 @@ const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) 
 
 const SORT_FIELD = {
   name: 'name',
+  symbol: 'symbol',
   volumeUSD: 'volumeUSD',
   tvlUSD: 'tvlUSD',
   priceUSD: 'priceUSD',
@@ -201,11 +195,11 @@ export default function TokenTable({
             <ClickableText color={theme.subText} onClick={() => handleSort(SORT_FIELD.name)}>
               Name {arrow(SORT_FIELD.name)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSD)}>
-              Price {arrow(SORT_FIELD.priceUSD)}
+            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.symbol)}>
+              Symbol {arrow(SORT_FIELD.symbol)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
-              Price Change {arrow(SORT_FIELD.priceUSDChange)}
+            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+              TVL {arrow(SORT_FIELD.tvlUSD)}
             </ClickableText>
             {/* <ClickableText end={1} onClick={() => handleSort(SORT_FIELD.priceUSDChangeWeek)}>
             7d {arrow(SORT_FIELD.priceUSDChangeWeek)}
@@ -213,8 +207,11 @@ export default function TokenTable({
             <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume 24H {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
-              TVL {arrow(SORT_FIELD.tvlUSD)}
+            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSD)}>
+              Price {arrow(SORT_FIELD.priceUSD)}
+            </ClickableText>
+            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
+              Price Change {arrow(SORT_FIELD.priceUSDChange)}
             </ClickableText>
           </TableHeader>
 
