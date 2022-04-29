@@ -14,8 +14,8 @@ dayjs.extend(weekOfYear)
 const ONE_DAY_UNIX = 24 * 60 * 60
 
 const GLOBAL_CHART = gql`
-  query uniswapDayDatas($startTime: Int!, $skip: Int!) {
-    uniswapDayDatas(
+  query kyberSwapDayDatas($startTime: Int!, $skip: Int!) {
+    kyberSwapDayDatas(
       first: 1000
       skip: $skip
       subgraphError: allow
@@ -32,7 +32,7 @@ const GLOBAL_CHART = gql`
 `
 
 interface ChartResults {
-  uniswapDayDatas: {
+  kyberSwapDayDatas: {
     date: number
     volumeUSD: string
     tvlUSD: string
@@ -64,11 +64,11 @@ async function fetchChartData(client: ApolloClient<NormalizedCacheObject>) {
       })
       if (!loading) {
         skip += 1000
-        if (chartResData.uniswapDayDatas.length < 1000 || error) {
+        if (chartResData.kyberSwapDayDatas.length < 1000 || error) {
           allFound = true
         }
         if (chartResData) {
-          data = data.concat(chartResData.uniswapDayDatas)
+          data = data.concat(chartResData.kyberSwapDayDatas)
         }
       }
     }
