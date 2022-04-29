@@ -18290,7 +18290,7 @@
             "deprecationReason": null
           },
           {
-            "name": "uniswapDayDatas",
+            "name": "kyberSwapDayDatas",
             "description": null,
             "args": [
               {
@@ -20673,7 +20673,7 @@
             "deprecationReason": null
           },
           {
-            "name": "uniswapDayDatas",
+            "name": "kyberSwapDayDatas",
             "description": null,
             "args": [
               {
