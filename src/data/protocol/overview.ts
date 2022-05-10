@@ -8,7 +8,7 @@ import { useMemo } from 'react'
 import { useClients } from 'state/application/hooks'
 import { client, blockClient, arbitrumClient, arbitrumBlockClient } from 'apollo/client'
 
-export const GLOBAL_DATA = (block?: string) => {
+export const GLOBAL_DATA = (block?: string | number) => {
   const queryString = ` query uniswapFactories {
       factories(
        ${block !== undefined ? `block: { number: ${block}}` : ``}

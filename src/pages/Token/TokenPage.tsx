@@ -214,7 +214,7 @@ export default function TokenPage() {
               <ResponsiveRow align="flex-end">
                 <AutoColumn gap="md">
                   <RowFixed gap="lg">
-                    <CurrencyLogo address={address} size="32px" />
+                    <CurrencyLogo address={address} size="32px" activeNetwork={activeNetwork} />
                     <Label ml={'10px'}>{tokenData.name}</Label>
                     <Label ml={'6px'}>({tokenData.symbol})</Label>
                     <HideMedium>

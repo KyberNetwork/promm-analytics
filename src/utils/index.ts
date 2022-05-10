@@ -1,5 +1,8 @@
 import { getAddress } from '@ethersproject/address'
 import { NetworkInfo } from 'constants/networks'
+import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
+import dayjs from 'dayjs'
+import Numeral from 'numeral'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -32,6 +35,17 @@ export function getEtherscanLink(
   }
 }
 
+export const toK = (num: number) => {
+  return Numeral(num).format('0.[00]a')
+}
+
+export const toNiceDate = (date: number) => {
+  const x = dayjs.utc(dayjs.unix(date)).format('MMM DD')
+  return x
+}
+
+export const toNiceDateYear = (date: number) => dayjs.utc(dayjs.unix(date)).format('MMMM DD h:mm A, YYYY')
+
 export const currentTimestamp = (): number => new Date().getTime()
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
@@ -57,4 +71,31 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
 
 export function isAllChain(networkInfos: NetworkInfo[]) {
   return networkInfos.length > 1
+}
+
+export function getTimeframe(timeWindow: TimeframeOptions) {
+  const utcEndTime = dayjs.utc()
+  // based on window, get starttime
+  let utcStartTime
+  switch (timeWindow) {
+    case TimeframeOptions.ONE_DAY:
+      utcStartTime = utcEndTime.subtract(1, 'day').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.THERE_DAYS:
+      utcStartTime = utcEndTime.subtract(3, 'day').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.WEEK:
+      utcStartTime = utcEndTime.subtract(1, 'week').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.MONTH:
+      utcStartTime = utcEndTime.subtract(1, 'month').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.ALL_TIME:
+      utcStartTime = utcEndTime.subtract(1, 'year').endOf('day').unix() - 1
+      break
+    default:
+      utcStartTime = utcEndTime.subtract(1, 'year').startOf('year').unix() - 1
+      break
+  }
+  return utcStartTime
 }

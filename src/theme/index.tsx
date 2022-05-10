@@ -195,6 +195,9 @@ export const TYPE = {
   error({ error, ...props }: { error: boolean } & TextProps) {
     return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
   },
+  header(props: TextProps) {
+    return <TextWrapper fontWeight={600} color={'text1'} {...props} />
+  },
 }
 
 export const FixedGlobalStyle = createGlobalStyle`

@@ -188,8 +188,8 @@ export function useTokenPriceData(
         address,
         interval,
         startTimestamp,
-        dataClient,
-        blockClient
+        dataClient
+        // blockClient
       )
       if (data) {
         dispatch(

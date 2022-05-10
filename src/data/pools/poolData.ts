@@ -7,7 +7,7 @@ import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
 
-export const POOLS_BULK = (block: number | undefined, pools: string[]) => {
+export const POOLS_BULK = (block: number | string | undefined, pools: string[]) => {
   let poolString = `[`
   pools.map((address) => {
     return (poolString += `"${address}",`)

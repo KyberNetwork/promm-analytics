@@ -16,6 +16,7 @@ export enum ApplicationModal {
   WALLET,
   SETTINGS,
   MENU,
+  DROPDOWN,
 }
 
 export const updateBlockNumber = createAction<{ chainId: ChainId; blockNumber: number }>(

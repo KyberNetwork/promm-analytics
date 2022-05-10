@@ -10,27 +10,28 @@ import { PriceChartEntry } from 'types'
 dayjs.extend(utc)
 dayjs.extend(weekOfYear)
 
-export const PRICES_BY_BLOCK = (tokenAddress: string, blocks: any) => {
-  let queryString = 'query blocks {'
-  queryString += blocks.map(
-    (block: any) => `
-      t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }, subgraphError: allow) { 
-        derivedETH
-      }
-    `
-  )
-  queryString += ','
-  queryString += blocks.map(
-    (block: any) => `
-      b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }, subgraphError: allow) { 
-        ethPriceUSD
-      }
-    `
-  )
+// todo namgold: check this
+// export const PRICES_BY_BLOCK = (tokenAddress: string, blocks: any) => {
+//   let queryString = 'query blocks {'
+//   queryString += blocks.map(
+//     (block: any) => `
+//       t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }, subgraphError: allow) {
+//         derivedETH
+//       }
+//     `
+//   )
+//   queryString += ','
+//   queryString += blocks.map(
+//     (block: any) => `
+//       b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }, subgraphError: allow) {
+//         ethPriceUSD
+//       }
+//     `
+//   )
 
-  queryString += '}'
-  return gql(queryString)
-}
+//   queryString += '}'
+//   return gql(queryString)
+// }
 
 const PRICE_CHART = gql`
   query tokenHourDatas($startTime: Int!, $skip: Int!, $address: Bytes!) {
@@ -64,8 +65,8 @@ export async function fetchTokenPriceData(
   address: string,
   interval: number,
   startTimestamp: number,
-  dataClient: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  dataClient: ApolloClient<NormalizedCacheObject>
+  // blockClient: ApolloClient<NormalizedCacheObject>
 ): Promise<{
   data: PriceChartEntry[]
   error: boolean
@@ -73,7 +74,7 @@ export async function fetchTokenPriceData(
   // start and end bounds
 
   try {
-    const endTimestamp = dayjs.utc().unix()
+    // const endTimestamp = dayjs.utc().unix()
 
     if (!startTimestamp) {
       console.log('Error constructing price start timestamp')
@@ -82,32 +83,33 @@ export async function fetchTokenPriceData(
         error: false,
       }
     }
+    //todo namgold: check this
 
     // create an array of hour start times until we reach current hour
-    const timestamps = []
-    let time = startTimestamp
-    while (time <= endTimestamp) {
-      timestamps.push(time)
-      time += interval
-    }
+    // const timestamps = []
+    // let time = startTimestamp
+    // while (time <= endTimestamp) {
+    //   timestamps.push(time)
+    //   time += interval
+    // }
 
-    // backout if invalid timestamp format
-    if (timestamps.length === 0) {
-      return {
-        data: [],
-        error: false,
-      }
-    }
+    // // backout if invalid timestamp format
+    // if (timestamps.length === 0) {
+    //   return {
+    //     data: [],
+    //     error: false,
+    //   }
+    // }
 
     // fetch blocks based on timestamp
-    const blocks = await getBlocksFromTimestamps(timestamps, blockClient, 500)
-    if (!blocks || blocks.length === 0) {
-      console.log('Error fetching blocks')
-      return {
-        data: [],
-        error: false,
-      }
-    }
+    // const blocks = await getBlocksFromTimestamps(timestamps, blockClient, 500)
+    // if (!blocks || blocks.length === 0) {
+    //   console.log('Error fetching blocks')
+    //   return {
+    //     data: [],
+    //     error: false,
+    //   }
+    // }
 
     let data: {
       periodStartUnix: number

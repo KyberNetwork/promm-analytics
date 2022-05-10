@@ -297,6 +297,40 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
     </ButtonPrimary>
   )
 }
+//todo namgold: check this
+// export function ButtonDropdown({ disabled = false, children, open, ...rest }) {
+//   return (
+//     <ButtonFaded {...rest} disabled={disabled} ope={open}>
+//       <RowBetween>
+//         <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
+//         {open ? (
+//           <StyledIcon>
+//             <ChevronUp size={24} />
+//           </StyledIcon>
+//         ) : (
+//           <StyledIcon>
+//             <ChevronDown size={24} />
+//           </StyledIcon>
+//         )}
+//       </RowBetween>
+//     </ButtonFaded>
+//   )
+// }
+
+export const OptionButton = styled.div<{ active?: boolean; disabled?: boolean }>`
+  font-weight: 500;
+  width: fit-content;
+  white-space: nowrap;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background-color: ${({ active, theme }) => (active ? theme.primary : theme.buttonBlack)};
+  color: ${({ theme, active }) => (active ? theme.white : theme.text)};
+
+  :hover {
+    cursor: ${({ disabled }) => !disabled && 'pointer'};
+  }
+`
 
 export function ButtonDropdownGrey({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonProps) {
   return (

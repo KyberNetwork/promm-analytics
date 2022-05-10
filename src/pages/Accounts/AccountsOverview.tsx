@@ -16,6 +16,7 @@ import { RowFixed } from 'components/Row'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { TYPE } from 'theme'
 import { formatDollarAmount } from 'utils/numbers'
+import { useActiveNetworks } from 'state/application/hooks'
 
 const StyledInput = styled.input`
   border-radius: 999px;
@@ -87,6 +88,7 @@ export default function AccountsOverview() {
       setMaxPage(Math.floor(data.length / maxItems) + extraPages)
     }
   }, [maxItems, data])
+  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
 
   return (
     <PageWrapper>
@@ -122,7 +124,11 @@ export default function AccountsOverview() {
                     </LinkWrapper>
                     <Label end={1}>
                       <RowFixed>
-                        <DoubleCurrencyLogo address0={item.token0.id} address1={item.token1.id} />
+                        <DoubleCurrencyLogo
+                          address0={item.token0.id}
+                          address1={item.token1.id}
+                          activeNetwork={activeNetwork}
+                        />
                         <Label marginLeft="4px">
                           {item.token0.symbol} - {item.token1.symbol}
                         </Label>

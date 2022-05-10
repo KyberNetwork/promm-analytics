@@ -105,7 +105,7 @@ export function useEthPrices(): EthPrices | undefined {
 
   const formattedBlocks = useMemo(() => {
     if (blocks) {
-      return blocks.map((b) => parseFloat(b.number))
+      return blocks.map((b) => b.number)
     }
     return undefined
   }, [blocks])

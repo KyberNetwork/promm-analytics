@@ -85,7 +85,7 @@ const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) 
         <Label>{index + 1}</Label>
         <Label>
           <RowFixed>
-            <ResponsiveLogo address={tokenData.address} />
+            <ResponsiveLogo address={tokenData.address} activeNetwork={activeNetworks} />
             <div style={{ marginLeft: '8px' }}>
               <HoverInlineText color={theme.primary} text={tokenData.name} />
             </div>

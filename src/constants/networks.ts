@@ -48,6 +48,7 @@ export type NetworkInfo = {
   blockClient: ApolloClient<NormalizedCacheObject>
   subgraphName: string
   etherscanUrl: string
+  etherscanName: string
   tokenListUrl: string
 }
 
@@ -63,6 +64,7 @@ const RinkebyNetworkInfo: NetworkInfo = {
   blockClient: rinkebyBlockClient,
   subgraphName: 'viet-nv/promm-rinkeby',
   etherscanUrl: 'https://rinkeby.etherscan.io',
+  etherscanName: 'Etherscan',
   tokenListUrl: '',
 }
 
@@ -78,6 +80,7 @@ const EthereumNetworkInfo: NetworkInfo = {
   blockClient: blockClient,
   subgraphName: 'uniswap/uniswap-v3',
   etherscanUrl: 'https://etherscan.io',
+  etherscanName: 'Etherscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ethereum.tokenlist.json',
 }
 
@@ -94,6 +97,7 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   blockClient: arbitrumBlockClient,
   subgraphName: 'ianlapham/arbitrum-minimal',
   etherscanUrl: 'https://arbiscan.io',
+  etherscanName: 'Arbiscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/arbitrum.tokenlist.json',
 }
 
@@ -110,6 +114,7 @@ const PolygonNetworkInfo: NetworkInfo = {
   blockClient: polygonBlockClient,
   subgraphName: 'ianlapham/uniswap-v3-polygon',
   etherscanUrl: 'https://polygonscan.com',
+  etherscanName: 'Polygonscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/matic.tokenlist.json',
 }
 

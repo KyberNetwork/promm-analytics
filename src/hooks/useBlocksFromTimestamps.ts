@@ -17,6 +17,11 @@ export const GET_BLOCKS = (timestamps: string[]) => {
   return gql(queryString)
 }
 
+export type Block = {
+  timestamp: string
+  number: number
+}
+
 /**
  * for a given array of timestamps, returns block entities
  * @param timestamps
@@ -25,12 +30,7 @@ export function useBlocksFromTimestamps(
   timestamps: number[],
   blockClientOverride?: ApolloClient<NormalizedCacheObject>
 ): {
-  blocks:
-    | {
-        timestamp: string
-        number: any
-      }[]
-    | undefined
+  blocks: Block[] | undefined
   error: boolean
 } {
   const activeNetwork = useActiveNetworks()[0]
@@ -65,7 +65,7 @@ export function useBlocksFromTimestamps(
         if (networkBlocks[t].length > 0) {
           formatted.push({
             timestamp: t.split('t')[1],
-            number: networkBlocks[t][0]['number'],
+            number: parseInt(networkBlocks[t][0]['number']),
           })
         }
       }
@@ -91,19 +91,19 @@ export async function getBlocksFromTimestamps(
   timestamps: number[],
   blockClient: ApolloClient<NormalizedCacheObject>,
   skipCount = 500
-) {
+): Promise<Block[]> {
   if (timestamps?.length === 0) {
     return []
   }
   const fetchedData: any = await splitQuery(GET_BLOCKS, blockClient, [], timestamps, skipCount)
 
-  const blocks: any[] = []
+  const blocks: Block[] = []
   if (fetchedData) {
     for (const t in fetchedData) {
       if (fetchedData[t].length > 0) {
         blocks.push({
           timestamp: t.split('t')[1],
-          number: fetchedData[t][0]['number'],
+          number: parseInt(fetchedData[t][0]['number']),
         })
       }
     }

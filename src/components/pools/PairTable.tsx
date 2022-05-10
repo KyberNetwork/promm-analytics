@@ -239,7 +239,11 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                           }}
                         >
                           <RowFixed>
-                            <DoubleCurrencyLogo address0={pair[0].token0.address} address1={pair[0].token1.address} />
+                            <DoubleCurrencyLogo
+                              address0={pair[0].token0.address}
+                              address1={pair[0].token1.address}
+                              activeNetwork={activeNetworks}
+                            />
                             <Label marginLeft="8px">
                               {pair[0].token0.symbol} - {pair[0].token1.symbol}
                             </Label>
@@ -298,7 +302,11 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
                         }}
                       >
                         <div>
-                          <DoubleCurrencyLogo address0={pair[0].token0.address} address1={pair[0].token1.address} />
+                          <DoubleCurrencyLogo
+                            address0={pair[0].token0.address}
+                            address1={pair[0].token1.address}
+                            activeNetwork={activeNetworks}
+                          />
                           <Label marginTop="8px">
                             {pair[0].token0.symbol} - {pair[0].token1.symbol}
                           </Label>

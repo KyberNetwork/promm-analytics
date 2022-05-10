@@ -4,6 +4,7 @@ import { isAddress } from 'utils'
 import Logo from '../Logo'
 import { useCombinedActiveList } from 'state/lists/hooks'
 import useHttpLocations from 'hooks/useHttpLocations'
+import { NetworkInfo } from 'constants/networks'
 
 export const getTokenLogoURL = (address: string): string => {
   return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
@@ -22,12 +23,14 @@ type CurrencyLogoType = {
   address?: string
   size?: string
   style?: React.CSSProperties
+  activeNetwork: NetworkInfo
 }
 
 const CurrencyLogo: React.FunctionComponent<CurrencyLogoType> = ({
   address,
   size = '24px',
   style,
+  activeNetwork,
   ...rest
 }: CurrencyLogoType) => {
   const arbitrumList = useCombinedActiveList()?.[42161]

@@ -7,46 +7,53 @@ import { notEmpty } from 'utils'
 import { TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
 
+export const POSITION_FRAGMENT = gql`
+  fragment PositionFragment on Position {
+    id
+    owner
+    liquidity
+    pool {
+      id
+      feeTier
+      tick
+      liquidity
+      reinvestL
+      sqrtPrice
+    }
+    tickLower {
+      tickIdx
+    }
+    tickUpper {
+      tickIdx
+    }
+    token0 {
+      id
+      symbol
+      decimals
+      derivedETH
+    }
+    token1 {
+      symbol
+      id
+      decimals
+      derivedETH
+    }
+    amountDepositedUSD
+    depositedToken1
+    depositedToken0
+  }
+`
+
 const USER_POSITIONS = (user: string) => {
-  const queryString = `
+  const queryString = gql`
+  ${POSITION_FRAGMENT}
   query positions {
     positions(where: {owner: "${user}"}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
-      id
-      owner
-      liquidity
-      pool {
-        id
-        feeTier
-        tick
-        liquidity
-        reinvestL
-        sqrtPrice
-      }
-      tickLower {
-        tickIdx
-      }
-      tickUpper {
-        tickIdx
-      }
-      token0 {
-        id
-        symbol
-        decimals
-        derivedETH
-      }
-      token1 {
-        symbol
-        id
-        decimals
-        derivedETH
-      }
-      amountDepositedUSD
-      depositedToken1
-      depositedToken0
+      ...PositionFragment
     }
   }
    `
-  return gql(queryString)
+  return queryString
 }
 
 export const TOP_POSITIONS = (poolIds: string[]) => {
@@ -79,7 +86,7 @@ export const TOP_POSITIONS = (poolIds: string[]) => {
   return gql(queryString)
 }
 
-interface PositionFields {
+export interface PositionFields {
   id: string
   owner: string
   liquidity: string

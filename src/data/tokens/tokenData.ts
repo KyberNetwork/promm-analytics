@@ -86,21 +86,21 @@ export function useFetchedTokenDatas(
   })
 
   const { loading: loading24, error: error24, data: data24 } = useQuery<TokenDataResponse>(
-    TOKENS_BULK(parseInt(block24?.number), tokenAddresses),
+    TOKENS_BULK(block24?.number, tokenAddresses),
     {
       client: dataClient,
     }
   )
 
   const { loading: loading48, error: error48, data: data48 } = useQuery<TokenDataResponse>(
-    TOKENS_BULK(parseInt(block48?.number), tokenAddresses),
+    TOKENS_BULK(block48?.number, tokenAddresses),
     {
       client: dataClient,
     }
   )
 
   const { loading: loadingWeek, error: errorWeek, data: dataWeek } = useQuery<TokenDataResponse>(
-    TOKENS_BULK(parseInt(blockWeek?.number), tokenAddresses),
+    TOKENS_BULK(blockWeek?.number, tokenAddresses),
     {
       client: dataClient,
     }

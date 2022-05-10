@@ -10,6 +10,7 @@ import { TYPE, StyledInternalLink } from 'theme'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import HoverInlineText from 'components/HoverInlineText'
+import { useActiveNetworks } from 'state/application/hooks'
 
 const CardWrapper = styled(StyledInternalLink)`
   min-width: 190px;
@@ -36,11 +37,12 @@ export const ScrollableRow = styled.div`
 `
 
 const DataCard = ({ tokenData }: { tokenData: TokenData }) => {
+  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
   return (
     <CardWrapper to={'token/' + tokenData.address}>
       <GreyCard padding="16px">
         <RowFixed>
-          <CurrencyLogo address={tokenData.address} size="32px" />
+          <CurrencyLogo address={tokenData.address} size="32px" activeNetwork={activeNetwork} />
           <AutoColumn gap="3px" style={{ marginLeft: '12px' }}>
             <TYPE.label fontSize="14px">
               <HoverInlineText text={tokenData.symbol} />

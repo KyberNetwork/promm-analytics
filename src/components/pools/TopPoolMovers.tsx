@@ -12,6 +12,7 @@ import { PoolData } from 'state/pools/reducer'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import HoverInlineText from 'components/HoverInlineText'
 import { feeTierPercent } from 'utils'
+import { useActiveNetworks } from 'state/application/hooks'
 
 const Container = styled(StyledInternalLink)`
   min-width: 210px;
@@ -28,12 +29,18 @@ const Wrapper = styled(GreyCard)`
 `
 
 const DataCard = ({ poolData }: { poolData: PoolData }) => {
+  const activeNetwork = useActiveNetworks()[0] // TODO namgold: handle all chain view
   return (
     <Container to={'pool/' + poolData.address}>
       <Wrapper>
         <AutoColumn gap="sm">
           <RowFixed>
-            <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} size={16} />
+            <DoubleCurrencyLogo
+              address0={poolData.token0.address}
+              address1={poolData.token1.address}
+              size={16}
+              activeNetwork={activeNetwork}
+            />
             <TYPE.label ml="8px">
               <HoverInlineText maxCharacters={10} text={`${poolData.token0.symbol}/${poolData.token1.symbol}`} />
             </TYPE.label>
