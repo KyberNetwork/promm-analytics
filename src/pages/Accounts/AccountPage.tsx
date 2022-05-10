@@ -28,7 +28,7 @@ import { calcPosition } from 'utils/position'
 // import PoolChart from './components/PoolChart'
 // import AllPoolChart from './components/AllPoolChart'
 import Panel from 'components/Panel'
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
 import { Activity } from 'react-feather'
 import { ButtonDropdown } from 'components/Button'
 import PoolChart from './components/PoolChart'
@@ -418,9 +418,9 @@ export default function AccountPage() {
                               {shortenAddress(item.pool.id)}
                             </Label>
                           </LinkWrapper>
-                          <Label end={1}>{positionsMap[item.id].valueUSD}</Label>
-                          <Label end={1}>{positionsMap[item.id].token0Amount}</Label>
-                          <Label end={1}>{positionsMap[item.id].token1Amount}</Label>
+                          <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>
+                          <Label end={1}>{formatAmount(positionsMap[item.id].token0Amount)}</Label>
+                          <Label end={1}>{formatAmount(positionsMap[item.id].token1Amount)}</Label>
                         </ResponsiveGrid>
                         <Break />
                       </React.Fragment>
