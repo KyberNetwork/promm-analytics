@@ -220,11 +220,6 @@ export default function AccountPage() {
     return currentPosition ? currentPosition.reduce((total, p) => total + positionsMap[p.id].valueUSD, 0) : null
   }, [currentPosition, positionsMap])
 
-  console.log(
-    'From current: ',
-    Object.keys(positionsMap).map((id) => ({ id, address: positionsMap[id].address, value: positionsMap[id].valueUSD }))
-  )
-
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
 

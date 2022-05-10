@@ -205,48 +205,43 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
       const ethPrices = await getETHPriceFromTimestamps(dayTimestamps, dataClient, blockClient)
 
       // map of current pair => ownership %
-      // let log = null //todo namgold: rm this after debug mismatch position value
-      const latestDataForPairs: { [key: string]: { value: number; timestamp: number } } = {}
+      const latestDataForPairs: { [positionId: string]: PositionSnapshotFields | undefined } = {}
       const formattedHistory = dayTimestamps.map((dayTimestamp) => {
         if (dayTimestamp === 1652140800) {
           debugger
         }
         // cycle through relevant positions and update ownership for any that we need to
         const relevantPositions = snapshotMappedByTimestamp[dayTimestamp]
-        relevantPositions.forEach((position) => {
+        relevantPositions.forEach((currentPosition) => {
           // case where pair not added yet
           if (
-            !latestDataForPairs[position.id] ||
-            latestDataForPairs[position.id].timestamp < parseInt(position.timestamp)
+            !latestDataForPairs[currentPosition.id] ||
+            parseInt(latestDataForPairs[currentPosition.id]!.timestamp) < parseInt(currentPosition.timestamp)
           ) {
-            const positionValues = calcPosition({
-              p: position,
-              chainId: activeNetwork.chainId,
-              ethPriceUSD: ethPrices[dayTimestamp],
-            })
-            latestDataForPairs[position.id] = {
-              value: positionValues.userPositionUSD,
-              // address: position.pool.id,
-              timestamp: parseInt(position.timestamp),
-            }
+            latestDataForPairs[currentPosition.id] = currentPosition
           }
         })
         let totalUSD = 0
 
-        Object.keys(latestDataForPairs).forEach((pairAddress) => (totalUSD += latestDataForPairs[pairAddress].value))
-        // log = Object.keys(latestDataForPairs).map((pairAddress) => ({
-        //   id: pairAddress,
-        //   address: latestDataForPairs[pairAddress].address,
-        //   value: latestDataForPairs[pairAddress].value,
-        //   timestamp: latestDataForPairs[pairAddress].timestamp,
-        // }))
+        Object.keys(latestDataForPairs).forEach((positionId) => {
+          let usdValue = 0
+          if (latestDataForPairs[positionId]) {
+            const positionValues = calcPosition({
+              p: latestDataForPairs[positionId]!,
+              chainId: activeNetwork.chainId,
+              ethPriceUSD: ethPrices[dayTimestamp],
+            })
+            usdValue = positionValues.userPositionUSD
+          }
+
+          totalUSD += usdValue
+        })
 
         return {
           date: dayTimestamp,
           valueUSD: totalUSD,
         }
       })
-      // console.log('from chart', log)
 
       setFormattedHistory(formattedHistory)
     }
@@ -335,31 +330,32 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
       const ethPrices = await getETHPriceFromTimestamps(dayTimestamps, dataClient, blockClient)
 
       // map of current pair => ownership %
-      let latestDataForPairs: { value: number; timestamp: number } | null = null
+      let latestDataForPairs: PositionSnapshotFields | undefined
       const formattedHistory = dayTimestamps.map((dayTimestamp) => {
         if (dayTimestamp === 1652140800) {
           debugger
         }
         // cycle through relevant positions and update ownership for any that we need to
         const relevantPositions = snapshotMappedByTimestamp[dayTimestamp]
-        relevantPositions?.forEach((position) => {
+        relevantPositions?.forEach((currentPosition) => {
           // case where pair not added yet
-          if (!latestDataForPairs || latestDataForPairs.timestamp < parseInt(position.timestamp)) {
-            const positionValues = calcPosition({
-              p: position,
-              chainId: activeNetwork.chainId,
-              ethPriceUSD: ethPrices[dayTimestamp],
-            })
-            latestDataForPairs = {
-              value: positionValues.userPositionUSD,
-              timestamp: parseInt(position.timestamp),
-            }
+          if (!latestDataForPairs || parseInt(latestDataForPairs.timestamp) < parseInt(currentPosition.timestamp)) {
+            latestDataForPairs = currentPosition
           }
         })
+        let usdValue = 0
+        if (latestDataForPairs) {
+          const positionValues = calcPosition({
+            p: latestDataForPairs,
+            chainId: activeNetwork.chainId,
+            ethPriceUSD: ethPrices[dayTimestamp],
+          })
+          usdValue = positionValues.userPositionUSD
+        }
 
         return {
           date: dayTimestamp,
-          usdValue: latestDataForPairs?.value || 0,
+          usdValue,
           fees: 0,
         }
       })

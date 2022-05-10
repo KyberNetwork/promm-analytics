@@ -48,7 +48,7 @@ const USER_POSITIONS = (user: string) => {
   const queryString = gql`
   ${POSITION_FRAGMENT}
   query positions {
-    positions(where: {owner: "${user}"}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
+    positions(where: {owner: "${user}",liquidity_gt: 0}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
       ...PositionFragment
     }
   }
@@ -65,7 +65,7 @@ export const TOP_POSITIONS = (poolIds: string[]) => {
 
   const queryString = `
   query positions {
-    positions(where: {pool_in: ${poolStrings}}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
+    positions(where: {pool_in: ${poolStrings}, liquidity_gt: 0}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
       id
       owner
       pool {
