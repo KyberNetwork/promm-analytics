@@ -207,9 +207,6 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
       // map of current pair => ownership %
       const latestDataForPairs: { [positionId: string]: PositionSnapshotFields | undefined } = {}
       const formattedHistory = dayTimestamps.map((dayTimestamp) => {
-        if (dayTimestamp === 1652140800) {
-          debugger
-        }
         // cycle through relevant positions and update ownership for any that we need to
         const relevantPositions = snapshotMappedByTimestamp[dayTimestamp]
         relevantPositions.forEach((currentPosition) => {
@@ -332,9 +329,6 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
       // map of current pair => ownership %
       let latestDataForPairs: PositionSnapshotFields | undefined
       const formattedHistory = dayTimestamps.map((dayTimestamp) => {
-        if (dayTimestamp === 1652140800) {
-          debugger
-        }
         // cycle through relevant positions and update ownership for any that we need to
         const relevantPositions = snapshotMappedByTimestamp[dayTimestamp]
         relevantPositions?.forEach((currentPosition) => {
