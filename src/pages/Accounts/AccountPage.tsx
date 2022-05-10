@@ -359,7 +359,7 @@ export default function AccountPage() {
                 <AutoRow gap="20px">
                   <AutoColumn gap="12px">
                     <RowBetween>
-                      <TYPE.body color={theme.subText}> Liquidity (Including Fees)</TYPE.body>
+                      <TYPE.body color={theme.subText}> TVL</TYPE.body>
                       <div />
                     </RowBetween>
                     <RowFixed align="flex-end">

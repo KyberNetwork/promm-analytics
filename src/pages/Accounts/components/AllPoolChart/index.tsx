@@ -57,7 +57,7 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType) => {
       ) : (
         <RowBetween mb={40}>
           <AutoRow gap="10px">
-            <TYPE.main>Liquidity Value</TYPE.main>
+            <TYPE.main>TVL Value</TYPE.main>
           </AutoRow>
           <AutoRow justify="flex-end" gap="4px">
             <OptionButton
@@ -136,7 +136,7 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType) => {
               strokeWidth={2}
               dot={false}
               type="monotone"
-              name={'Liquidity'}
+              name={'TVL'}
               yAxisId={0}
               stroke={darken(0.12, theme.primary)}
               fill="url(#colorUv)"

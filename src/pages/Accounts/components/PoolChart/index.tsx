@@ -73,7 +73,10 @@ const PoolChart = ({ account, activePosition }: PoolChartProps) => {
         </RowBetween>
       ) : (
         <OptionsRow>
-          <AutoRow
+          <AutoRow>
+            <TYPE.main>TVL Value</TYPE.main>
+          </AutoRow>
+          {/* <AutoRow
             style={{
               minWidth: 'fit-content',
               width: 'fit-content',
@@ -87,7 +90,7 @@ const PoolChart = ({ account, activePosition }: PoolChartProps) => {
               onClick={() => setChartView(CHART_VIEW.VALUE)}
               style={{ borderRadius: '999px', padding: '6px 12px' }}
             >
-              Liquidity
+              TVL
             </OptionButton>
             <OptionButton
               active={chartView === CHART_VIEW.FEES}
@@ -96,7 +99,7 @@ const PoolChart = ({ account, activePosition }: PoolChartProps) => {
             >
               Fees
             </OptionButton>
-          </AutoRow>
+          </AutoRow> */}
           <AutoRow justify="flex-end" gap="6px">
             <OptionButton
               active={timeWindow === TimeframeOptions.WEEK}
@@ -170,7 +173,7 @@ const PoolChart = ({ account, activePosition }: PoolChartProps) => {
               dataKey={chartView === CHART_VIEW.VALUE ? 'usdValue' : 'fees'}
               stroke={color}
               yAxisId={0}
-              name={chartView === CHART_VIEW.VALUE ? 'Liquidity' : 'Fees Earned (Cumulative)'}
+              name={chartView === CHART_VIEW.VALUE ? 'TVL' : 'Fees Earned (Cumulative)'}
             />
           </LineChart>
         ) : (
