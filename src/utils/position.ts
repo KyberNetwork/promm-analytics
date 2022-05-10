@@ -2,7 +2,6 @@ import { Pool, Position } from '@vutien/dmm-v3-sdk'
 import { CurrencyAmount, Token } from '@vutien/sdk-core'
 import { ChainId } from 'constants/networks'
 import { PositionFields } from 'data/wallets/walletData'
-import { EthPrices } from 'hooks/useEthPrices'
 import JSBI from 'jsbi'
 
 export const calcPosition = ({

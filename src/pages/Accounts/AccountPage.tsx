@@ -71,7 +71,6 @@ export const ButtonFaded = styled(Base)`
 
 const DropdownWrapper = styled.div`
   position: relative;
-  margin-bottom: 1rem;
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   max-width: 400px;
@@ -243,228 +242,231 @@ export default function AccountPage() {
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
       {data ? (
-        <AutoColumn gap="32px">
-          <AutoColumn gap="32px">
-            <RowBetween>
-              <AutoRow gap="4px">
-                <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                  <TYPE.main>{`Home → `}</TYPE.main>
-                </StyledInternalLink>
-                <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens'}>
-                  <TYPE.label>{` Accounts `}</TYPE.label>
-                </StyledInternalLink>
-                <TYPE.main>{` → `}</TYPE.main>
-                <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                  <TYPE.link>{shortenAddress(address)}</TYPE.link>
-                </StyledExternalLink>
-              </AutoRow>
-              <RowFixed align="center" justify="center">
-                {/* TODO namgold: add search component */}
-              </RowFixed>
-            </RowBetween>
-            <ResponsiveRow align="flex-end">
-              <Label>{shortenAddress(address)}</Label>
-              <RowFixed>
-                {/* <SavedIcon */}
-                {/*   fill={!!savedTokens?.[activeNetwork.id]?.[address]} */}
-                {/*   onClick={() => addSavedToken(activeNetwork.id, tokenData)} */}
-                {/* /> */}
-                <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                  <ButtonPrimary width="fit-content" style={{ height: '38px' }}>
-                    View on {activeNetwork.etherscanName}↗
-                  </ButtonPrimary>
-                </StyledExternalLink>
-              </RowFixed>
-            </ResponsiveRow>
-          </AutoColumn>
-
-          <AutoColumn>
-            <DropdownWrapper ref={node}>
-              <ButtonDropdown
-                width="100%"
-                onClick={() => setShowDropdown(!showDropdown)}
-                open={showDropdown}
-                style={{ borderRadius: '8px', background: theme.background }}
-              >
-                {!activePosition && (
-                  <RowFixed>
-                    <StyledIcon>
-                      <Activity size={16} />
-                    </StyledIcon>
-                    <TYPE.body ml={'10px'}>All Positions</TYPE.body>
-                  </RowFixed>
-                )}
-                {activePosition && (
-                  <RowFixed>
-                    <DoubleCurrencyLogo
-                      address0={activePosition.token0.id}
-                      address1={activePosition.token1.id}
-                      size={16}
-                      activeNetwork={activeNetwork}
-                    />
-                    <TYPE.body ml={'16px'}>
-                      {activePosition.token0.symbol}-{activePosition.token1.symbol} Position
-                    </TYPE.body>
-                  </RowFixed>
-                )}
-              </ButtonDropdown>
-              {showDropdown && (
-                <Flyout>
-                  <AutoColumn gap="0px">
-                    {data?.map((p, i) => {
-                      if (p.token1.symbol === 'WETH') {
-                        p.token1.symbol = 'ETH'
-                      }
-                      if (p.token0.symbol === 'WETH') {
-                        p.token0.symbol = 'ETH'
-                      }
-                      return (
-                        p.id !== activePosition?.id && (
-                          <MenuRow
-                            onClick={() => {
-                              setActivePosition(p)
-                              setShowDropdown(false)
-                            }}
-                            key={i}
-                            name="asd"
-                          >
-                            <DoubleCurrencyLogo
-                              address0={p.token0.id}
-                              address1={p.token1.id}
-                              size={16}
-                              activeNetwork={activeNetwork}
-                            />
-                            <TYPE.body ml={'16px'}>
-                              {p.token0.symbol}-{p.token1.symbol} Position
-                            </TYPE.body>
-                          </MenuRow>
+        <AutoColumn gap="24px">
+          <RowBetween>
+            <AutoRow gap="4px">
+              <StyledInternalLink to={networkPrefix(activeNetwork)}>
+                <TYPE.main>{`Home → `}</TYPE.main>
+              </StyledInternalLink>
+              <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens'}>
+                <TYPE.label>{` Accounts `}</TYPE.label>
+              </StyledInternalLink>
+              <TYPE.main>{` → `}</TYPE.main>
+              <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
+                <TYPE.link>{shortenAddress(address)}</TYPE.link>
+              </StyledExternalLink>
+            </AutoRow>
+            <RowFixed align="center" justify="center">
+              {/* TODO namgold: add search component */}
+            </RowFixed>
+          </RowBetween>
+          <ResponsiveRow align="flex-end">
+            <Label>{shortenAddress(address)}</Label>
+            <RowFixed>
+              {/* <SavedIcon */}
+              {/*   fill={!!savedTokens?.[activeNetwork.id]?.[address]} */}
+              {/*   onClick={() => addSavedToken(activeNetwork.id, tokenData)} */}
+              {/* /> */}
+              <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
+                <ButtonPrimary width="fit-content" style={{ height: '38px' }}>
+                  View on {activeNetwork.etherscanName}↗
+                </ButtonPrimary>
+              </StyledExternalLink>
+            </RowFixed>
+          </ResponsiveRow>
+          <AutoColumn gap="3rem">
+            <AutoColumn gap="1rem">
+              <DropdownWrapper ref={node}>
+                <ButtonDropdown
+                  width="100%"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  open={showDropdown}
+                  style={{ borderRadius: '8px', background: theme.background }}
+                >
+                  {!activePosition && (
+                    <RowFixed>
+                      <StyledIcon>
+                        <Activity size={16} />
+                      </StyledIcon>
+                      <TYPE.body ml={'10px'}>All Positions</TYPE.body>
+                    </RowFixed>
+                  )}
+                  {activePosition && (
+                    <RowFixed>
+                      <DoubleCurrencyLogo
+                        address0={activePosition.token0.id}
+                        address1={activePosition.token1.id}
+                        size={16}
+                        activeNetwork={activeNetwork}
+                      />
+                      <TYPE.body ml={'16px'}>
+                        {activePosition.token0.symbol}-{activePosition.token1.symbol} Position
+                      </TYPE.body>
+                    </RowFixed>
+                  )}
+                </ButtonDropdown>
+                {showDropdown && (
+                  <Flyout>
+                    <AutoColumn gap="0px">
+                      {data?.map((p, i) => {
+                        if (p.token1.symbol === 'WETH') {
+                          p.token1.symbol = 'ETH'
+                        }
+                        if (p.token0.symbol === 'WETH') {
+                          p.token0.symbol = 'ETH'
+                        }
+                        return (
+                          p.id !== activePosition?.id && (
+                            <MenuRow
+                              onClick={() => {
+                                setActivePosition(p)
+                                setShowDropdown(false)
+                              }}
+                              key={i}
+                              name="asd"
+                            >
+                              <DoubleCurrencyLogo
+                                address0={p.token0.id}
+                                address1={p.token1.id}
+                                size={16}
+                                activeNetwork={activeNetwork}
+                              />
+                              <TYPE.body ml={'16px'}>
+                                {p.token0.symbol}-{p.token1.symbol} Position
+                              </TYPE.body>
+                            </MenuRow>
+                          )
                         )
-                      )
-                    })}
-                    {activePosition && (
-                      <MenuRow
-                        onClick={() => {
-                          setActivePosition(null)
-                          setShowDropdown(false)
-                        }}
-                        name="dsad"
-                      >
-                        <RowFixed>
-                          <StyledIcon>
-                            <Activity size={16} />
-                          </StyledIcon>
-                          <TYPE.body ml={'10px'}>All Positions</TYPE.body>
-                        </RowFixed>
-                      </MenuRow>
-                    )}
-                  </AutoColumn>
-                </Flyout>
-              )}
-            </DropdownWrapper>
-            <Panel style={{ height: '100%', marginBottom: '1rem' }}>
-              <AutoRow gap="20px">
-                <AutoColumn gap="12px">
-                  <RowBetween>
-                    <TYPE.body color={theme.subText}> Liquidity (Including Fees)</TYPE.body>
-                    <div />
-                  </RowBetween>
-                  <RowFixed align="flex-end">
-                    <TYPE.header fontSize={'24px'} lineHeight={1}>
-                      {positionValue
-                        ? formatDollarAmount(positionValue)
-                        : positionValue === 0
-                        ? formatDollarAmount(0)
-                        : '-'}
-                    </TYPE.header>
-                  </RowFixed>
-                </AutoColumn>
-              </AutoRow>
-            </Panel>
-            <PanelWrapper>
-              <Panel style={{ gridColumn: '1' }}>
-                {activePosition ? (
-                  <PoolChart account={address} activePosition={activePosition} />
-                ) : (
-                  <AllPoolChart account={address} />
+                      })}
+                      {activePosition && (
+                        <MenuRow
+                          onClick={() => {
+                            setActivePosition(null)
+                            setShowDropdown(false)
+                          }}
+                          name="dsad"
+                        >
+                          <RowFixed>
+                            <StyledIcon>
+                              <Activity size={16} />
+                            </StyledIcon>
+                            <TYPE.body ml={'10px'}>All Positions</TYPE.body>
+                          </RowFixed>
+                        </MenuRow>
+                      )}
+                    </AutoColumn>
+                  </Flyout>
                 )}
+              </DropdownWrapper>
+              <Panel style={{ height: '100%', marginBottom: '1rem' }}>
+                <AutoRow gap="20px">
+                  <AutoColumn gap="12px">
+                    <RowBetween>
+                      <TYPE.body color={theme.subText}> Liquidity (Including Fees)</TYPE.body>
+                      <div />
+                    </RowBetween>
+                    <RowFixed align="flex-end">
+                      <TYPE.header fontSize={'24px'} lineHeight={1}>
+                        {positionValue
+                          ? formatDollarAmount(positionValue)
+                          : positionValue === 0
+                          ? formatDollarAmount(0)
+                          : '-'}
+                      </TYPE.header>
+                    </RowFixed>
+                  </AutoColumn>
+                </AutoRow>
               </Panel>
-            </PanelWrapper>
-          </AutoColumn>
-
-          <TYPE.label fontSize="18px">Positions</TYPE.label>
-          <Wrapper>
-            <TableHeader>
-              <TableLabel>PAIR</TableLabel>
-              <TableLabel end={1}>POOL</TableLabel>
-              <TableLabel end={1}>VALUE</TableLabel>
-              <TableLabel end={1}>TOKEN AMOUNT</TableLabel>
-              <TableLabel end={1}>TOKEN AMOUNT</TableLabel>
-            </TableHeader>
-            <AutoColumn gap="16px" style={{ padding: '20px' }}>
-              {data ? (
-                data.slice(maxItems * (page - 1), page * maxItems).map((item) => (
-                  <React.Fragment key={item.id}>
-                    <ResponsiveGrid>
-                      <Label>
-                        <RowFixed>
-                          <DoubleCurrencyLogo
-                            address0={item.token0.id}
-                            address1={item.token1.id}
-                            size={16}
-                            activeNetwork={activeNetwork}
-                          />
-                          <Label marginLeft="4px">
-                            {item.token0.symbol} - {item.token1.symbol}
-                          </Label>
-                        </RowFixed>
-                      </Label>
-                      <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
-                        <Label end={1} color={theme.primary}>
-                          {shortenAddress(item.pool.id)}
-                        </Label>
-                      </LinkWrapper>
-                      <Label end={1}>{positionsMap[item.id].valueUSD}</Label>
-                      <Label end={1}>{positionsMap[item.id].token0Amount}</Label>
-                      <Label end={1}>{positionsMap[item.id].token1Amount}</Label>
-                    </ResponsiveGrid>
-                    <Break />
-                  </React.Fragment>
-                ))
-              ) : (
-                <Flex justifyContent="center">
-                  <Loading />
-                </Flex>
-              )}
-              <PageButtons>
-                <div
-                  onClick={() => {
-                    setPage(page === 1 ? page : page - 1)
-                  }}
-                >
-                  <Arrow faded={page === 1 ? true : false}>←</Arrow>
-                </div>
-                <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
-                <div
-                  onClick={() => {
-                    setPage(page === maxPage ? page : page + 1)
-                  }}
-                >
-                  <Arrow faded={page === maxPage ? true : false}>→</Arrow>
-                </div>
-              </PageButtons>
+              <PanelWrapper>
+                <Panel style={{ gridColumn: '1' }}>
+                  {activePosition ? (
+                    <PoolChart account={address} activePosition={activePosition} />
+                  ) : (
+                    <AllPoolChart account={address} />
+                  )}
+                </Panel>
+              </PanelWrapper>
             </AutoColumn>
-          </Wrapper>
 
-          <TYPE.label fontSize="18px">Transactions</TYPE.label>
-          {transactions ? (
-            <TransactionTable transactions={transactions.data} />
-          ) : (
-            <DarkGreyCard>
-              <Flex justifyContent="center">
-                <Loading size={120} />
-              </Flex>
-            </DarkGreyCard>
-          )}
+            <AutoColumn gap="1.5rem">
+              <TYPE.label fontSize="18px">Positions</TYPE.label>
+              <Wrapper>
+                <TableHeader>
+                  <TableLabel>PAIR</TableLabel>
+                  <TableLabel end={1}>POOL</TableLabel>
+                  <TableLabel end={1}>VALUE</TableLabel>
+                  <TableLabel end={1}>TOKEN AMOUNT</TableLabel>
+                  <TableLabel end={1}>TOKEN AMOUNT</TableLabel>
+                </TableHeader>
+                <AutoColumn gap="16px" style={{ padding: '20px' }}>
+                  {data ? (
+                    data.slice(maxItems * (page - 1), page * maxItems).map((item) => (
+                      <React.Fragment key={item.id}>
+                        <ResponsiveGrid>
+                          <Label>
+                            <RowFixed>
+                              <DoubleCurrencyLogo
+                                address0={item.token0.id}
+                                address1={item.token1.id}
+                                size={16}
+                                activeNetwork={activeNetwork}
+                              />
+                              <Label marginLeft="4px">
+                                {item.token0.symbol} - {item.token1.symbol}
+                              </Label>
+                            </RowFixed>
+                          </Label>
+                          <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
+                            <Label end={1} color={theme.primary}>
+                              {shortenAddress(item.pool.id)}
+                            </Label>
+                          </LinkWrapper>
+                          <Label end={1}>{positionsMap[item.id].valueUSD}</Label>
+                          <Label end={1}>{positionsMap[item.id].token0Amount}</Label>
+                          <Label end={1}>{positionsMap[item.id].token1Amount}</Label>
+                        </ResponsiveGrid>
+                        <Break />
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <Flex justifyContent="center">
+                      <Loading />
+                    </Flex>
+                  )}
+                  <PageButtons>
+                    <div
+                      onClick={() => {
+                        setPage(page === 1 ? page : page - 1)
+                      }}
+                    >
+                      <Arrow faded={page === 1 ? true : false}>←</Arrow>
+                    </div>
+                    <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
+                    <div
+                      onClick={() => {
+                        setPage(page === maxPage ? page : page + 1)
+                      }}
+                    >
+                      <Arrow faded={page === maxPage ? true : false}>→</Arrow>
+                    </div>
+                  </PageButtons>
+                </AutoColumn>
+              </Wrapper>
+            </AutoColumn>
+
+            <AutoColumn gap="1.5rem">
+              <TYPE.label fontSize="18px">Transactions</TYPE.label>
+              {transactions ? (
+                <TransactionTable transactions={transactions.data} />
+              ) : (
+                <DarkGreyCard>
+                  <Flex justifyContent="center">
+                    <Loading size={120} />
+                  </Flex>
+                </DarkGreyCard>
+              )}
+            </AutoColumn>
+          </AutoColumn>
         </AutoColumn>
       ) : (
         <Loader />
