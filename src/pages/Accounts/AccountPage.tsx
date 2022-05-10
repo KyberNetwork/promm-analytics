@@ -33,6 +33,7 @@ import { Activity } from 'react-feather'
 import { ButtonDropdown } from 'components/Button'
 import PoolChart from './components/PoolChart'
 import AllPoolChart from './components/AllPoolChart'
+import { useOnClickOutside } from 'hooks/useOnClickOutside'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -237,6 +238,7 @@ export default function AccountPage() {
       setMaxPage(Math.floor(data.length / maxItems) + extraPages)
     }
   }, [maxItems, data])
+  useOnClickOutside(node, showDropdown ? () => setShowDropdown(!showDropdown) : undefined)
 
   return (
     <PageWrapper>
