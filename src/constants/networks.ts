@@ -9,6 +9,8 @@ import {
   polygonClient,
   rinkebyBlockClient,
   rinkebyClient,
+  ropstenBlockClient,
+  ropstenClient,
 } from 'apollo/client'
 import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg'
 import ETHEREUM_LOGO_URL from '../assets/images/ethereum-logo.png'
@@ -16,7 +18,7 @@ import POLYGON_LOGO_URL from '../assets/images/polygon-logo.png'
 
 export enum ChainId {
   ETHEREUM = 1,
-  // ROPSTEN = 3,
+  ROPSTEN = 3,
   RINKEBY = 4,
   POLYGON = 137,
   // MUMBAI = 80001,
@@ -64,8 +66,24 @@ const RinkebyNetworkInfo: NetworkInfo = {
   blockClient: rinkebyBlockClient,
   subgraphName: 'viet-nv/promm-rinkeby',
   etherscanUrl: 'https://rinkeby.etherscan.io',
-  etherscanName: 'Etherscan',
+  etherscanName: 'Rinkeby Explorer',
   tokenListUrl: '',
+}
+
+const RopstenNetworkInfo: NetworkInfo = {
+  chainId: ChainId.ROPSTEN,
+  route: 'ropsten',
+  name: 'Ropsten',
+  bgColor: '#fc077d',
+  primaryColor: '#fc077d',
+  secondaryColor: '#2172E5',
+  imageURL: ETHEREUM_LOGO_URL,
+  client: ropstenClient,
+  blockClient: ropstenBlockClient,
+  subgraphName: 'viet-nv/promm-ropsten',
+  etherscanUrl: 'https://ropsten.etherscan.io',
+  etherscanName: 'Ropsten Explorer',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ropsten.tokenlist.json',
 }
 
 const EthereumNetworkInfo: NetworkInfo = {
@@ -119,10 +137,11 @@ const PolygonNetworkInfo: NetworkInfo = {
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
-export const SHOW_NETWORKS = [ChainId.ETHEREUM, ChainId.POLYGON, ChainId.ARBITRUM]
+export const SHOW_NETWORKS = [ChainId.ROPSTEN, ChainId.RINKEBY]
 
 export const NETWORKS_INFO_LIST: NetworkInfo[] = [
   EthereumNetworkInfo,
+  RopstenNetworkInfo,
   RinkebyNetworkInfo,
   ArbitrumNetworkInfo,
   PolygonNetworkInfo,
@@ -130,6 +149,7 @@ export const NETWORKS_INFO_LIST: NetworkInfo[] = [
 
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
+  [ChainId.ROPSTEN]: RopstenNetworkInfo,
   [ChainId.RINKEBY]: RinkebyNetworkInfo,
   [ChainId.ARBITRUM]: ArbitrumNetworkInfo,
   [ChainId.POLYGON]: PolygonNetworkInfo,

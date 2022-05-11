@@ -34,13 +34,19 @@ export interface ProtocolState {
 }
 
 export const initialState: ProtocolState = {
+  [ChainId.ETHEREUM]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
   [ChainId.RINKEBY]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [ChainId.ETHEREUM]: {
+  [ChainId.ROPSTEN]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,

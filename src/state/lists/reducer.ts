@@ -147,7 +147,7 @@ export default createReducer(initialState, (builder) =>
       if (!state.lastInitializedDefaultListOfLists) {
         state.byUrl = initialState.byUrl
         state.activeListUrls = initialState.activeListUrls
-      } else if (state.lastInitializedDefaultListOfLists) {
+      } else {
         const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<Set<string>>(
           (s, l) => s.add(l),
           new Set()

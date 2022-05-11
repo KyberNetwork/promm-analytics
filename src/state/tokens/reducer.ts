@@ -66,8 +66,9 @@ export interface TokensState {
 
 export const initialState: TokensState = {
   byAddress: {
-    [ChainId.RINKEBY]: {},
     [ChainId.ETHEREUM]: {},
+    [ChainId.ROPSTEN]: {},
+    [ChainId.RINKEBY]: {},
     [ChainId.ARBITRUM]: {},
     [ChainId.POLYGON]: {},
   },
