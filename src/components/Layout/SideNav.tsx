@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ProMMAnalyticsLogo from 'assets/svg/kyberswap_promm_analytics_logo.svg'
 import ProMMAnalyticsLogoLight from 'assets/svg/kyberswap_promm_analytics_logo_light.svg'
@@ -7,7 +7,7 @@ import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import QuestionHelper from 'components/QuestionHelper'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { TrendingUp, PieChart, Disc, Repeat, Activity, X } from 'react-feather'
 import { activeNetworkPrefix } from 'utils/networkPrefix'
 import ThemeToggle from 'components/ThemeToggle'
@@ -19,7 +19,7 @@ import { ExternalLink, MenuItem, Divider, ExternalMenu } from './styled'
 import Modal from 'components/Modal'
 import { ButtonEmpty } from 'components/Button'
 import { NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
-import { useDarkModeManager } from 'state/user/hooks'
+import { useDarkModeManager, useIsFirstTimeVisit } from 'state/user/hooks'
 import Wallet from 'components/Icons/Wallet'
 import Kyber from '../../assets/svg/kyber.svg'
 
@@ -174,11 +174,28 @@ function SideNav() {
   const activeNetworks = useActiveNetworks() //todo namgold: useParams()
   const { isAllChain } = useActiveNetworkUtils()
   const { pathname } = useLocation()
-  const [showNetworkModal, setShowNetworkModal] = useState(false)
+  const [showNetworkModal, setShow] = useState(false)
   const [tab, setTab] = useState<1 | 2>(1)
   const [isDarkMode] = useDarkModeManager()
-
+  const [isFirstTimeVisit, toggleFirstTimeVisit] = useIsFirstTimeVisit()
   const { width } = useWindowSize()
+  const history = useHistory()
+
+  const setShowNetworkModal = useCallback(
+    (isShow: boolean) => {
+      if (!isShow) {
+        toggleFirstTimeVisit()
+      }
+      setShow(isShow)
+    },
+    [toggleFirstTimeVisit]
+  )
+
+  useEffect(() => {
+    if ((isFirstTimeVisit || isFirstTimeVisit === undefined) && history.location.pathname.includes('home')) {
+      setShowNetworkModal(true)
+    }
+  }, [history, isFirstTimeVisit, setShowNetworkModal])
 
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
   const networkModal = (

@@ -10,6 +10,7 @@ import {
   // toggleURLWarning,
   addSavedToken,
   addSavedPool,
+  toggleIsFirstTimeVisit,
 } from './actions'
 import { PoolData } from 'state/pools/reducer'
 import { TokenData } from 'state/tokens/reducer'
@@ -48,6 +49,17 @@ export function useIsDarkMode(): boolean {
   )
 
   return userDarkMode === null ? matchesDarkMode : userDarkMode
+}
+
+export function useIsFirstTimeVisit(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const isFirstTimeVisit = useSelector((state: AppState) => state.user.isFirstTimeVisit)
+
+  const toggle = useCallback(() => {
+    dispatch(toggleIsFirstTimeVisit())
+  }, [dispatch])
+
+  return [isFirstTimeVisit, toggle]
 }
 
 export function useDarkModeManager(): [boolean, () => void] {

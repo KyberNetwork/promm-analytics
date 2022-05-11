@@ -15,6 +15,7 @@ import {
   toggleURLWarning,
   addSavedToken,
   addSavedPool,
+  toggleIsFirstTimeVisit,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -52,6 +53,8 @@ export interface UserState {
 
   timestamp: number
   URLWarningVisible: boolean
+
+  isFirstTimeVisit: boolean
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -67,6 +70,7 @@ export const initialState: UserState = {
   savedPools: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
+  isFirstTimeVisit: true,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -149,5 +153,8 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(toggleURLWarning, (state) => {
       state.URLWarningVisible = !state.URLWarningVisible
+    })
+    .addCase(toggleIsFirstTimeVisit, (state) => {
+      state.isFirstTimeVisit = false
     })
 )

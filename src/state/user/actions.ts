@@ -27,3 +27,4 @@ export const removeSerializedPair = createAction<{ chainId: ChainId; tokenAAddre
   'user/removeSerializedPair'
 )
 export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
+export const toggleIsFirstTimeVisit = createAction<void>('user/toggleIsFirstTimeVisit')
