@@ -79,7 +79,7 @@ export default function Menu() {
 
       {open && (
         <MenuFlyout>
-          <MenuItem to="/" isActive={pathname === '/'}>
+          {/* <MenuItem to="/" isActive={pathname === '/'}>
             <TrendingUp size={16} />
             Summary
           </MenuItem>
@@ -93,7 +93,7 @@ export default function Menu() {
             <PieChart size={16} />
             Pools
           </MenuItem>
-
+ */}
           <MenuItem to={networkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
             <Wallet />
             Wallet Analytics
