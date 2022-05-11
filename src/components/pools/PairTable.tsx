@@ -19,6 +19,7 @@ import { Text, Flex } from 'rebass'
 import CopyHelper from 'components/Copy'
 import { ChevronDown, ChevronUp, Plus } from 'react-feather'
 import { useWindowSize } from 'hooks/useWindowSize'
+import QuestionHelper from 'components/QuestionHelper'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -202,6 +203,7 @@ export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDat
 
               <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.apr)}>
                 APR {arrow(SORT_FIELD.apr)}
+                <QuestionHelper text="Estimated return based on yearly fees of the pool" />
               </ClickableText>
 
               <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
