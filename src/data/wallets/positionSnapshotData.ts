@@ -221,15 +221,13 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
         let totalUSD = 0
 
         Object.keys(latestDataForPairs).forEach((positionId) => {
-          let usdValue = 0
-          if (latestDataForPairs[positionId]) {
-            const positionValues = calcPosition({
-              p: latestDataForPairs[positionId]!,
-              chainId: activeNetwork.chainId,
-              ethPriceUSD: ethPrices[dayTimestamp],
-            })
-            usdValue = positionValues.userPositionUSD
-          }
+          const usdValue = latestDataForPairs[positionId]
+            ? calcPosition({
+                p: latestDataForPairs[positionId]!,
+                chainId: activeNetwork.chainId,
+                ethPriceUSD: ethPrices[dayTimestamp],
+              }).userPositionUSD
+            : 0
 
           totalUSD += usdValue
         })
@@ -337,15 +335,13 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
             latestDataForPairs = currentPosition
           }
         })
-        let usdValue = 0
-        if (latestDataForPairs) {
-          const positionValues = calcPosition({
-            p: latestDataForPairs,
-            chainId: activeNetwork.chainId,
-            ethPriceUSD: ethPrices[dayTimestamp],
-          })
-          usdValue = positionValues.userPositionUSD
-        }
+        const usdValue = latestDataForPairs
+          ? calcPosition({
+              p: latestDataForPairs,
+              chainId: activeNetwork.chainId,
+              ethPriceUSD: ethPrices[dayTimestamp],
+            }).userPositionUSD
+          : 0
 
         return {
           date: dayTimestamp,
