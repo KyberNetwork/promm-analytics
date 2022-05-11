@@ -27,6 +27,7 @@ import useAggregatorVolume from 'hooks/useAggregatorVolume'
 import { Text } from 'rebass'
 import { PoolData } from 'state/pools/reducer'
 import PairTable from 'components/pools/PairTable'
+import Search from '../../components/Search'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -154,6 +155,7 @@ export default function Home() {
       <AutoColumn gap="40px">
         <AutoColumn gap="32px">
           <TYPE.label fontSize="24px">Summary</TYPE.label>
+          <Search />
 
           <StatisticWrapper>
             <DarkGreyCard>
