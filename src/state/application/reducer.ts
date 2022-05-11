@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { ChainId, ALL_SUPPORT_NETWORKS_ID } from 'constants/networks'
+import { ChainId, ALL_SUPPORT_NETWORKS_ID, SHOW_NETWORKS } from 'constants/networks'
 import { updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal, updateActiveNetwork } from './actions'
 
 export interface ApplicationState {
@@ -21,7 +21,7 @@ const initialState: ApplicationState = {
     syncedBlock: undefined,
     headBlock: undefined,
   },
-  activeNetworksId: [ChainId.ETHEREUM],
+  activeNetworksId: [SHOW_NETWORKS[0]],
 }
 
 export default createReducer(initialState, (builder) =>
