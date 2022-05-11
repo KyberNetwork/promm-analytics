@@ -221,7 +221,7 @@ export default function PoolPage() {
               />
 
               <StyledExternalLink
-                href={`https://kyberswap.com./#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}?networkId=${activeNetwork.chainId}`}
+                href={`https://kyberswap.com/#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}?networkId=${activeNetwork.chainId}`}
               >
                 <ButtonOutlined width="max-content" mr="12px" style={{ height: '38px' }}>
                   <RowBetween>
