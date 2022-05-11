@@ -132,12 +132,12 @@ const CandleChart = ({
   useEffect(() => {
     if (chartCreated && data) {
       const series = chartCreated.addCandlestickSeries({
-        upColor: 'green',
-        downColor: 'red',
-        borderDownColor: 'red',
-        borderUpColor: 'green',
-        wickDownColor: 'red',
-        wickUpColor: 'green',
+        upColor: '#33CB9E',
+        downColor: '#FF537B',
+        borderDownColor: '#FF537B',
+        borderUpColor: '#33CB9E',
+        wickDownColor: '#FF537B',
+        wickUpColor: '#33CB9E',
       })
 
       series.setData(data)
