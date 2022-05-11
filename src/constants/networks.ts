@@ -137,7 +137,7 @@ const PolygonNetworkInfo: NetworkInfo = {
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
-export const SHOW_NETWORKS = [ChainId.ROPSTEN, ChainId.RINKEBY]
+export const SHOW_NETWORKS = [ChainId.RINKEBY, ChainId.ROPSTEN]
 
 export const NETWORKS_INFO_LIST: NetworkInfo[] = [
   EthereumNetworkInfo,

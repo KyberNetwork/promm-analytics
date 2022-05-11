@@ -16,7 +16,7 @@ import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
-import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP } from 'constants/networks'
+import { NETWORKS_INFO_LIST, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
 import { updateActiveNetwork } from 'state/application/actions'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
@@ -224,7 +224,7 @@ export default function App() {
                       </NetworkReader>
                     )}
                   />
-                  <Redirect to={`/${NETWORKS_INFO_MAP[ChainId.ETHEREUM].route}/home`} />
+                  <Redirect to={`/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`} />
                 </Switch>
                 <Marginer />
               </BodyWrapper>
