@@ -9,6 +9,10 @@ export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className
   srcs: string[]
 }
 
+const WhiteHelpCircle = styled(HelpCircle)`
+  background-color: ${({ theme }) => theme.white};
+`
+
 /**
  * Renders an image by sequentially trying a list of URIs, and then eventually a fallback triangle alert
  */
@@ -34,7 +38,7 @@ export default function Logo({ srcs, alt, ...rest }: LogoProps) {
     )
   }
 
-  return <HelpCircle {...rest} />
+  return <WhiteHelpCircle {...rest} />
 }
 
 export const GenericImageWrapper = styled.img<{ size?: string }>`
