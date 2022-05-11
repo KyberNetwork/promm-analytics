@@ -148,7 +148,16 @@ export default function DensityChart({ address }: DensityChartProps) {
             ]
             const pool =
               token0 && token1 && feeTier
-                ? new Pool(token0, token1, feeTier, sqrtPriceX96, t.liquidityActive, t.tickIdx, 12312312313, mockTicks) //todo namgold: check this 12312312313-ddieenf daij
+                ? new Pool(
+                    token0,
+                    token1,
+                    feeTier,
+                    sqrtPriceX96,
+                    t.liquidityActive,
+                    poolData.liquidity,
+                    t.tickIdx,
+                    mockTicks
+                  )
                 : undefined
             const nextSqrtX96 = poolTickData.ticksProcessed[i - 1]
               ? TickMath.getSqrtRatioAtTick(poolTickData.ticksProcessed[i - 1].tickIdx)
