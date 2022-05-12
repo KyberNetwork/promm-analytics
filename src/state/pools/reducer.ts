@@ -35,6 +35,7 @@ export interface PoolData {
 
   // for tick math
   liquidity: number
+  reinvestL: number
   sqrtPrice: number
   tick: number
 

@@ -154,7 +154,7 @@ export default function DensityChart({ address }: DensityChartProps) {
                     feeTier,
                     sqrtPriceX96,
                     t.liquidityActive,
-                    poolData.liquidity,
+                    poolData.reinvestL,
                     t.tickIdx,
                     mockTicks
                   )

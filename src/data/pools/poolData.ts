@@ -22,6 +22,7 @@ export const POOLS_BULK = (block: number | string | undefined, pools: string[]) 
         id
         feeTier
         liquidity
+        reinvestL
         sqrtPrice
         tick
         token0 {
@@ -55,6 +56,7 @@ interface PoolFields {
   id: string
   feeTier: string
   liquidity: string
+  reinvestL: string
   sqrtPrice: string
   tick: string
   token0: {
@@ -201,6 +203,7 @@ export function usePoolDatas(
         address,
         feeTier,
         liquidity: parseFloat(current.liquidity),
+        reinvestL: parseFloat(current.reinvestL),
         sqrtPrice: parseFloat(current.sqrtPrice),
         tick: parseFloat(current.tick),
         token0: {
