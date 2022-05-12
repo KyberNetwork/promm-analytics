@@ -10,6 +10,7 @@ import { useSavedPools, useSavedTokens } from 'state/user/hooks'
 import { NETWORKS_INFO_LIST } from 'constants/networks'
 import { networkPrefix } from 'utils/networkPrefix'
 import HoverInlineText from 'components/HoverInlineText'
+import { TYPE } from 'theme'
 
 const RightColumn = styled.div<{ open: boolean }>`
   position: sticky;
@@ -57,6 +58,7 @@ const TagItem = styled(Link)`
   align-items: center;
   text-decoration: none;
 `
+
 type PinnedDataPropType = {
   open: boolean
   setSavedOpen: (value: boolean) => void
@@ -78,7 +80,8 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
     <RightColumn open={open}>
       <SavedButton onClick={() => setSavedOpen(false)} open={open}>
         <Flex alignItems="center">
-          <Text fontWeight="500">Watchlist</Text>
+          <Bookmark size={16} color={theme.subText} />
+          <TYPE.main ml={'4px'}>Saved</TYPE.main>
         </Flex>
         <ChevronRight color={theme.subText} size={24} />
       </SavedButton>

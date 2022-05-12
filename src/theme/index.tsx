@@ -229,6 +229,26 @@ button {
   user-select: none;
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  background: #878787;
+  border-radius: 999px;
+}
+
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+
 html {
   font-size: 16px;
   font-variant: none;
@@ -243,7 +263,7 @@ html {
 export const ThemedGlobalStyle = createGlobalStyle`
 html {
   color: ${({ theme }) => theme.text};
-  background-color: ${({ theme }) => theme.buttonBlack};
+  background-color: ${({ theme }) => theme.background};
 }
 
 .three-line-legend-dark {

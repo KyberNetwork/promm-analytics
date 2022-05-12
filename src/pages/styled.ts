@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 
 export const PageWrapper = styled.div`
-  width: 90%;
+  width: 100%;
+  padding: 0 2rem;
 `
 
 export const ThemedBackground = styled.div<{ backgroundColor: string }>`

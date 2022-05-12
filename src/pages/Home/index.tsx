@@ -90,7 +90,7 @@ export default function Home() {
     <PageWrapper>
       {/* <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} /> */}
       <AutoColumn gap="40px">
-        <AutoColumn gap="32px">
+        <AutoColumn gap="24px">
           <TYPE.label fontSize="24px">Summary</TYPE.label>
 
           <StatisticWrapper>

@@ -24,26 +24,26 @@ import { AppDispatch } from 'state'
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
   display: grid;
-  grid-template-columns: ${({ open }) => (open ? '208px 1fr 220px' : '208px 1fr 64px')};
+  grid-template-columns: ${({ open }) => (open ? '220px 1fr 200px' : '220px 1fr 64px')};
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     grid-template-columns: 1fr;
   `}
+  background-color: ${({ theme }) => theme.buttonBlack};
 `
 
 const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 24px;
-  margin-top: 28px;
+  padding-top: 36px;
   align-items: center;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
 
   > * {
-    max-width: 1280px;
+    max-width: 1440px;
   }
 
   @media (max-width: 1080px) {
