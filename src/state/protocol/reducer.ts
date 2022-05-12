@@ -9,6 +9,9 @@ export interface ProtocolData {
   volumeUSD: number
   volumeUSDChange: number
 
+  volumeUSDWeek: number
+  volumeUSDChangeWeek: number
+
   // in range liquidity
   tvlUSD: number
   tvlUSDChange: number

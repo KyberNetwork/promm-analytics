@@ -87,14 +87,12 @@ export async function fetchPositionSnapshots(
   }
 }
 
-export function useUserSnapshots(address: string) {
+export function useUserSnapshots(address: string): { [key in ChainId]?: PositionSnapshotFields[] } | undefined {
   const activeNetwork = useActiveNetworks()[0]
   const { dataClient } = useClients()[0]
 
   const [snapshots, setSnapshots] = useState<{ [key in ChainId]?: PositionSnapshotFields[] }>()
   const [error, setError] = useState(false)
-
-  //todo namgold continue this
 
   useEffect(() => {
     async function fetchData() {

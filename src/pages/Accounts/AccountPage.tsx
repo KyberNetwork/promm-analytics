@@ -186,7 +186,6 @@ export default function AccountPage() {
   // theming
   const backgroundColor = useColor(address)
   const theme = useTheme()
-  // const snapshot = useUserSnapshots(address)
 
   // scroll on page view
   useEffect(() => {

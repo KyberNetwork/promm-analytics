@@ -3,30 +3,24 @@ import styled from 'styled-components'
 import { AutoColumn } from 'components/Column'
 import { TYPE } from 'theme'
 import { ResponsiveRow, RowBetween, RowFixed } from 'components/Row'
-import LineChart from 'components/LineChart/alt'
 import useTheme from 'hooks/useTheme'
-import { useProtocolData, useProtocolChartData, useProtocolTransactions } from 'state/protocol/hooks'
+import { useProtocolData, useProtocolTransactions } from 'state/protocol/hooks'
 import { DarkGreyCard } from 'components/Card'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import { ButtonText, StyledInternalLink } from '../../theme/components'
 import TokenTable from 'components/tokens/TokenTable'
 import { PageWrapper } from 'pages/styled'
-import { unixToDate } from 'utils/date'
-import BarChart from 'components/BarChart/alt'
 import { useAllPoolData } from 'state/pools/hooks'
 import { notEmpty } from 'utils'
 import TransactionsTable from '../../components/TransactionsTable'
 import { useAllTokenData } from 'state/tokens/hooks'
-import { MonoSpace } from 'components/shared'
-import { useActiveNetworks } from 'state/application/hooks'
-import { useTransformedVolumeData } from 'hooks/chart'
-import { SmallOptionButton } from 'components/Button'
-import { VolumeWindow } from 'types'
 import useAggregatorVolume from 'hooks/useAggregatorVolume'
 import { Text } from 'rebass'
 import { PoolData } from 'state/pools/reducer'
 import PairTable from 'components/pools/PairTable'
+import Panel from 'components/Panel'
+import GlobalChart, { CHART_VIEW } from './components/GlobalChart'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -57,21 +51,8 @@ export default function Home() {
 
   const theme = useTheme()
 
-  const activeNetwork = useActiveNetworks()
-
   const [protocolData] = useProtocolData()
-  const [chartData] = useProtocolChartData()
   const [transactions] = useProtocolTransactions()
-
-  const [volumeHover, setVolumeHover] = useState<number | undefined>()
-  const [liquidityHover, setLiquidityHover] = useState<number | undefined>()
-  const [leftLabel, setLeftLabel] = useState<string | undefined>()
-  const [rightLabel, setRightLabel] = useState<string | undefined>()
-
-  useEffect(() => {
-    setLiquidityHover(undefined)
-    setVolumeHover(undefined)
-  }, [activeNetwork])
 
   // get all the pool datas that exist
   const allPoolData = useAllPoolData()
@@ -94,47 +75,6 @@ export default function Home() {
     return Object.values(poolsGroupByPair).sort((a, b) => b[0].tvlUSD - a[0].tvlUSD)
   }, [poolDatas])
 
-  // if hover value undefined, reset to current day value
-  useEffect(() => {
-    if (volumeHover === undefined && protocolData) {
-      setVolumeHover(protocolData.volumeUSD)
-    }
-  }, [protocolData, volumeHover])
-  useEffect(() => {
-    if (liquidityHover === undefined && protocolData) {
-      setLiquidityHover(protocolData.tvlUSD)
-    }
-  }, [liquidityHover, protocolData])
-
-  const formattedTvlData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day) => {
-        return {
-          time: unixToDate(day.date),
-          value: day.tvlUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
-
-  const formattedVolumeData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day) => {
-        return {
-          time: unixToDate(day.date),
-          value: day.volumeUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
-
-  const weeklyVolumeData = useTransformedVolumeData(chartData, 'week')
-  const monthlyVolumeData = useTransformedVolumeData(chartData, 'month')
-
   const allTokens = useAllTokenData()
 
   const formattedTokens = useMemo(() => {
@@ -142,8 +82,6 @@ export default function Home() {
       .map((t) => t.data)
       .filter(notEmpty)
   }, [allTokens])
-
-  const [volumeWindow, setVolumeWindow] = useState(VolumeWindow.daily)
 
   const [showTotalVol, setShowTotalVol] = useState(true)
   const aggregatorVol = useAggregatorVolume()
@@ -206,81 +144,14 @@ export default function Home() {
 
           <ResponsiveRow>
             <ChartWrapper>
-              <LineChart
-                data={formattedTvlData}
-                height={220}
-                minHeight={332}
-                color={theme.primary}
-                value={liquidityHover}
-                label={leftLabel}
-                setValue={setLiquidityHover}
-                setLabel={setLeftLabel}
-                topLeft={
-                  <AutoColumn gap="4px">
-                    <TYPE.label fontSize="16px">TVL</TYPE.label>
-                    <TYPE.largeHeader fontSize="32px">
-                      <MonoSpace>{formatDollarAmount(liquidityHover, 2, true)} </MonoSpace>
-                    </TYPE.largeHeader>
-                    <TYPE.main fontSize="12px" height="14px">
-                      {leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
-                    </TYPE.main>
-                  </AutoColumn>
-                }
-              />
+              <Panel style={{ height: '100%', minHeight: '300px' }}>
+                <GlobalChart chartView={CHART_VIEW.TVL} />
+              </Panel>
             </ChartWrapper>
             <ChartWrapper>
-              <BarChart
-                height={220}
-                minHeight={332}
-                data={
-                  volumeWindow === VolumeWindow.monthly
-                    ? monthlyVolumeData
-                    : volumeWindow === VolumeWindow.weekly
-                    ? weeklyVolumeData
-                    : formattedVolumeData
-                }
-                color={theme.primary}
-                setValue={setVolumeHover}
-                setLabel={setRightLabel}
-                value={volumeHover}
-                label={rightLabel}
-                activeWindow={volumeWindow}
-                topRight={
-                  <RowFixed style={{ marginLeft: '-40px', marginTop: '8px' }}>
-                    <SmallOptionButton
-                      active={volumeWindow === VolumeWindow.daily}
-                      onClick={() => setVolumeWindow(VolumeWindow.daily)}
-                    >
-                      D
-                    </SmallOptionButton>
-                    <SmallOptionButton
-                      active={volumeWindow === VolumeWindow.weekly}
-                      style={{ marginLeft: '8px' }}
-                      onClick={() => setVolumeWindow(VolumeWindow.weekly)}
-                    >
-                      W
-                    </SmallOptionButton>
-                    <SmallOptionButton
-                      active={volumeWindow === VolumeWindow.monthly}
-                      style={{ marginLeft: '8px' }}
-                      onClick={() => setVolumeWindow(VolumeWindow.monthly)}
-                    >
-                      M
-                    </SmallOptionButton>
-                  </RowFixed>
-                }
-                topLeft={
-                  <AutoColumn gap="4px">
-                    <TYPE.label fontSize="16px">Volume 24H</TYPE.label>
-                    <TYPE.largeHeader fontSize="32px">
-                      <MonoSpace> {formatDollarAmount(volumeHover, 2)}</MonoSpace>
-                    </TYPE.largeHeader>
-                    <TYPE.main fontSize="12px" height="14px">
-                      {rightLabel ? <MonoSpace>{rightLabel} (UTC)</MonoSpace> : null}
-                    </TYPE.main>
-                  </AutoColumn>
-                }
-              />
+              <Panel style={{ height: '100%', minHeight: '300px' }}>
+                <GlobalChart chartView={CHART_VIEW.VOLUME} />
+              </Panel>
             </ChartWrapper>
           </ResponsiveRow>
         </AutoColumn>
