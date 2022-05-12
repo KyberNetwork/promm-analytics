@@ -2,30 +2,19 @@ import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import Popover, { PopoverProps } from '../Popover'
 
-const TooltipContainer = styled.div`
+const TooltipContainer = styled.div<{ fontSize?: number }>`
   width: 228px;
   padding: 0.6rem 1rem;
   line-height: 150%;
   font-weight: 400;
+  font-size: ${({ fontSize }) => fontSize || 14}px;
 `
 
 interface TooltipProps extends Omit<PopoverProps, 'content'> {
   text: string
+  fontSize?: number
 }
 
-export default function Tooltip({ text, ...rest }: TooltipProps) {
-  return <Popover content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
-}
-
-export function MouseoverTooltip({ children, ...rest }: Omit<TooltipProps, 'show'>) {
-  const [show, setShow] = useState(false)
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
-  return (
-    <Tooltip {...rest} show={show}>
-      <div onMouseEnter={open} onMouseLeave={close}>
-        {children}
-      </div>
-    </Tooltip>
-  )
+export default function Tooltip({ text, fontSize, ...rest }: TooltipProps) {
+  return <Popover content={<TooltipContainer fontSize={fontSize}>{text}</TooltipContainer>} {...rest} />
 }

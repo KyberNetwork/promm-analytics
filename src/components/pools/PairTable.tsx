@@ -19,7 +19,7 @@ import { Text, Flex } from 'rebass'
 import CopyHelper from 'components/Copy'
 import { ChevronDown, ChevronUp, Plus } from 'react-feather'
 import { useWindowSize } from 'hooks/useWindowSize'
-import QuestionHelper from 'components/QuestionHelper'
+import { QuestionHelper } from 'components/QuestionHelper'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;

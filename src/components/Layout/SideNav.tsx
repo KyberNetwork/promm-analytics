@@ -6,7 +6,7 @@ import SwitchNetWorkIcon from 'assets/svg/switch-network.svg'
 import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
-import QuestionHelper from 'components/QuestionHelper'
+import { InfoHelper } from 'components/QuestionHelper'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { TrendingUp, PieChart, Disc, Repeat, Activity, X } from 'react-feather'
 import { activeNetworkPrefix } from 'utils/networkPrefix'
@@ -289,7 +289,7 @@ function SideNav() {
             <Text fontSize={16} fontWeight="500" color={theme.subText}>
               Select a network
             </Text>
-            <QuestionHelper text="You can switch between networks in our Elastic Analytics and Classic Analytics below" />
+            <InfoHelper text="You can switch between networks in our Elastic Analytics and Classic Analytics below" />
           </Flex>
 
           <SelectNetworkButton onClick={() => setShowNetworkModal(true)} marginTop="1rem" />
