@@ -29,7 +29,7 @@ export function InfoHelper({ text }: { text: string }) {
 
   return (
     <span style={{ marginLeft: 4 }}>
-      <Tooltip text={text} show={show} fontSize={10}>
+      <Tooltip text={text} show={show}>
         <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
           <Info size={16} />
         </QuestionWrapper>
