@@ -43,7 +43,7 @@ const TVLChart = (): React.ReactElement | null => {
         data={formattedTvlData}
         base={protocolData?.tvlUSD || 0}
         baseChange={10}
-        title={'Liquidity'}
+        title={'TVL'}
         width={50}
         type={CHART_TYPES.AREA}
       />
