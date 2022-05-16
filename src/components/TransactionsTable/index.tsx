@@ -150,9 +150,11 @@ export default function TransactionTable({
     if (filteredTxn.length % maxItems === 0) {
       extraPages = 0
     }
-    const newMaxPage = Math.floor(filteredTxn.length / maxItems) + extraPages
-    setMaxPage(newMaxPage)
-    if (newMaxPage < page) setPage(newMaxPage)
+    if (filteredTxn.length === 0) {
+      setMaxPage(1)
+    } else {
+      setMaxPage(Math.floor(filteredTxn.length / maxItems) + extraPages)
+    }
   }, [maxItems, filteredTxn, txFilter, page])
 
   useEffect(() => {
