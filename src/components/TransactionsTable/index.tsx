@@ -162,6 +162,7 @@ export default function TransactionTable({
   const sortedTransactions = useMemo(() => {
     return filteredTxn.length
       ? filteredTxn
+          .slice()
           .sort((a, b) => {
             let valueToCompareA = null
             let valueToCompareB = null
