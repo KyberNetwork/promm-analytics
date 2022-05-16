@@ -275,7 +275,6 @@ html {
 	color: white;
 	background-color: transparent;
 	text-align: left;
-	z-index: 10;
   pointer-events: none;
 }
 
