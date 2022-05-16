@@ -17,9 +17,11 @@ export const PRICES_BY_BLOCK = (blocks: any) => {
 }
 
 type PriceBlockResults = {
-  [key: string]: {
-    ethPriceUSD: string
-  }
+  [key: string]:
+    | {
+        ethPriceUSD: string
+      }
+    | undefined
 }
 
 export default async function getETHPriceFromTimestamps(
@@ -36,7 +38,7 @@ export default async function getETHPriceFromTimestamps(
       })
       if (error) throw error
       const result: { [timestamp: number]: number } = {}
-      timestamps.forEach((timestamp) => (result[timestamp] = parseFloat(data['b' + timestamp].ethPriceUSD)))
+      timestamps.forEach((timestamp) => (result[timestamp] = parseFloat(data['b' + timestamp]?.ethPriceUSD ?? '0')))
       return result
     } else throw new Error('Cant query block client')
   } catch (e) {
