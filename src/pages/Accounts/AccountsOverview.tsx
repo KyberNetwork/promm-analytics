@@ -118,7 +118,7 @@ export default function AccountsOverview() {
               data.slice(maxItems * (page - 1), page * maxItems).map((item, index) => (
                 <React.Fragment key={item.id}>
                   <ResponsiveGrid>
-                    <Label>{index + 1}</Label>
+                    <Label>{(page - 1) * maxItems + index + 1}</Label>
                     <LinkWrapper to={'account/' + item.owner}>
                       <Label color={theme.primary}>{item.owner}</Label>
                     </LinkWrapper>
