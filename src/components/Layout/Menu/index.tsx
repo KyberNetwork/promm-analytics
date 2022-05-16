@@ -93,7 +93,7 @@ export default function Menu() {
             <PieChart size={16} />
             Pools
           </MenuItem>
- */}
+        */}
           <MenuItem to={networkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
             <Wallet />
             Wallet Analytics
@@ -101,12 +101,12 @@ export default function Menu() {
 
           <Divider />
 
-          <ExternalMenu href={'https://kyberswap.com'}>
+          <ExternalMenu href="https://kyberswap.com">
             <Repeat size={16} />
             Swap
           </ExternalMenu>
 
-          <ExternalMenu href={'https://analytics.kyberswap.com'}>
+          <ExternalMenu href="https://analytics.kyberswap.com">
             <Activity size={16} />
             Classic Analytics
           </ExternalMenu>

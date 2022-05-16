@@ -47,11 +47,11 @@ export default function CopyHelper({
     <CopyIcon onClick={onCopy} margin={margin}>
       {isCopied ? (
         <TransactionStatusText>
-          <CheckCircle size={'14'} />
+          <CheckCircle size="14" />
         </TransactionStatusText>
       ) : (
         <TransactionStatusText>
-          <Copy size={'14'} />
+          <Copy size="14" />
         </TransactionStatusText>
       )}
     </CopyIcon>

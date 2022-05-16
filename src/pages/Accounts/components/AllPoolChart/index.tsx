@@ -102,7 +102,7 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType) => {
               tickFormatter={(tick) => toNiceDate(tick)}
               dataKey="date"
               tick={{ fill: textColor }}
-              type={'number'}
+              type="number"
               domain={domain}
             />
             <YAxis
@@ -130,13 +130,13 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType) => {
               wrapperStyle={{ top: -70, left: -10 }}
             />
             <Area
-              key={'other'}
-              dataKey={'valueUSD'}
+              key="other"
+              dataKey="valueUSD"
               stackId="2"
               strokeWidth={2}
               dot={false}
               type="monotone"
-              name={'TVL'}
+              name="TVL"
               yAxisId={0}
               stroke={darken(0.12, theme.primary)}
               fill="url(#colorUv)"

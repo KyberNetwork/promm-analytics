@@ -283,7 +283,7 @@ export default function AccountPage() {
                       <StyledIcon>
                         <Activity size={16} />
                       </StyledIcon>
-                      <TYPE.body ml={'10px'}>All Positions</TYPE.body>
+                      <TYPE.body ml="10px">All Positions</TYPE.body>
                     </RowFixed>
                   )}
                   {activePosition && (
@@ -294,7 +294,7 @@ export default function AccountPage() {
                         size={16}
                         activeNetwork={activeNetwork}
                       />
-                      <TYPE.body ml={'16px'}>
+                      <TYPE.body ml="16px">
                         {activePosition.token0.symbol}-{activePosition.token1.symbol} Position
                       </TYPE.body>
                     </RowFixed>
@@ -326,7 +326,7 @@ export default function AccountPage() {
                                 size={16}
                                 activeNetwork={activeNetwork}
                               />
-                              <TYPE.body ml={'16px'}>
+                              <TYPE.body ml="16px">
                                 {p.token0.symbol}-{p.token1.symbol} Position
                               </TYPE.body>
                             </MenuRow>
@@ -345,7 +345,7 @@ export default function AccountPage() {
                             <StyledIcon>
                               <Activity size={16} />
                             </StyledIcon>
-                            <TYPE.body ml={'10px'}>All Positions</TYPE.body>
+                            <TYPE.body ml="10px">All Positions</TYPE.body>
                           </RowFixed>
                         </MenuRow>
                       )}
@@ -361,7 +361,7 @@ export default function AccountPage() {
                       <div />
                     </RowBetween>
                     <RowFixed align="flex-end">
-                      <TYPE.header fontSize={'24px'} lineHeight={1}>
+                      <TYPE.header fontSize="24px" lineHeight={1}>
                         {positionValue
                           ? formatDollarAmount(positionValue)
                           : positionValue === 0

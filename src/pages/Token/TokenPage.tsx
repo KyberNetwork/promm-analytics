@@ -215,8 +215,8 @@ export default function TokenPage() {
                 <AutoColumn gap="md">
                   <RowFixed gap="lg">
                     <CurrencyLogo address={address} size="32px" activeNetwork={activeNetwork} />
-                    <Label ml={'10px'}>{tokenData.name}</Label>
-                    <Label ml={'6px'}>({tokenData.symbol})</Label>
+                    <Label ml="10px">{tokenData.name}</Label>
+                    <Label ml="6px">({tokenData.symbol})</Label>
                     <HideMedium>
                       <RowFlat style={{ marginLeft: '16px', marginTop: '8px' }}>
                         <PriceText mr="10px"> {formatDollarAmount(tokenData.priceUSD)}</PriceText>
@@ -231,7 +231,7 @@ export default function TokenPage() {
                     onClick={() => addSavedToken(activeNetwork.chainId, tokenData)}
                   />
                   <StyledExternalLink href={`https://kyberswap.com/#/proamm/add/${address}`}>
-                    <ButtonOutlined width="max-content" mr="12px" height={'100%'} style={{ height: '38px' }}>
+                    <ButtonOutlined width="max-content" mr="12px" height="100%" style={{ height: '38px' }}>
                       <RowBetween>
                         <Plus size={20} />
                         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}>Add Liquidity</div>

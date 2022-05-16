@@ -81,7 +81,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
       <SavedButton onClick={() => setSavedOpen(false)} open={open}>
         <Flex alignItems="center">
           <Bookmark size={16} color={theme.subText} />
-          <TYPE.main ml={'4px'}>Saved</TYPE.main>
+          <TYPE.main ml="4px">Saved</TYPE.main>
         </Flex>
         <ChevronRight color={theme.subText} size={24} />
       </SavedButton>

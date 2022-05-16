@@ -148,28 +148,28 @@ const TextWrapper = styled(Text)<{ color: keyof Colors }>`
 
 export const TYPE = {
   main(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'subText'} {...props} />
+    return <TextWrapper fontWeight={500} color="subText" {...props} />
   },
   link(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'primary'} {...props} />
+    return <TextWrapper fontWeight={500} color="primary" {...props} />
   },
   label(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text'} {...props} />
+    return <TextWrapper fontWeight={500} color="text" {...props} />
   },
   black(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text'} {...props} />
+    return <TextWrapper fontWeight={500} color="text" {...props} />
   },
   white(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'white'} {...props} />
+    return <TextWrapper fontWeight={500} color="white" {...props} />
   },
   body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={400} fontSize={16} color="text1" {...props} />
   },
   largeHeader(props: TextProps) {
-    return <TextWrapper fontWeight={600} fontSize={24} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={600} fontSize={24} color="text1" {...props} />
   },
   mediumHeader(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={20} color={'text3'} {...props} />
+    return <TextWrapper fontWeight={500} fontSize={20} color="text3" {...props} />
   },
   subHeader(props: TextProps) {
     return <TextWrapper fontWeight={400} fontSize={14} {...props} />
@@ -178,25 +178,25 @@ export const TYPE = {
     return <TextWrapper fontWeight={500} fontSize={11} {...props} />
   },
   blue(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'blue1'} {...props} />
+    return <TextWrapper fontWeight={500} color="blue1" {...props} />
   },
   yellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow3'} {...props} />
+    return <TextWrapper fontWeight={500} color="yellow3" {...props} />
   },
   darkGray(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text3'} {...props} />
+    return <TextWrapper fontWeight={500} color="text3" {...props} />
   },
   gray(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'bg3'} {...props} />
+    return <TextWrapper fontWeight={500} color="bg3" {...props} />
   },
   italic(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={12} fontStyle={'italic'} color={'text2'} {...props} />
+    return <TextWrapper fontWeight={500} fontSize={12} fontStyle="italic" color="text2" {...props} />
   },
   error({ error, ...props }: { error: boolean } & TextProps) {
     return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
   },
   header(props: TextProps) {
-    return <TextWrapper fontWeight={600} color={'text1'} {...props} />
+    return <TextWrapper fontWeight={600} color="text1" {...props} />
   },
 }
 

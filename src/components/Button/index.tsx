@@ -410,7 +410,7 @@ const HoverIcon = styled.div`
   justify-content: center;
   align-items: center;
   margin-right: 12px;
-  z-index: 9999;
+  z-index: 2;
   :hover {
     cursor: pointer;
     opacity: 0.6;

@@ -191,7 +191,7 @@ const LineChart = ({
         {topLeft ?? null}
         {topRight ?? null}
       </RowBetween>
-      <div ref={chartRef} id={'line-chart'} {...rest} />
+      <div ref={chartRef} id="line-chart" {...rest} />
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

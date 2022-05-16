@@ -79,7 +79,7 @@ export const LocalLoader = ({ fill }: { fill: boolean }) => {
   return (
     <Wrapper fill={fill ? 1 : 0}>
       <AnimatedImg>
-        <img src={'/favicon.svg'} alt="loading-icon" />
+        <img src="/favicon.svg" alt="loading-icon" />
       </AnimatedImg>
     </Wrapper>
   )

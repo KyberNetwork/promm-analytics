@@ -173,7 +173,7 @@ const CandleChart = ({
         {topLeft ?? null}
         {topRight ?? null}
       </RowBetween>
-      <div ref={chartRef} id={'candle-chart'} {...rest} />
+      <div ref={chartRef} id="candle-chart" {...rest} />
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

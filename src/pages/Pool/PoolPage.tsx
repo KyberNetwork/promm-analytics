@@ -185,14 +185,14 @@ export default function PoolPage() {
                   fontSize="24px"
                 >{` ${poolData.token0.symbol}/${poolData.token1.symbol} `}</TYPE.label>
                 <GreyBadge>{feeTierPercent(poolData.feeTier)}</GreyBadge>
-                <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size={'26px'} />
+                <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size="26px" />
               </RowFixed>
               <ResponsiveRow>
                 <StyledInternalLink to={networkPrefix(activeNetwork) + 'token/' + poolData.token0.address}>
                   <TokenButton>
                     <RowFixed>
-                      <CurrencyLogo address={poolData.token0.address} size={'20px'} activeNetwork={activeNetwork} />
-                      <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width={'fit-content'}>
+                      <CurrencyLogo address={poolData.token0.address} size="20px" activeNetwork={activeNetwork} />
+                      <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
                         {`1 ${poolData.token0.symbol} =  ${formatAmount(poolData.token1Price, 4)} ${
                           poolData.token1.symbol
                         }`}
@@ -203,8 +203,8 @@ export default function PoolPage() {
                 <StyledInternalLink to={networkPrefix(activeNetwork) + 'token/' + poolData.token1.address}>
                   <TokenButton>
                     <RowFixed>
-                      <CurrencyLogo address={poolData.token1.address} size={'20px'} activeNetwork={activeNetwork} />
-                      <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width={'fit-content'}>
+                      <CurrencyLogo address={poolData.token1.address} size="20px" activeNetwork={activeNetwork} />
+                      <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
                         {`1 ${poolData.token1.symbol} =  ${formatAmount(poolData.token0Price, 4)} ${
                           poolData.token0.symbol
                         }`}
@@ -247,7 +247,7 @@ export default function PoolPage() {
                   <TYPE.label fontSize="14px">Total Tokens Locked</TYPE.label>
                   <RowBetween>
                     <RowFixed>
-                      <CurrencyLogo address={poolData.token0.address} size={'20px'} activeNetwork={activeNetwork} />
+                      <CurrencyLogo address={poolData.token0.address} size="20px" activeNetwork={activeNetwork} />
                       <TYPE.label fontSize="14px" ml="8px">
                         {poolData.token0.symbol}
                       </TYPE.label>
@@ -256,7 +256,7 @@ export default function PoolPage() {
                   </RowBetween>
                   <RowBetween>
                     <RowFixed>
-                      <CurrencyLogo address={poolData.token1.address} size={'20px'} activeNetwork={activeNetwork} />
+                      <CurrencyLogo address={poolData.token1.address} size="20px" activeNetwork={activeNetwork} />
                       <TYPE.label fontSize="14px" ml="8px">
                         {poolData.token1.symbol}
                       </TYPE.label>

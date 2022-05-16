@@ -57,7 +57,7 @@ const CurrencyLogo: React.FunctionComponent<CurrencyLogoType> = ({
     return []
   }, [address, uriLocations])
 
-  return <StyledLogo size={size} srcs={srcs} alt={'token logo'} style={style} {...rest} />
+  return <StyledLogo size={size} srcs={srcs} alt="token logo" style={style} {...rest} />
 }
 
 export default CurrencyLogo

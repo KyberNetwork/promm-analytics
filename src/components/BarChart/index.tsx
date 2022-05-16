@@ -189,7 +189,7 @@ const BarChart = ({
         {topLeft ?? null}
         {topRight ?? null}
       </RowBetween>
-      <div ref={chartRef} id={'bar-chart'} {...rest} />
+      <div ref={chartRef} id="bar-chart" {...rest} />
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

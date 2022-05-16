@@ -317,12 +317,12 @@ function SideNav() {
 
             <Divider />
 
-            <ExternalMenu href={'https://kyberswap.com'}>
+            <ExternalMenu href="https://kyberswap.com">
               <Repeat size={16} />
               Swap
             </ExternalMenu>
 
-            <ExternalMenu href={'https://analytics.kyberswap.com'}>
+            <ExternalMenu href="https://analytics.kyberswap.com">
               <Activity size={16} />
               Classic Analytics
             </ExternalMenu>

@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useMedia } from 'react-use'
 import { XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line, CartesianGrid } from 'recharts'
-import { darken } from 'polished'
 import { formatDollarAmount } from 'utils/numbers'
 import { TimeframeOptions, usePoolChartData, useTimeframe } from 'data/wallets/positionSnapshotData'
 import useTheme from 'hooks/useTheme'
-import dayjs from 'dayjs'
 import { AutoRow, RowBetween } from 'components/Row'
 import DropdownSelect from 'components/DropdownSelect'
 import { TYPE } from 'theme'
@@ -140,7 +138,7 @@ const PoolChart = ({ account, activePosition }: PoolChartProps) => {
               tickFormatter={(tick) => toNiceDate(tick)}
               dataKey="date"
               tick={{ fill: textColor }}
-              type={'number'}
+              type="number"
               domain={['dataMin', 'dataMax']}
             />
             <YAxis
