@@ -170,7 +170,7 @@ export function useFetchedUserPositionData(address: string) {
 
 const GLOBAL_TRANSACTIONS = gql`
   query transactions($address: Bytes!) {
-    mints(first: 500, orderBy: timestamp, orderDirection: desc, where: { owner: $address }, subgraphError: allow) {
+    mints(first: 500, orderBy: timestamp, orderDirection: desc, where: { origin: $address }, subgraphError: allow) {
       timestamp
       transaction {
         id
@@ -212,7 +212,7 @@ const GLOBAL_TRANSACTIONS = gql`
       amount1
       amountUSD
     }
-    burns(first: 500, orderBy: timestamp, orderDirection: desc, where: { owner: $address }, subgraphError: allow) {
+    burns(first: 500, orderBy: timestamp, orderDirection: desc, where: { origin: $address }, subgraphError: allow) {
       timestamp
       transaction {
         id
@@ -228,6 +228,7 @@ const GLOBAL_TRANSACTIONS = gql`
         }
       }
       owner
+      origin
       amount0
       amount1
       amountUSD
@@ -272,7 +273,7 @@ export function useUserTransactions(
       type: TransactionType.BURN,
       hash: m.transaction.id,
       timestamp: m.timestamp,
-      sender: m.owner,
+      sender: m.origin,
       token0Symbol: formatTokenSymbol(m.pool.token0.id, m.pool.token0.symbol),
       token1Symbol: formatTokenSymbol(m.pool.token1.id, m.pool.token1.symbol),
       token0Address: m.pool.token0.id,
