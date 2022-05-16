@@ -7,7 +7,6 @@ import { shortenAddress, getEtherscanLink } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
-import Loader from 'components/Loader'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import { ButtonPrimary } from 'components/Button'
@@ -452,20 +451,14 @@ export default function AccountPage() {
 
             <AutoColumn gap="1.5rem">
               <TYPE.label fontSize="18px">Transactions</TYPE.label>
-              {transactions ? (
-                <TransactionTable transactions={transactions.data} />
-              ) : (
-                <DarkGreyCard>
-                  <Flex justifyContent="center">
-                    <Loading size={120} />
-                  </Flex>
-                </DarkGreyCard>
-              )}
+              <TransactionTable transactions={transactions.data} />
             </AutoColumn>
           </AutoColumn>
         </AutoColumn>
       ) : (
-        <Loader />
+        <Flex justifyContent="center">
+          <Loading />
+        </Flex>
       )}
     </PageWrapper>
   )

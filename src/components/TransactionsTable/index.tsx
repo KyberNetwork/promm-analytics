@@ -140,10 +140,10 @@ export default function TransactionTable({
   const [maxPage, setMaxPage] = useState(1)
   // filter on txn type
   const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
-  const filteredTxn = useMemo(() => transactions?.filter((x) => txFilter === undefined || x.type === txFilter) || [], [
-    transactions,
-    txFilter,
-  ])
+  const filteredTxn = useMemo(
+    () => (txFilter === undefined ? transactions : transactions?.filter((x) => x.type === txFilter) || []),
+    [transactions, txFilter]
+  )
 
   useEffect(() => {
     let extraPages = 1
@@ -154,6 +154,10 @@ export default function TransactionTable({
     setMaxPage(newMaxPage)
     if (newMaxPage < page) setPage(newMaxPage)
   }, [maxItems, filteredTxn, txFilter, page])
+
+  useEffect(() => {
+    setPage(1)
+  }, [txFilter])
 
   const sortedTransactions = useMemo(() => {
     return filteredTxn.length
@@ -193,10 +197,6 @@ export default function TransactionTable({
     },
     [sortDirection, sortField]
   )
-
-  if (!filteredTxn.length) {
-    return <Loader />
-  }
 
   return (
     <Wrapper>
@@ -275,7 +275,7 @@ export default function TransactionTable({
               setPage(page === 1 ? page : page - 1)
             }}
           >
-            <Arrow faded={page === 1 ? true : false}>←</Arrow>
+            <Arrow faded={page <= 1 ? true : false}>←</Arrow>
           </div>
           <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
           <div
@@ -283,7 +283,7 @@ export default function TransactionTable({
               setPage(page === maxPage ? page : page + 1)
             }}
           >
-            <Arrow faded={page === maxPage ? true : false}>→</Arrow>
+            <Arrow faded={page >= maxPage ? true : false}>→</Arrow>
           </div>
         </PageButtons>
       </AutoColumn>
