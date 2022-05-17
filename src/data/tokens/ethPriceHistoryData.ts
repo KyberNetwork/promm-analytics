@@ -3,7 +3,7 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
 import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 
-export const PRICES_BY_BLOCK = (blocks: any) => {
+export const PRICES_BY_BLOCK = (blocks: any): import('graphql').DocumentNode => {
   const queryString = `query bundles {
     ${blocks.map(
       (block: any) => `

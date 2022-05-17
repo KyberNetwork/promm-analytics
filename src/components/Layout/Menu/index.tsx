@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Menu as MenuIcon, TrendingUp, Disc, PieChart, Repeat, Activity } from 'react-feather'
+import { Menu as MenuIcon, Repeat, Activity } from 'react-feather'
 import styled from 'styled-components'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
