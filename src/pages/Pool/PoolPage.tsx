@@ -1,6 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { Plus } from 'react-feather'
+import { Flex } from 'rebass'
+import { useMedia } from 'react-use'
+
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
 import { feeTierPercent, getEtherscanLink, shortenAddress } from 'utils'
@@ -8,7 +12,6 @@ import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import Loader from 'components/Loader'
-import { Plus } from 'react-feather'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -31,7 +34,7 @@ import { networkPrefix } from 'utils/networkPrefix'
 import { ChainId } from 'constants/networks'
 import { GenericImageWrapper } from 'components/Logo'
 import Loading from 'components/Loader/Loading'
-import { Flex } from 'rebass'
+import Search from 'components/Search'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -148,28 +151,32 @@ export default function PoolPage(): JSX.Element {
 
   //watchlist
   const [savedPools, addSavedPool] = useSavedPools()
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
       <ThemedBackground backgroundColor={backgroundColor} />
       {poolData ? (
         <AutoColumn gap="32px">
-          <AutoRow gap="4px">
-            <StyledInternalLink to={networkPrefix(activeNetwork)}>
-              <TYPE.main>{`Home → `}</TYPE.main>
-            </StyledInternalLink>
-            <StyledInternalLink to={networkPrefix(activeNetwork) + 'pools'}>
-              <TYPE.label>{` Pools `}</TYPE.label>
-            </StyledInternalLink>
-            <TYPE.main>{` → `}</TYPE.main>
-            <TYPE.label>{` ${poolData.token0.symbol}/${poolData.token1.symbol} ${feeTierPercent(
-              poolData.feeTier
-            )} `}</TYPE.label>
+          <RowBetween>
+            <AutoRow gap="4px">
+              <StyledInternalLink to={networkPrefix(activeNetwork)}>
+                <TYPE.main>{`Home → `}</TYPE.main>
+              </StyledInternalLink>
+              <StyledInternalLink to={networkPrefix(activeNetwork) + 'pools'}>
+                <TYPE.label>{` Pools `}</TYPE.label>
+              </StyledInternalLink>
+              <TYPE.main>{` → `}</TYPE.main>
+              <TYPE.label>{` ${poolData.token0.symbol}/${poolData.token1.symbol} ${feeTierPercent(
+                poolData.feeTier
+              )} `}</TYPE.label>
 
-            <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-              <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
-            </StyledExternalLink>
-          </AutoRow>
+              <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
+                <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
+              </StyledExternalLink>
+            </AutoRow>
+            {!below600 && <Search />}
+          </RowBetween>
           <ResponsiveRow align="flex-end">
             <AutoColumn gap="lg">
               <RowFixed>

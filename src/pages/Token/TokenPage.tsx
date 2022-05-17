@@ -1,5 +1,11 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { useMedia } from 'react-use'
+import styled from 'styled-components'
+import { Plus } from 'react-feather'
+import dayjs from 'dayjs'
+import { Flex } from 'rebass'
+
 import {
   useTokenData,
   usePoolsForToken,
@@ -7,7 +13,6 @@ import {
   useTokenPriceData,
   useTokenTransactions,
 } from 'state/tokens/hooks'
-import styled from 'styled-components'
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
 import { shortenAddress, getEtherscanLink, currentTimestamp } from 'utils'
@@ -15,7 +20,6 @@ import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import Loader from 'components/Loader'
-import { Plus } from 'react-feather'
 import { ExternalLink as StyledExternalLink, HideMedium, OnlyMedium } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -33,13 +37,12 @@ import TransactionTable from 'components/TransactionsTable'
 import { useSavedTokens } from 'state/user/hooks'
 import { ONE_HOUR_SECONDS, TimeWindow } from 'constants/intervals'
 import { MonoSpace } from 'components/shared'
-import dayjs from 'dayjs'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import { Flex } from 'rebass'
 import Loading from 'components/Loader/Loading'
 import PairTable from 'components/pools/PairTable'
 import { PoolData } from 'state/pools/reducer'
+import Search from 'components/Search'
 
 const PriceText = styled(TYPE.label)`
   font-size: 24px;
@@ -175,6 +178,7 @@ export default function TokenPage(): JSX.Element {
 
   // watchlist
   const [savedTokens, addSavedToken] = useSavedTokens()
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
@@ -207,9 +211,7 @@ export default function TokenPage(): JSX.Element {
                     <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
                   </StyledExternalLink>
                 </AutoRow>
-                <RowFixed align="center" justify="center">
-                  {/* TODO: add search component */}
-                </RowFixed>
+                {!below600 && <Search />}
               </RowBetween>
               <ResponsiveRow align="flex-end">
                 <AutoColumn gap="md">

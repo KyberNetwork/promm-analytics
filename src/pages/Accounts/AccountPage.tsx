@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { Flex } from 'rebass'
+import { Button as RebassButton } from 'rebass/styled-components'
+import { Activity } from 'react-feather'
+import { useMedia } from 'react-use'
+
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
 import { shortenAddress, getEtherscanLink } from 'utils'
@@ -15,24 +20,22 @@ import TransactionTable from 'components/TransactionsTable'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import { Flex } from 'rebass'
 import Loading from 'components/Loader/Loading'
 import { PositionFields, useFetchedUserPositionData, useUserTransactions } from 'data/wallets/walletData'
 import { Label } from 'components/Text'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { useEthPrices } from 'hooks/useEthPrices'
-import { Button as RebassButton } from 'rebass/styled-components'
 import { Box, BoxProps } from 'rebass/styled-components'
 import { calcPosition } from 'utils/position'
 // import PoolChart from './components/PoolChart'
 // import AllPoolChart from './components/AllPoolChart'
 import Panel from 'components/Panel'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
-import { Activity } from 'react-feather'
 import { ButtonDropdown } from 'components/Button'
 import PoolChart from './components/PoolChart'
 import AllPoolChart from './components/AllPoolChart'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
+import Search from 'components/Search'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -232,6 +235,7 @@ export default function AccountPage(): JSX.Element {
     }
   }, [maxItems, data])
   useOnClickOutside(node, showDropdown ? () => setShowDropdown(!showDropdown) : undefined)
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
@@ -251,9 +255,7 @@ export default function AccountPage(): JSX.Element {
                 <TYPE.link>{shortenAddress(address)}</TYPE.link>
               </StyledExternalLink>
             </AutoRow>
-            <RowFixed align="center" justify="center">
-              {/* TODO namgold: add search component */}
-            </RowFixed>
+            {!below600 && <Search />}
           </RowBetween>
           <ResponsiveRow align="flex-end">
             <Label>{shortenAddress(address)}</Label>
