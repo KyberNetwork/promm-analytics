@@ -210,8 +210,8 @@ export const Search = (): JSX.Element => {
           {pools?.slice(0, pairsShown).map((pool) => {
             return (
               <BasicLink
-                // to={'/' + NETWORKS_INFO[pair.chainId].urlKey + '/pair/' + pair.id}
-                to={'/' + activeNetwork.route + '/pair/' + pool.address}
+                // to={'/' + NETWORKS_INFO[pool.chainId].urlKey + '/pool/' + pool.id}
+                to={'/' + activeNetwork.route + '/pool/' + pool.address}
                 key={pool.address}
                 onClick={onDismiss}
               >
@@ -220,7 +220,7 @@ export const Search = (): JSX.Element => {
                     address0={pool?.token0?.address}
                     address1={pool?.token1?.address}
                     margin={true}
-                    // activeNetwork={NETWORKS_INFO[pair.chainId]}
+                    // activeNetwork={NETWORKS_INFO[pool.chainId]}
                     activeNetwork={activeNetwork}
                   />
                   <TYPE.body style={{ marginLeft: '10px' }}>
