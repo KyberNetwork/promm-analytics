@@ -12,11 +12,13 @@ import { Label } from 'components/Text'
 import useTheme from 'hooks/useTheme'
 import Loading from 'components/Loader/Loading'
 import { Arrow, Break, PageButtons } from 'components/shared'
-import { RowFixed } from 'components/Row'
+import { RowBetween, RowFixed } from 'components/Row'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { TYPE } from 'theme'
 import { formatDollarAmount } from 'utils/numbers'
 import { useActiveNetworks } from 'state/application/hooks'
+import Search from 'components/Search'
+import { useMedia } from 'react-use'
 
 const StyledInput = styled.input`
   border-radius: 999px;
@@ -89,13 +91,18 @@ export default function AccountsOverview() {
     }
   }, [maxItems, data])
   const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
       <AutoColumn gap="lg">
-        <Text fontWeight="500" fontSize="24px">
-          Wallet Analytics
-        </Text>
+        <RowBetween>
+          <Text fontWeight="500" fontSize="24px">
+            Wallet Analytics
+          </Text>
+          {!below600 && <Search />}
+        </RowBetween>
+
         <Flex>
           <StyledInput placeholder="Search wallet/account..."></StyledInput>
           <ButtonPrimary width="fit-content">Analyze</ButtonPrimary>

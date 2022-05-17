@@ -1,12 +1,16 @@
 import React, { useMemo, useEffect } from 'react'
+import { useMedia } from 'react-use'
+import { Text } from 'rebass'
+
 import { PageWrapper } from 'pages/styled'
 import { AutoColumn } from 'components/Column'
 import TokenTable from 'components/tokens/TokenTable'
 import { useAllTokenData } from 'state/tokens/hooks'
 import { notEmpty } from 'utils'
-import { Text } from 'rebass'
+import { RowBetween } from 'components/Row'
+import Search from 'components/Search'
 
-export default function TokensOverview() {
+export default function TokensOverview(): JSX.Element {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -18,6 +22,7 @@ export default function TokensOverview() {
       .map((t) => t.data)
       .filter(notEmpty)
   }, [allTokens])
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
@@ -31,9 +36,12 @@ export default function TokensOverview() {
           </DarkGreyCard>
         )}
         */}
-        <Text fontWeight="500" fontSize="24px">
-          Top Tokens
-        </Text>
+        <RowBetween>
+          <Text fontWeight="500" fontSize="24px">
+            Top Tokens
+          </Text>
+          {!below600 && <Search />}
+        </RowBetween>
         <TokenTable tokenDatas={formattedTokens} />
       </AutoColumn>
     </PageWrapper>

@@ -1,13 +1,17 @@
 import React, { useEffect, useMemo } from 'react'
 import { Text } from 'rebass'
+import { useMedia } from 'react-use'
+
 import { PageWrapper } from 'pages/styled'
 import { AutoColumn } from 'components/Column'
 import { useAllPoolData } from 'state/pools/hooks'
 import { notEmpty } from 'utils'
 import { PoolData } from 'state/pools/reducer'
 import PairTable from 'components/pools/PairTable'
+import Search from 'components/Search'
+import { RowBetween } from 'components/Row'
 
-export default function PoolOverview() {
+export default function PoolOverview(): JSX.Element {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -33,13 +37,17 @@ export default function PoolOverview() {
     }, initPairs)
     return Object.values(poolsGroupByPair).sort((a, b) => b[0].tvlUSD - a[0].tvlUSD)
   }, [poolDatas])
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
       <AutoColumn gap="lg">
-        <Text fontWeight="500" fontSize="24px">
-          All Pools
-        </Text>
+        <RowBetween>
+          <Text fontWeight="500" fontSize="24px">
+            All Pools
+          </Text>
+          {!below600 && <Search />}
+        </RowBetween>
 
         <PairTable pairDatas={pairDatas} />
       </AutoColumn>

@@ -11,12 +11,6 @@ export default function Updater(): null {
 
   const [protocolData, updateProtocolData] = useProtocolData()
   const { data: fetchedProtocolData, error, loading } = useFetchProtocolData()
-
-  const [chartData, updateChartData] = useProtocolChartData()
-  const { data: fetchedChartData, error: chartError } = useFetchGlobalChartData()
-
-  const [transactions, updateTransactions] = useProtocolTransactions()
-
   // update overview data if available and not set
   useEffect(() => {
     if (protocolData === undefined && fetchedProtocolData && !loading && !error) {
@@ -24,6 +18,8 @@ export default function Updater(): null {
     }
   }, [error, fetchedProtocolData, loading, protocolData, updateProtocolData])
 
+  const [chartData, updateChartData] = useProtocolChartData()
+  const { data: fetchedChartData, error: chartError } = useFetchGlobalChartData()
   // update global chart data if available and not set
   useEffect(() => {
     if (chartData === undefined && fetchedChartData && !chartError) {
@@ -31,6 +27,7 @@ export default function Updater(): null {
     }
   }, [chartData, chartError, fetchedChartData, updateChartData])
 
+  const [transactions, updateTransactions] = useProtocolTransactions()
   useEffect(() => {
     async function fetch() {
       const data = await fetchTopTransactions(dataClient)

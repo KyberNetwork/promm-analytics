@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
+import { useMedia } from 'react-use'
+import { Text } from 'rebass'
+
 import { AutoColumn } from 'components/Column'
 import { TYPE } from 'theme'
 import { ResponsiveRow, RowBetween, RowFixed } from 'components/Row'
@@ -16,11 +19,11 @@ import { notEmpty } from 'utils'
 import TransactionsTable from '../../components/TransactionsTable'
 import { useAllTokenData } from 'state/tokens/hooks'
 import useAggregatorVolume from 'hooks/useAggregatorVolume'
-import { Text } from 'rebass'
 import { PoolData } from 'state/pools/reducer'
 import PairTable from 'components/pools/PairTable'
 import Panel from 'components/Panel'
 import GlobalChart, { CHART_VIEW } from './components/GlobalChart'
+import Search from 'components/Search'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -44,7 +47,7 @@ const TableTitle = styled(TYPE.label)`
   font-size: 18px;
 `
 
-export default function Home() {
+export default function Home(): JSX.Element {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -85,13 +88,17 @@ export default function Home() {
 
   const [showTotalVol, setShowTotalVol] = useState(true)
   const aggregatorVol = useAggregatorVolume()
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
       {/* <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} /> */}
       <AutoColumn gap="40px">
         <AutoColumn gap="24px">
-          <TYPE.label fontSize="24px">Summary</TYPE.label>
+          <RowBetween>
+            <TYPE.label fontSize="24px">Summary</TYPE.label>
+            {!below600 && <Search />}
+          </RowBetween>
 
           <StatisticWrapper>
             <DarkGreyCard>
