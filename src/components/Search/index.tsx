@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Link as RouterLink } from 'react-router-dom'
 import { Search as SearchIcon, X } from 'react-feather'
 
-import Row, { RowFixed } from '../Row'
+import Row, { RowFixed } from 'components/Row'
 import { useActiveNetworks } from 'state/application/hooks'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { TYPE } from 'theme'
@@ -76,7 +76,6 @@ const SearchIconLarge = styled(SearchIcon)`
 
 const CloseIcon = styled(X)`
   height: 20px;
-  padding: 8px;
   width: 20px;
   position: absolute;
   right: 10px;
