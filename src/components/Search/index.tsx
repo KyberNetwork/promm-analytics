@@ -140,12 +140,20 @@ export const Search = (): JSX.Element => {
   const [tokensShown, setTokensShown] = useState(3)
   const [pairsShown, setPairsShown] = useState(3)
 
-  function onDismiss() {
+  useEffect(() => {
+    if (value !== '') {
+      toggleMenu(true)
+    } else {
+      toggleMenu(false)
+    }
+  }, [value])
+
+  const onDismiss = useCallback(() => {
     setPairsShown(3)
     setTokensShown(3)
     toggleMenu(false)
     setValue('')
-  }
+  }, [])
 
   // refs to detect clicks outside modal
   const wrapperRef = useRef<HTMLInputElement | null>(null)
@@ -160,9 +168,9 @@ export const Search = (): JSX.Element => {
   }, [])
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('click', handleClick)
     return () => {
-      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('click', handleClick)
     }
   }, [handleClick])
 
