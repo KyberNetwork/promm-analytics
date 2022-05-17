@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createReducer } from '@reduxjs/toolkit'
 import { ChainId } from 'constants/networks'
 import { PoolData } from 'state/pools/reducer'

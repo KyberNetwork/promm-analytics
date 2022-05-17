@@ -39,7 +39,7 @@ type PoolChartProps = {
   activePosition: PositionFields
 }
 
-const PoolChart = ({ account, activePosition }: PoolChartProps) => {
+const PoolChart = ({ account, activePosition }: PoolChartProps): JSX.Element => {
   let data = usePoolChartData(account, activePosition.id)
 
   const [timeWindow, setTimeWindow] = useTimeframe()
@@ -60,6 +60,7 @@ const PoolChart = ({ account, activePosition }: PoolChartProps) => {
   const theme = useTheme()
   const color = theme.primary
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ONE_DAY, THERE_DAYS, FOUR_HOURS, ...rest } = TimeframeOptions
 
   return (

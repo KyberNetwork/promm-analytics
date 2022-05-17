@@ -176,7 +176,7 @@ export function useFetchSearchResults(
     if (value && value.length > 0) {
       fetch()
     }
-  }, [value])
+  }, [dataClient, value])
 
   const allFetchedTokens = useMemo(() => {
     if (tokenData) {

@@ -6,7 +6,6 @@ import { darken } from 'polished'
 import { formatDollarAmount } from 'utils/numbers'
 import { TimeframeOptions, useAllPoolChartData, useTimeframe } from 'data/wallets/positionSnapshotData'
 import useTheme from 'hooks/useTheme'
-import dayjs from 'dayjs'
 import { AutoRow, RowBetween } from 'components/Row'
 import DropdownSelect from 'components/DropdownSelect'
 import { TYPE } from 'theme'
@@ -27,7 +26,7 @@ const ChartWrapper = styled.div`
 type AllPoolChartPropsType = {
   account: string
 }
-const AllPoolChart = ({ account }: AllPoolChartPropsType) => {
+const AllPoolChart = ({ account }: AllPoolChartPropsType): JSX.Element => {
   const chartData = useAllPoolChartData(account)
 
   const [timeWindow, setTimeWindow] = useTimeframe()
@@ -45,6 +44,7 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType) => {
   const [darkMode] = useDarkModeManager()
   const textColor = darkMode ? 'white' : 'black'
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ONE_DAY, THERE_DAYS, FOUR_HOURS, ...rest } = TimeframeOptions
 
   return (

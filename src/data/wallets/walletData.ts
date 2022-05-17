@@ -56,7 +56,7 @@ const USER_POSITIONS = (user: string) => {
   return queryString
 }
 
-export const TOP_POSITIONS = (poolIds: string[]) => {
+export const TOP_POSITIONS = (poolIds: string[]): import('graphql').DocumentNode => {
   let poolStrings = `[`
   poolIds.forEach((id) => {
     poolStrings += `"${id}",`
@@ -155,7 +155,13 @@ export function useFetchedPositionsDatas(): {
   }
 }
 
-export function useFetchedUserPositionData(address: string) {
+export function useFetchedUserPositionData(
+  address: string
+): {
+  loading: boolean
+  error?: boolean
+  data?: PositionFields[]
+} {
   const { dataClient } = useClients()[0]
   const { loading, error, data } = useQuery<PositionDataResponse>(USER_POSITIONS(address), {
     client: dataClient,

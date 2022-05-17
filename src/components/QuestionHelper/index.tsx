@@ -38,7 +38,7 @@ export function InfoHelper({ text }: { text: string }): JSX.Element {
   )
 }
 
-export function QuestionHelper({ text }: { text: string }) {
+export function QuestionHelper({ text }: { text: string }): JSX.Element {
   const [show, setShow] = useState<boolean>(false)
 
   const open = useCallback(() => setShow(true), [setShow])

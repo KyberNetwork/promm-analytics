@@ -69,7 +69,7 @@ const TableLabel = styled(Label)`
   font-size: 12px;
 `
 
-export default function AccountsOverview() {
+export default function AccountsOverview(): JSX.Element {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])

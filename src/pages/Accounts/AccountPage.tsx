@@ -174,7 +174,7 @@ type FormattedPosition = {
   token1Amount: number
 }
 
-export default function AccountPage() {
+export default function AccountPage(): JSX.Element {
   let { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
   const [showDropdown, setShowDropdown] = useState(false)
