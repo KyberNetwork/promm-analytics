@@ -21,7 +21,7 @@ const QuestionWrapper = styled.div`
   }
 `
 
-export function InfoHelper({ text }: { text: string }) {
+export function InfoHelper({ text }: { text: string }): JSX.Element {
   const [show, setShow] = useState<boolean>(false)
 
   const open = useCallback(() => setShow(true), [setShow])

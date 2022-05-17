@@ -15,6 +15,6 @@ interface TooltipProps extends Omit<PopoverProps, 'content'> {
   fontSize?: number
 }
 
-export default function Tooltip({ text, fontSize, ...rest }: TooltipProps) {
+export default function Tooltip({ text, fontSize, ...rest }: TooltipProps): JSX.Element {
   return <Popover content={<TooltipContainer fontSize={fontSize}>{text}</TooltipContainer>} {...rest} />
 }

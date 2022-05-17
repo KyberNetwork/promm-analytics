@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { DarkGreyCard } from 'components/Card'
-import Loader from 'components/Loader'
 import { AutoColumn } from 'components/Column'
 import { formatDollarAmount, formatAmount } from 'utils/numbers'
 import { shortenAddress, getEtherscanLink } from 'utils'
@@ -127,7 +126,7 @@ export default function TransactionTable({
 }: {
   transactions: Transaction[]
   maxItems?: number
-}) {
+}): JSX.Element {
   // theming
   const theme = useTheme()
 

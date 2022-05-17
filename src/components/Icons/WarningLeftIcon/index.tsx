@@ -1,6 +1,6 @@
 import React from 'react'
 
-const WarningLeftIcon = ({ width, height }: { width?: number; height?: number }) => {
+const WarningLeftIcon = ({ width, height }: { width?: number; height?: number }): JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width || 35} height={height || 34} viewBox="0 0 35 34">
       <g fill="none" fillRule="evenodd">

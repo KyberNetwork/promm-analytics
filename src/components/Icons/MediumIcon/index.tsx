@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MediumIcon = ({ width, height, color }: { width?: number; height?: number; color?: string }) => {
+const MediumIcon = ({ width, height, color }: { width?: number; height?: number; color?: string }): JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width || 14} height={height || 12} viewBox="0 0 14 12">
       <g fill="none" fillRule="evenodd">

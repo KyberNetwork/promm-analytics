@@ -40,7 +40,7 @@ const HoverInlineText = ({
   fontSize?: string
   color?: string
   link?: boolean
-}) => {
+}): JSX.Element => {
   const [showHover, setShowHover] = useState(false)
 
   if (!text) {

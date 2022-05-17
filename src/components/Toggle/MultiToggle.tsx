@@ -39,7 +39,7 @@ export interface ToggleProps {
   width?: string
 }
 
-export default function MultiToggle({ id, options, activeIndex, toggle, width }: ToggleProps) {
+export default function MultiToggle({ id, options, activeIndex, toggle, width }: ToggleProps): JSX.Element {
   return (
     <ToggleWrapper id={id} width={width}>
       {options.map((option, index) => (

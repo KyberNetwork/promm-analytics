@@ -49,7 +49,7 @@ const BarChart = ({
   height = DEFAULT_HEIGHT,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   const theme = useTheme()
   const textColor = theme.text2
   const chartRef = useRef<HTMLDivElement>(null)

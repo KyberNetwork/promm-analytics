@@ -28,7 +28,7 @@ interface CurrentPriceLabelProps {
   poolData: PoolData
 }
 
-export function CurrentPriceLabel({ data, chartProps, poolData }: CurrentPriceLabelProps) {
+export function CurrentPriceLabel({ data, chartProps, poolData }: CurrentPriceLabelProps): JSX.Element | null {
   const theme = useTheme()
   const labelData = chartProps as LabelProps
   const entryData = data?.[labelData.index]

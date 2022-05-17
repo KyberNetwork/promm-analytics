@@ -129,7 +129,7 @@ export default function TokenTable({
 }: {
   tokenDatas: TokenData[] | undefined
   maxItems?: number
-}) {
+}): JSX.Element {
   // theming
   const theme = useTheme()
 

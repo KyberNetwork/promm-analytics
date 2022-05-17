@@ -118,7 +118,13 @@ const SORT_FIELD = {
 
 const MAX_ITEMS = 10
 
-export default function PairTable({ pairDatas, maxItems = MAX_ITEMS }: { pairDatas: PoolData[][]; maxItems?: number }) {
+export default function PairTable({
+  pairDatas,
+  maxItems = MAX_ITEMS,
+}: {
+  pairDatas: PoolData[][]
+  maxItems?: number
+}): JSX.Element {
   // theming
   const theme = useTheme()
 

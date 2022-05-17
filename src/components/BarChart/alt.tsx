@@ -73,7 +73,7 @@ const Chart = ({
   bottomRight,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   const parsedValue = value
 
   const now = dayjs()

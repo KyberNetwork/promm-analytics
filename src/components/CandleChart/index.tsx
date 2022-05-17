@@ -47,7 +47,7 @@ const CandleChart = ({
   height = DEFAULT_HEIGHT,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   const theme = useTheme()
   const textColor = theme.text3
   const chartRef = useRef<HTMLDivElement>(null)

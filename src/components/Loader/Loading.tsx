@@ -42,7 +42,7 @@ const Inner = styled.div<{ size: number }>`
   }
 `
 
-function Loading({ size = 160 }: { size?: number }) {
+function Loading({ size = 160 }: { size?: number }): JSX.Element {
   return (
     <Wrapper size={size}>
       <Inner size={size}>

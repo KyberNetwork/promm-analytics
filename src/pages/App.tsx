@@ -98,7 +98,7 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
   return children
 }
 
-export default function App() {
+export default function App(): JSX.Element {
   const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
   const [loading, setLoading] = useState(true)

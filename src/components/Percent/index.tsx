@@ -25,7 +25,7 @@ export default function Percent({
   wrap = false,
   simple = false,
   ...rest
-}: LogoProps) {
+}: LogoProps): JSX.Element {
   if (value === undefined || value === null) {
     return (
       <TYPE.main fontWeight={fontWeight} fontSize={fontSize}>

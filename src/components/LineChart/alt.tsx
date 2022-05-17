@@ -52,7 +52,7 @@ const Chart = ({
   bottomRight,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   const theme = useTheme()
   const parsedValue = value
 

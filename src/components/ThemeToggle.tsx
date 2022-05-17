@@ -33,7 +33,7 @@ const StyledToggle = styled.button`
   }
 `
 
-export default function ThemeToggle() {
+export default function ThemeToggle(): JSX.Element {
   const [isDarkMode, toggle] = useDarkModeManager()
   return (
     <StyledToggle onClick={toggle}>

@@ -32,7 +32,7 @@ export default function DoubleCurrencyLogo({
   size = 16,
   margin = false,
   activeNetwork,
-}: DoubleCurrencyLogoProps) {
+}: DoubleCurrencyLogoProps): React.ReactElement<DoubleCurrencyLogoProps> {
   return (
     <Wrapper sizeraw={size} margin={margin}>
       {address0 && <HigherLogo address={address0} size={size.toString() + 'px'} activeNetwork={activeNetwork} />}

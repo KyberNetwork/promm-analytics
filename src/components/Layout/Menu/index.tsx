@@ -62,7 +62,7 @@ const MenuFlyout = styled.span`
   gap: 20px;
 `
 
-export default function Menu() {
+export default function Menu(): JSX.Element {
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.MENU)
   const toggle = useToggleModal(ApplicationModal.MENU)

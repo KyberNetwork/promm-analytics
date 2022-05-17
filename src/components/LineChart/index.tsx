@@ -49,7 +49,7 @@ const LineChart = ({
   height = DEFAULT_HEIGHT,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   // theming
   const theme = useTheme()
   const textColor = theme.text2

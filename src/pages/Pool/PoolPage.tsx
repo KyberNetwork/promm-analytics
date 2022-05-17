@@ -86,7 +86,7 @@ enum ChartView {
   FEES,
 }
 
-export default function PoolPage() {
+export default function PoolPage(): JSX.Element {
   const { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
 

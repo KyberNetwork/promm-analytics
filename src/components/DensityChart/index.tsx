@@ -83,7 +83,7 @@ const initialState = {
   refAreaRight: '',
 }
 
-export default function DensityChart({ address }: DensityChartProps) {
+export default function DensityChart({ address }: DensityChartProps): JSX.Element {
   const theme = useTheme()
   const { dataClient } = useClients()[0]
 
@@ -204,7 +204,7 @@ export default function DensityChart({ address }: DensityChartProps) {
     if (!formattedData) {
       formatData()
     }
-  }, [feeTier, formattedData, loading, poolData.feeTier, poolTickData, token0, token1])
+  }, [feeTier, formattedData, loading, poolData.feeTier, poolData.reinvestL, poolTickData, token0, token1])
 
   const atZoomMax = zoomState.left + ZOOM_INTERVAL >= zoomState.right - ZOOM_INTERVAL - 1
   const atZoomMin = zoomState.left - ZOOM_INTERVAL < 0

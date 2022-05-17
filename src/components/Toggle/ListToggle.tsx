@@ -37,7 +37,7 @@ export interface ToggleProps {
   toggle: () => void
 }
 
-export default function ListToggle({ id, isActive, bgColor, toggle }: ToggleProps) {
+export default function ListToggle({ id, isActive, bgColor, toggle }: ToggleProps): JSX.Element {
   return (
     <Wrapper id={id} isActive={isActive} onClick={toggle}>
       {isActive && (

@@ -58,7 +58,7 @@ const DataCard = ({ poolData }: { poolData: PoolData }) => {
   )
 }
 
-export default function TopPoolMovers() {
+export default function TopPoolMovers(): JSX.Element {
   const allPools = useAllPoolData()
 
   const topVolume = useMemo(() => {

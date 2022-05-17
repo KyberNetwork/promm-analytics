@@ -33,7 +33,7 @@ export default function CopyHelper({
   toCopy: string
   children?: React.ReactNode
   margin?: string
-}) {
+}): JSX.Element {
   const [isCopied, setCopied] = useCopyClipboard()
 
   const onCopy = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

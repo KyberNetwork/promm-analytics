@@ -16,7 +16,7 @@ const WhiteHelpCircle = styled(HelpCircle)`
 /**
  * Renders an image by sequentially trying a list of URIs, and then eventually a fallback triangle alert
  */
-export default function Logo({ srcs, alt, ...rest }: LogoProps) {
+export default function Logo({ srcs, alt, ...rest }: LogoProps): JSX.Element {
   const [refreshTimes, setRefresh] = useState<number>(0)
 
   const src: string | undefined = srcs.find((src) => !BAD_SRCS[src])

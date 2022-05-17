@@ -169,7 +169,7 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
   )
 }
 
-function SideNav() {
+function SideNav(): JSX.Element {
   const theme = useTheme()
   const activeNetworks = useActiveNetworks() //todo namgold: useParams()
   const { isAllChain } = useActiveNetworkUtils()

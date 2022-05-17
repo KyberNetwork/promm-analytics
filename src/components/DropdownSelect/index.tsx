@@ -55,7 +55,7 @@ const ArrowStyled = styled(Arrow)`
   margin-left: 6px;
 `
 
-const DropdownSelect = ({ options, active, setActive, color, optionTitles }: any) => {
+const DropdownSelect = ({ options, active, setActive, color, optionTitles }: any): JSX.Element => {
   const node = useRef(null)
   const open = useModalOpen(ApplicationModal.DROPDOWN)
   const toggle = useToggleModal(ApplicationModal.DROPDOWN)

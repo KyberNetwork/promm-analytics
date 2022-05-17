@@ -1,7 +1,7 @@
 import React from 'react'
 import useTheme from '../../hooks/useTheme'
 
-function Telegram({ size, color }: { size?: number; color?: string }) {
+function Telegram({ size, color }: { size?: number; color?: string }): JSX.Element {
   const theme = useTheme()
   return (
     <svg

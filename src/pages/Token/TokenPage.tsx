@@ -89,7 +89,7 @@ enum ChartView {
 
 const DEFAULT_TIME_WINDOW = TimeWindow.WEEK
 
-export default function TokenPage() {
+export default function TokenPage(): JSX.Element {
   let { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
 
