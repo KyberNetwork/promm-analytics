@@ -58,9 +58,7 @@ const VolumeChart = (): React.ReactElement | null => {
           }
           base={(volumeWindow === VolumeWindow.weekly ? protocolData?.volumeUSDWeek : protocolData?.volumeUSD) ?? 0}
           baseChange={
-            (volumeWindow === VolumeWindow.weekly
-              ? protocolData?.volumeUSDChangeWeek
-              : protocolData?.volumeUSDChange) ?? 0
+            volumeWindow === VolumeWindow.weekly ? protocolData?.volumeUSDChangeWeek : protocolData?.volumeUSDChange
           }
           title={
             // (activeNetwork[1] ? 'Total ' : '') +

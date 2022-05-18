@@ -48,7 +48,7 @@ export type TradingViewChartPropsType = {
     value: number
   }[]
   base: number
-  baseChange: number
+  baseChange?: number
   title: string
   width: number
   useWeekly?: boolean
@@ -170,9 +170,9 @@ const TradingViewChart = ({
       toolTip.style.backgroundColor = 'transparent'
 
       // format numbers
-      const percentChange = baseChange?.toFixed(2)
-      const formattedPercentChange = (baseChange > 0 ? '+' : '') + (percentChange || '--') + '%'
-      const color = baseChange >= 0 ? 'green' : 'red'
+      const formattedPercentChange =
+        baseChange === undefined ? '--' : (baseChange > 0 ? '+' : '') + baseChange.toFixed(2) + '%'
+      const color = baseChange === undefined ? '' : baseChange >= 0 ? 'green' : 'red'
 
       // get the title of the chart
       const setLastBarText = function () {

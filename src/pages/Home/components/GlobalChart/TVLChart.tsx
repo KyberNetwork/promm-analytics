@@ -42,7 +42,7 @@ const TVLChart = (): React.ReactElement | null => {
       <TradingViewChart
         data={formattedTvlData}
         base={protocolData?.tvlUSD || 0}
-        baseChange={10}
+        baseChange={protocolData?.tvlUSDChange}
         title="TVL"
         width={50}
         type={CHART_TYPES.AREA}
