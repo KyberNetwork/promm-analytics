@@ -130,8 +130,8 @@ const TradingViewChart = ({
           vertLine: {
             visible: true,
             style: 0,
-            width: 2,
-            color: darkMode ? '#a7b6bd' : '#868787',
+            width: 1,
+            color: darkMode ? '#6C7284' : '#B6B6B6',
             labelVisible: false,
           },
         },
