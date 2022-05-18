@@ -62,6 +62,7 @@ const TableHeader = styled(ResponsiveGrid)`
   padding: 18px 20px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: calc(16px + 0.2rem * 2 + 18px * 2); /* = APR? icon height + APR? icon padding top bot + row padding top bot */
     grid-template-columns: 2fr repeat(1, 1fr);
     & :nth-child(1) {
       display: none;
@@ -118,7 +119,7 @@ const SORT_FIELD = {
 
 const MAX_ITEMS = 10
 
-export default function PairTable({
+export default function PairPoolsTable({
   pairDatas,
   maxItems = MAX_ITEMS,
 }: {
@@ -197,7 +198,11 @@ export default function PairTable({
       {sortedPairs.length > 0 ? (
         <>
           <GridWrapper>
-            <Flex padding="18px 20px" backgroundColor={theme.tableHeader}>
+            <Flex
+              padding="18px 20px"
+              height="calc(16px + 0.2rem * 2 + 18px * 2)" // = APR? icon height + APR? icon padding top bot + row padding top bot
+              backgroundColor={theme.tableHeader}
+            >
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>
             </Flex>
             <TableHeader>

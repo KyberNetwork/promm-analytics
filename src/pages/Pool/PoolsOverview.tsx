@@ -7,7 +7,7 @@ import { AutoColumn } from 'components/Column'
 import { useAllPoolData } from 'state/pools/hooks'
 import { notEmpty } from 'utils'
 import { PoolData } from 'state/pools/reducer'
-import PairTable from 'components/pools/PairTable'
+import PairPoolsTable from 'components/pools/PairPoolsTable'
 import Search from 'components/Search'
 import { RowBetween } from 'components/Row'
 
@@ -49,7 +49,7 @@ export default function PoolOverview(): JSX.Element {
           {!below600 && <Search />}
         </RowBetween>
 
-        <PairTable pairDatas={pairDatas} />
+        <PairPoolsTable pairDatas={pairDatas} />
       </AutoColumn>
     </PageWrapper>
   )

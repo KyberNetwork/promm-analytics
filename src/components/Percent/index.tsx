@@ -1,12 +1,8 @@
 import React from 'react'
 import { TYPE } from 'theme'
 import styled from 'styled-components'
-
-const Wrapper = styled(TYPE.main)<{ fontWeight: number; fontSize: string; negative: boolean; neutral: boolean }>`
-  font-size: ${({ fontSize }) => fontSize};
-  font-weight: ${({ fontWeight }) => fontWeight};
-  color: ${({ theme, negative }) => (negative ? theme.red1 : theme.green1)};
-`
+import { Text } from 'rebass'
+import { OverflowTooltip } from 'components/Tooltip'
 
 export interface LogoProps {
   value: number | undefined
@@ -33,23 +29,39 @@ export default function Percent({
       </TYPE.main>
     )
   }
+  const fixedPercent = value.toFixed(decimals)
 
-  const truncated = parseFloat(value.toFixed(decimals))
+  if (value === 0 || fixedPercent == '0.00') {
+    return <Text fontWeight={500}>0%</Text>
+  }
 
-  if (simple) {
+  if (value < 0.0001 && value > 0) {
     return (
-      <Wrapper {...rest} fontWeight={fontWeight} fontSize={fontSize} negative={false} neutral={true}>
-        {Math.abs(value).toFixed(decimals)}%
-      </Wrapper>
+      <Text fontWeight={500} color="#31CB9E">
+        {'< 0.0001%'}
+      </Text>
     )
   }
 
-  return (
-    <Wrapper {...rest} fontWeight={fontWeight} fontSize={fontSize} negative={truncated < 0} neutral={truncated === 0}>
-      {wrap && '('}
-      {truncated < 0 && '↓'}
-      {truncated > 0 && '↑'}
-      {Math.abs(value).toFixed(decimals)}%{wrap && ')'}
-    </Wrapper>
-  )
+  if (value < 0 && value > -0.0001) {
+    return (
+      <Text fontWeight={500} color="#FF537B">
+        {'< 0.0001%'}
+      </Text>
+    )
+  }
+
+  if (Number(fixedPercent) > 0) {
+    if (Number(fixedPercent) > 100) {
+      return (
+        <Text fontWeight={500} color="#31CB9E">
+          <OverflowTooltip text={`+${value.toFixed(0)}%`}>{`+${value.toFixed(0)}%`}</OverflowTooltip>
+        </Text>
+      )
+    } else {
+      return <Text fontWeight={500} color="#31CB9E">{`+${fixedPercent}%`}</Text>
+    }
+  } else {
+    return <Text fontWeight={500} color="#FF537B">{`${fixedPercent}%`}</Text>
+  }
 }

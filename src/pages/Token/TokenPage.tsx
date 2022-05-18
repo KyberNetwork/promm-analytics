@@ -40,7 +40,7 @@ import { MonoSpace } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import Loading from 'components/Loader/Loading'
-import PairTable from 'components/pools/PairTable'
+import PairPoolsTable from 'components/pools/PairPoolsTable'
 import { PoolData } from 'state/pools/reducer'
 import Search from 'components/Search'
 
@@ -380,7 +380,7 @@ export default function TokenPage(): JSX.Element {
               </DarkGreyCard>
             </ContentLayout>
             <TYPE.label fontSize="18px">Pools</TYPE.label>
-            <PairTable pairDatas={pairDatas} />
+            <PairPoolsTable pairDatas={pairDatas} />
             <TYPE.label fontSize="18px">Transactions</TYPE.label>
             {transactions ? (
               <TransactionTable transactions={transactions} />

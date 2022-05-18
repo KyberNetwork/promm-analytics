@@ -20,7 +20,7 @@ import TransactionsTable from '../../components/TransactionsTable'
 import { useAllTokenData } from 'state/tokens/hooks'
 import useAggregatorVolume from 'hooks/useAggregatorVolume'
 import { PoolData } from 'state/pools/reducer'
-import PairTable from 'components/pools/PairTable'
+import PairPoolsTable from 'components/pools/PairPoolsTable'
 import Panel from 'components/Panel'
 import GlobalChart, { CHART_VIEW } from './components/GlobalChart'
 import Search from 'components/Search'
@@ -178,7 +178,7 @@ export default function Home(): JSX.Element {
               Explore
             </StyledInternalLink>
           </RowBetween>
-          <PairTable pairDatas={pairDatas} maxItems={5} />
+          <PairPoolsTable pairDatas={pairDatas} maxItems={5} />
         </AutoColumn>
         <AutoColumn gap="16px">
           <RowBetween>
