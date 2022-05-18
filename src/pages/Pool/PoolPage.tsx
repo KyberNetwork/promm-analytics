@@ -123,18 +123,14 @@ export default function PoolPage(): JSX.Element {
     }
   }, [chartData])
 
-  const formattedVolumeData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day) => {
-        return {
-          time: unixToDate(day.date),
-          value: day.volumeUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
+  const formattedVolumeData = useMemo(
+    () =>
+      chartData?.map((day) => ({
+        time: unixToDate(day.date),
+        value: day.volumeUSD,
+      })) ?? [],
+    [chartData]
+  )
 
   const formattedFeesUSD = useMemo(() => {
     if (chartData) {
@@ -308,6 +304,8 @@ export default function PoolPage(): JSX.Element {
                         ? formatDollarAmount(latestValue)
                         : view === ChartView.VOL
                         ? formatDollarAmount(formattedVolumeData[formattedVolumeData.length - 1]?.value)
+                        : view === ChartView.FEES
+                        ? formatDollarAmount(formattedFeesUSD[formattedFeesUSD.length - 1]?.value)
                         : view === ChartView.DENSITY
                         ? ''
                         : formatDollarAmount(formattedTvlData[formattedTvlData.length - 1]?.value)}{' '}
