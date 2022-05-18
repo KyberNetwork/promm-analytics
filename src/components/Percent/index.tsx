@@ -1,6 +1,5 @@
 import React from 'react'
 import { TYPE } from 'theme'
-import styled from 'styled-components'
 import { Text } from 'rebass'
 import { OverflowTooltip } from 'components/Tooltip'
 
@@ -9,19 +8,9 @@ export interface LogoProps {
   decimals?: number
   fontSize?: string
   fontWeight?: number
-  wrap?: boolean
-  simple?: boolean
 }
 
-export default function Percent({
-  value,
-  decimals = 2,
-  fontSize = '14px',
-  fontWeight = 500,
-  wrap = false,
-  simple = false,
-  ...rest
-}: LogoProps): JSX.Element {
+export default function Percent({ value, decimals = 2, fontSize = '14px', fontWeight = 500 }: LogoProps): JSX.Element {
   if (value === undefined || value === null) {
     return (
       <TYPE.main fontWeight={fontWeight} fontSize={fontSize}>

@@ -137,14 +137,14 @@ export default function Home(): JSX.Element {
               <TYPE.main fontSize="12px">Fees 24H</TYPE.main>
               <RowBetween style={{ marginTop: '8px' }}>
                 <TYPE.label fontSize="18px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
-                <Percent simple value={protocolData?.feeChange} wrap={true} />
+                <Percent value={protocolData?.feeChange} />
               </RowBetween>
             </DarkGreyCard>
             <DarkGreyCard>
               <TYPE.main fontSize="12px">Transactions (24H)</TYPE.main>
               <RowBetween style={{ marginTop: '8px' }}>
                 <TYPE.label fontSize="18px">{protocolData?.txCount}</TYPE.label>
-                <Percent simple value={protocolData?.txCountChange} wrap={true} />
+                <Percent value={protocolData?.txCountChange} />
               </RowBetween>
             </DarkGreyCard>
           </StatisticWrapper>
