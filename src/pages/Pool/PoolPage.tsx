@@ -300,7 +300,7 @@ export default function PoolPage(): JSX.Element {
                 <AutoColumn>
                   <TYPE.label fontSize="24px" height="30px">
                     <MonoSpace>
-                      {latestValue
+                      {latestValue !== undefined
                         ? formatDollarAmount(latestValue)
                         : view === ChartView.VOL
                         ? formatDollarAmount(formattedVolumeData[formattedVolumeData.length - 1]?.value)
