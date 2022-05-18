@@ -266,6 +266,18 @@ html {
   background-color: ${({ theme }) => theme.background};
 }
 
+.three-line-legend {
+	height: 70px;
+	position: absolute;
+	padding: 8px;
+	font-size: 12px;
+	color: #20262E;
+	background-color: rgba(255, 255, 255, 0.23);
+	text-align: left;
+	z-index: 10;
+  pointer-events: none;
+}
+
 .three-line-legend-dark {
 	width: 100%;
 	height: 70px;
