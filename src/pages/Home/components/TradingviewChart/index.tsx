@@ -131,7 +131,7 @@ const TradingViewChart = ({
             visible: true,
             style: 0,
             width: 2,
-            color: 'rgba(32, 38, 46, 0.1)',
+            color: darkMode ? '#a7b6bd' : '#868787',
             labelVisible: false,
           },
         },
@@ -151,8 +151,6 @@ const TradingViewChart = ({
                 top: 0.32,
                 bottom: 0,
               },
-              // lineColor: theme.primary,
-              // lineWidth: 3,
             })
           : chart.addAreaSeries({
               topColor: theme.primary,
