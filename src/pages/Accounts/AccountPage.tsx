@@ -260,7 +260,7 @@ export default function AccountPage(): JSX.Element {
             {!below600 && <Search />}
           </RowBetween>
           <ResponsiveRow align="flex-end">
-            <Label>{shortenAddress(address)}</Label>
+            <Label fontSize={24}>{shortenAddress(address)}</Label>
             <RowFixed>
               <SavedIcon
                 fill={!!savedAccounts?.[activeNetwork.chainId]?.[address]}

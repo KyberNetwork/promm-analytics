@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import { TYPE } from 'theme'
 
 // responsive text
-export const Label = styled(TYPE.label)<{ end?: number }>`
+export const Label = styled(TYPE.label)<{ end?: number; fontSize?: number }>`
   display: flex;
-  font-size: 14px;
+  font-size: ${({ fontSize }) => fontSize || 14}px;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
   align-items: center;
