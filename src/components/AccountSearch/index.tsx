@@ -7,7 +7,7 @@ import { X } from 'react-feather'
 
 import { ButtonDark } from 'components/Button'
 import { isAddress } from '../../utils'
-import { AutoColumn } from 'components/Column'
+import { AutoColumn, AutoColumnFullWidth } from 'components/Column'
 import Panel from 'components/Panel'
 import { RowFixed } from 'components/Row'
 import { useActiveNetworks } from 'state/application/hooks'
@@ -121,7 +121,7 @@ function AccountSearch({ small, shortenAddress }: AccountSearchPropsType): JSX.E
   }, [accountValue, activeNetwork.chainId, activeNetwork.route, updateSavedAccounts, history])
 
   return (
-    <AutoColumn gap={'1rem'}>
+    <AutoColumnFullWidth gap={'1rem'}>
       {!small && (
         <InputWrapper>
           <Input
@@ -191,7 +191,7 @@ function AccountSearch({ small, shortenAddress }: AccountSearchPropsType): JSX.E
           )}
         </Panel>
       </AutoColumn>
-    </AutoColumn>
+    </AutoColumnFullWidth>
   )
 }
 
