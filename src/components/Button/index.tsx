@@ -3,9 +3,8 @@ import styled from 'styled-components'
 import { darken, lighten } from 'polished'
 
 import { RowBetween } from '../Row'
-import { ChevronDown, Check, Star } from 'react-feather'
+import { ChevronDown, Check, Star, Bookmark } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
-import useTheme from 'hooks/useTheme'
 
 const Base = styled(RebassButton)<{
   padding?: string
@@ -455,10 +454,9 @@ export const SavedIcon = ({
   size = '20px',
   ...rest
 }: { fill: boolean; size?: string } & HTMLAttributes<HTMLDivElement>): JSX.Element => {
-  const theme = useTheme()
   return (
     <HoverIcon {...rest}>
-      <Star stroke={theme.subText} fill={fill ? theme.subText : 'transparent'} size={size} />
+      <Bookmark style={{ opacity: fill ? 0.8 : 0.4, cursor: 'pointer' }} />
     </HoverIcon>
   )
 }
