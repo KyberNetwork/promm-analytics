@@ -37,6 +37,19 @@ const Base = styled(RebassButton)<{
   }
 `
 
+export const ButtonDark = styled(Base)<{ color?: string }>`
+  background-color: ${({ color, theme }) => (color ? color : theme.primary)};
+  color: ${({ theme }) => theme.textReverse};
+  min-width: fit-content;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+
+  :hover {
+    background-color: ${({ color, theme }) => (color ? darken(0.1, color) : darken(0.1, theme.primary))};
+  }
+`
+
 export const ButtonPrimary = styled(Base)<{ bgColor?: string }>`
   background-color: ${({ theme, bgColor }) => bgColor ?? theme.primary};
   color: ${({ theme }) => theme.textReverse};

@@ -10,6 +10,7 @@ import {
   addSavedToken,
   addSavedPool,
   toggleIsFirstTimeVisit,
+  addSavedAccount,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -31,6 +32,11 @@ export interface UserState {
       [poolAddress: string]: PoolData
     }
   }
+  savedAccounts: {
+    [chainId in ChainId]?: {
+      [accountAddress: string]: boolean
+    }
+  }
 
   timestamp: number
 
@@ -42,6 +48,7 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   savedTokens: {},
   savedPools: {},
+  savedAccounts: {},
   timestamp: currentTimestamp(),
   isFirstTimeVisit: true,
 }
@@ -93,6 +100,21 @@ export default createReducer(initialState, (builder) =>
       // toggle for delete
       else {
         delete state.savedPools[networkId]![pool.address]
+      }
+    })
+    .addCase(addSavedAccount, (state, { payload: { networkId, accountAddress } }) => {
+      if (!state.savedAccounts?.[networkId]?.[accountAddress]) {
+        const accountByChain = state.savedAccounts?.[networkId] || {}
+        accountByChain[accountAddress] = true
+        const newAccounts = {
+          ...(state.savedAccounts || {}),
+          [networkId]: accountByChain,
+        }
+        state.savedAccounts = newAccounts
+      }
+      // toggle for delete
+      else {
+        delete state.savedAccounts[networkId]![accountAddress]
       }
     })
     .addCase(toggleIsFirstTimeVisit, (state) => {

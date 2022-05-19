@@ -20,4 +20,5 @@ export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>(
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const addSavedToken = createAction<{ networkId: ChainId; token: TokenData }>('user/addSavedToken')
 export const addSavedPool = createAction<{ networkId: ChainId; pool: PoolData }>('user/addSavedPool')
+export const addSavedAccount = createAction<{ networkId: ChainId; accountAddress: string }>('user/addSavedAccount')
 export const toggleIsFirstTimeVisit = createAction<void>('user/toggleIsFirstTimeVisit')

@@ -16,6 +16,7 @@ export const MEDIA_WIDTHS = {
   upToSmall: 720,
   upToMedium: 960,
   upToLarge: 1280,
+  upToExtraLarge: 1400,
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
@@ -60,6 +61,7 @@ export function colors(darkMode: boolean): Colors {
     text3: darkMode ? '#6C7284' : '#888D9B',
     text4: darkMode ? '#565A69' : '#C3C5CB',
     text5: darkMode ? '#2C2F36' : '#EDEEF2',
+    text6: darkMode ? '#FAFAFA' : '#1F1F1F',
 
     // backgrounds / greys
     bg0: darkMode ? '#191B1F' : '#F7F8FA',
@@ -148,7 +150,7 @@ const TextWrapper = styled(Text)<{ color: keyof Colors }>`
 
 export const TYPE = {
   main(props: TextProps): JSX.Element {
-    return <TextWrapper fontWeight={500} color="subText" {...props} />
+    return <TextWrapper fontWeight={500} fontSize={14} color="text6" {...props} />
   },
   link(props: TextProps): JSX.Element {
     return <TextWrapper fontWeight={500} color="primary" {...props} />
@@ -197,6 +199,9 @@ export const TYPE = {
   },
   header(props: TextProps): JSX.Element {
     return <TextWrapper fontWeight={600} color="text1" {...props} />
+  },
+  light(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} color={'text3'} fontSize={14} {...props} />
   },
 }
 

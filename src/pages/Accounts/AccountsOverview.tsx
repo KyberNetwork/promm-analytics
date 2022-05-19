@@ -4,7 +4,6 @@ import { AutoColumn } from 'components/Column'
 import { shortenAddress } from 'utils'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
-import { ButtonPrimary } from 'components/Button'
 import { useFetchedPositionsDatas } from 'data/wallets/walletData'
 import { DarkGreyCard } from 'components/Card'
 import { Link } from 'react-router-dom'
@@ -19,22 +18,7 @@ import { formatDollarAmount } from 'utils/numbers'
 import { useActiveNetworks } from 'state/application/hooks'
 import Search from 'components/Search'
 import { useMedia } from 'react-use'
-
-const StyledInput = styled.input`
-  border-radius: 999px;
-  flex: 1;
-  background: ${({ theme }) => theme.background};
-  outline: none;
-  color: ${({ theme }) => theme.text};
-  padding: 0 16px;
-  border: 1px solid ${({ theme }) => theme.border};
-  margin-right: 16px;
-
-  :hover,
-  :focus {
-    border: 1px solid ${({ theme }) => theme.primary};
-  }
-`
+import AccountSearch from 'components/AccountSearch'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -52,7 +36,7 @@ const ResponsiveGrid = styled.div`
 
 const TableHeader = styled(ResponsiveGrid)`
   background: ${({ theme }) => theme.tableHeader};
-  padding: 18px 20px;
+  padding: 20px;
 `
 
 const LinkWrapper = styled(Link)`
@@ -104,11 +88,10 @@ export default function AccountsOverview(): JSX.Element {
         </RowBetween>
 
         <Flex>
-          <StyledInput placeholder="Search wallet/account..."></StyledInput>
-          <ButtonPrimary width="fit-content">Analyze</ButtonPrimary>
+          <AccountSearch shortenAddress={below600} />
         </Flex>
 
-        <Text fontWeight="500" fontSize="18px">
+        <Text fontWeight="500" fontSize="18px" mt="2rem">
           Top Positions
         </Text>
 
@@ -120,7 +103,7 @@ export default function AccountsOverview(): JSX.Element {
             <TableLabel end={1}>POOL</TableLabel>
             <TableLabel end={1}>VALUE</TableLabel>
           </TableHeader>
-          <AutoColumn gap="16px" style={{ padding: '20px' }}>
+          <AutoColumn gap="19.75px" style={{ padding: '19.75px 20px' }}>
             {data ? (
               data.slice(maxItems * (page - 1), page * maxItems).map((item, index) => (
                 <React.Fragment key={item.id}>

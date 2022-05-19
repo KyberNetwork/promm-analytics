@@ -26,9 +26,16 @@ const ContentWrapper = styled.div<{ open: boolean }>`
   display: grid;
   grid-template-columns: ${({ open }) => (open ? '220px 1fr 200px' : '220px 1fr 64px')};
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  @media screen and (max-width: 1400px) {
+    grid-template-columns: 220px 1fr;
+  }
+
+  @media screen and (max-width: 1080px) {
     grid-template-columns: 1fr;
-  `}
+    max-width: 100vw;
+    overflow: hidden;
+    grid-gap: 0;
+  }
   background-color: ${({ theme }) => theme.buttonBlack};
 `
 
@@ -47,7 +54,7 @@ const BodyWrapper = styled.div`
   }
 
   @media (max-width: 1080px) {
-    padding-top: 2rem;
+    padding-top: 36px;
     margin-top: 0;
   }
 `

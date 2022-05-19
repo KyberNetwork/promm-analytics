@@ -7,7 +7,7 @@ const QuestionWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.2rem;
+  padding: 0 0.2rem;
   border: none;
   background: none;
   outline: none;

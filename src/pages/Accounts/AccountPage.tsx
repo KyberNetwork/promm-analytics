@@ -14,7 +14,7 @@ import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
 import { ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
-import { ButtonPrimary } from 'components/Button'
+import { ButtonPrimary, SavedIcon } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import TransactionTable from 'components/TransactionsTable'
 import { Arrow, Break, PageButtons } from 'components/shared'
@@ -36,6 +36,7 @@ import PoolChart from './components/PoolChart'
 import AllPoolChart from './components/AllPoolChart'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import Search from 'components/Search'
+import { useSavedAccounts } from 'state/user/hooks'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -236,6 +237,7 @@ export default function AccountPage(): JSX.Element {
   }, [maxItems, data])
   useOnClickOutside(node, showDropdown ? () => setShowDropdown(!showDropdown) : undefined)
   const below600 = useMedia('(max-width: 600px)')
+  const [savedAccounts, addSavedAccount] = useSavedAccounts()
 
   return (
     <PageWrapper>
@@ -260,10 +262,10 @@ export default function AccountPage(): JSX.Element {
           <ResponsiveRow align="flex-end">
             <Label>{shortenAddress(address)}</Label>
             <RowFixed>
-              {/* <SavedIcon */}
-              {/*   fill={!!savedTokens?.[activeNetwork.id]?.[address]} */}
-              {/*   onClick={() => addSavedToken(activeNetwork.id, tokenData)} */}
-              {/* /> */}
+              <SavedIcon
+                fill={!!savedAccounts?.[activeNetwork.chainId]?.[address]}
+                onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
+              />
               <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
                 <ButtonPrimary width="fit-content" style={{ height: '38px' }}>
                   View on {activeNetwork.etherscanName}↗

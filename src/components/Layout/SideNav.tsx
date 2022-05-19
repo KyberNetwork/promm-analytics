@@ -249,7 +249,12 @@ function SideNav(): JSX.Element {
         {networkModal}
         <Header>
           <Link to="/">
-            <img src={isDarkMode ? ProMMAnalyticsLogo : ProMMAnalyticsLogoLight} alt="Logo" width="110px" />
+            <img
+              src={isDarkMode ? ProMMAnalyticsLogo : ProMMAnalyticsLogoLight}
+              alt="Logo"
+              width="110px"
+              height="39.94px"
+            />
           </Link>
 
           <Flex alignItems="center" sx={{ gap: width && width < MEDIA_WIDTHS.upToExtraSmall ? '16px' : '24px' }}>

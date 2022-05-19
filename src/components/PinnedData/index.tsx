@@ -6,7 +6,7 @@ import { Bookmark, ChevronRight, X } from 'react-feather'
 import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
 import { Divider } from 'components/Layout/styled'
-import { useSavedPools, useSavedTokens } from 'state/user/hooks'
+import { useSavedAccounts, useSavedPools, useSavedTokens } from 'state/user/hooks'
 import { NETWORKS_INFO_LIST } from 'constants/networks'
 import { networkPrefix } from 'utils/networkPrefix'
 import HoverInlineText from 'components/HoverInlineText'
@@ -67,8 +67,9 @@ type PinnedDataPropType = {
 const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSavedOpen }: PinnedDataPropType) => {
   const theme = useTheme()
 
-  const [savedTokens, updatedSavedTokens] = useSavedTokens()
+  const [savedTokens, updateSavedTokens] = useSavedTokens()
   const [savedPools, updateSavedPools] = useSavedPools()
+  const [savedAccounts, updateSavedAccounts] = useSavedAccounts()
 
   return !open ? (
     <RightColumn open={open} onClick={() => setSavedOpen(true)}>
@@ -97,7 +98,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
                 <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
                 {token.symbol}
               </TagItem>
-              <X color={theme.subText} role="button" onClick={() => updatedSavedTokens(id, token)} size={24} />
+              <X color={theme.subText} role="button" onClick={() => updateSavedTokens(id, token)} size={24} />
             </Flex>
           ))
         })}
@@ -118,9 +119,29 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
                 <HoverInlineText
                   maxCharacters={18}
                   text={`${pool.token0.symbol}/${pool.token1.symbol} (${pool.feeTier / 100}%)`}
-                ></HoverInlineText>
+                />
               </TagItem>
               <X color={theme.subText} role="button" onClick={() => updateSavedPools(id, pool)} size={24} />
+            </Flex>
+          ))
+        })}
+
+        <Flex marginTop="20px" />
+        <Divider />
+        <Text marginTop="20px" fontWeight="500">
+          Accounts
+        </Text>
+
+        {NETWORKS_INFO_LIST.map((networkInfo) => {
+          const id = networkInfo.chainId
+          const accounts = Object.keys(savedAccounts[id] || {})
+          return accounts.map((account) => (
+            <Flex marginTop="16px" key={id + '-' + account} justifyContent="space-between" alignItems="center">
+              <TagItem role="button" to={networkPrefix(networkInfo) + `account/${account}`}>
+                <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
+                {account?.slice(0, 6) + '...' + account?.slice(38, 42)}
+              </TagItem>
+              <X color={theme.subText} role="button" onClick={() => updateSavedAccounts(id, account)} size={24} />
             </Flex>
           ))
         })}

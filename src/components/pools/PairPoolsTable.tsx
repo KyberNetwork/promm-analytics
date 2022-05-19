@@ -59,10 +59,10 @@ const ResponsiveGrid = styled.div`
 
 const TableHeader = styled(ResponsiveGrid)`
   background: ${({ theme }) => theme.tableHeader};
-  padding: 18px 20px;
+  padding: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: calc(16px + 0.2rem * 2 + 18px * 2); /* = APR? icon height + APR? icon padding top bot + row padding top bot */
+    height: calc(16px + 20px * 2); /* = APR? icon height + row padding top bot */
     grid-template-columns: 2fr repeat(1, 1fr);
     & :nth-child(1) {
       display: none;
@@ -128,6 +128,7 @@ export default function PairPoolsTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
+  const activeNetworks = useActiveNetworks()[0] // TODO namgold: handle all chain view
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
@@ -138,6 +139,9 @@ export default function PairPoolsTable({
   // pagination
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+  useEffect(() => {
+    setPage(1)
+  }, [activeNetworks])
 
   useEffect(() => {
     let extraPages = 1
@@ -188,7 +192,6 @@ export default function PairPoolsTable({
     }
   }, [pairDatas, isOpen])
 
-  const activeNetworks = useActiveNetworks()[0] // TODO namgold: handle all chain view
   if (!pairDatas) {
     return <Loader />
   }
@@ -199,8 +202,8 @@ export default function PairPoolsTable({
         <>
           <GridWrapper>
             <Flex
-              padding="18px 20px"
-              height="calc(16px + 0.2rem * 2 + 18px * 2)" // = APR? icon height + APR? icon padding top bot + row padding top bot
+              padding="20px"
+              height="calc(16px + 20px * 2)" // = APR? icon height + row padding top bot
               backgroundColor={theme.tableHeader}
             >
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>

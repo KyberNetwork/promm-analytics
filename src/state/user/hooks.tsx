@@ -2,7 +2,7 @@
 import { useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
-import { updateUserDarkMode, addSavedToken, addSavedPool, toggleIsFirstTimeVisit } from './actions'
+import { updateUserDarkMode, addSavedToken, addSavedPool, toggleIsFirstTimeVisit, addSavedAccount } from './actions'
 import { PoolData } from 'state/pools/reducer'
 import { TokenData } from 'state/tokens/reducer'
 import { ChainId } from 'constants/networks'
@@ -55,13 +55,13 @@ export function useSavedTokens(): [
   const dispatch = useDispatch<AppDispatch>()
   const savedTokens = useSelector((state: AppState) => state.user.savedTokens) || {}
 
-  const updatedSavedTokens = useCallback(
+  const updateSavedTokens = useCallback(
     (id: ChainId, token: TokenData) => {
       dispatch(addSavedToken({ networkId: id, token }))
     },
     [dispatch]
   )
-  return [savedTokens, updatedSavedTokens]
+  return [savedTokens, updateSavedTokens]
 }
 
 export function useSavedPools(): [
@@ -82,4 +82,24 @@ export function useSavedPools(): [
     [dispatch]
   )
   return [savedPools ?? {}, updateSavedPools]
+}
+
+export function useSavedAccounts(): [
+  {
+    [chainId in ChainId]?: {
+      [address: string]: boolean
+    }
+  },
+  (id: ChainId, accountAddress: string) => void
+] {
+  const dispatch = useDispatch<AppDispatch>()
+
+  const savedAccounts = useSelector((state: AppState) => state.user.savedAccounts)
+  const updateSavedAccounts = useCallback(
+    (id: ChainId, accountAddress: string) => {
+      dispatch(addSavedAccount({ networkId: id, accountAddress }))
+    },
+    [dispatch]
+  )
+  return [savedAccounts ?? {}, updateSavedAccounts]
 }

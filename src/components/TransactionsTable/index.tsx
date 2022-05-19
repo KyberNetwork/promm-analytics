@@ -129,6 +129,7 @@ export default function TransactionTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
+  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from transaction
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.timestamp)
@@ -158,7 +159,7 @@ export default function TransactionTable({
 
   useEffect(() => {
     setPage(1)
-  }, [txFilter])
+  }, [txFilter, activeNetworks])
 
   const sortedTransactions = useMemo(() => {
     return filteredTxn.length

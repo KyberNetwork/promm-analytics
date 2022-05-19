@@ -132,6 +132,7 @@ export default function TokenTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
+  const activeNetworks = useActiveNetworks()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
@@ -140,13 +141,19 @@ export default function TokenTable({
   // pagination
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+
+  useEffect(() => {
+    setPage(1)
+  }, [activeNetworks])
+
   useEffect(() => {
     let extraPages = 1
     if (tokenDatas) {
       if (tokenDatas.length % maxItems === 0) {
         extraPages = 0
       }
-      setMaxPage(Math.floor(tokenDatas.length / maxItems) + extraPages)
+      const newMaxPage = Math.floor(tokenDatas.length / maxItems) + extraPages
+      setMaxPage(newMaxPage)
     }
   }, [maxItems, tokenDatas])
 
