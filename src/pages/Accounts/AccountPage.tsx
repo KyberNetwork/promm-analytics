@@ -267,7 +267,7 @@ export default function AccountPage(): JSX.Element {
                 onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
               />
               <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                <ButtonPrimary width="fit-content" style={{ height: '38px' }}>
+                <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }} padding="8px 12px">
                   View on {activeNetwork.etherscanName}↗
                 </ButtonPrimary>
               </StyledExternalLink>
