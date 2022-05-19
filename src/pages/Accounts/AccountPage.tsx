@@ -259,7 +259,7 @@ export default function AccountPage(): JSX.Element {
             </AutoRow>
             {!below600 && <Search />}
           </RowBetween>
-          <ResponsiveRow align="flex-end">
+          <ResponsiveRow align="flex-end" padding="6px 16px 6px 0">
             <Label fontSize={24}>{shortenAddress(address)}</Label>
             <RowFixed>
               <SavedIcon
