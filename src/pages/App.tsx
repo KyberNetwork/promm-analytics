@@ -26,16 +26,16 @@ const ContentWrapper = styled.div<{ open: boolean }>`
   display: grid;
   grid-template-columns: ${({ open }) => (open ? '220px 1fr 200px' : '220px 1fr 64px')};
 
-  @media screen and (max-width: 1400px) {
+  ${({ theme }) => theme.mediaWidth.upToExtraLarge`
     grid-template-columns: 220px 1fr;
-  }
+  `}
 
-  @media screen and (max-width: 1080px) {
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     grid-template-columns: 1fr;
     max-width: 100vw;
     overflow: hidden;
     grid-gap: 0;
-  }
+  `}
   background-color: ${({ theme }) => theme.buttonBlack};
 `
 
