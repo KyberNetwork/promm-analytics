@@ -62,7 +62,7 @@ const TableHeader = styled(ResponsiveGrid)`
   padding: 20px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: calc(16px + 20px * 2); /* = APR? icon height + row padding top bot */
+    height: calc(19px + 20px * 2); /* = APR? icon height + row padding top bot */
     grid-template-columns: 2fr repeat(1, 1fr);
     & :nth-child(1) {
       display: none;
@@ -203,7 +203,7 @@ export default function PairPoolsTable({
           <GridWrapper>
             <Flex
               padding="20px"
-              height="calc(16px + 20px * 2)" // = APR? icon height + row padding top bot
+              height="calc(19px + 20px * 2)" // = APR? icon height + row padding top bot
               backgroundColor={theme.tableHeader}
             >
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>
