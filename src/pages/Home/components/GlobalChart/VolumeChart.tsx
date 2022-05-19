@@ -79,14 +79,14 @@ const VolumeChart = (): React.ReactElement | null => {
         }}
       >
         <OptionButton active={volumeWindow === VolumeWindow.daily} onClick={() => setVolumeWindow(VolumeWindow.daily)}>
-          <TYPE.body>D</TYPE.body>
+          <TYPE.body fontSize={14}>D</TYPE.body>
         </OptionButton>
         <OptionButton
           style={{ marginLeft: '4px' }}
           active={volumeWindow === VolumeWindow.weekly}
           onClick={() => setVolumeWindow(VolumeWindow.weekly)}
         >
-          <TYPE.body>W</TYPE.body>
+          <TYPE.body fontSize={14}>W</TYPE.body>
         </OptionButton>
       </RowFixed>
     </>
