@@ -135,7 +135,7 @@ const PoolChart = ({ account, activePosition }: PoolChartProps): JSX.Element => 
               tickLine={false}
               axisLine={false}
               interval="preserveEnd"
-              tickMargin={14}
+              tickMargin={0}
               tickFormatter={(tick) => toNiceDate(tick)}
               dataKey="date"
               tick={{ fill: textColor }}
