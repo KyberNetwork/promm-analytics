@@ -5,7 +5,6 @@ import { RowBetween } from '../Row'
 import { Bookmark, ChevronRight, X } from 'react-feather'
 import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
-import { Divider } from 'components/Layout/styled'
 import { useSavedAccounts, useSavedPools, useSavedTokens } from 'state/user/hooks'
 import { NETWORKS_INFO_LIST } from 'constants/networks'
 import { networkPrefix } from 'utils/networkPrefix'
@@ -21,7 +20,7 @@ const RightColumn = styled.div<{ open: boolean }>`
   height: 100vh;
   background-color: ${({ theme }) => theme.background};
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToExtraLarge`
     display: none;
   `}
 
