@@ -109,12 +109,12 @@ const OpenPair = styled.div<{ hide: boolean }>`
   visibility: ${({ hide }) => (hide ? 'hidden' : 'visibility')};
 `
 
-const SORT_FIELD = {
-  feeTier: 'feeTier',
-  volumeUSD: 'volumeUSD',
-  tvlUSD: 'tvlUSD',
-  volumeUSDWeek: 'volumeUSDWeek',
-  apr: 'apr',
+enum SORT_FIELD {
+  fee = 'fee',
+  volumeUSD = 'volumeUSD',
+  tvlUSD = 'tvlUSD',
+  volumeUSDWeek = 'volumeUSDWeek',
+  apr = 'apr',
 }
 
 const MAX_ITEMS = 10
@@ -168,7 +168,7 @@ export default function PairPoolsTable({
   }, [maxItems, page, pairDatas, sortDirection, sortField])
 
   const handleSort = useCallback(
-    (newField: string) => {
+    (newField: SORT_FIELD) => {
       setSortField(newField)
       setSortDirection(sortField !== newField ? true : !sortDirection)
     },
@@ -176,7 +176,7 @@ export default function PairPoolsTable({
   )
 
   const arrow = useCallback(
-    (field: string) => {
+    (field: SORT_FIELD) => {
       return sortField === field ? (!sortDirection ? '↑' : '↓') : ''
     },
     [sortDirection, sortField]
@@ -224,8 +224,8 @@ export default function PairPoolsTable({
                 Volume 24H {arrow(SORT_FIELD.volumeUSD)}
               </ClickableText>
 
-              <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
-                Fee 24H {arrow(SORT_FIELD.volumeUSD)}
+              <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.fee)}>
+                Fee 24H {arrow(SORT_FIELD.fee)}
               </ClickableText>
 
               <ClickableText color={theme.subText} end={1}>
@@ -364,7 +364,7 @@ export default function PairPoolsTable({
                                       {formatDollarAmount(poolData.volumeUSD)}
                                     </Label>
                                     <Label end={1} fontWeight={400}>
-                                      {formatDollarAmount(poolData.volumeUSD * (poolData.feeTier / 1000000))}
+                                      {formatDollarAmount(poolData.fee)}
                                     </Label>
 
                                     <Flex justifyContent="flex-end">

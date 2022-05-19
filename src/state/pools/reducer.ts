@@ -16,6 +16,7 @@ export interface PoolData {
   // basic token info
   address: string
   feeTier: number
+  fee: number
 
   token0: {
     name: string

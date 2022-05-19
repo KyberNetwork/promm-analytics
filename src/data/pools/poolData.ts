@@ -202,6 +202,7 @@ export function usePoolDatas(
       accum[address] = {
         address,
         feeTier,
+        fee: volumeUSD * (feeTier / 1000000),
         liquidity: parseFloat(current.liquidity),
         reinvestL: parseFloat(current.reinvestL),
         sqrtPrice: parseFloat(current.sqrtPrice),
