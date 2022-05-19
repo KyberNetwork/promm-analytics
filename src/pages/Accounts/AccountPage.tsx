@@ -357,24 +357,22 @@ export default function AccountPage(): JSX.Element {
                   </Flyout>
                 )}
               </DropdownWrapper>
-              <Panel style={{ height: '100%', marginBottom: '1rem' }}>
-                <AutoRow gap="20px">
-                  <AutoColumn gap="12px">
-                    <RowBetween>
-                      <TYPE.body color={theme.subText}> TVL</TYPE.body>
-                      <div />
-                    </RowBetween>
-                    <RowFixed align="flex-end">
-                      <TYPE.header fontSize="24px" lineHeight={1}>
-                        {positionValue
-                          ? formatDollarAmount(positionValue)
-                          : positionValue === 0
-                          ? formatDollarAmount(0)
-                          : '-'}
-                      </TYPE.header>
-                    </RowFixed>
-                  </AutoColumn>
-                </AutoRow>
+              <Panel style={{ height: '100%' }}>
+                <AutoColumn gap="12px">
+                  <RowBetween>
+                    <TYPE.body color={theme.subText}> TVL</TYPE.body>
+                    <div />
+                  </RowBetween>
+                  <RowFixed align="flex-end">
+                    <TYPE.header fontSize="24px" lineHeight={1}>
+                      {positionValue
+                        ? formatDollarAmount(positionValue)
+                        : positionValue === 0
+                        ? formatDollarAmount(0)
+                        : '-'}
+                    </TYPE.header>
+                  </RowFixed>
+                </AutoColumn>
               </Panel>
               <PanelWrapper>
                 <Panel style={{ gridColumn: '1' }}>
