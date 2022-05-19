@@ -58,7 +58,7 @@ const ResponsiveGrid = styled.div`
 
 const TableHeader = styled(ResponsiveGrid)`
   background: ${({ theme }) => theme.tableHeader};
-  padding: 18px 20px;
+  padding: 20px;
 `
 
 const LinkWrapper = styled(Link)`
