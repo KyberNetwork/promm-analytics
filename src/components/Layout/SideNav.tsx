@@ -138,7 +138,9 @@ const LinkWrapper = styled.a`
   }
   color: ${({ theme }) => theme.subText};
 `
-
+const LeverageZIndex = styled.div`
+  z-index: 100;
+`
 type SelectNetworkButtonPropType = {
   onClick: React.MouseEventHandler
   marginTop?: string
@@ -245,7 +247,7 @@ function SideNav(): JSX.Element {
 
   if (hideNav) {
     return (
-      <>
+      <LeverageZIndex>
         {networkModal}
         <Header>
           <Link to="/">
@@ -278,7 +280,7 @@ function SideNav(): JSX.Element {
           <SelectNetworkButton onClick={() => setShowNetworkModal(true)} />
           <Menu />
         </Bottom>
-      </>
+      </LeverageZIndex>
     )
   }
 
