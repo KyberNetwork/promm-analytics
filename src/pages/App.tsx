@@ -11,7 +11,7 @@ import { ExternalLink, TYPE } from 'theme'
 import { useActiveNetworks, useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
 import SideNav from 'components/Layout/SideNav'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
@@ -127,7 +127,7 @@ export default function App(): JSX.Element {
       <Route component={DarkModeQueryParamReader} />
       {loading ? (
         <Flex width="100vw" height="100vh" justifyContent="center" alignItems="center">
-          <Loading />
+          <KyberLoading />
         </Flex>
       ) : (
         <>

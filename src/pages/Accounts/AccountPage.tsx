@@ -8,19 +8,19 @@ import { useMedia } from 'react-use'
 
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
-import { shortenAddress, getEtherscanLink } from 'utils'
+import { shortenAddress, getEtherscanLink, getPoolLink } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
-import { ExternalLink as StyledExternalLink } from '../../theme/components'
+import { ExternalLink, ExternalLink as StyledExternalLink } from '../../theme/components'
 import useTheme from 'hooks/useTheme'
-import { ButtonPrimary, SavedIcon } from 'components/Button'
+import { ButtonLight, ButtonPrimary, SavedIcon } from 'components/Button'
 import { DarkGreyCard } from 'components/Card'
 import TransactionTable from 'components/TransactionsTable'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import { PositionFields, useFetchedUserPositionData, useUserTransactions } from 'data/wallets/walletData'
 import { Label } from 'components/Text'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
@@ -71,6 +71,11 @@ export const ButtonFaded = styled(Base)`
   :hover {
     opacity: 0.5;
   }
+`
+const DataText = styled(Flex)`
+  align-items: center;
+  color: ${({ theme }) => theme.text1};
+  font-size: 14px;
 `
 
 const DropdownWrapper = styled.div`
@@ -147,8 +152,28 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 2.5fr 2fr 2fr 2fr 2fr;
-  grid-template-areas: 'pair pool liquidity tokenAmount tokenAmount2 ';
+  grid-template-columns: 2.5fr 2fr 2fr 2fr 2fr 2fr;
+  grid-template-areas: 'pair pool liquidity tokenAmount tokenAmount2 action';
+  align-items: center;
+
+  > * {
+    justify-content: flex-end;
+    width: 100%;
+
+    :first-child {
+      justify-content: flex-start;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    grid-template-columns: 3fr 2fr 2fr 2fr 2fr;
+    grid-template-areas: 'pair pool liquidity tokenAmount action';
+  }
+
+  @media screen and (max-width: 740px) {
+    grid-template-columns: 2fr 2fr;
+    grid-template-areas: 'pool liquidity ';
+  }
 `
 
 const TableHeader = styled(ResponsiveGrid)`
@@ -164,6 +189,10 @@ const LinkWrapper = styled(Link)`
   }
 `
 
+const RemoveBtn = styled(ButtonLight)`
+  background: ${({ theme }) => `${theme.subText}33`};
+`
+
 const TableLabel = styled(Label)`
   color: ${({ theme }) => theme.subText};
   font-weight: 500;
@@ -171,11 +200,11 @@ const TableLabel = styled(Label)`
 `
 
 type FormattedPosition = {
-  tokenId: string
   address: string
   valueUSD: number
   token0Amount: number
   token1Amount: number
+  data: PositionFields
 }
 
 export default function AccountPage(): JSX.Element {
@@ -206,11 +235,11 @@ export default function AccountPage(): JSX.Element {
       const position = calcPosition({ p, chainId: activeNetwork.chainId, ethPriceUSD: ethPriceUSD?.current })
 
       positionMap[p.id] = {
-        tokenId: p.id,
         address: p.pool.id,
         valueUSD: position.userPositionUSD,
         token0Amount: position.token0Amount,
         token1Amount: position.token1Amount,
+        data: p,
       }
     })
     return positionMap
@@ -238,6 +267,8 @@ export default function AccountPage(): JSX.Element {
   useOnClickOutside(node, showDropdown ? () => setShowDropdown(!showDropdown) : undefined)
   const below600 = useMedia('(max-width: 600px)')
   const [savedAccounts, addSavedAccount] = useSavedAccounts()
+  const below740 = useMedia('(max-width: 740px)')
+  const below900 = useMedia('(max-width: 900px)')
 
   return (
     <PageWrapper>
@@ -389,45 +420,89 @@ export default function AccountPage(): JSX.Element {
               <TYPE.label fontSize="18px">Positions</TYPE.label>
               <Wrapper>
                 <TableHeader>
-                  <TableLabel>PAIR</TableLabel>
+                  {!below740 && <TableLabel>PAIR</TableLabel>}
                   <TableLabel end={1}>POOL</TableLabel>
                   <TableLabel end={1}>VALUE</TableLabel>
-                  <TableLabel end={1}>TOKEN AMOUNT</TableLabel>
-                  <TableLabel end={1}>TOKEN AMOUNT</TableLabel>
+                  {!below740 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
+                  {!below900 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
+                  {!below740 && <TableLabel end={1}>Add/Remove</TableLabel>}
                 </TableHeader>
                 <AutoColumn gap="16px" style={{ padding: '20px' }}>
                   {data ? (
                     data.slice(maxItems * (page - 1), page * maxItems).map((item) => (
                       <React.Fragment key={item.id}>
                         <ResponsiveGrid>
-                          <Label>
-                            <RowFixed>
-                              <DoubleCurrencyLogo
-                                address0={item.token0.id}
-                                address1={item.token1.id}
-                                size={16}
-                                activeNetwork={activeNetwork}
-                              />
-                              <Label marginLeft="4px">
-                                {item.token0.symbol} - {item.token1.symbol}
-                              </Label>
-                            </RowFixed>
-                          </Label>
+                          {!below740 && (
+                            <Label>
+                              <RowFixed>
+                                <DoubleCurrencyLogo
+                                  address0={item.token0.id}
+                                  address1={item.token1.id}
+                                  size={16}
+                                  activeNetwork={activeNetwork}
+                                />
+                                <Label marginLeft="4px">
+                                  {item.token0.symbol} - {item.token1.symbol}
+                                </Label>
+                              </RowFixed>
+                            </Label>
+                          )}
                           <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
                             <Label end={1} color={theme.primary}>
                               {shortenAddress(item.pool.id)}
                             </Label>
                           </LinkWrapper>
-                          <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>
-                          <Label end={1}>{formatAmount(positionsMap[item.id].token0Amount)}</Label>
-                          <Label end={1}>{formatAmount(positionsMap[item.id].token1Amount)}</Label>
+                          {!below740 && <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>}
+                          {!below900 && <Label end={1}>{formatAmount(positionsMap[item.id].token0Amount)}</Label>}
+                          {!below740 && <Label end={1}>{formatAmount(positionsMap[item.id].token1Amount)}</Label>}
+                          {!below740 && (
+                            <DataText grid-area="action" justifyContent="flex-end">
+                              <Flex
+                                justifyContent="flex-end"
+                                flexDirection={below740 ? 'column' : 'row'}
+                                sx={{ gap: '6px' }}
+                              >
+                                <ExternalLink
+                                  href={getPoolLink(
+                                    positionsMap[item.id].data.token0.id,
+                                    activeNetwork,
+                                    positionsMap[item.id].data.token1.id,
+                                    false,
+                                    positionsMap[item.id].data.pool.id
+                                  )}
+                                >
+                                  <ButtonLight style={{ padding: '4px 6px', borderRadius: '4px' }}>+ Add</ButtonLight>
+                                </ExternalLink>
+                                <ExternalLink
+                                  href={getPoolLink(
+                                    positionsMap[item.id].data.token0.id,
+                                    activeNetwork,
+                                    positionsMap[item.id].data.token1.id,
+                                    true,
+                                    positionsMap[item.id].data.pool.id
+                                  )}
+                                >
+                                  <RemoveBtn
+                                    style={{
+                                      padding: '4px 6px',
+                                      borderRadius: '4px',
+                                      color: theme.subText,
+                                    }}
+                                  >
+                                    - Remove
+                                  </RemoveBtn>
+                                </ExternalLink>
+                                {/* )} */}
+                              </Flex>
+                            </DataText>
+                          )}
                         </ResponsiveGrid>
                         <Break />
                       </React.Fragment>
                     ))
                   ) : (
                     <Flex justifyContent="center">
-                      <Loading />
+                      <KyberLoading />
                     </Flex>
                   )}
                   <PageButtons>
@@ -459,7 +534,7 @@ export default function AccountPage(): JSX.Element {
         </AutoColumn>
       ) : (
         <Flex justifyContent="center">
-          <Loading />
+          <KyberLoading />
         </Flex>
       )}
     </PageWrapper>

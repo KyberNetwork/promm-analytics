@@ -1,9 +1,9 @@
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
-import { darken, lighten } from 'polished'
+import { darken, lighten, transparentize } from 'polished'
 
 import { RowBetween } from '../Row'
-import { ChevronDown, Check, Star, Bookmark } from 'react-feather'
+import { ChevronDown, Check, Bookmark } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
 
 const Base = styled(RebassButton)<{
@@ -76,20 +76,21 @@ export const ButtonPrimary = styled(Base)<{ bgColor?: string }>`
   }
 `
 
-export const ButtonLight = styled(Base)`
-  background-color: ${({ theme }) => theme.primary + '33'};
-  color: ${({ theme }) => theme.primary};
-  font-size: 16px;
-  font-weight: 500;
-  :disabled {
-    opacity: 0.4;
-    :hover {
-      cursor: auto;
-      background-color: ${({ theme }) => theme.primary};
-      box-shadow: none;
-      border: 1px solid transparent;
-      outline: none;
-    }
+export const ButtonLight = styled(Base)<{ color?: string }>`
+  background-color: ${({ color, theme }) => (color ? transparentize(0.9, color) : transparentize(0.9, theme.primary1))};
+  color: ${({ color, theme }) => (color ? darken(0.1, color) : theme.primary1)};
+
+  min-width: fit-content;
+  border-radius: 4px;
+  white-space: nowrap;
+
+  a {
+    color: ${({ color, theme }) => (color ? darken(0.1, color) : theme.primary1)};
+  }
+
+  :hover {
+    background-color: ${({ color, theme }) =>
+      color ? transparentize(0.8, color) : transparentize(0.8, theme.primary1)};
   }
 `
 

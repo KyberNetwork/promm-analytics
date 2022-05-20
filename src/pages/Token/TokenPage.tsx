@@ -39,7 +39,7 @@ import { ONE_HOUR_SECONDS, TimeWindow } from 'constants/intervals'
 import { MonoSpace } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import PairPoolsTable from 'components/pools/PairPoolsTable'
 import { PoolData } from 'state/pools/reducer'
 import Search from 'components/Search'
@@ -373,7 +373,7 @@ export default function TokenPage(): JSX.Element {
                     />
                   ) : (
                     <Flex width="100%" height="80%" justifyContent="center" alignItems="center">
-                      <Loading size={120} />
+                      <KyberLoading size={120} />
                     </Flex>
                   )
                 ) : null}
@@ -387,7 +387,7 @@ export default function TokenPage(): JSX.Element {
             ) : (
               <DarkGreyCard>
                 <Flex justifyContent="center">
-                  <Loading size={120} />
+                  <KyberLoading size={120} />
                 </Flex>
               </DarkGreyCard>
             )}

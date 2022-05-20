@@ -62,7 +62,7 @@ export function escapeRegExp(string: string): string {
 }
 
 export function feeTierPercent(fee: number): string {
-  return (fee / 10000).toPrecision(1) + '%'
+  return (fee / 100).toPrecision(1) + '%'
 }
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
@@ -98,4 +98,64 @@ export function getTimeframe(timeWindow: TimeframeOptions) {
       break
   }
   return utcStartTime
+}
+
+export function addNetworkIdQueryString(url: string, networkInfo: NetworkInfo): string {
+  return ''
+  if (url.includes('?')) {
+    return `${url}&networkId=${networkInfo.chainId}`
+  }
+
+  return `${url}?networkId=${networkInfo.chainId}`
+}
+
+export function getPoolLink(
+  token0Address: string,
+  networkInfo: NetworkInfo,
+  token1Address?: string,
+  remove = false,
+  poolAddress?: string
+): string {
+  return 'todo namgold: finish this'
+  // const nativeTokenSymbol = networkInfo.nativeTokenSymbol
+
+  // if (poolAddress) {
+  //   if (!token1Address) {
+  //     return addNetworkIdQueryString(
+  //       networkInfo.dmmSwapUrl +
+  //         (remove ? `remove` : `add`) +
+  //         `/${
+  //           token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address
+  //         }/${nativeTokenSymbol}/${poolAddress}`,
+  //       networkInfo
+  //     )
+  //   } else {
+  //     return addNetworkIdQueryString(
+  //       networkInfo.dmmSwapUrl +
+  //         (remove ? `remove` : `add`) +
+  //         `/${token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address}/${
+  //           token1Address === networkInfo.wethAddress ? nativeTokenSymbol : token1Address
+  //         }/${poolAddress}`,
+  //       networkInfo
+  //     )
+  //   }
+  // }
+
+  // if (!token1Address) {
+  //   return addNetworkIdQueryString(
+  //     networkInfo.dmmSwapUrl +
+  //       (remove ? `remove` : `add`) +
+  //       `/${token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address}/${nativeTokenSymbol}`,
+  //     networkInfo
+  //   )
+  // } else {
+  //   return addNetworkIdQueryString(
+  //     networkInfo.dmmSwapUrl +
+  //       (remove ? `remove` : `add`) +
+  //       `/${token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address}/${
+  //         token1Address === networkInfo.wethAddress ? nativeTokenSymbol : token1Address
+  //       }`,
+  //     networkInfo
+  //   )
+  // }
 }

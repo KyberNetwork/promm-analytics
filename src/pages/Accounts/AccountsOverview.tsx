@@ -9,7 +9,7 @@ import { DarkGreyCard } from 'components/Card'
 import { Link } from 'react-router-dom'
 import { Label } from 'components/Text'
 import useTheme from 'hooks/useTheme'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { RowBetween, RowFixed } from 'components/Row'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
@@ -19,6 +19,8 @@ import { useActiveNetworks } from 'state/application/hooks'
 import Search from 'components/Search'
 import { useMedia } from 'react-use'
 import AccountSearch from 'components/AccountSearch'
+import { networkPrefix } from 'utils/networkPrefix'
+import { LoadingRows } from 'components/Loader'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -26,12 +28,29 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const ResponsiveGrid = styled.div`
+const ResponsiveGrid = styled.div<{ isShowNetworkColumn?: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 20px 3fr repeat(3, 1.2fr);
+  grid-template-columns: 10px 1.5fr ${({ isShowNetworkColumn }) => (isShowNetworkColumn ? '75px' : '')} 1fr 1fr 1fr;
+  grid-template-areas: 'number name ${({ isShowNetworkColumn }) =>
+    isShowNetworkColumn ? 'network' : ''} pair pool value';
+  padding: 0;
+
+  > * {
+    justify-content: flex-end;
+  }
+
+  @media screen and (max-width: 1024px) {
+    grid-template-columns: 1.5fr ${({ isShowNetworkColumn }) => (isShowNetworkColumn ? '75px' : '')} 1fr 1fr 1fr;
+    grid-template-areas: 'name ${({ isShowNetworkColumn }) => (isShowNetworkColumn ? 'network' : '')} pair pool value';
+  }
+
+  @media screen and (max-width: 600px) {
+    grid-template-columns: 1fr ${({ isShowNetworkColumn }) => (isShowNetworkColumn ? '75px' : '')} 1fr 1fr;
+    grid-template-areas: 'name ${({ isShowNetworkColumn }) => (isShowNetworkColumn ? 'network' : '')} pool value';
+  }
 `
 
 const TableHeader = styled(ResponsiveGrid)`
@@ -63,6 +82,9 @@ export default function AccountsOverview(): JSX.Element {
 
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+  const below600 = useMedia('(max-width: 600px)')
+  const below800 = useMedia('(max-width: 800px)')
+  const below1024 = useMedia('(max-width: 1024px)')
 
   const maxItems = 10
   useEffect(() => {
@@ -75,7 +97,6 @@ export default function AccountsOverview(): JSX.Element {
     }
   }, [maxItems, data])
   const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
-  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
@@ -97,34 +118,39 @@ export default function AccountsOverview(): JSX.Element {
 
         <Wrapper>
           <TableHeader>
-            <Label>#</Label>
+            {!below1024 && <Label>#</Label>}
             <TableLabel>ACCOUNT</TableLabel>
-            <TableLabel end={1}>PAIR</TableLabel>
+            {!below600 && <TableLabel end={1}>PAIR</TableLabel>}
             <TableLabel end={1}>POOL</TableLabel>
             <TableLabel end={1}>VALUE</TableLabel>
           </TableHeader>
-          <AutoColumn gap="19.75px" style={{ padding: '19.75px 20px' }}>
+          <AutoColumn gap="19.75px" style={{ padding: '20px' }}>
             {data ? (
               data.slice(maxItems * (page - 1), page * maxItems).map((item, index) => (
                 <React.Fragment key={item.id}>
                   <ResponsiveGrid>
-                    <Label>{(page - 1) * maxItems + index + 1}</Label>
+                    {!below1024 && <Label>{(page - 1) * maxItems + index + 1}</Label>}
                     <LinkWrapper to={'account/' + item.owner}>
-                      <Label color={theme.primary}>{item.owner}</Label>
+                      <Label color={theme.primary}>
+                        {below800 ? item.owner.slice(0, 5) + '...' + item.owner.slice(39, 42) : item.owner}
+                      </Label>
                     </LinkWrapper>
-                    <Label end={1}>
-                      <RowFixed>
-                        <DoubleCurrencyLogo
-                          address0={item.token0.id}
-                          address1={item.token1.id}
-                          activeNetwork={activeNetwork}
-                        />
-                        <Label marginLeft="4px">
-                          {item.token0.symbol} - {item.token1.symbol}
-                        </Label>
-                      </RowFixed>
-                    </Label>
-                    <LinkWrapper to={'pool/' + item.pool.id}>
+                    {/* //todo namgold continue responsive */}
+                    {!below600 && (
+                      <Label end={1}>
+                        <RowFixed>
+                          <DoubleCurrencyLogo
+                            address0={item.token0.id}
+                            address1={item.token1.id}
+                            activeNetwork={activeNetwork}
+                          />
+                          <Label marginLeft="4px">
+                            {item.token0.symbol} - {item.token1.symbol}
+                          </Label>
+                        </RowFixed>
+                      </Label>
+                    )}
+                    <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
                       <Label end={1} color={theme.primary}>
                         {shortenAddress(item.pool.id)}
                       </Label>
@@ -135,9 +161,20 @@ export default function AccountsOverview(): JSX.Element {
                 </React.Fragment>
               ))
             ) : (
-              <Flex justifyContent="center">
-                <Loading />
-              </Flex>
+              <LoadingRows>
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+              </LoadingRows>
             )}
             <PageButtons>
               <div

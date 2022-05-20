@@ -33,7 +33,7 @@ import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { ChainId } from 'constants/networks'
 import { GenericImageWrapper } from 'components/Logo'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import Search from 'components/Search'
 
 const ContentLayout = styled.div`
@@ -330,7 +330,7 @@ export default function PoolPage(): JSX.Element {
                   >
                     TVL
                   </ToggleElementFree>
-                  {activeNetwork.chainId === ChainId.ARBITRUM ? null : (
+                  {activeNetwork.chainId === ChainId.ARBITRUM ? null : ( //todo namgold: check this
                     <ToggleElementFree
                       isActive={view === ChartView.DENSITY}
                       fontSize="12px"
@@ -390,7 +390,7 @@ export default function PoolPage(): JSX.Element {
           ) : (
             <DarkGreyCard>
               <Flex justifyContent="center">
-                <Loading size={120} />
+                <KyberLoading size={120} />
               </Flex>
             </DarkGreyCard>
           )}

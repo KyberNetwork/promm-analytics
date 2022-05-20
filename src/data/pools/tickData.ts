@@ -11,11 +11,11 @@ const DEFAULT_SURROUNDING_TICKS = 300
 const FEE_TIER_TO_TICK_SPACING = (feeTier: string): number => {
   switch (feeTier) {
     case '100':
-      return 100
+      return 200
     case '30':
       return 60
-    case '5':
-      return 10
+    case '4':
+      return 8
     case '1':
       return 1
     default:

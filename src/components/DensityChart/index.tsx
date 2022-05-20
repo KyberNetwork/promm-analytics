@@ -13,7 +13,7 @@ import CustomToolTip from './CustomToolTip'
 import { Token, CurrencyAmount } from '@vutien/sdk-core'
 import JSBI from 'jsbi'
 import { useClients } from 'state/application/hooks'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import { Flex } from 'rebass'
 
 const Wrapper = styled.div`
@@ -153,7 +153,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
                     token1,
                     feeTier,
                     sqrtPriceX96,
-                    t.liquidityActive,
+                    poolData.liquidity,
                     poolData.reinvestL,
                     t.tickIdx,
                     mockTicks
@@ -252,7 +252,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
   if (!poolTickData) {
     return (
       <Flex justifyContent="center" alignItems="center" height="60%">
-        <Loading />
+        <KyberLoading />
       </Flex>
     )
   }
@@ -319,7 +319,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
         </ResponsiveContainer>
       ) : (
         <Flex justifyContent="center" alignItems="center" height="70%">
-          <Loading />
+          <KyberLoading />
         </Flex>
       )}
       <ControlsWrapper>

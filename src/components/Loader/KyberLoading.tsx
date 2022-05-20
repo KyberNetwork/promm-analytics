@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import LoadingLogo from 'assets/svg/loading_logo.svg'
+import KyberLogo from 'assets/svg/loading_logo.svg'
 
 const loadingAnimation = keyframes`
 
@@ -42,16 +42,16 @@ const Inner = styled.div<{ size: number }>`
   }
 `
 
-function Loading({ size = 160 }: { size?: number }): JSX.Element {
+function KyberLoading({ size = 160 }: { size?: number }): JSX.Element {
   return (
     <Wrapper size={size}>
       <Inner size={size}>
         <div />
         <div />
-        <img src={LoadingLogo} width="30%" />
+        <img src={KyberLogo} width="30%" />
       </Inner>
     </Wrapper>
   )
 }
 
-export default Loading
+export default KyberLoading
