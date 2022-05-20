@@ -52,6 +52,11 @@ export type NetworkInfo = {
   etherscanUrl: string
   etherscanName: string
   tokenListUrl: string
+  nativeToken: {
+    symbol: string
+    name: string
+    address: string
+  }
 }
 
 const RinkebyNetworkInfo: NetworkInfo = {
@@ -68,6 +73,11 @@ const RinkebyNetworkInfo: NetworkInfo = {
   etherscanUrl: 'https://rinkeby.etherscan.io',
   etherscanName: 'Rinkeby Explorer',
   tokenListUrl: '',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+  },
 }
 
 const RopstenNetworkInfo: NetworkInfo = {
@@ -84,6 +94,11 @@ const RopstenNetworkInfo: NetworkInfo = {
   etherscanUrl: 'https://ropsten.etherscan.io',
   etherscanName: 'Ropsten Explorer',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ropsten.tokenlist.json',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+  },
 }
 
 const EthereumNetworkInfo: NetworkInfo = {
@@ -100,6 +115,11 @@ const EthereumNetworkInfo: NetworkInfo = {
   etherscanUrl: 'https://etherscan.io',
   etherscanName: 'Etherscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ethereum.tokenlist.json',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  },
 }
 
 const ArbitrumNetworkInfo: NetworkInfo = {
@@ -117,6 +137,11 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   etherscanUrl: 'https://arbiscan.io',
   etherscanName: 'Arbiscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/arbitrum.tokenlist.json',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+  },
 }
 
 const PolygonNetworkInfo: NetworkInfo = {
@@ -134,6 +159,11 @@ const PolygonNetworkInfo: NetworkInfo = {
   etherscanUrl: 'https://polygonscan.com',
   etherscanName: 'Polygonscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/matic.tokenlist.json',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+  },
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]

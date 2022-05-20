@@ -101,7 +101,6 @@ export function getTimeframe(timeWindow: TimeframeOptions) {
 }
 
 export function addNetworkIdQueryString(url: string, networkInfo: NetworkInfo): string {
-  return ''
   if (url.includes('?')) {
     return `${url}&networkId=${networkInfo.chainId}`
   }
@@ -116,46 +115,51 @@ export function getPoolLink(
   remove = false,
   poolAddress?: string
 ): string {
-  return 'todo namgold: finish this'
-  // const nativeTokenSymbol = networkInfo.nativeTokenSymbol
+  const nativeTokenSymbol = networkInfo.nativeToken.symbol
 
-  // if (poolAddress) {
-  //   if (!token1Address) {
-  //     return addNetworkIdQueryString(
-  //       networkInfo.dmmSwapUrl +
-  //         (remove ? `remove` : `add`) +
-  //         `/${
-  //           token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address
-  //         }/${nativeTokenSymbol}/${poolAddress}`,
-  //       networkInfo
-  //     )
-  //   } else {
-  //     return addNetworkIdQueryString(
-  //       networkInfo.dmmSwapUrl +
-  //         (remove ? `remove` : `add`) +
-  //         `/${token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address}/${
-  //           token1Address === networkInfo.wethAddress ? nativeTokenSymbol : token1Address
-  //         }/${poolAddress}`,
-  //       networkInfo
-  //     )
-  //   }
-  // }
+  if (poolAddress) {
+    if (!token1Address) {
+      return addNetworkIdQueryString(
+        process.env.REACT_APP_DMM_SWAP_URL +
+          'promm/' +
+          (remove ? `remove` : `add`) +
+          `/${
+            token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
+          }/${nativeTokenSymbol}/${poolAddress}`,
+        networkInfo
+      )
+    } else {
+      return addNetworkIdQueryString(
+        process.env.REACT_APP_DMM_SWAP_URL +
+          'promm/' +
+          (remove ? `remove` : `add`) +
+          `/${token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address}/${
+            token1Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token1Address
+          }/${poolAddress}`,
+        networkInfo
+      )
+    }
+  }
 
-  // if (!token1Address) {
-  //   return addNetworkIdQueryString(
-  //     networkInfo.dmmSwapUrl +
-  //       (remove ? `remove` : `add`) +
-  //       `/${token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address}/${nativeTokenSymbol}`,
-  //     networkInfo
-  //   )
-  // } else {
-  //   return addNetworkIdQueryString(
-  //     networkInfo.dmmSwapUrl +
-  //       (remove ? `remove` : `add`) +
-  //       `/${token0Address === networkInfo.wethAddress ? nativeTokenSymbol : token0Address}/${
-  //         token1Address === networkInfo.wethAddress ? nativeTokenSymbol : token1Address
-  //       }`,
-  //     networkInfo
-  //   )
-  // }
+  if (!token1Address) {
+    return addNetworkIdQueryString(
+      process.env.REACT_APP_DMM_SWAP_URL +
+        'promm/' +
+        (remove ? `remove` : `add`) +
+        `/${
+          token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
+        }/${nativeTokenSymbol}`,
+      networkInfo
+    )
+  } else {
+    return addNetworkIdQueryString(
+      process.env.REACT_APP_DMM_SWAP_URL +
+        'promm/' +
+        (remove ? `remove` : `add`) +
+        `/${token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address}/${
+          token1Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token1Address
+        }`,
+      networkInfo
+    )
+  }
 }
