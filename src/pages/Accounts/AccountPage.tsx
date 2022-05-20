@@ -152,7 +152,7 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 2.5fr 2fr 2fr 2fr 2fr 140px;
+  grid-template-columns: 150px auto 105px 105px 105px 140px;
   align-items: center;
 
   > * {
@@ -165,11 +165,11 @@ const ResponsiveGrid = styled.div`
   }
 
   @media screen and (max-width: 900px) {
-    grid-template-columns: 3fr 2fr 2fr 2fr 140px;
+    grid-template-columns: 150px auto 105px 105px 140px;
   }
 
   @media screen and (max-width: 740px) {
-    grid-template-columns: 2fr 2fr;
+    grid-template-columns: auto 105px;
   }
 `
 
@@ -266,6 +266,7 @@ export default function AccountPage(): JSX.Element {
   const [savedAccounts, addSavedAccount] = useSavedAccounts()
   const below740 = useMedia('(max-width: 740px)')
   const below900 = useMedia('(max-width: 900px)')
+  const below1400 = useMedia('(max-width: 1400px)')
 
   return (
     <PageWrapper>
@@ -446,7 +447,7 @@ export default function AccountPage(): JSX.Element {
                           )}
                           <Label end={1} color={theme.primary}>
                             <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
-                              {shortenAddress(item.pool.id)}
+                              {below1400 ? shortenAddress(item.pool.id) : item.pool.id}
                             </LinkWrapper>
                           </Label>
                           <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>
@@ -511,11 +512,50 @@ export default function AccountPage(): JSX.Element {
                                     - Remove
                                   </RemoveBtn>
                                 </ExternalLink>
-                                {/* )} */}
                               </Flex>
                             </DataText>
                           )}
                         </ResponsiveGrid>
+                        {below740 && (
+                          <Flex sx={{ gap: '8px', marginBottom: '16px' }}>
+                            <ExternalLink
+                              href={getPoolLink(
+                                positionsMap[item.id].data.token0.id,
+                                activeNetwork,
+                                positionsMap[item.id].data.token1.id,
+                                false,
+                                positionsMap[item.id].data.pool.id
+                              )}
+                              style={{ marginRight: '.5rem', flex: 1 }}
+                            >
+                              <ButtonLight style={{ padding: '10px', borderRadius: '4px', width: '100%' }}>
+                                + Add
+                              </ButtonLight>
+                            </ExternalLink>
+                            <ExternalLink
+                              href={getPoolLink(
+                                positionsMap[item.id].data.token0.id,
+                                activeNetwork,
+                                positionsMap[item.id].data.token1.id,
+                                true,
+                                positionsMap[item.id].data.pool.id
+                              )}
+                              style={{ flex: 1 }}
+                            >
+                              <RemoveBtn
+                                style={{
+                                  padding: '10px',
+                                  borderRadius: '4px',
+                                  color: theme.subText,
+                                  width: '100%',
+                                }}
+                              >
+                                - Remove
+                              </RemoveBtn>
+                            </ExternalLink>
+                          </Flex>
+                        )}
+
                         <Break />
                       </React.Fragment>
                     ))
