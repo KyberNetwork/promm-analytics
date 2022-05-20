@@ -223,7 +223,7 @@ body {
 }
 
  a {
-   color: ${colors(false).blue1};
+   color: ${colors(false).primary1};
  }
 
 * {

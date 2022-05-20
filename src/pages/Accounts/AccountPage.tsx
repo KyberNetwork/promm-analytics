@@ -152,8 +152,7 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 2.5fr 2fr 2fr 2fr 2fr 2fr;
-  grid-template-areas: 'pair pool liquidity tokenAmount tokenAmount2 action';
+  grid-template-columns: 2.5fr 2fr 2fr 2fr 2fr 140px;
   align-items: center;
 
   > * {
@@ -166,13 +165,11 @@ const ResponsiveGrid = styled.div`
   }
 
   @media screen and (max-width: 900px) {
-    grid-template-columns: 3fr 2fr 2fr 2fr 2fr;
-    grid-template-areas: 'pair pool liquidity tokenAmount action';
+    grid-template-columns: 3fr 2fr 2fr 2fr 140px;
   }
 
   @media screen and (max-width: 740px) {
     grid-template-columns: 2fr 2fr;
-    grid-template-areas: 'pool liquidity ';
   }
 `
 
@@ -422,7 +419,7 @@ export default function AccountPage(): JSX.Element {
                 <TableHeader>
                   {!below740 && <TableLabel>PAIR</TableLabel>}
                   <TableLabel end={1}>POOL</TableLabel>
-                  <TableLabel end={1}>VALUE</TableLabel>
+                  <TableLabel end={1}>TVL</TableLabel>
                   {!below740 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
                   {!below900 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
                   {!below740 && <TableLabel end={1}>Add/Remove</TableLabel>}
@@ -447,14 +444,36 @@ export default function AccountPage(): JSX.Element {
                               </RowFixed>
                             </Label>
                           )}
-                          <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
-                            <Label end={1} color={theme.primary}>
+                          <Label end={1} color={theme.primary}>
+                            <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
                               {shortenAddress(item.pool.id)}
+                            </LinkWrapper>
+                          </Label>
+                          <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>
+                          {!below740 && (
+                            <AutoColumn justify="flex-end">
+                              <Label end={1}>
+                                {formatAmount(positionsMap[item.id].token0Amount) +
+                                  ' ' +
+                                  positionsMap[item.id].data.token0.symbol}
+                              </Label>
+                              {below900 && (
+                                <Label end={1} mt="12px">
+                                  {formatAmount(positionsMap[item.id].token1Amount) +
+                                    ' ' +
+                                    positionsMap[item.id].data.token1.symbol}
+                                </Label>
+                              )}
+                            </AutoColumn>
+                          )}
+
+                          {!below900 && (
+                            <Label end={1}>
+                              {formatAmount(positionsMap[item.id].token1Amount) +
+                                ' ' +
+                                positionsMap[item.id].data.token1.symbol}
                             </Label>
-                          </LinkWrapper>
-                          {!below740 && <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>}
-                          {!below900 && <Label end={1}>{formatAmount(positionsMap[item.id].token0Amount)}</Label>}
-                          {!below740 && <Label end={1}>{formatAmount(positionsMap[item.id].token1Amount)}</Label>}
+                          )}
                           {!below740 && (
                             <DataText grid-area="action" justifyContent="flex-end">
                               <Flex
