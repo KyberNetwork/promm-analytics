@@ -50,7 +50,7 @@ const DataCard = ({ poolData }: { poolData: PoolData }) => {
           </RowFixed>
           <RowFixed>
             <TYPE.label mr="6px">{formatDollarAmount(poolData.volumeUSD)}</TYPE.label>
-            <Percent fontSize="14px" value={poolData.volumeUSDChange} />
+            <Percent value={poolData.volumeUSDChange} />
           </RowFixed>
         </AutoColumn>
       </Wrapper>

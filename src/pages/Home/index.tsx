@@ -35,7 +35,7 @@ const ChartWrapper = styled.div`
 
 const StatisticWrapper = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 32px;
   justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -45,6 +45,11 @@ const StatisticWrapper = styled.div`
 
 const TableTitle = styled(TYPE.label)`
   font-size: 18px;
+`
+
+const Separator = styled.span`
+  user-select: none;
+  font-size: 12px;
 `
 
 export default function Home(): JSX.Element {
@@ -104,20 +109,26 @@ export default function Home(): JSX.Element {
             <DarkGreyCard>
               <AutoColumn gap="8px">
                 <RowBetween>
-                  <TYPE.main fontSize="12px">Trading Volume</TYPE.main>
+                  <TYPE.title>Trading Volume</TYPE.title>
 
                   <RowFixed>
                     <ButtonText
                       onClick={() => setShowTotalVol(true)}
-                      style={{ fontWeight: 500, fontSize: '12px', color: showTotalVol ? theme.primary : theme.subText }}
+                      style={{
+                        fontWeight: 500,
+                        fontSize: '12px',
+                        color: showTotalVol ? theme.primary : theme.subText,
+                        marginRight: '4.25px',
+                      }}
                     >
                       All time
                     </ButtonText>
+                    <Separator>|</Separator>
                     <ButtonText
                       onClick={() => setShowTotalVol(false)}
                       style={{
                         fontWeight: 500,
-                        marginLeft: '8px',
+                        marginLeft: '4.25px',
                         fontSize: '12px',
                         color: !showTotalVol ? theme.primary : theme.subText,
                       }}
@@ -134,17 +145,17 @@ export default function Home(): JSX.Element {
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
-              <TYPE.main fontSize="12px">Fees (24H)</TYPE.main>
+              <TYPE.title>Fees (24H)</TYPE.title>
               <RowBetween style={{ marginTop: '8px' }}>
                 <TYPE.label fontSize="18px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
-                <Percent value={protocolData?.feeChange} />
+                <Percent value={protocolData?.feeChange} fontSize={12} />
               </RowBetween>
             </DarkGreyCard>
             <DarkGreyCard>
-              <TYPE.main fontSize="12px">Transactions (24H)</TYPE.main>
+              <TYPE.title>Transactions (24H)</TYPE.title>
               <RowBetween style={{ marginTop: '8px' }}>
                 <TYPE.label fontSize="18px">{protocolData?.txCount}</TYPE.label>
-                <Percent value={protocolData?.txCountChange} />
+                <Percent value={protocolData?.txCountChange} fontSize={12} />
               </RowBetween>
             </DarkGreyCard>
           </StatisticWrapper>

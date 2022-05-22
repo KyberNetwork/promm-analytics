@@ -172,17 +172,17 @@ const TradingViewChart = ({
       // format numbers
       const formattedPercentChange =
         baseChange === undefined ? '--' : (baseChange > 0 ? '+' : '') + baseChange.toFixed(2) + '%'
-      const color = baseChange === undefined ? '' : baseChange >= 0 ? 'green' : 'red'
+      const color = baseChange === undefined ? '' : baseChange >= 0 ? '#0FAAA2' : '#FF537B'
 
       // get the title of the chart
       const setLastBarText = function () {
         toolTip.innerHTML =
-          `<div style="font-size: 16px; margin: 4px 0px; color: ${textColor};">${title} ${
+          `<div style="font-size: 12px; margin: 4px 0px; color: ${theme.subText};">${title} ${
             type === CHART_TYPES.BAR && !useWeekly ? '(24H)' : ''
           }</div>` +
-          `<div style="font-size: 22px; margin: 4px 0px; color:${textColor}" >` +
-          formatAmount(base ?? 0) +
-          `<span style="margin-left: 10px; font-size: 16px; color: ${color};">${formattedPercentChange}</span>` +
+          `<div style="font-size: 18px; margin: 4px 0px; color:${textColor}" >$` +
+          Number((base ?? 0).toFixed(0)).toLocaleString('en-US') +
+          `<span style="margin-left: 10px; font-size: 14px; color: ${color};">${formattedPercentChange}</span>` +
           '</div>'
       }
       setLastBarText()
@@ -212,9 +212,9 @@ const TradingViewChart = ({
           const price = param.seriesPrices.get(series)
 
           toolTip.innerHTML =
-            `<div style="font-size: 16px; margin: 4px 0px; color: ${textColor};">${title}</div>` +
-            `<div style="font-size: 22px; margin: 4px 0px; color: ${textColor}">` +
-            formatAmount(price as number) +
+            `<div style="font-size: 12px; margin: 4px 0px; color: ${theme.subText};">${title}</div>` +
+            `<div style="font-size: 18px; margin: 4px 0px; color: ${textColor}">$` +
+            Number((price as number).toFixed(0)).toLocaleString('en-US') +
             '</div>' +
             '<div>' +
             dateStr +

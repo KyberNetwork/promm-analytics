@@ -51,7 +51,7 @@ const DataCard = ({ tokenData }: { tokenData: TokenData }) => {
               <TYPE.label fontSize="14px" mr="6px" lineHeight="16px">
                 {formatDollarAmount(tokenData.priceUSD)}
               </TYPE.label>
-              <Percent fontSize="14px" value={tokenData.priceUSDChange} />
+              <Percent value={tokenData.priceUSDChange} />
             </RowFlat>
           </AutoColumn>
         </RowFixed>

@@ -164,6 +164,12 @@ export function useFetchedTokenDatas(
         : current
         ? [parseFloat(current.volumeUSD), 0]
         : [0, 0]
+    const [feesUSD, feesUSDChange] =
+      current && oneDay && twoDay
+        ? get2DayChange(current.feesUSD, oneDay.feesUSD, twoDay.feesUSD)
+        : current
+        ? [parseFloat(current.feesUSD), 0]
+        : [0, 0]
 
     const volumeUSDWeek =
       current && week
@@ -188,12 +194,6 @@ export function useFetchedTokenDatas(
         : current
         ? parseFloat(current.txCount)
         : 0
-    const feesUSD =
-      current && oneDay
-        ? parseFloat(current.feesUSD) - parseFloat(oneDay.feesUSD)
-        : current
-        ? parseFloat(current.feesUSD)
-        : 0
 
     accum[address] = {
       exists: !!current,
@@ -206,6 +206,7 @@ export function useFetchedTokenDatas(
       txCount,
       tvlUSD,
       feesUSD,
+      feesUSDChange,
       tvlUSDChange,
       tvlToken,
       priceUSD,

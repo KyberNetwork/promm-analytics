@@ -28,6 +28,7 @@ export type TokenData = {
 
   //fees
   feesUSD: number
+  feesUSDChange: number
 
   // tvl
   tvlToken: number

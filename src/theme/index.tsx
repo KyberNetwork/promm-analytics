@@ -42,7 +42,7 @@ export function colors(darkMode: boolean): Colors {
 
     text: darkMode ? '#FFFFFF' : '#3A3A3A',
     textReverse: !darkMode ? '#FFFFFF' : '#3A3A3A',
-    subText: darkMode ? '#A7B6BD' : '#868787',
+    subText: darkMode ? '#A7B6BD' : '#5C6468',
     disabledText: darkMode ? '#6C7284' : '#B6B6B6',
     apr: '#0FAAA2',
 
@@ -202,6 +202,9 @@ export const TYPE = {
   },
   light(props: TextProps): JSX.Element {
     return <TextWrapper fontWeight={400} color={'text3'} fontSize={14} {...props} />
+  },
+  title(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} color={'subText'} fontSize={12} {...props} />
   },
 }
 

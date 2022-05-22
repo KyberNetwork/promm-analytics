@@ -5,7 +5,8 @@ import dayjs from 'dayjs'
 import Numeral from 'numeral'
 
 // returns the checksummed address if the address is valid, otherwise returns false
-export function isAddress(value: any): string | false {
+export function isAddress(value: string | undefined): string | false {
+  if (typeof value === 'undefined') return false
   try {
     return getAddress(value)
   } catch {
@@ -35,16 +36,16 @@ export function getEtherscanLink(
   }
 }
 
-export const toK = (num: number) => {
+export const toK = (num: number | string): string => {
   return Numeral(num).format('0.[00]a')
 }
 
-export const toNiceDate = (date: number) => {
+export const toNiceDate = (date: number): string => {
   const x = dayjs.utc(dayjs.unix(date)).format('MMM DD')
   return x
 }
 
-export const toNiceDateYear = (date: number) => dayjs.utc(dayjs.unix(date)).format('MMMM DD h:mm A, YYYY')
+export const toNiceDateYear = (date: number): string => dayjs.utc(dayjs.unix(date)).format('MMMM DD h:mm A, YYYY')
 
 export const currentTimestamp = (): number => new Date().getTime()
 
@@ -69,11 +70,11 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
   return value !== null && value !== undefined
 }
 
-export function isAllChain(networkInfos: NetworkInfo[]) {
+export function isAllChain(networkInfos: NetworkInfo[]): boolean {
   return networkInfos.length > 1
 }
 
-export function getTimeframe(timeWindow: TimeframeOptions) {
+export function getTimeframe(timeWindow: TimeframeOptions): number {
   const utcEndTime = dayjs.utc()
   // based on window, get starttime
   let utcStartTime
@@ -122,7 +123,7 @@ export function getPoolLink(
       return addNetworkIdQueryString(
         process.env.REACT_APP_DMM_SWAP_URL +
           'promm/' +
-          (remove ? `remove` : `add`) +
+          (remove ? `remove` : `add`) + //todo namgold: complete this
           `/${
             token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
           }/${nativeTokenSymbol}/${poolAddress}`,

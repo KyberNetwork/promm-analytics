@@ -267,31 +267,34 @@ export default function TokenPage(): JSX.Element {
                 <DarkGreyCard>
                   <AutoColumn gap="16px">
                     <Flex justifyContent="space-between">
-                      <TYPE.label fontSize="14px">Total Value Locked</TYPE.label>
-                      <Percent value={tokenData.tvlUSDChange} />
+                      <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
+                      <Percent fontSize={12} value={tokenData.tvlUSDChange} />
                     </Flex>
-                    <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.tvlUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.tvlUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
                   <AutoColumn gap="16px">
                     <Flex justifyContent="space-between">
-                      <TYPE.label fontSize="14px">24h Trading Vol</TYPE.label>
-                      <Percent value={tokenData.volumeUSDChange} />
+                      <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
+                      <Percent fontSize={12} value={tokenData.volumeUSDChange} />
                     </Flex>
-                    <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.volumeUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.volumeUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
                   <AutoColumn gap="16px">
-                    <TYPE.label fontSize="14px">7d Trading Vol</TYPE.label>
-                    <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.volumeUSDWeek)}</TYPE.label>
+                    <Flex justifyContent="space-between">
+                      <TYPE.title fontSize="14px">Fees (24H)</TYPE.title>
+                      <Percent fontSize={12} value={tokenData.feesUSDChange} />
+                    </Flex>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
                   <AutoColumn gap="16px">
-                    <TYPE.label fontSize="14px">24h Fees</TYPE.label>
-                    <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
+                    <TYPE.title fontSize="14px">Transactions (24H)</TYPE.title>
+                    <TYPE.label fontSize="20px">{tokenData.txCount}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
               </InfoLayout>
@@ -299,7 +302,7 @@ export default function TokenPage(): JSX.Element {
                 <RowBetween align="flex-start">
                   <AutoColumn>
                     <RowFixed>
-                      <TYPE.label fontSize="24px" height="30px">
+                      <TYPE.label fontSize="20px" height="30px">
                         <MonoSpace>
                           {latestValue
                             ? formatDollarAmount(latestValue, 2)
