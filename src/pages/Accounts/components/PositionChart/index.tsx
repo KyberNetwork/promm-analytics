@@ -34,12 +34,12 @@ const CHART_VIEW = {
   FEES: 'Fees',
 }
 
-type PoolChartProps = {
+type PositionChartProps = {
   account: string
   activePosition: PositionFields
 }
 
-const PoolChart = ({ account, activePosition }: PoolChartProps): JSX.Element => {
+const PositionChart = ({ account, activePosition }: PositionChartProps): JSX.Element => {
   let data = usePoolChartData(account, activePosition.id)
 
   const [timeWindow, setTimeWindow] = useTimeframe()
@@ -183,4 +183,4 @@ const PoolChart = ({ account, activePosition }: PoolChartProps): JSX.Element => 
   )
 }
 
-export default PoolChart
+export default PositionChart

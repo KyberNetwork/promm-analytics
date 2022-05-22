@@ -27,13 +27,11 @@ import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { Box, BoxProps } from 'rebass/styled-components'
 import { calcPosition } from 'utils/position'
-// import PoolChart from './components/PoolChart'
-// import AllPoolChart from './components/AllPoolChart'
 import Panel from 'components/Panel'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 import { ButtonDropdown } from 'components/Button'
-import PoolChart from './components/PoolChart'
-import AllPoolChart from './components/AllPoolChart'
+import PositionChart from './components/PositionChart'
+import AllPositionChart from './components/AllPositionChart'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import Search from 'components/Search'
 import { useSavedAccounts } from 'state/user/hooks'
@@ -406,9 +404,9 @@ export default function AccountPage(): JSX.Element {
               <PanelWrapper>
                 <Panel style={{ gridColumn: '1' }}>
                   {activePosition ? (
-                    <PoolChart account={address} activePosition={activePosition} />
+                    <PositionChart account={address} activePosition={activePosition} />
                   ) : (
-                    <AllPoolChart account={address} />
+                    <AllPositionChart account={address} />
                   )}
                 </Panel>
               </PanelWrapper>
