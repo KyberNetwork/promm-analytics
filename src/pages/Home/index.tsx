@@ -134,7 +134,7 @@ export default function Home(): JSX.Element {
               </AutoColumn>
             </DarkGreyCard>
             <DarkGreyCard>
-              <TYPE.main fontSize="12px">Fees 24H</TYPE.main>
+              <TYPE.main fontSize="12px">Fees (24H)</TYPE.main>
               <RowBetween style={{ marginTop: '8px' }}>
                 <TYPE.label fontSize="18px">{formatDollarAmount(protocolData?.feesUSD)}</TYPE.label>
                 <Percent value={protocolData?.feeChange} />
