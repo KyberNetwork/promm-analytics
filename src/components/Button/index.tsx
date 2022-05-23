@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import { darken, lighten, transparentize } from 'polished'
 
 import { RowBetween } from '../Row'
-import { ChevronDown, Check, Bookmark } from 'react-feather'
+import { ChevronDown, ChevronUp, Check, Bookmark } from 'react-feather'
 import { Button as RebassButton, ButtonProps } from 'rebass/styled-components'
+import { StyledIcon } from 'components'
 
 const Base = styled(RebassButton)<{
   padding?: string
@@ -298,39 +299,39 @@ export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProp
   }
 }
 
+const ButtonFaded = styled(Base)`
+  background-color: ${({ theme }) => theme.bg2};
+  color: (255, 255, 255, 0.5);
+  white-space: nowrap;
+
+  :hover {
+    opacity: 0.5;
+  }
+`
+
 export function ButtonDropdown({
   disabled = false,
   children,
+  open,
   ...rest
 }: { disabled?: boolean } & ButtonProps): JSX.Element {
   return (
-    <ButtonPrimary {...rest} disabled={disabled}>
+    <ButtonFaded {...rest} disabled={disabled} ope={open}>
       <RowBetween>
         <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-        <ChevronDown size={24} />
+        {open ? (
+          <StyledIcon>
+            <ChevronUp size={24} />
+          </StyledIcon>
+        ) : (
+          <StyledIcon>
+            <ChevronDown size={24} />
+          </StyledIcon>
+        )}
       </RowBetween>
-    </ButtonPrimary>
+    </ButtonFaded>
   )
 }
-//todo namgold: check this
-// export function ButtonDropdown({ disabled = false, children, open, ...rest }) {
-//   return (
-//     <ButtonFaded {...rest} disabled={disabled} ope={open}>
-//       <RowBetween>
-//         <div style={{ display: 'flex', alignItems: 'center' }}>{children}</div>
-//         {open ? (
-//           <StyledIcon>
-//             <ChevronUp size={24} />
-//           </StyledIcon>
-//         ) : (
-//           <StyledIcon>
-//             <ChevronDown size={24} />
-//           </StyledIcon>
-//         )}
-//       </RowBetween>
-//     </ButtonFaded>
-//   )
-// }
 
 export const OptionButton = styled.div<{ active?: boolean; disabled?: boolean }>`
   font-weight: 500;

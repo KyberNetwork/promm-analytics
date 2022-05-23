@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useMedia } from 'react-use'
-import { Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 
 import { AutoColumn } from 'components/Column'
 import { TYPE } from 'theme'
@@ -39,7 +39,8 @@ const StatisticWrapper = styled.div`
   justify-content: space-between;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    flex-direction: column
+    flex-direction: column;
+    gap: 16px;
     `}
 `
 
@@ -100,10 +101,16 @@ export default function Home(): JSX.Element {
       {/* <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} /> */}
       <AutoColumn gap="40px">
         <AutoColumn gap="24px">
-          <RowBetween>
-            <TYPE.label fontSize="24px">Summary</TYPE.label>
-            {!below600 && <Search />}
-          </RowBetween>
+          <Flex
+            alignItems={below600 ? 'flex-start' : 'center'}
+            justifyContent="space-between"
+            flexDirection={below600 ? 'column-reverse' : 'row'}
+          >
+            <TYPE.label fontSize="24px" style={{ marginTop: below600 ? '20px' : '0' }}>
+              Summary
+            </TYPE.label>
+            <Search />
+          </Flex>
 
           <StatisticWrapper>
             <DarkGreyCard>

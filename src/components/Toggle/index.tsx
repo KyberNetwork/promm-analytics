@@ -64,6 +64,7 @@ export const ToggleWrapper = styled.button<{ width?: string }>`
   cursor: pointer;
   outline: none;
   color: ${({ theme }) => theme.text};
+  height: 26px;
 
 `
 

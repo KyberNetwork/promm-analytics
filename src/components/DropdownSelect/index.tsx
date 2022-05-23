@@ -8,10 +8,7 @@ import { TYPE } from 'theme'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useModalOpen, useToggleModal } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/actions'
-
-const StyledIcon = styled.div`
-  color: ${({ theme }) => theme.subText};
-`
+import { StyledIcon } from 'components'
 
 const Wrapper = styled.div<{ open: boolean }>`
   z-index: 20;

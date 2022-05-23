@@ -35,6 +35,7 @@ import AllPositionChart from './components/AllPositionChart'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import Search from 'components/Search'
 import { useSavedAccounts } from 'state/user/hooks'
+import { StyledIcon } from 'components'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -43,10 +44,6 @@ const ResponsiveRow = styled(RowBetween)`
     row-gap: 24px;
     width: 100%:
   `};
-`
-
-export const StyledIcon = styled.div`
-  color: ${({ theme }) => theme.subText};
 `
 
 const Base = styled(RebassButton)`
@@ -88,7 +85,7 @@ const Flyout = styled.div`
   position: absolute;
   top: 38px;
   left: -1px;
-  width: 100%;
+  width: calc(100% + 2px); //adhoc fixing lmao
   background-color: ${({ theme }) => theme.background};
   z-index: 999;
   border-bottom-right-radius: 8px;
@@ -151,6 +148,7 @@ const ResponsiveGrid = styled.div`
   align-items: center;
 
   grid-template-columns: 150px auto 105px 105px 105px 140px;
+  grid-template-columns: 2.5fr 2fr 2fr 2fr 2fr 2fr;
   align-items: center;
 
   > * {
@@ -162,12 +160,18 @@ const ResponsiveGrid = styled.div`
     }
   }
 
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 160px 2fr 2fr 2fr 2fr 140px;
+  }
+
   @media screen and (max-width: 900px) {
     grid-template-columns: 150px auto 105px 105px 140px;
+    grid-template-columns: 3fr 2fr 2fr 2fr 140px;
   }
 
   @media screen and (max-width: 740px) {
     grid-template-columns: auto 105px;
+    grid-template-columns: 2fr 2fr;
   }
 `
 
@@ -265,6 +269,7 @@ export default function AccountPage(): JSX.Element {
   const below740 = useMedia('(max-width: 740px)')
   const below900 = useMedia('(max-width: 900px)')
   const below1400 = useMedia('(max-width: 1400px)')
+  const below520 = useMedia('(max-width: 520px)')
 
   return (
     <PageWrapper>
@@ -445,7 +450,22 @@ export default function AccountPage(): JSX.Element {
                           )}
                           <Label end={1} color={theme.primary}>
                             <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
-                              {below1400 ? shortenAddress(item.pool.id) : item.pool.id}
+                              {below520 || !below740 ? shortenAddress(item.pool.id) : item.pool.id}
+                              {below740 && (
+                                <Label marginTop="12px">
+                                  <RowFixed>
+                                    <DoubleCurrencyLogo
+                                      address0={item.token0.id}
+                                      address1={item.token1.id}
+                                      size={16}
+                                      activeNetwork={activeNetwork}
+                                    />
+                                    <Label marginLeft="4px">
+                                      {item.token0.symbol} - {item.token1.symbol}
+                                    </Label>
+                                  </RowFixed>
+                                </Label>
+                              )}
                             </LinkWrapper>
                           </Label>
                           <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>

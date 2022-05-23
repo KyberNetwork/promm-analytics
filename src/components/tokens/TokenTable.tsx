@@ -17,6 +17,7 @@ import useTheme from 'hooks/useTheme'
 import { TOKEN_HIDE } from '../../constants/index'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
+import { useMedia } from 'react-use'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -40,7 +41,7 @@ const ResponsiveGrid = styled.div`
 
   @media screen and (max-width: 800px) {
     grid-template-columns: 20px 1fr 85px repeat(2, 1fr);
-    & :nth-child(4) {
+    & :nth-child(3) {
       display: none;
     }
   }
@@ -77,6 +78,7 @@ const ResponsiveLogo = styled(CurrencyLogo)`
 `
 
 const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) => {
+  const below680 = useMedia('(max-width: 680px)')
   const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
   const theme = useTheme()
   return (
@@ -87,7 +89,7 @@ const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) 
           <RowFixed>
             <ResponsiveLogo address={tokenData.address} activeNetwork={activeNetworks} />
             <div style={{ marginLeft: '8px' }}>
-              <HoverInlineText color={theme.primary} text={tokenData.name} />
+              <HoverInlineText color={theme.primary} text={below680 ? tokenData.symbol : tokenData.name} />
             </div>
           </RowFixed>
         </Label>
@@ -212,13 +214,13 @@ export default function TokenTable({
             7d {arrow(SORT_FIELD.priceUSDChangeWeek)}
           </ClickableText> */}
             <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
-              Volume 24H {arrow(SORT_FIELD.volumeUSD)}
+              Volume (24H) {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
             <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSD)}>
               Price {arrow(SORT_FIELD.priceUSD)}
             </ClickableText>
             <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
-              Price Change {arrow(SORT_FIELD.priceUSDChange)}
+              Price Change (24H) {arrow(SORT_FIELD.priceUSDChange)}
             </ClickableText>
           </TableHeader>
 

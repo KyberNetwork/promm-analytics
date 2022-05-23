@@ -13,6 +13,7 @@ import { RowFixed } from 'components/Row'
 import { useActiveNetworks } from 'state/application/hooks'
 import { TYPE } from 'theme'
 import { useSavedAccounts } from 'state/user/hooks'
+import { StyledIcon } from 'components'
 
 const BasicLink = styled(RouterLink)`
   text-decoration: none;
@@ -34,10 +35,6 @@ const Hover = styled.div<{ fade?: boolean }>`
     cursor: pointer;
     opacity: ${({ fade }) => fade && '0.7'};
   }
-`
-
-const StyledIcon = styled.div`
-  color: ${({ theme }) => theme.subText};
 `
 
 const Input = styled.input`
