@@ -20,7 +20,7 @@ const panelPseudo = css`
 const Panel = styled(RebassBox)`
   position: relative;
   background-color: ${({ theme }) => theme.background};
-  padding: 1.25rem;
+  padding: 1.25rem 16px;
   width: 100%;
   height: 100%;
   display: flex;
