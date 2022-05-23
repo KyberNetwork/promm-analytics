@@ -181,7 +181,7 @@ export const Search = (): JSX.Element => {
           // large={!small}
           type={'text'}
           ref={wrapperRef}
-          placeholder={'Search pairs and tokens...'}
+          placeholder={'Search tokens and pools...'}
           value={value}
           onChange={(e) => {
             setValue(e.target.value)
