@@ -10,6 +10,7 @@ import { TYPE } from 'theme'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { useFetchSearchResults } from 'data/search'
 import FormattedName from 'components/FormattedName'
+import { feeTierPercent } from 'utils'
 
 const BasicLink = styled(RouterLink)`
   text-decoration: none;
@@ -138,7 +139,7 @@ export const Search = (): JSX.Element => {
   const { tokens, pools } = useFetchSearchResults(value)
 
   const [tokensShown, setTokensShown] = useState(3)
-  const [pairsShown, setPairsShown] = useState(3)
+  const [poolsShown, setPoolsShown] = useState(3)
 
   useEffect(() => {
     if (value !== '') {
@@ -149,7 +150,7 @@ export const Search = (): JSX.Element => {
   }, [value])
 
   const onDismiss = useCallback(() => {
-    setPairsShown(3)
+    setPoolsShown(3)
     setTokensShown(3)
     toggleMenu(false)
     setValue('')
@@ -161,7 +162,7 @@ export const Search = (): JSX.Element => {
 
   const handleClick = useCallback((e) => {
     if (!menuRef.current?.contains(e.target) && !wrapperRef.current?.contains(e.target)) {
-      setPairsShown(3)
+      setPoolsShown(3)
       setTokensShown(3)
       toggleMenu(false)
     }
@@ -205,7 +206,7 @@ export const Search = (): JSX.Element => {
       </Wrapper>
       <Menu hide={!showMenu} ref={menuRef}>
         <Heading>
-          <Gray>Pairs</Gray>
+          <Gray>Pools</Gray>
         </Heading>
         <div>
           {!pools ||
@@ -214,7 +215,7 @@ export const Search = (): JSX.Element => {
                 <TYPE.body>No results</TYPE.body>
               </MenuItem>
             ))}
-          {pools?.slice(0, pairsShown).map((pool) => {
+          {pools?.slice(0, poolsShown).map((pool) => {
             return (
               <BasicLink
                 // to={'/' + NETWORKS_INFO[pool.chainId].urlKey + '/pool/' + pool.id}
@@ -230,17 +231,19 @@ export const Search = (): JSX.Element => {
                     // activeNetwork={NETWORKS_INFO[pool.chainId]}
                     activeNetwork={activeNetwork}
                   />
-                  <TYPE.body style={{ marginLeft: '10px' }}>
-                    {pool.token0.symbol + '-' + pool.token1.symbol} Pair
-                  </TYPE.body>
+                  <FormattedName
+                    style={{ marginLeft: '10px' }}
+                    maxCharacters={20}
+                    text={pool.token0.symbol + '-' + pool.token1.symbol + ' ' + feeTierPercent(pool.feeTier) + ' Pool'}
+                  />
                 </MenuItem>
               </BasicLink>
             )
           })}
-          <Heading hide={!(pools.length > 3 && pools.length >= pairsShown)}>
+          <Heading hide={!(pools.length > 3 && pools.length >= poolsShown)}>
             <Blue
               onClick={() => {
-                setPairsShown(pairsShown + 5)
+                setPoolsShown(poolsShown + 5)
               }}
             >
               See more...

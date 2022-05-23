@@ -90,7 +90,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
     ))
   }).filter((item) => item.length)
 
-  const pairsList = NETWORKS_INFO_LIST.map((networkInfo) => {
+  const poolsList = NETWORKS_INFO_LIST.map((networkInfo) => {
     const id = networkInfo.chainId
     const pools = Object.values(savedPools[id] || {})
     return pools.map((pool) => (
@@ -146,7 +146,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
 
         <SavedTitle>Saved Pools</SavedTitle>
 
-        {pairsList.length ? pairsList : <TYPE.light>Pinned pairs will appear here.</TYPE.light>}
+        {poolsList.length ? poolsList : <TYPE.light>Pinned pools will appear here.</TYPE.light>}
 
         <Flex marginTop="20px" />
 

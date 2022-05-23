@@ -8,7 +8,7 @@ import { useMedia } from 'react-use'
 
 import { useColor } from 'hooks/useColor'
 import { ThemedBackground, PageWrapper } from 'pages/styled'
-import { shortenAddress, getEtherscanLink, getPoolLink } from 'utils'
+import { shortenAddress, getEtherscanLink, getPoolLink, feeTierPercent } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -331,7 +331,8 @@ export default function AccountPage(): JSX.Element {
                         activeNetwork={activeNetwork}
                       />
                       <TYPE.body ml="16px">
-                        {activePosition.token0.symbol}-{activePosition.token1.symbol} Position
+                        {activePosition.token0.symbol}-{activePosition.token1.symbol}{' '}
+                        {feeTierPercent(parseFloat(activePosition.pool.feeTier))} Position
                       </TYPE.body>
                     </RowFixed>
                   )}
@@ -363,7 +364,8 @@ export default function AccountPage(): JSX.Element {
                                 activeNetwork={activeNetwork}
                               />
                               <TYPE.body ml="16px">
-                                {p.token0.symbol}-{p.token1.symbol} Position
+                                {p.token0.symbol}-{p.token1.symbol} {feeTierPercent(parseFloat(p.pool.feeTier))}{' '}
+                                Position
                               </TYPE.body>
                             </MenuRow>
                           )
@@ -421,12 +423,12 @@ export default function AccountPage(): JSX.Element {
               <TYPE.label fontSize="18px">Positions</TYPE.label>
               <Wrapper>
                 <TableHeader>
-                  {!below740 && <TableLabel>PAIR</TableLabel>}
-                  <TableLabel end={1}>POOL</TableLabel>
+                  {!below740 && <TableLabel>POOL</TableLabel>}
+                  <TableLabel end={1}>ADDRESS</TableLabel>
                   <TableLabel end={1}>TVL</TableLabel>
                   {!below740 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
                   {!below900 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
-                  {!below740 && <TableLabel end={1}>Add/Remove</TableLabel>}
+                  {!below740 && <TableLabel end={1}>ACTION</TableLabel>}
                 </TableHeader>
                 <AutoColumn gap="16px" style={{ padding: '20px' }}>
                   {data ? (
@@ -443,7 +445,8 @@ export default function AccountPage(): JSX.Element {
                                   activeNetwork={activeNetwork}
                                 />
                                 <Label marginLeft="4px">
-                                  {item.token0.symbol} - {item.token1.symbol}
+                                  {item.token0.symbol} - {item.token1.symbol}{' '}
+                                  {feeTierPercent(parseFloat(item.pool.feeTier))}
                                 </Label>
                               </RowFixed>
                             </Label>
@@ -461,7 +464,8 @@ export default function AccountPage(): JSX.Element {
                                       activeNetwork={activeNetwork}
                                     />
                                     <Label marginLeft="4px">
-                                      {item.token0.symbol} - {item.token1.symbol}
+                                      {item.token0.symbol} - {item.token1.symbol}{' '}
+                                      {feeTierPercent(parseFloat(item.pool.feeTier))}
                                     </Label>
                                   </RowFixed>
                                 </Label>
