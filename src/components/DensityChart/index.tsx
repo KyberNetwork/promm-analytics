@@ -1,5 +1,5 @@
 import { fetchTicksSurroundingPrice, TickProcessed } from 'data/pools/tickData'
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { BarChart, Bar, LabelList, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
@@ -126,11 +126,13 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
   }, [address, poolTickData, setPoolTickData, ticksToFetch, amountTicks, dataClient])
 
   const [formattedData, setFormattedData] = useState<ChartEntry[] | undefined>()
+  const tickCache = useRef<{ [key: string]: ChartEntry | undefined }>({})
   useEffect(() => {
     async function formatData() {
       if (poolTickData) {
         const newData = await Promise.all(
           poolTickData.ticksProcessed.map(async (t: TickProcessed, i) => {
+            if (tickCache.current[t.tickIdx]) return tickCache.current[t.tickIdx]!
             const active = t.tickIdx === poolTickData.activeTickIdx
             const sqrtPriceX96 = TickMath.getSqrtRatioAtTick(t.tickIdx)
             const feeAmount: FeeAmount = poolData.feeTier
@@ -171,7 +173,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
             const amount0 = token1Amount ? parseFloat(token1Amount.toExact()) * parseFloat(t.price1) : 0
             const amount1 = token1Amount ? parseFloat(token1Amount.toExact()) : 0
 
-            return {
+            const result: ChartEntry = {
               index: i,
               isCurrent: active,
               activeLiquidity: parseFloat(t.liquidityActive.toString()),
@@ -180,6 +182,9 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
               tvlToken0: amount0,
               tvlToken1: amount1,
             }
+
+            tickCache.current[t.tickIdx] = result
+            return result
           })
         )
         // offset the values to line off bars with TVL used to swap across bar
@@ -204,7 +209,17 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
     if (!formattedData) {
       formatData()
     }
-  }, [feeTier, formattedData, loading, poolData.feeTier, poolData.reinvestL, poolTickData, token0, token1])
+  }, [
+    feeTier,
+    formattedData,
+    loading,
+    poolData.feeTier,
+    poolData.liquidity,
+    poolData.reinvestL,
+    poolTickData,
+    token0,
+    token1,
+  ])
 
   const atZoomMax = zoomState.left + ZOOM_INTERVAL >= zoomState.right - ZOOM_INTERVAL - 1
   const atZoomMin = zoomState.left - ZOOM_INTERVAL < 0

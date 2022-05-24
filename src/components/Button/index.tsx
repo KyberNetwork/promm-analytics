@@ -52,7 +52,6 @@ export const ButtonDark = styled(Base)<{ color?: string }>`
   }
 `
 
-//todo namgold: continue this button padding
 export const ButtonPrimary = styled(Base)<{ bgColor?: string }>`
   background-color: ${({ theme, bgColor }) => bgColor ?? theme.primary};
   color: ${({ theme }) => theme.textReverse};
