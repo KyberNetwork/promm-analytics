@@ -284,6 +284,14 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
     setFormattedData(undefined)
   }, [address])
 
+  const cells = useMemo(
+    () =>
+      zoomedData?.map((entry, index) => {
+        return <Cell key={`cell-${index}`} fill={entry.isCurrent ? theme.pink1 : theme.primary} />
+      }),
+    [theme.pink1, theme.primary, zoomedData]
+  )
+
   if (!poolTickData) {
     return (
       <Flex justifyContent="center" alignItems="center" height="60%">
@@ -322,9 +330,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
                 return <CustomBar height={props.height} width={props.width} x={props.x} y={props.y} fill={props.fill} />
               }}
             >
-              {zoomedData?.map((entry, index) => {
-                return <Cell key={`cell-${index}`} fill={entry.isCurrent ? theme.pink1 : theme.primary} />
-              })}
+              {cells}
               <LabelList
                 dataKey="activeLiquidity"
                 position="inside"
