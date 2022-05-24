@@ -8,7 +8,7 @@ import useTheme from 'hooks/useTheme'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { InfoHelper } from 'components/QuestionHelper'
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom'
-import { TrendingUp, PieChart, Disc, Repeat, Activity, X } from 'react-feather'
+import { TrendingUp, Disc, Repeat, Activity, X, Droplet } from 'react-feather'
 import { activeNetworkPrefix } from 'utils/networkPrefix'
 import ThemeToggle from 'components/ThemeToggle'
 import SocialLinks from 'components/SocialLinks'
@@ -314,7 +314,7 @@ function SideNav(): JSX.Element {
             </MenuItem>
 
             <MenuItem to={activeNetworkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pool')}>
-              <PieChart size={16} />
+              <Droplet size={16} />
               Pools
             </MenuItem>
           </Flex>
@@ -368,7 +368,7 @@ function SideNav(): JSX.Element {
             </MenuItem>
 
             <MenuItem to={activeNetworkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pool')}>
-              <PieChart size={16} />
+              <Droplet size={16} />
               Pools
             </MenuItem>
 

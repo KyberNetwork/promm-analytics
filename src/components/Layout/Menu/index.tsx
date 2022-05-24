@@ -90,7 +90,7 @@ export default function Menu(): JSX.Element {
           </MenuItem>
 
           <MenuItem to={networkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
-            <PieChart size={16} />
+            <Droplet size={16} />
             Pools
           </MenuItem>
         */}
