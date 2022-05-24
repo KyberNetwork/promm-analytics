@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Flex } from 'rebass'
-import { Button as RebassButton } from 'rebass/styled-components'
+import { Flex, Text } from 'rebass'
 import { Activity } from 'react-feather'
 import { useMedia } from 'react-use'
 
-import { useColor } from 'hooks/useColor'
-import { ThemedBackground, PageWrapper } from 'pages/styled'
+import { PageWrapper } from 'pages/styled'
 import { shortenAddress, getEtherscanLink, getPoolLink, feeTierPercent } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
@@ -35,7 +33,8 @@ import AllPositionChart from './components/AllPositionChart'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import Search from 'components/Search'
 import { useSavedAccounts } from 'state/user/hooks'
-import { StyledIcon } from 'components'
+import { StyledIcon, UnSelectable } from 'components'
+import CopyHelper from 'components/Copy'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -46,27 +45,6 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `
 
-const Base = styled(RebassButton)`
-  padding: 8px 12px;
-  font-size: 0.825rem;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  outline: none;
-  border: 1px solid transparent;
-  border-bottom-right-radius: ${({ open }) => open && '0'};
-  border-bottom-left-radius: ${({ open }) => open && '0'};
-`
-
-export const ButtonFaded = styled(Base)`
-  background-color: ${({ theme }) => theme.bg2};
-  color: (255, 255, 255, 0.5);
-  white-space: nowrap;
-
-  :hover {
-    opacity: 0.5;
-  }
-`
 const DataText = styled(Flex)`
   align-items: center;
   color: ${({ theme }) => theme.text1};
@@ -207,24 +185,23 @@ type FormattedPosition = {
 }
 
 export default function AccountPage(): JSX.Element {
-  let { address } = useParams<{ address: string }>()
+  const { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
   const [showDropdown, setShowDropdown] = useState(false)
   const [activePosition, setActivePosition] = useState<PositionFields | null>(null)
   const node = useRef<HTMLDivElement>(null)
 
-  address = address.toLowerCase()
+  const lowercasedAddress = address.toLowerCase()
   // theming
-  const backgroundColor = useColor(address)
   const theme = useTheme()
 
   // scroll on page view
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
-  const transactions = useUserTransactions(address)
+  const transactions = useUserTransactions(lowercasedAddress)
 
-  const { data } = useFetchedUserPositionData(address)
+  const { data } = useFetchedUserPositionData(lowercasedAddress)
   const ethPriceUSD = useEthPrices()
 
   const positionsMap: { [key: string]: FormattedPosition } = useMemo(() => {
@@ -264,42 +241,45 @@ export default function AccountPage(): JSX.Element {
     }
   }, [maxItems, data])
   useOnClickOutside(node, showDropdown ? () => setShowDropdown(!showDropdown) : undefined)
-  const below600 = useMedia('(max-width: 600px)')
   const [savedAccounts, addSavedAccount] = useSavedAccounts()
+
+  const below520 = useMedia('(max-width: 520px)')
+  const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
   const below900 = useMedia('(max-width: 900px)')
-  const below1400 = useMedia('(max-width: 1400px)')
-  const below520 = useMedia('(max-width: 520px)')
+  const below1080 = useMedia('(max-width: 1080px)')
+  const below1200 = useMedia('(max-width: 1200px)')
 
   return (
     <PageWrapper>
-      <ThemedBackground backgroundColor={backgroundColor} />
       {data ? (
         <AutoColumn gap="24px">
           <RowBetween>
             <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <TYPE.main>{`Home → `}</TYPE.main>
+              <StyledInternalLink to={networkPrefix(activeNetwork) + 'accounts'}>
+                <TYPE.breadcrumb>{` Wallet Analytics `}</TYPE.breadcrumb>
               </StyledInternalLink>
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens'}>
-                <TYPE.label>{` Accounts `}</TYPE.label>
-              </StyledInternalLink>
-              <TYPE.main>{` → `}</TYPE.main>
+              <UnSelectable>
+                <TYPE.main>{` → `}</TYPE.main>
+              </UnSelectable>
               <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                <TYPE.link>{shortenAddress(address)}</TYPE.link>
+                <TYPE.link fontWeight={400} fontSize={14}>
+                  {(below1200 && !below1080) || (below900 && !below600) || below520 ? shortenAddress(address) : address}
+                </TYPE.link>
               </StyledExternalLink>
+              <CopyHelper toCopy={address} />
             </AutoRow>
             {!below600 && <Search />}
           </RowBetween>
           <ResponsiveRow align="flex-end" padding="6px 16px 6px 0">
-            <Label fontSize={24}>{shortenAddress(address)}</Label>
+            <Label fontSize={24}>{(below1200 && !below1080) || below900 ? shortenAddress(address) : address}</Label>
             <RowFixed>
               <SavedIcon
-                fill={!!savedAccounts?.[activeNetwork.chainId]?.[address]}
+                fill={!!savedAccounts?.[activeNetwork.chainId]?.[lowercasedAddress]}
                 onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
               />
-              <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }} padding="8px 12px">
+              <StyledExternalLink href={getEtherscanLink(activeNetwork, lowercasedAddress, 'address')}>
+                <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }}>
                   View on {activeNetwork.etherscanName}↗
                 </ButtonPrimary>
               </StyledExternalLink>
@@ -411,9 +391,9 @@ export default function AccountPage(): JSX.Element {
               <PanelWrapper>
                 <Panel style={{ gridColumn: '1' }}>
                   {activePosition ? (
-                    <PositionChart account={address} activePosition={activePosition} />
+                    <PositionChart account={lowercasedAddress} activePosition={activePosition} />
                   ) : (
-                    <AllPositionChart account={address} />
+                    <AllPositionChart account={lowercasedAddress} />
                   )}
                 </Panel>
               </PanelWrapper>

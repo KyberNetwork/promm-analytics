@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import ProMMAnalyticsLogo from 'assets/svg/kyberswap_promm_analytics_logo.svg'
-import ProMMAnalyticsLogoLight from 'assets/svg/kyberswap_promm_analytics_logo_light.svg'
+import ProMMAnalyticsLogo from 'assets/svg/logo_dark.svg'
+import ProMMAnalyticsLogoLight from 'assets/svg/logo_light.svg'
 import SwitchNetWorkIcon from 'assets/svg/switch-network.svg'
 import { Text, Flex } from 'rebass'
 import useTheme from 'hooks/useTheme'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { InfoHelper } from 'components/QuestionHelper'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom'
 import { TrendingUp, PieChart, Disc, Repeat, Activity, X } from 'react-feather'
 import { activeNetworkPrefix } from 'utils/networkPrefix'
 import ThemeToggle from 'components/ThemeToggle'
@@ -22,6 +22,9 @@ import { NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
 import { useDarkModeManager, useIsFirstTimeVisit } from 'state/user/hooks'
 import Wallet from 'components/Icons/Wallet'
 import Kyber from '../../assets/svg/kyber.svg'
+import { useMedia } from 'react-use'
+import { UnSelectable } from 'components'
+import { useSessionStart } from 'hooks/useSectionStart'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -37,7 +40,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   background: ${({ theme }) => theme.background};
-  padding: 32px 24px;
+  padding: 32px 24px 28px;
 `
 
 const SelectNetwork = styled(Flex)`
@@ -74,7 +77,7 @@ const Header = styled.div`
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 16.5px 16px;
   background: ${({ theme }) => theme.background};
   align-items: center;
   position: fixed;
@@ -130,6 +133,13 @@ const NetworkItem = styled.div<{ active: boolean }>`
   color: ${({ theme, active }) => (active ? theme.textReverse : theme.subText)};
 `
 
+const DMMIcon = styled(Link)`
+  transition: transform 0.3s ease;
+  :hover {
+    transform: rotate(-5deg);
+  }
+`
+
 const LinkWrapper = styled.a`
   text-decoration: none;
   :hover {
@@ -140,6 +150,28 @@ const LinkWrapper = styled.a`
 `
 const LeverageZIndex = styled.div`
   z-index: 100;
+`
+
+const Polling = styled.div`
+  display: flex;
+  padding: 0.75rem 0;
+  font-size: 10px;
+  color: ${({ theme }) => theme.subText};
+  transition: opacity 0.25s ease;
+
+  a {
+    color: ${({ theme }) => theme.subText};
+  }
+`
+const PollingDot = styled.div`
+  width: 8px;
+  height: 8px;
+  min-height: 8px;
+  min-width: 8px;
+  margin-right: 0.5rem;
+  margin-top: 3px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.green1};
 `
 type SelectNetworkButtonPropType = {
   onClick: React.MouseEventHandler
@@ -178,10 +210,10 @@ function SideNav(): JSX.Element {
   const { pathname } = useLocation()
   const [showNetworkModal, setShow] = useState(false)
   const [tab, setTab] = useState<1 | 2>(1)
-  const [isDarkMode] = useDarkModeManager()
   const [isFirstTimeVisit, toggleFirstTimeVisit] = useIsFirstTimeVisit()
   const { width } = useWindowSize()
   const history = useHistory()
+  const seconds = useSessionStart()
 
   const setShowNetworkModal = useCallback(
     (isShow: boolean) => {
@@ -198,6 +230,10 @@ function SideNav(): JSX.Element {
       setShowNetworkModal(true)
     }
   }, [history, isFirstTimeVisit, setShowNetworkModal])
+  const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
+  const prefixNetworkURL = currentNetworkURL ? `/${currentNetworkURL}` : ''
+  const below1080 = useMedia('(max-width: 1080px)')
+  const [isDark] = useDarkModeManager()
 
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
   const networkModal = (
@@ -250,14 +286,21 @@ function SideNav(): JSX.Element {
       <LeverageZIndex>
         {networkModal}
         <Header>
-          <Link to="/">
-            <img
-              src={isDarkMode ? ProMMAnalyticsLogo : ProMMAnalyticsLogoLight}
-              alt="Logo"
-              width="110px"
-              height="39.94px"
-            />
-          </Link>
+          <div>
+            <DMMIcon id="link" to={prefixNetworkURL}>
+              <img
+                width={below1080 ? '110px' : '160px'}
+                src={isDark ? ProMMAnalyticsLogo : ProMMAnalyticsLogoLight}
+                alt="logo"
+                style={{ marginTop: '2px' }}
+              />
+            </DMMIcon>
+            <UnSelectable>
+              <Text fontSize="10px" color={theme.subText} textAlign="right" marginTop="-12px">
+                Elastic Analytics
+              </Text>
+            </UnSelectable>
+          </div>
 
           <Flex alignItems="center" sx={{ gap: width && width < MEDIA_WIDTHS.upToExtraSmall ? '16px' : '24px' }}>
             <MenuItem to={activeNetworkPrefix(activeNetworks) + 'home'} isActive={pathname.endsWith('home')}>
@@ -289,9 +332,21 @@ function SideNav(): JSX.Element {
       {networkModal}
       <Wrapper>
         <div>
-          <Link to="/">
-            <img src={isDarkMode ? ProMMAnalyticsLogo : ProMMAnalyticsLogoLight} alt="Logo" width="100%" />
-          </Link>
+          <div>
+            <DMMIcon id="link" to={prefixNetworkURL}>
+              <img
+                width={below1080 ? '110px' : '160px'}
+                src={isDark ? ProMMAnalyticsLogo : ProMMAnalyticsLogoLight}
+                alt="logo"
+                style={{ marginTop: '2px' }}
+              />
+            </DMMIcon>
+            <UnSelectable>
+              <Text fontSize="12px" color={theme.subText} textAlign="right" marginTop="-12px">
+                Elastic Analytics
+              </Text>
+            </UnSelectable>
+          </div>
           <Flex marginTop="1.5rem" alignItems="flex-start" width="100%">
             <Text fontSize={16} fontWeight="500" color={theme.subText}>
               Select a network
@@ -339,7 +394,13 @@ function SideNav(): JSX.Element {
         <div>
           <ThemeToggle />
           <SocialLinks />
-          <ExternalLink href="https://kyber.network">KyberNetwork</ExternalLink>
+          <ExternalLink href="https://kyber.network">Kyber Network</ExternalLink>
+          <Polling>
+            <PollingDot />
+            <a href="/" style={{ textDecoration: 'none' }}>
+              Updated {seconds ? seconds + 's' : '-'} ago <br />
+            </a>
+          </Polling>
         </div>
       </Wrapper>
     </>

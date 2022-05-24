@@ -116,7 +116,7 @@ export default function Menu(): JSX.Element {
           <div>
             <ThemeToggle />
             <SocialLinks />
-            <ExternalLink href="https://kyber.network">KyberNetwork</ExternalLink>
+            <ExternalLink href="https://kyber.network">Kyber Network</ExternalLink>
           </div>
         </MenuFlyout>
       )}

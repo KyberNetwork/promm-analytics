@@ -12,9 +12,9 @@ import {
   ropstenBlockClient,
   ropstenClient,
 } from 'apollo/client'
-import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg'
-import ETHEREUM_LOGO_URL from '../assets/images/ethereum-logo.png'
-import POLYGON_LOGO_URL from '../assets/images/polygon-logo.png'
+import ARBITRUM_LOGO_URL from '../assets/network-logo/arbitrum.svg'
+import ETHEREUM_LOGO_URL from '../assets/network-logo/ethereum.png'
+import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
 
 export enum ChainId {
   ETHEREUM = 1,
@@ -72,7 +72,7 @@ const RinkebyNetworkInfo: NetworkInfo = {
   subgraphName: 'viet-nv/promm-rinkeby',
   etherscanUrl: 'https://rinkeby.etherscan.io',
   etherscanName: 'Rinkeby Explorer',
-  tokenListUrl: '',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/rinkeby.tokenlist.json',
   nativeToken: {
     symbol: 'ETH',
     name: 'ETH (Wrapped)',

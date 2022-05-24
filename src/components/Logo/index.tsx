@@ -40,8 +40,3 @@ export default function Logo({ srcs, alt, ...rest }: LogoProps): JSX.Element {
 
   return <WhiteHelpCircle {...rest} />
 }
-
-export const GenericImageWrapper = styled.img<{ size?: string }>`
-  width: ${({ size }) => size ?? '20px'};
-  height: ${({ size }) => size ?? '20px'};
-`

@@ -15,8 +15,13 @@ export async function splitQuery<Type>(
   vars: any[],
   values: any[],
   skipCount = 1000
-) {
-  let fetchedData = {}
+): Promise<
+  | {
+      [key: string]: Type
+    }
+  | undefined
+> {
+  let fetchedData: { [key: string]: Type } = {}
   let allFound = false
   let skip = 0
   try {

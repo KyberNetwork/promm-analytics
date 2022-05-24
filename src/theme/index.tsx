@@ -206,6 +206,9 @@ export const TYPE = {
   title(props: TextProps): JSX.Element {
     return <TextWrapper fontWeight={400} color={'subText'} fontSize={12} {...props} />
   },
+  breadcrumb(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} color={'text6'} fontSize={14} {...props} />
+  },
 }
 
 export const FixedGlobalStyle = createGlobalStyle`

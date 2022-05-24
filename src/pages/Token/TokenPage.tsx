@@ -13,8 +13,7 @@ import {
   useTokenPriceData,
   useTokenTransactions,
 } from 'state/tokens/hooks'
-import { useColor } from 'hooks/useColor'
-import { ThemedBackground, PageWrapper } from 'pages/styled'
+import { PageWrapper } from 'pages/styled'
 import { shortenAddress, getEtherscanLink, currentTimestamp } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
@@ -43,6 +42,8 @@ import KyberLoading from 'components/Loader/KyberLoading'
 import PairPoolsTable from 'components/pools/PairPoolsTable'
 import { PoolData } from 'state/pools/reducer'
 import Search from 'components/Search'
+import { UnSelectable } from 'components'
+import CopyHelper from 'components/Copy'
 
 const PriceText = styled(TYPE.label)`
   font-size: 24px;
@@ -98,7 +99,6 @@ export default function TokenPage(): JSX.Element {
 
   address = address.toLowerCase()
   // theming
-  const backgroundColor = useColor(address)
   const theme = useTheme()
 
   // scroll on page view
@@ -182,7 +182,6 @@ export default function TokenPage(): JSX.Element {
 
   return (
     <PageWrapper>
-      <ThemedBackground backgroundColor={backgroundColor} />
       {tokenData ? (
         !tokenData.exists ? (
           <LightGreyCard style={{ textAlign: 'center' }}>
@@ -199,17 +198,17 @@ export default function TokenPage(): JSX.Element {
             <AutoColumn gap="32px">
               <RowBetween>
                 <AutoRow gap="4px">
-                  <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                    <TYPE.main>{`Home → `}</TYPE.main>
-                  </StyledInternalLink>
                   <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens'}>
-                    <TYPE.label>{` Tokens `}</TYPE.label>
+                    <TYPE.breadcrumb>{` Tokens`}</TYPE.breadcrumb>
                   </StyledInternalLink>
-                  <TYPE.main>{` → `}</TYPE.main>
-                  <TYPE.label>{` ${tokenData.symbol} `}</TYPE.label>
+                  <UnSelectable>
+                    <TYPE.main>{` → `}</TYPE.main>
+                  </UnSelectable>
+                  <TYPE.breadcrumb>{` ${tokenData.symbol} `}</TYPE.breadcrumb>
                   <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                    <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
+                    <TYPE.link fontWeight={400} fontSize={14}>{` (${shortenAddress(address)}) `}</TYPE.link>
                   </StyledExternalLink>
+                  <CopyHelper toCopy={address} />
                 </AutoRow>
                 {!below600 && <Search />}
               </RowBetween>
@@ -244,7 +243,7 @@ export default function TokenPage(): JSX.Element {
                     href={`https://kyberswap.com/#/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
                   >
                     <ButtonPrimary width="100px" style={{ height: '38px' }}>
-                      Trade
+                      Swap
                     </ButtonPrimary>
                   </StyledExternalLink>
                 </RowFixed>

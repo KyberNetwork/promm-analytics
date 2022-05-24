@@ -4,7 +4,7 @@ import { splitQuery } from 'utils/queries'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 
-export const GET_BLOCKS = (timestamps: string[]) => {
+export const GET_BLOCKS = (timestamps: string[]): import('graphql').DocumentNode => {
   let queryString = 'query blocks {'
   queryString += timestamps.map((timestamp) => {
     return `t${timestamp}:blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: { timestamp_gt: ${timestamp}, timestamp_lt: ${

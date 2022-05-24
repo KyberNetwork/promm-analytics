@@ -20,6 +20,7 @@ import CopyHelper from 'components/Copy'
 import { ChevronDown, ChevronUp, Plus } from 'react-feather'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { QuestionHelper } from 'components/QuestionHelper'
+import { useMedia } from 'react-use'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -39,10 +40,10 @@ const ResponsiveGrid = styled.div`
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 2fr repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 2fr repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     & :nth-child(3) {
       display: none;
     }
@@ -53,7 +54,7 @@ const ResponsiveGrid = styled.div`
   `}
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-columns: 2fr repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
       `}
 `
 
@@ -63,7 +64,7 @@ const TableHeader = styled(ResponsiveGrid)`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: calc(19px + 20px * 2); /* = APR? icon height + row padding top bot */
-    grid-template-columns: 2fr repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     & :nth-child(1) {
       display: none;
     }
@@ -191,6 +192,7 @@ export default function PairPoolsTable({
       setIsOpen({ [id]: true })
     }
   }, [pairDatas, isOpen])
+  const below960 = useMedia('(max-width: 960px)')
 
   if (!pairDatas) {
     return <Loader />
@@ -203,7 +205,7 @@ export default function PairPoolsTable({
           <GridWrapper>
             <Flex
               padding="20px"
-              height="calc(19px + 20px * 2)" // = APR? icon height + row padding top bot
+              height={below960 ? undefined : 'calc(19px + 20px * 2)'} // = APR? icon height + row padding top bot
               backgroundColor={theme.tableHeader}
             >
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>

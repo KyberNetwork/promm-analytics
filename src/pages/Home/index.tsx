@@ -24,6 +24,7 @@ import PairPoolsTable from 'components/pools/PairPoolsTable'
 import Panel from 'components/Panel'
 import GlobalChart, { CHART_VIEW } from './components/GlobalChart'
 import Search from 'components/Search'
+import { UnSelectable } from 'components'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -48,7 +49,7 @@ const TableTitle = styled(TYPE.label)`
   font-size: 18px;
 `
 
-const Separator = styled.span`
+const Separator = styled(UnSelectable)`
   user-select: none;
   font-size: 12px;
 `
@@ -98,7 +99,6 @@ export default function Home(): JSX.Element {
 
   return (
     <PageWrapper>
-      {/* <ThemedBackgroundGlobal backgroundColor={activeNetwork.bgColor} /> */}
       <AutoColumn gap="40px">
         <AutoColumn gap="24px">
           <Flex

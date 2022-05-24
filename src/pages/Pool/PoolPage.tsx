@@ -5,8 +5,7 @@ import { Plus } from 'react-feather'
 import { Flex } from 'rebass'
 import { useMedia } from 'react-use'
 
-import { useColor } from 'hooks/useColor'
-import { ThemedBackground, PageWrapper } from 'pages/styled'
+import { PageWrapper } from 'pages/styled'
 import { feeTierPercent, getEtherscanLink, shortenAddress } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
@@ -32,9 +31,10 @@ import { MonoSpace } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { ChainId } from 'constants/networks'
-import { GenericImageWrapper } from 'components/Logo'
 import KyberLoading from 'components/Loader/KyberLoading'
 import Search from 'components/Search'
+import { UnSelectable } from 'components'
+import CopyHelper from 'components/Copy'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -98,7 +98,6 @@ export default function PoolPage(): JSX.Element {
   }, [])
 
   // theming
-  const backgroundColor = useColor()
   const theme = useTheme()
 
   // token data
@@ -151,29 +150,28 @@ export default function PoolPage(): JSX.Element {
 
   return (
     <PageWrapper>
-      <ThemedBackground backgroundColor={backgroundColor} />
       {poolData ? (
         <AutoColumn gap="32px">
           <RowBetween>
             <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork)}>
-                <TYPE.main>{`Home → `}</TYPE.main>
-              </StyledInternalLink>
               <StyledInternalLink to={networkPrefix(activeNetwork) + 'pools'}>
-                <TYPE.label>{` Pools `}</TYPE.label>
+                <TYPE.breadcrumb>{` Pools `}</TYPE.breadcrumb>
               </StyledInternalLink>
-              <TYPE.main>{` → `}</TYPE.main>
-              <TYPE.label>{` ${poolData.token0.symbol}/${poolData.token1.symbol} ${feeTierPercent(
+              <UnSelectable>
+                <TYPE.main>{` → `}</TYPE.main>
+              </UnSelectable>
+              <TYPE.breadcrumb>{` ${poolData.token0.symbol}/${poolData.token1.symbol} ${feeTierPercent(
                 poolData.feeTier
-              )} `}</TYPE.label>
+              )} `}</TYPE.breadcrumb>
 
               <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                <TYPE.link>{` (${shortenAddress(address)}) `}</TYPE.link>
+                <TYPE.link fontWeight={400} fontSize={14}>{` (${shortenAddress(address)}) `}</TYPE.link>
               </StyledExternalLink>
+              <CopyHelper toCopy={address} />
             </AutoRow>
             {!below600 && <Search />}
           </RowBetween>
-          <ResponsiveRow align="flex-end">
+          <ResponsiveRow align="flex-start">
             <AutoColumn gap="lg">
               <RowFixed>
                 <DoubleCurrencyLogo
@@ -182,15 +180,11 @@ export default function PoolPage(): JSX.Element {
                   size={24}
                   activeNetwork={activeNetwork}
                 />
-                <TYPE.label
-                  ml="8px"
-                  mr="8px"
-                  fontSize="24px"
-                >{` ${poolData.token0.symbol}/${poolData.token1.symbol} `}</TYPE.label>
-                <GreyBadge>{feeTierPercent(poolData.feeTier)}</GreyBadge>
-                <GenericImageWrapper src={activeNetwork.imageURL} style={{ marginLeft: '8px' }} size="26px" />
+                <TYPE.label ml="8px" mr="8px" fontSize="28px">{` ${poolData.token0.symbol}-${
+                  poolData.token1.symbol
+                } Pool | Fee = ${feeTierPercent(poolData.feeTier)}`}</TYPE.label>
               </RowFixed>
-              <ResponsiveRow>
+              <ResponsiveRow style={{ justifyContent: 'unset' }}>
                 <StyledInternalLink to={networkPrefix(activeNetwork) + 'token/' + poolData.token0.address}>
                   <TokenButton>
                     <RowFixed>
