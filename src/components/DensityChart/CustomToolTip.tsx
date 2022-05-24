@@ -55,7 +55,7 @@ export function CustomToolTip({ chartProps, poolData, currentPrice }: CustomTool
             {poolData?.token0?.symbol}
           </TYPE.label>
         </RowBetween>
-        {currentPrice && price0 && currentPrice > price1 ? (
+        {currentPrice && price0 && (currentPrice < 1 ? 1 / currentPrice < price0 : currentPrice > price1) ? (
           <RowBetween>
             <TYPE.label>{poolData?.token0?.symbol} Locked: </TYPE.label>
             <TYPE.label>
