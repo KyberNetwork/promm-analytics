@@ -83,6 +83,26 @@ const initialState = {
   refAreaRight: '',
 }
 
+const CustomBar = ({
+  x,
+  y,
+  width,
+  height,
+  fill,
+}: {
+  x: number
+  y: number
+  width: number
+  height: number
+  fill: string
+}) => {
+  return (
+    <g>
+      <rect x={x} y={y} fill={fill} width={width} height={height} rx="2" />
+    </g>
+  )
+}
+
 export default function DensityChart({ address }: DensityChartProps): JSX.Element {
   const theme = useTheme()
   const { dataClient } = useClients()[0]
@@ -272,25 +292,6 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
     )
   }
 
-  const CustomBar = ({
-    x,
-    y,
-    width,
-    height,
-    fill,
-  }: {
-    x: number
-    y: number
-    width: number
-    height: number
-    fill: string
-  }) => {
-    return (
-      <g>
-        <rect x={x} y={y} fill={fill} width={width} height={height} rx="2" />
-      </g>
-    )
-  }
   return (
     <Wrapper>
       {!loading ? (
