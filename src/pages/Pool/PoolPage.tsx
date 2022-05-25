@@ -313,14 +313,14 @@ export default function PoolPage(): JSX.Element {
                   <ToggleElementFree
                     isActive={view === ChartView.VOL}
                     fontSize="12px"
-                    onClick={() => (view === ChartView.VOL ? setView(ChartView.TVL) : setView(ChartView.VOL))}
+                    onClick={() => view !== ChartView.VOL && setView(ChartView.VOL)}
                   >
                     Volume
                   </ToggleElementFree>
                   <ToggleElementFree
                     isActive={view === ChartView.TVL}
                     fontSize="12px"
-                    onClick={() => (view === ChartView.TVL ? setView(ChartView.DENSITY) : setView(ChartView.TVL))}
+                    onClick={() => view !== ChartView.TVL && setView(ChartView.TVL)}
                   >
                     TVL
                   </ToggleElementFree>
@@ -328,7 +328,7 @@ export default function PoolPage(): JSX.Element {
                     <ToggleElementFree
                       isActive={view === ChartView.DENSITY}
                       fontSize="12px"
-                      onClick={() => (view === ChartView.DENSITY ? setView(ChartView.VOL) : setView(ChartView.DENSITY))}
+                      onClick={() => view !== ChartView.DENSITY && setView(ChartView.DENSITY)}
                     >
                       Liquidity
                     </ToggleElementFree>
@@ -336,7 +336,7 @@ export default function PoolPage(): JSX.Element {
                   <ToggleElementFree
                     isActive={view === ChartView.FEES}
                     fontSize="12px"
-                    onClick={() => (view === ChartView.FEES ? setView(ChartView.TVL) : setView(ChartView.FEES))}
+                    onClick={() => view !== ChartView.FEES && setView(ChartView.FEES)}
                   >
                     Fees
                   </ToggleElementFree>
