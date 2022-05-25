@@ -141,7 +141,7 @@ const ButtonFaded = styled(Base)`
   background-color: ${({ theme }) => theme.bg2};
   color: (255, 255, 255, 0.5);
   white-space: nowrap;
-
+  padding: 8px 12px;
   :hover {
     opacity: 0.5;
   }

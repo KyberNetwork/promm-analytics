@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { Flex, Text } from 'rebass'
+import { Flex } from 'rebass'
 import { Activity } from 'react-feather'
 import { useMedia } from 'react-use'
 
@@ -61,9 +61,11 @@ const DropdownWrapper = styled.div`
 
 const Flyout = styled.div`
   position: absolute;
-  top: 38px;
+  top: 40px;
   left: -1px;
   width: calc(100% + 2px); //adhoc fixing lmao
+  max-height: 50vh;
+  overflow: auto;
   background-color: ${({ theme }) => theme.background};
   z-index: 999;
   border-bottom-right-radius: 8px;
@@ -96,7 +98,7 @@ const Row = styled(Box)<RowProp & React.FunctionComponent<BoxProps>>`
 
 const MenuRow = styled(Row)`
   width: 100%;
-  padding: 12px 0;
+  padding: 12px 0 12px 12px;
   padding-left: 12px;
 
   :hover {
@@ -343,10 +345,10 @@ export default function AccountPage(): JSX.Element {
                                 size={16}
                                 activeNetwork={activeNetwork}
                               />
-                              <TYPE.body ml="16px">
+                              <TYPE.breadcrumb ml="16px">
                                 {p.token0.symbol}-{p.token1.symbol} {feeTierPercent(parseFloat(p.pool.feeTier))}{' '}
                                 Position
-                              </TYPE.body>
+                              </TYPE.breadcrumb>
                             </MenuRow>
                           )
                         )
@@ -363,7 +365,7 @@ export default function AccountPage(): JSX.Element {
                             <StyledIcon>
                               <Activity size={16} />
                             </StyledIcon>
-                            <TYPE.body ml="10px">All Positions</TYPE.body>
+                            <TYPE.breadcrumb ml="10px">All Positions</TYPE.breadcrumb>
                           </RowFixed>
                         </MenuRow>
                       )}
