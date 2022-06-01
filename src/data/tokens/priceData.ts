@@ -1,166 +1,117 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { NetworkInfo } from 'constants/networks'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import gql from 'graphql-tag'
 import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PriceChartEntry } from 'types'
+import { splitQuery } from 'utils/queries'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
 dayjs.extend(weekOfYear)
 
-// todo namgold: check this
-// export const PRICES_BY_BLOCK = (tokenAddress: string, blocks: any) => {
-//   let queryString = 'query blocks {'
-//   queryString += blocks.map(
-//     (block: any) => `
-//       t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }, subgraphError: allow) {
-//         derivedETH
-//       }
-//     `
-//   )
-//   queryString += ','
-//   queryString += blocks.map(
-//     (block: any) => `
-//       b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }, subgraphError: allow) {
-//         ethPriceUSD
-//       }
-//     `
-//   )
+export const PRICES_BY_BLOCK = (tokenAddress: string, blocks: any[]): import('graphql').DocumentNode => {
+  let queryString = 'query blocks {'
+  queryString += blocks.map(
+    (block: any) => `
+      t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }, subgraphError: allow) {
+        derivedETH
+      }
+    `
+  )
+  queryString += ','
+  queryString += blocks.map(
+    (block: any) => `
+      b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }, subgraphError: allow) {
+        ethPriceUSD
+      }
+    `
+  )
 
-//   queryString += '}'
-//   return gql(queryString)
-// }
-
-const PRICE_CHART = gql`
-  query tokenHourDatas($startTime: Int!, $skip: Int!, $address: Bytes!) {
-    tokenHourDatas(
-      first: 100
-      skip: $skip
-      where: { token: $address, periodStartUnix_gt: $startTime }
-      orderBy: periodStartUnix
-      orderDirection: asc
-    ) {
-      periodStartUnix
-      high
-      low
-      open
-      close
-    }
-  }
-`
-
-interface PriceResults {
-  tokenHourDatas: {
-    periodStartUnix: number
-    high: string
-    low: string
-    open: string
-    close: string
-  }[]
+  queryString += '}'
+  return gql(queryString)
 }
 
-export async function fetchTokenPriceData(
-  address: string,
-  interval: number,
-  startTimestamp: number,
-  dataClient: ApolloClient<NormalizedCacheObject>
-  // blockClient: ApolloClient<NormalizedCacheObject>
-): Promise<{
-  data: PriceChartEntry[]
-  error: boolean
-}> {
-  // start and end bounds
+type TokenResult = { derivedETH: string }
+type BundleResult = { ethPriceUSD: string }
+type PriceByBlockResult = TokenResult | BundleResult
 
+export const getIntervalTokenData = async (
+  tokenAddress: string,
+  startTime: number,
+  interval = 3600,
+  latestBlock: number,
+  activeNetwork: NetworkInfo
+): Promise<PriceChartEntry[]> => {
+  const client = activeNetwork.client
+  const blockClient = activeNetwork.blockClient
+
+  const utcEndTime = dayjs.utc()
+  let time = startTime
+  // create an array of hour start times until we reach current hour
+  // buffer by half hour to catch case where graph isnt synced to latest block
+  const timestamps = []
+  while (time < utcEndTime.unix()) {
+    timestamps.push(time)
+    time += interval
+  }
+
+  // backout if invalid timestamp format
+  if (timestamps.length === 0) {
+    return []
+  }
+
+  // once you have all the timestamps, get the blocks for each timestamp in a bulk query
+  let blocks
   try {
-    // const endTimestamp = dayjs.utc().unix()
+    blocks = await getBlocksFromTimestamps(timestamps, blockClient, 200)
 
-    if (!startTimestamp) {
-      console.log('Error constructing price start timestamp')
-      return {
-        data: [],
-        error: false,
-      }
+    // catch failing case
+    if (!blocks || blocks.length === 0) {
+      return []
     }
-    //todo namgold: check this
 
-    // create an array of hour start times until we reach current hour
-    // const timestamps = []
-    // let time = startTimestamp
-    // while (time <= endTimestamp) {
-    //   timestamps.push(time)
-    //   time += interval
-    // }
-
-    // // backout if invalid timestamp format
-    // if (timestamps.length === 0) {
-    //   return {
-    //     data: [],
-    //     error: false,
-    //   }
-    // }
-
-    // fetch blocks based on timestamp
-    // const blocks = await getBlocksFromTimestamps(timestamps, blockClient, 500)
-    // if (!blocks || blocks.length === 0) {
-    //   console.log('Error fetching blocks')
-    //   return {
-    //     data: [],
-    //     error: false,
-    //   }
-    // }
-
-    let data: {
-      periodStartUnix: number
-      high: string
-      low: string
-      open: string
-      close: string
-    }[] = []
-    let skip = 0
-    let allFound = false
-    while (!allFound) {
-      const { data: priceData, errors, loading } = await dataClient.query<PriceResults>({
-        query: PRICE_CHART,
-        variables: {
-          address: address,
-          startTime: startTimestamp,
-          skip,
-        },
-        fetchPolicy: 'no-cache',
+    if (latestBlock) {
+      blocks = blocks.filter((b) => {
+        return b.number <= latestBlock
       })
+    }
 
-      if (!loading) {
-        skip += 100
-        if ((priceData && priceData.tokenHourDatas.length < 100) || errors) {
-          allFound = true
-        }
-        if (priceData) {
-          data = data.concat(priceData.tokenHourDatas)
+    const result = await splitQuery<PriceByBlockResult>(PRICES_BY_BLOCK, client, [tokenAddress], blocks, 100)
+
+    // format token ETH price results
+    const values: { timestamp: number; derivedETH: number; priceUSD: number }[] = []
+    for (const row in result) {
+      if (row[0] === 't') {
+        const timestamp = row.split('t')[1]
+        if (timestamp) {
+          const derivedETH = parseFloat((result[row] as TokenResult)?.derivedETH)
+          const priceUSD = parseFloat((result['b' + timestamp] as BundleResult).ethPriceUSD) * derivedETH
+          values.push({
+            timestamp: parseInt(timestamp),
+            derivedETH,
+            priceUSD,
+          })
         }
       }
     }
 
-    const formattedHistory = data.map((d) => {
-      return {
-        time: d.periodStartUnix,
-        open: parseFloat(d.open),
-        close: parseFloat(d.close),
-        high: parseFloat(d.high),
-        low: parseFloat(d.low),
-      }
-    })
+    const formattedHistory: PriceChartEntry[] = []
 
-    return {
-      data: formattedHistory,
-      error: false,
+    // for each hour, construct the open and close price
+    for (let i = 0; i < values.length - 1; i++) {
+      formattedHistory.push({
+        time: values[i].timestamp,
+        open: values[i].priceUSD,
+        close: values[i + 1].priceUSD,
+      })
     }
+
+    return formattedHistory
   } catch (e) {
     console.log(e)
-    return {
-      data: [],
-      error: true,
-    }
+    console.log('error fetching blocks')
+    return []
   }
 }

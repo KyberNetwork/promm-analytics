@@ -22,7 +22,6 @@ const Panel = styled(RebassBox)`
   background-color: ${({ theme }) => theme.background};
   padding: 1.25rem 16px;
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -51,8 +50,8 @@ const Panel = styled(RebassBox)`
       }
     `}
 
-  ${(props) =>
-    props.rounded &&
+  ${({ rounded }) =>
+    rounded &&
     css`
       border-radius: 8px;
       @media only screen and (min-width: 40em) {

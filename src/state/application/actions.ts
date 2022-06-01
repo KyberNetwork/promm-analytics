@@ -13,10 +13,12 @@ export type PopupContent = {
 }
 
 export enum ApplicationModal {
-  WALLET,
-  SETTINGS,
-  MENU,
-  DROPDOWN,
+  WALLET = 'WALLET',
+  SETTINGS = 'SETTINGS',
+  MENU = 'MENU',
+  DROPDOWN = 'DROPDOWN',
+  CHART_VIEW_DROPDOWN = 'CHART_VIEW_DROPDOWN',
+  TIME_DROPDOWN = 'TIME_DROPDOWN',
 }
 
 export const updateBlockNumber = createAction<{ chainId: ChainId; blockNumber: number }>(

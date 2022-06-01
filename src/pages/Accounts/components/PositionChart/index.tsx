@@ -9,10 +9,12 @@ import { AutoRow, RowBetween } from 'components/Row'
 import DropdownSelect from 'components/DropdownSelect'
 import { TYPE } from 'theme'
 import { OptionButton } from 'components/Button'
-import Loader from 'components/Loader'
 import { getTimeframe, toK, toNiceDate, toNiceDateYear } from 'utils'
 import { useDarkModeManager } from 'state/user/hooks'
 import { PositionFields } from 'data/wallets/walletData'
+import KyberLoading from 'components/Loader/KyberLoading'
+import { Flex } from 'rebass'
+import { ApplicationModal } from 'state/application/actions'
 
 const ChartWrapper = styled.div`
   max-height: 420px;
@@ -68,7 +70,12 @@ const PositionChart = ({ account, activePosition }: PositionChartProps): JSX.Ele
       {below600 ? (
         <RowBetween mb={40}>
           <div />
-          <DropdownSelect options={rest} active={timeWindow} setActive={setTimeWindow} />
+          <DropdownSelect
+            name={ApplicationModal.TIME_DROPDOWN}
+            options={rest}
+            active={timeWindow}
+            setActive={setTimeWindow}
+          />
         </RowBetween>
       ) : (
         <OptionsRow>
@@ -176,7 +183,9 @@ const PositionChart = ({ account, activePosition }: PositionChartProps): JSX.Ele
             />
           </LineChart>
         ) : (
-          <Loader />
+          <Flex justifyContent="center">
+            <KyberLoading />
+          </Flex>
         )}
       </ResponsiveContainer>
     </ChartWrapper>

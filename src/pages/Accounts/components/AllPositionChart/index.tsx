@@ -10,9 +10,11 @@ import { AutoRow, RowBetween } from 'components/Row'
 import DropdownSelect from 'components/DropdownSelect'
 import { TYPE } from 'theme'
 import { OptionButton } from 'components/Button'
-import Loader from 'components/Loader'
 import { getTimeframe, toK, toNiceDate, toNiceDateYear } from 'utils'
 import { useDarkModeManager } from 'state/user/hooks'
+import { Flex } from 'rebass'
+import KyberLoading from 'components/Loader/KyberLoading'
+import { ApplicationModal } from 'state/application/actions'
 
 const ChartWrapper = styled.div`
   height: 100%;
@@ -53,7 +55,13 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType): JSX.Element => {
       {below600 ? (
         <RowBetween mb={40}>
           <div />
-          <DropdownSelect options={rest} active={timeWindow} setActive={setTimeWindow} color={theme.primary} />
+          <DropdownSelect
+            name={ApplicationModal.TIME_DROPDOWN}
+            options={rest}
+            active={timeWindow}
+            setActive={setTimeWindow}
+            color={theme.primary}
+          />
         </RowBetween>
       ) : (
         <RowBetween mb={40}>
@@ -145,7 +153,9 @@ const AllPoolChart = ({ account }: AllPoolChartPropsType): JSX.Element => {
           </AreaChart>
         </ResponsiveContainer>
       ) : (
-        <Loader />
+        <Flex justifyContent="center">
+          <KyberLoading />
+        </Flex>
       )}
     </ChartWrapper>
   )

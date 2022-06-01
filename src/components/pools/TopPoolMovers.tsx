@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { ScrollableX, GreyCard, GreyBadge } from 'components/Card'
-import Loader from 'components/Loader'
 import { AutoColumn } from 'components/Column'
 import { RowFixed } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -58,26 +57,27 @@ const DataCard = ({ poolData }: { poolData: PoolData }) => {
   )
 }
 
-export default function TopPoolMovers(): JSX.Element {
-  const allPools = useAllPoolData()
+// export default function TopPoolMovers(): JSX.Element {
+//   const allPools = useAllPoolData()
 
-  const topVolume = useMemo(() => {
-    return Object.values(allPools)
-      .sort(({ data: a }, { data: b }) => {
-        return a && b ? (a?.volumeUSDChange > b?.volumeUSDChange ? -1 : 1) : -1
-      })
-      .slice(0, Math.min(20, Object.values(allPools).length))
-  }, [allPools])
+//   const topVolume = useMemo(() => {
+//     return Object.values(allPools)
+//       .sort(({ data: a }, { data: b }) => {
+//         return a && b ? (a?.volumeUSDChange > b?.volumeUSDChange ? -1 : 1) : -1
+//       })
+//       .slice(0, Math.min(20, Object.values(allPools).length))
+//   }, [allPools])
 
-  if (Object.keys(allPools).length === 0) {
-    return <Loader />
-  }
+//   if (Object.keys(allPools).length === 0) {
+//     return <Loader />
+//   }
 
-  return (
-    <ScrollableX>
-      {topVolume.map((entry) =>
-        entry.data ? <DataCard key={'top-card-pool-' + entry.data.address} poolData={entry.data} /> : null
-      )}
-    </ScrollableX>
-  )
-}
+//   return (
+//     <ScrollableX>
+//       {topVolume.map((entry) =>
+//         entry.data ? <DataCard key={'top-card-pool-' + entry.data.address} poolData={entry.data} /> : null
+//       )}
+//     </ScrollableX>
+//   )
+// }
+// deprecated

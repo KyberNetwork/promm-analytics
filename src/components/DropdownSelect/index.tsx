@@ -58,12 +58,20 @@ type DropdownSelectPropsType = {
   setActive?: any
   color?: any
   optionTitles?: any
+  name?: ApplicationModal
 }
 
-const DropdownSelect = ({ options, active, setActive, color, optionTitles }: DropdownSelectPropsType): JSX.Element => {
+const DropdownSelect = ({
+  options,
+  active,
+  setActive,
+  color,
+  optionTitles,
+  name = ApplicationModal.DROPDOWN,
+}: DropdownSelectPropsType): JSX.Element => {
   const node = useRef(null)
-  const open = useModalOpen(ApplicationModal.DROPDOWN)
-  const toggle = useToggleModal(ApplicationModal.DROPDOWN)
+  const open = useModalOpen(name)
+  const toggle = useToggleModal(name)
 
   useOnClickOutside(node, open ? toggle : undefined)
 

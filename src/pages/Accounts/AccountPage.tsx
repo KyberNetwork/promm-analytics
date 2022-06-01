@@ -373,7 +373,7 @@ export default function AccountPage(): JSX.Element {
                   </Flyout>
                 )}
               </DropdownWrapper>
-              <Panel style={{ height: '100%' }}>
+              <Panel>
                 <AutoColumn gap="12px">
                   <RowBetween>
                     <TYPE.body color={theme.subText}> TVL</TYPE.body>

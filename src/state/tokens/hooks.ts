@@ -13,13 +13,15 @@ import {
 import { isAddress } from 'ethers/lib/utils'
 import { fetchPoolsForToken } from 'data/tokens/poolsForToken'
 import { fetchTokenChartData } from 'data/tokens/chartData'
-import { fetchTokenPriceData } from 'data/tokens/priceData'
+import { getIntervalTokenData } from 'data/tokens/priceData'
 import { fetchTokenTransactions } from 'data/tokens/transactions'
 import { PriceChartEntry, Transaction } from 'types'
 import { notEmpty } from 'utils'
-import dayjs, { OpUnitType } from 'dayjs'
+import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
+import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
+import { useFetchedSubgraphStatus } from 'data/application'
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
 
@@ -168,7 +170,7 @@ export function useTokenChartData(address: string): TokenChartEntry[] | undefine
 export function useTokenPriceData(
   address: string,
   interval: number,
-  timeWindow: OpUnitType
+  timeWindow: TimeframeOptions
 ): PriceChartEntry[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
@@ -176,22 +178,46 @@ export function useTokenPriceData(
   const priceData = token.priceData[interval]
   const [error, setError] = useState(false)
   const { dataClient, blockClient } = useClients()[0]
-
   // construct timestamps and check if we need to fetch more data
   const oldestTimestampFetched = token.priceData.oldestFetchedTimestamp
-  const utcCurrentTime = dayjs()
-  const startTimestamp = utcCurrentTime.subtract(1, timeWindow).startOf('hour').unix()
+  const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
 
   useEffect(() => {
+    const currentTime = dayjs.utc()
+    let startTimestamp: number
+
+    switch (timeWindow) {
+      case TimeframeOptions.FOUR_HOURS:
+        startTimestamp = currentTime.subtract(4, 'hour').startOf('second').unix()
+        break
+      case TimeframeOptions.ONE_DAY:
+        startTimestamp = currentTime.subtract(1, 'day').startOf('minute').unix()
+        break
+      case TimeframeOptions.THERE_DAYS:
+        startTimestamp = currentTime.subtract(3, 'day').startOf('hour').unix()
+        break
+      case TimeframeOptions.WEEK:
+        startTimestamp = currentTime.subtract(1, 'week').startOf('hour').unix()
+        break
+      case TimeframeOptions.MONTH:
+        startTimestamp = currentTime.subtract(1, 'month').startOf('hour').unix()
+        break
+      default:
+        startTimestamp = currentTime.subtract(3, 'day').startOf('hour').unix()
+        break
+    }
+
     async function fetch() {
-      const { data, error: fetchingError } = await fetchTokenPriceData(
+      if (!latestBlock) return
+      const data: PriceChartEntry[] = await getIntervalTokenData(
         address,
-        interval,
         startTimestamp,
-        dataClient
-        // blockClient
+        interval,
+        latestBlock,
+        activeNetwork
       )
-      if (data) {
+
+      if (data?.length) {
         dispatch(
           updatePriceData({
             tokenAddress: address,
@@ -201,16 +227,16 @@ export function useTokenPriceData(
             networkId: activeNetwork.chainId,
           })
         )
-      }
-      if (fetchingError) {
+      } else {
         setError(true)
       }
     }
 
-    if (!priceData && !error) {
+    if (!priceData && !error && latestBlock) {
       fetch()
     }
   }, [
+    activeNetwork,
     activeNetwork.chainId,
     address,
     blockClient,
@@ -218,9 +244,9 @@ export function useTokenPriceData(
     dispatch,
     error,
     interval,
+    latestBlock,
     oldestTimestampFetched,
     priceData,
-    startTimestamp,
     timeWindow,
   ])
 

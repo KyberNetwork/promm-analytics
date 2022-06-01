@@ -214,7 +214,7 @@ const TradingViewChart = ({
           toolTip.innerHTML =
             `<div style="font-size: 12px; margin: 4px 0px; color: ${theme.subText};">${title}</div>` +
             `<div style="font-size: 18px; margin: 4px 0px; color: ${textColor}">$` +
-            Number((price as number).toFixed(0)).toLocaleString('en-US') +
+            Number(((price as number) || 0).toFixed(0)).toLocaleString('en-US') +
             '</div>' +
             '<div>' +
             dateStr +
