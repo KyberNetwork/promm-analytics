@@ -10,6 +10,7 @@ import { NETWORKS_INFO_LIST } from 'constants/networks'
 import { networkPrefix } from 'utils/networkPrefix'
 import HoverInlineText from 'components/HoverInlineText'
 import { TYPE } from 'theme'
+import { AutoColumn } from 'components/Column'
 
 const RightColumn = styled.div<{ open: boolean }>`
   padding: 1.25rem;
@@ -50,7 +51,7 @@ const TagItem = styled(Link)`
   border-radius: 999px;
   font-size: 12px;
   padding: 6px 8px;
-  background-color: ${({ theme }) => theme.subText + '33'};
+  background-color: ${({ theme }) => theme.bg4};
   color: ${({ theme }) => theme.subText};
   display: flex;
   gap: 6px;
@@ -80,7 +81,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
     const id = networkInfo.chainId
     const accounts = Object.keys(savedAccounts[id] || {})
     return accounts.map((account) => (
-      <Flex marginTop="16px" key={id + '-' + account} justifyContent="space-between" alignItems="center">
+      <Flex key={id + '-' + account} justifyContent="space-between" alignItems="center">
         <TagItem role="button" to={networkPrefix(networkInfo) + `account/${account}`}>
           <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
           {account?.slice(0, 6) + '...' + account?.slice(38, 42)}
@@ -94,7 +95,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
     const id = networkInfo.chainId
     const pools = Object.values(savedPools[id] || {})
     return pools.map((pool) => (
-      <Flex marginTop="16px" key={id + '-' + pool.address} justifyContent="space-between" alignItems="center">
+      <Flex key={id + '-' + pool.address} justifyContent="space-between" alignItems="center">
         <TagItem role="button" to={networkPrefix(networkInfo) + `pool/${pool.address}`}>
           <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
           <HoverInlineText
@@ -111,7 +112,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
     const id = networkInfo.chainId
     const tokens = Object.values(savedTokens[id] || {})
     return tokens.map((token) => (
-      <Flex marginTop="16px" key={id + '-' + token.address} justifyContent="space-between" alignItems="center">
+      <Flex key={id + '-' + token.address} justifyContent="space-between" alignItems="center">
         <TagItem role="button" to={networkPrefix(networkInfo) + `token/${token.address}`}>
           <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
           {token.symbol}
@@ -138,20 +139,20 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
       </SavedButton>
 
       <ScrollableDiv>
-        <SavedTitle>Saved Accounts</SavedTitle>
-
-        {accountsList.length ? accountsList : <TYPE.light>Pinned accounts will appear here.</TYPE.light>}
-
-        <Flex marginTop="20px" />
-
-        <SavedTitle>Saved Pools</SavedTitle>
-
-        {poolsList.length ? poolsList : <TYPE.light>Pinned pools will appear here.</TYPE.light>}
-
-        <Flex marginTop="20px" />
-
-        <SavedTitle>Saved Tokens</SavedTitle>
-        {tokensList.length ? tokensList : <TYPE.light>Pinned tokens will appear here.</TYPE.light>}
+        <AutoColumn gap="40px">
+          <AutoColumn gap="16px">
+            <SavedTitle>Saved Accounts</SavedTitle>
+            {accountsList.length ? accountsList : <TYPE.light>Pinned accounts will appear here.</TYPE.light>}
+          </AutoColumn>
+          <AutoColumn gap="16px">
+            <SavedTitle>Saved Pools</SavedTitle>
+            {poolsList.length ? poolsList : <TYPE.light>Pinned pools will appear here.</TYPE.light>}
+          </AutoColumn>
+          <AutoColumn gap="16px">
+            <SavedTitle>Saved Tokens</SavedTitle>
+            {tokensList.length ? tokensList : <TYPE.light>Pinned tokens will appear here.</TYPE.light>}
+          </AutoColumn>
+        </AutoColumn>
       </ScrollableDiv>
     </RightColumn>
   )
