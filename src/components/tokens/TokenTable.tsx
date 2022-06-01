@@ -204,22 +204,22 @@ export default function TokenTable({
             <ClickableText color={theme.subText} onClick={() => handleSort(SORT_FIELD.name)}>
               Name {arrow(SORT_FIELD.name)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.symbol)}>
+            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.symbol)}>
               Symbol {arrow(SORT_FIELD.symbol)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
               TVL {arrow(SORT_FIELD.tvlUSD)}
             </ClickableText>
-            {/* <ClickableText end={1} onClick={() => handleSort(SORT_FIELD.priceUSDChangeWeek)}>
+            {/* <ClickableText end onClick={() => handleSort(SORT_FIELD.priceUSDChangeWeek)}>
             7d {arrow(SORT_FIELD.priceUSDChangeWeek)}
           </ClickableText> */}
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume (24H) {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSD)}>
+            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSD)}>
               Price {arrow(SORT_FIELD.priceUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
+            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
               Price Change (24H) {arrow(SORT_FIELD.priceUSDChange)}
             </ClickableText>
           </TableHeader>

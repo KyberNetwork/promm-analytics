@@ -7,9 +7,8 @@ import styled from 'styled-components'
 import { useFetchedPositionsDatas } from 'data/wallets/walletData'
 import { DarkGreyCard } from 'components/Card'
 import { Link } from 'react-router-dom'
-import { Label } from 'components/Text'
+import { Label, TableTitle } from 'components/Text'
 import useTheme from 'hooks/useTheme'
-import KyberLoading from 'components/Loader/KyberLoading'
 import { Arrow, Break, PageButtons } from 'components/shared'
 import { RowBetween, RowFixed } from 'components/Row'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
@@ -66,12 +65,6 @@ const LinkWrapper = styled(Link)`
   }
 `
 
-const TableLabel = styled(Label)`
-  color: ${({ theme }) => theme.subText};
-  font-weight: 500;
-  font-size: 12px;
-`
-
 export default function AccountsOverview(): JSX.Element {
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -118,11 +111,11 @@ export default function AccountsOverview(): JSX.Element {
 
         <Wrapper>
           <TableHeader>
-            {!below1024 && <Label>#</Label>}
-            <TableLabel>ACCOUNT</TableLabel>
-            {!below600 && <TableLabel end={1}>PAIR</TableLabel>}
-            <TableLabel end={1}>POOL</TableLabel>
-            <TableLabel end={1}>VALUE</TableLabel>
+            {!below1024 && <TableTitle>#</TableTitle>}
+            <TableTitle>ACCOUNT</TableTitle>
+            {!below600 && <TableTitle end>PAIR</TableTitle>}
+            <TableTitle end>POOL</TableTitle>
+            <TableTitle end>VALUE</TableTitle>
           </TableHeader>
           <AutoColumn gap="19.75px" style={{ padding: '20px' }}>
             {data ? (

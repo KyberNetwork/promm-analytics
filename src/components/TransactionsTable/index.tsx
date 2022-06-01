@@ -242,19 +242,19 @@ export default function TransactionTable({
             Removes
           </ToggleElementFree>
         </ToggleWrapper>
-        <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
+        <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end>
           Total Value {arrow(SORT_FIELD.amountUSD)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken0)}>
           Token Amount {arrow(SORT_FIELD.amountToken0)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken1)}>
           Token Amount {arrow(SORT_FIELD.amountToken1)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.sender)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.sender)}>
           Account {arrow(SORT_FIELD.sender)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.timestamp)}>
           Time {arrow(SORT_FIELD.timestamp)}
         </ClickableText>
       </TableHeader>

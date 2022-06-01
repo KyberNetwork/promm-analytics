@@ -213,24 +213,24 @@ export default function PairPoolsTable({
             <TableHeader>
               <ClickableText color={theme.subText}>Pool | FEE</ClickableText>
 
-              <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+              <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
                 TVL {arrow(SORT_FIELD.tvlUSD)}
               </ClickableText>
 
-              <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.apr)}>
+              <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.apr)}>
                 APR {arrow(SORT_FIELD.apr)}
                 <QuestionHelper text="Estimated return based on yearly fees of the pool" />
               </ClickableText>
 
-              <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+              <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
                 Volume 24H {arrow(SORT_FIELD.volumeUSD)}
               </ClickableText>
 
-              <ClickableText color={theme.subText} end={1} onClick={() => handleSort(SORT_FIELD.fee)}>
+              <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.fee)}>
                 Fee 24H {arrow(SORT_FIELD.fee)}
               </ClickableText>
 
-              <ClickableText color={theme.subText} end={1}>
+              <ClickableText color={theme.subText} end>
                 Actions
               </ClickableText>
             </TableHeader>

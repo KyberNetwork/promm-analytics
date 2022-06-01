@@ -20,7 +20,7 @@ import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import KyberLoading from 'components/Loader/KyberLoading'
 import { PositionFields, useFetchedUserPositionData, useUserTransactions } from 'data/wallets/walletData'
-import { Label } from 'components/Text'
+import { Label, TableTitle } from 'components/Text'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { Box, BoxProps } from 'rebass/styled-components'
@@ -170,12 +170,6 @@ const LinkWrapper = styled(Link)`
 
 const RemoveBtn = styled(ButtonLight)`
   background: ${({ theme }) => `${theme.subText}33`};
-`
-
-const TableLabel = styled(Label)`
-  color: ${({ theme }) => theme.subText};
-  font-weight: 500;
-  font-size: 12px;
 `
 
 type FormattedPosition = {
@@ -401,16 +395,16 @@ export default function AccountPage(): JSX.Element {
               </PanelWrapper>
             </AutoColumn>
 
-            <AutoColumn gap="1.5rem">
+            <AutoColumn gap="16px">
               <TYPE.label fontSize="18px">Positions</TYPE.label>
               <Wrapper>
                 <TableHeader>
-                  {!below740 && <TableLabel>POOL</TableLabel>}
-                  <TableLabel end={1}>ADDRESS</TableLabel>
-                  <TableLabel end={1}>TVL</TableLabel>
-                  {!below740 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
-                  {!below900 && <TableLabel end={1}>TOKEN AMOUNT</TableLabel>}
-                  {!below740 && <TableLabel end={1}>ACTION</TableLabel>}
+                  {!below740 && <TableTitle>POOL</TableTitle>}
+                  <TableTitle end>ADDRESS</TableTitle>
+                  <TableTitle end>TVL</TableTitle>
+                  {!below740 && <TableTitle end>TOKEN AMOUNT</TableTitle>}
+                  {!below900 && <TableTitle end>TOKEN AMOUNT</TableTitle>}
+                  {!below740 && <TableTitle end>ACTION</TableTitle>}
                 </TableHeader>
                 <AutoColumn gap="16px" style={{ padding: '20px' }}>
                   {data ? (
@@ -589,7 +583,7 @@ export default function AccountPage(): JSX.Element {
               </Wrapper>
             </AutoColumn>
 
-            <AutoColumn gap="1.5rem">
+            <AutoColumn gap="16px">
               <TYPE.label fontSize="18px">Transactions</TYPE.label>
               <TransactionTable transactions={transactions.data} />
             </AutoColumn>
