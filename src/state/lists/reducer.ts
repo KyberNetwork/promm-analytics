@@ -4,7 +4,7 @@ import { getVersionUpgrade, VersionUpgrade } from '@uniswap/token-lists'
 import { TokenList } from '@uniswap/token-lists/dist/types'
 import { DEFAULT_LIST_OF_LISTS } from '../../constants/lists'
 import { updateVersion } from '../global/actions'
-import { acceptListUpdate, addList, fetchTokenList, removeList, enableList, disableList } from './actions'
+import { acceptListUpdate, addList, fetchTokenList, removeList } from './actions'
 
 export interface ListsState {
   readonly byUrl: {
@@ -114,24 +114,24 @@ export default createReducer(initialState, (builder) =>
         state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
       }
     })
-    .addCase(enableList, (state, { payload: url }) => {
-      if (!state.byUrl[url]) {
-        state.byUrl[url] = NEW_LIST_STATE
-      }
+    // .addCase(enableList, (state, { payload: url }) => {
+    //   if (!state.byUrl[url]) {
+    //     state.byUrl[url] = NEW_LIST_STATE
+    //   }
 
-      if (state.activeListUrls && !state.activeListUrls.includes(url)) {
-        state.activeListUrls.push(url)
-      }
+    //   if (state.activeListUrls && !state.activeListUrls.includes(url)) {
+    //     state.activeListUrls.push(url)
+    //   }
 
-      if (!state.activeListUrls) {
-        state.activeListUrls = [url]
-      }
-    })
-    .addCase(disableList, (state, { payload: url }) => {
-      if (state.activeListUrls && state.activeListUrls.includes(url)) {
-        state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
-      }
-    })
+    //   if (!state.activeListUrls) {
+    //     state.activeListUrls = [url]
+    //   }
+    // })
+    // .addCase(disableList, (state, { payload: url }) => {
+    //   if (state.activeListUrls && state.activeListUrls.includes(url)) {
+    //     state.activeListUrls = state.activeListUrls.filter((u) => u !== url)
+    //   }
+    // })
     .addCase(acceptListUpdate, (state, { payload: url }) => {
       if (!state.byUrl[url]?.pendingUpdate) {
         throw new Error('accept list update called without pending update')
@@ -147,7 +147,7 @@ export default createReducer(initialState, (builder) =>
       if (!state.lastInitializedDefaultListOfLists) {
         state.byUrl = initialState.byUrl
         state.activeListUrls = initialState.activeListUrls
-      } else if (state.lastInitializedDefaultListOfLists) {
+      } else {
         const lastInitializedSet = state.lastInitializedDefaultListOfLists.reduce<Set<string>>(
           (s, l) => s.add(l),
           new Set()

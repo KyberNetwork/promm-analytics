@@ -49,7 +49,7 @@ const LineChart = ({
   height = DEFAULT_HEIGHT,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   // theming
   const theme = useTheme()
   const textColor = theme.text2
@@ -191,7 +191,7 @@ const LineChart = ({
         {topLeft ?? null}
         {topRight ?? null}
       </RowBetween>
-      <div ref={chartRef} id={'line-chart'} {...rest} />
+      <div ref={chartRef} id="line-chart" {...rest} />
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

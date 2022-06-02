@@ -5,12 +5,13 @@ import { fetchTokenList } from '../state/lists/actions'
 import getTokenList from '../utils/getTokenList'
 import { useAppDispatch } from './useAppDispatch'
 
-export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
+export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList | null> {
   const dispatch = useAppDispatch()
 
   // note: prevent dispatch if using for list search or unsupported list
   return useCallback(
     async (listUrl: string, sendDispatch = true) => {
+      if (!listUrl) return null
       const requestId = nanoid()
       sendDispatch && dispatch(fetchTokenList.pending({ requestId, url: listUrl }))
       return getTokenList(listUrl)

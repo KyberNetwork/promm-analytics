@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DiscordIcon = ({ width, height, color }: { width?: number; height?: number; color?: string }) => {
+const DiscordIcon = ({ width, height, color }: { width?: number; height?: number; color?: string }): JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width || 18} height={height || 14} viewBox="0 0 18 14">
       <g fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">

@@ -1,18 +1,12 @@
 import { getAddress } from '@ethersproject/address'
-import { BigNumber } from '@ethersproject/bignumber'
-import { AddressZero } from '@ethersproject/constants'
-import { Contract } from '@ethersproject/contracts'
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
-import { Currency, CurrencyAmount, Fraction, Percent, Token } from '@uniswap/sdk-core'
-import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { SupportedChainId } from 'constants/chains'
-import { ArbitrumNetworkInfo, NetworkInfo, PolygonNetworkInfo, RinkebyNetworkInfo } from 'constants/networks'
-import JSBI from 'jsbi'
-import { ROUTER_ADDRESS } from '../constants'
-import { TokenAddressMap } from '../state/lists/hooks'
+import { NetworkInfo } from 'constants/networks'
+import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
+import dayjs from 'dayjs'
+import Numeral from 'numeral'
 
 // returns the checksummed address if the address is valid, otherwise returns false
-export function isAddress(value: any): string | false {
+export function isAddress(value: string | undefined): string | false {
+  if (typeof value === 'undefined') return false
   try {
     return getAddress(value)
   } catch {
@@ -20,67 +14,40 @@ export function isAddress(value: any): string | false {
   }
 }
 
-const ETHERSCAN_PREFIXES: { [chainId: number]: string } = {
-  [SupportedChainId.MAINNET]: '',
-  [SupportedChainId.ROPSTEN]: 'ropsten.',
-  [SupportedChainId.RINKEBY]: 'rinkeby.',
-  [SupportedChainId.GOERLI]: 'goerli.',
-  [SupportedChainId.KOVAN]: 'kovan.',
-  [SupportedChainId.OPTIMISM]: 'optimistic.',
-  [SupportedChainId.OPTIMISTIC_KOVAN]: 'kovan-optimistic.',
-}
-
 export function getEtherscanLink(
-  chainId: number,
+  networkInfo: NetworkInfo,
   data: string,
-  type: 'transaction' | 'token' | 'address' | 'block',
-  networkVersion: NetworkInfo
+  type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-  const prefix =
-    networkVersion === PolygonNetworkInfo
-      ? 'https://polygonscan.com/'
-      : networkVersion === ArbitrumNetworkInfo
-      ? 'https://arbiscan.io/'
-      : networkVersion === RinkebyNetworkInfo
-      ? `https://rinkeby.etherscan.io`
-      : `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
-
-  if (networkVersion === ArbitrumNetworkInfo) {
-    switch (type) {
-      case 'transaction': {
-        return `${prefix}/tx/${data}`
-      }
-      case 'token': {
-        return `${prefix}/address/${data}`
-      }
-      case 'block': {
-        return 'https://arbiscan.io/'
-      }
-      case 'address':
-      default: {
-        return `${prefix}/address/${data}`
-      }
-    }
-  }
-
   switch (type) {
     case 'transaction': {
-      return `${prefix}/tx/${data}`
+      return `${networkInfo.etherscanUrl}/tx/${data}`
     }
     case 'token': {
-      return `${prefix}/token/${data}`
+      return `${networkInfo.etherscanUrl}/token/${data}`
     }
     case 'block': {
-      return `${prefix}/block/${data}`
+      return `${networkInfo.etherscanUrl}/block/${data}`
     }
     case 'address':
     default: {
-      return `${prefix}/address/${data}`
+      return `${networkInfo.etherscanUrl}/address/${data}`
     }
   }
 }
 
-export const currentTimestamp = () => new Date().getTime()
+export const toK = (num: number | string): string => {
+  return Numeral(num).format('0.[00]a')
+}
+
+export const toNiceDate = (date: number): string => {
+  const x = dayjs.utc(dayjs.unix(date)).format('MMM DD')
+  return x
+}
+
+export const toNiceDateYear = (date: number): string => dayjs.utc(dayjs.unix(date)).format('MMMM DD h:mm A, YYYY')
+
+export const currentTimestamp = (): number => new Date().getTime()
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chars = 4): string {
@@ -91,51 +58,8 @@ export function shortenAddress(address: string, chars = 4): string {
   return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
 }
 
-// add 10%
-export function calculateGasMargin(value: BigNumber): BigNumber {
-  return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))
-}
-
-// converts a basis points value to a sdk percent
-export function basisPointsToPercent(num: number): Percent {
-  return new Percent(JSBI.BigInt(num), JSBI.BigInt(10000))
-}
-
-const ONE = new Fraction(1, 1)
-export function calculateSlippageAmount(value: CurrencyAmount<Currency>, slippage: Percent): [JSBI, JSBI] {
-  if (slippage.lessThan(0) || slippage.greaterThan(ONE)) throw new Error('Unexpected slippage')
-  return [value.multiply(ONE.subtract(slippage)).quotient, value.multiply(ONE.add(slippage)).quotient]
-}
-// account is not optional
-export function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
-  return library.getSigner(account).connectUnchecked()
-}
-
-// account is optional
-export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
-  return account ? getSigner(library, account) : library
-}
-
-// account is optional
-export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract {
-  if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
-
-  return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
-}
-
-// account is optional
-export function getRouterContract(_: number, library: Web3Provider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS, IUniswapV2Router02ABI, library, account)
-}
-
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
-}
-
-export function isTokenOnList(tokenAddressMap: TokenAddressMap, token?: Token): boolean {
-  return Boolean(token?.isToken && tokenAddressMap[token.chainId]?.[token.address])
 }
 
 export function feeTierPercent(fee: number): string {
@@ -144,4 +68,99 @@ export function feeTierPercent(fee: number): string {
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined
+}
+
+export function isAllChain(networkInfos: NetworkInfo[]): boolean {
+  return networkInfos.length > 1
+}
+
+export function getTimeframe(timeWindow: TimeframeOptions): number {
+  const utcEndTime = dayjs.utc()
+  // based on window, get starttime
+  let utcStartTime
+  switch (timeWindow) {
+    case TimeframeOptions.ONE_DAY:
+      utcStartTime = utcEndTime.subtract(1, 'day').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.THERE_DAYS:
+      utcStartTime = utcEndTime.subtract(3, 'day').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.WEEK:
+      utcStartTime = utcEndTime.subtract(1, 'week').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.MONTH:
+      utcStartTime = utcEndTime.subtract(1, 'month').endOf('day').unix() - 1
+      break
+    case TimeframeOptions.ALL_TIME:
+      utcStartTime = utcEndTime.subtract(1, 'year').endOf('day').unix() - 1
+      break
+    default:
+      utcStartTime = utcEndTime.subtract(1, 'year').startOf('year').unix() - 1
+      break
+  }
+  return utcStartTime
+}
+
+export function addNetworkIdQueryString(url: string, networkInfo: NetworkInfo): string {
+  if (url.includes('?')) {
+    return `${url}&networkId=${networkInfo.chainId}`
+  }
+
+  return `${url}?networkId=${networkInfo.chainId}`
+}
+
+export function getPoolLink(
+  token0Address: string,
+  networkInfo: NetworkInfo,
+  token1Address?: string,
+  remove = false,
+  poolAddress?: string
+): string {
+  const nativeTokenSymbol = networkInfo.nativeToken.symbol
+
+  if (poolAddress) {
+    if (!token1Address) {
+      return addNetworkIdQueryString(
+        process.env.REACT_APP_DMM_SWAP_URL +
+          'promm/' +
+          (remove ? `remove` : `add`) + //todo namgold: complete this
+          `/${
+            token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
+          }/${nativeTokenSymbol}/${poolAddress}`,
+        networkInfo
+      )
+    } else {
+      return addNetworkIdQueryString(
+        process.env.REACT_APP_DMM_SWAP_URL +
+          'promm/' +
+          (remove ? `remove` : `add`) +
+          `/${token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address}/${
+            token1Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token1Address
+          }/${poolAddress}`,
+        networkInfo
+      )
+    }
+  }
+
+  if (!token1Address) {
+    return addNetworkIdQueryString(
+      process.env.REACT_APP_DMM_SWAP_URL +
+        'promm/' +
+        (remove ? `remove` : `add`) +
+        `/${
+          token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
+        }/${nativeTokenSymbol}`,
+      networkInfo
+    )
+  } else {
+    return addNetworkIdQueryString(
+      process.env.REACT_APP_DMM_SWAP_URL +
+        'promm/' +
+        (remove ? `remove` : `add`) +
+        `/${token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address}/${
+          token1Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token1Address
+        }`,
+      networkInfo
+    )
+  }
 }

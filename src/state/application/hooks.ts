@@ -1,27 +1,10 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import {
-  arbitrumBlockClient,
-  arbitrumClient,
-  blockClient,
-  client,
-  polygonBlockClient,
-  polygonClient,
-  rinkebyClient,
-  rinkebyBlockClient,
-} from 'apollo/client'
-import { EthereumNetworkInfo, NetworkInfo, SupportedNetwork, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks'
+import { NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
-import { useActiveWeb3React } from '../../hooks'
+import { isAllChain } from 'utils'
 import { AppDispatch, AppState } from '../index'
-import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, updateSubgraphStatus } from './actions'
-
-export function useBlockNumber(): number | undefined {
-  const { chainId } = useActiveWeb3React()
-
-  return useSelector((state: AppState) => state.application.blockNumber[chainId ?? -1])
-}
+import { ApplicationModal, setOpenModal, updateSubgraphStatus } from './actions'
 
 export function useModalOpen(modal: ApplicationModal): boolean {
   const openModal = useSelector((state: AppState) => state.application.openModal)
@@ -42,43 +25,6 @@ export function useOpenModal(modal: ApplicationModal): () => void {
 export function useCloseModals(): () => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
-}
-
-export function useWalletModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.WALLET)
-}
-
-export function useToggleSettingsMenu(): () => void {
-  return useToggleModal(ApplicationModal.SETTINGS)
-}
-
-// returns a function that allows adding a popup
-export function useAddPopup(): (content: PopupContent, key?: string) => void {
-  const dispatch = useDispatch()
-
-  return useCallback(
-    (content: PopupContent, key?: string) => {
-      dispatch(addPopup({ content, key }))
-    },
-    [dispatch]
-  )
-}
-
-// returns a function that allows removing a popup via its key
-export function useRemovePopup(): (key: string) => void {
-  const dispatch = useDispatch()
-  return useCallback(
-    (key: string) => {
-      dispatch(removePopup({ key }))
-    },
-    [dispatch]
-  )
-}
-
-// get the list of active popups
-export function useActivePopups(): AppState['application']['popupList'] {
-  const list = useSelector((state: AppState) => state.application.popupList)
-  return useMemo(() => list.filter((item) => item.show), [list])
 }
 
 // returns a function that allows adding a popup
@@ -102,51 +48,15 @@ export function useSubgraphStatus(): [
   return [status, update]
 }
 
-export function useActiveNetworkVersion(): NetworkInfo {
-  const location = useLocation()
-
-  const network = useMemo(() => {
-    return (
-      SUPPORTED_NETWORK_VERSIONS.find((n) => {
-        return location.pathname.includes(n.route.toLocaleLowerCase())
-      }) || EthereumNetworkInfo
-    )
-  }, [location.pathname])
-
-  return network
+export function useActiveNetworks(): NetworkInfo[] {
+  const activeNetworksId = useSelector((state: AppState) => state.application.activeNetworksId)
+  return useMemo(() => activeNetworksId.map((id) => NETWORKS_INFO_MAP[id]), [activeNetworksId])
 }
 
-// get the apollo client related to the active network
-export function useDataClient(): ApolloClient<NormalizedCacheObject> {
-  const activeNetwork = useActiveNetworkVersion()
-  switch (activeNetwork.id) {
-    case SupportedNetwork.ETHEREUM:
-      return client
-    case SupportedNetwork.ARBITRUM:
-      return arbitrumClient
-    case SupportedNetwork.POLYGON:
-      return polygonClient
-    case SupportedNetwork.RINKEBY:
-      return rinkebyClient
-    default:
-      return client
-  }
-}
-
-// get the apollo client related to the active network for fetching blocks
-export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
-  const activeNetwork = useActiveNetworkVersion()
-  switch (activeNetwork.id) {
-    case SupportedNetwork.ETHEREUM:
-      return blockClient
-    case SupportedNetwork.ARBITRUM:
-      return arbitrumBlockClient
-    case SupportedNetwork.POLYGON:
-      return polygonBlockClient
-    case SupportedNetwork.RINKEBY:
-      return rinkebyBlockClient
-    default:
-      return blockClient
+export function useActiveNetworkUtils(): { isAllChain: boolean } {
+  const activeNetworks = useActiveNetworks()
+  return {
+    isAllChain: isAllChain(activeNetworks),
   }
 }
 
@@ -154,11 +64,13 @@ export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
 export function useClients(): {
   dataClient: ApolloClient<NormalizedCacheObject>
   blockClient: ApolloClient<NormalizedCacheObject>
-} {
-  const dataClient = useDataClient()
-  const blockClient = useBlockClient()
-  return {
-    dataClient,
-    blockClient,
-  }
+}[] {
+  const activeNetwork = useActiveNetworks()
+
+  // const dataClient = activeNetwork.map((network) => network.client)
+  // const blockClient = activeNetwork.map((network) => network.blockClient)
+  return activeNetwork.map((network) => ({
+    dataClient: network.client,
+    blockClient: network.blockClient,
+  }))
 }

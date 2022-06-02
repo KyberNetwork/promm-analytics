@@ -1,80 +1,56 @@
-import { createReducer, nanoid } from '@reduxjs/toolkit'
-import {
-  addPopup,
-  PopupContent,
-  removePopup,
-  updateBlockNumber,
-  updateSubgraphStatus,
-  ApplicationModal,
-  setOpenModal,
-} from './actions'
-
-type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
+import { createReducer } from '@reduxjs/toolkit'
+import { ChainId, ALL_SUPPORT_NETWORKS_ID, SHOW_NETWORKS } from 'constants/networks'
+import { updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal, updateActiveNetwork } from './actions'
 
 export interface ApplicationState {
-  readonly blockNumber: { readonly [chainId: number]: number }
-  readonly popupList: PopupList
+  readonly blockNumber: { readonly [chainId in ChainId]?: number }
   readonly openModal: ApplicationModal | null
   readonly subgraphStatus: {
     available: boolean | null
     syncedBlock: number | undefined
     headBlock: number | undefined
   }
-  // readonly activeNetworkVersion: NetworkInfo
+  activeNetworksId: ChainId[]
 }
 
 const initialState: ApplicationState = {
   blockNumber: {},
-  popupList: [],
   openModal: null,
   subgraphStatus: {
     available: null,
     syncedBlock: undefined,
     headBlock: undefined,
   },
-  // activeNetworkVersion: EthereumNetworkInfo,
+  activeNetworksId: [SHOW_NETWORKS[0]],
 }
 
-export default createReducer(
-  initialState,
-  (builder) =>
-    builder
-      .addCase(updateBlockNumber, (state, action) => {
-        const { chainId, blockNumber } = action.payload
-        if (typeof state.blockNumber[chainId] !== 'number') {
-          state.blockNumber[chainId] = blockNumber
-        } else {
-          state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId])
+export default createReducer(initialState, (builder) =>
+  builder
+    .addCase(updateBlockNumber, (state, action) => {
+      const { chainId, blockNumber } = action.payload
+      state.blockNumber[chainId] = Math.max(blockNumber, state.blockNumber[chainId] || 0)
+    })
+    .addCase(setOpenModal, (state, action) => {
+      state.openModal = action.payload
+    })
+    .addCase(updateActiveNetwork, (state, action) => {
+      const { chainId } = action.payload
+      if (chainId === 'allchain') {
+        return {
+          ...state,
+          activeNetworksId: ALL_SUPPORT_NETWORKS_ID,
         }
-      })
-      .addCase(setOpenModal, (state, action) => {
-        state.openModal = action.payload
-      })
-      .addCase(addPopup, (state, { payload: { content, key, removeAfterMs = 15000 } }) => {
-        state.popupList = (key ? state.popupList.filter((popup) => popup.key !== key) : state.popupList).concat([
-          {
-            key: key || nanoid(),
-            show: true,
-            content,
-            removeAfterMs,
-          },
-        ])
-      })
-      .addCase(removePopup, (state, { payload: { key } }) => {
-        state.popupList.forEach((p) => {
-          if (p.key === key) {
-            p.show = false
-          }
-        })
-      })
-      .addCase(updateSubgraphStatus, (state, { payload: { available, syncedBlock, headBlock } }) => {
-        state.subgraphStatus = {
-          available,
-          syncedBlock,
-          headBlock,
-        }
-      })
-  // .addCase(updateActiveNetworkVersion, (state, { payload: { activeNetworkVersion } }) => {
-  //   state.activeNetworkVersion = activeNetworkVersion
-  // })
+      }
+      return {
+        ...state,
+        activeNetworksId: [chainId as ChainId],
+      }
+    })
+    .addCase(updateSubgraphStatus, (state, { payload: { available, syncedBlock, headBlock } }) => {
+      state.subgraphStatus = {
+        available,
+        syncedBlock,
+        headBlock,
+      }
+    })
 )

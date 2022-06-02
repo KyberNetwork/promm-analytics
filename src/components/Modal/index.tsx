@@ -11,14 +11,14 @@ const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
   &[data-reach-dialog-overlay] {
-    z-index: 2;
+    z-index: 20;
     background-color: transparent;
     overflow: hidden;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
+    z-index: 100;
     background-color: ${({ theme }) => theme.modalBG};
   }
 `
@@ -94,7 +94,7 @@ export default function Modal({
   maxWidth = 420,
   initialFocusRef,
   children,
-}: ModalProps) {
+}: ModalProps): JSX.Element {
   const fadeTransition = useTransition(isOpen, null, {
     config: { duration: 200 },
     from: { opacity: 0 },

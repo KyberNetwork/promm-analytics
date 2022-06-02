@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import { TYPE } from 'theme'
 
 // responsive text
-export const Label = styled(TYPE.label)<{ end?: number }>`
+export const Label = styled(TYPE.label)<{ end?: number; fontSize?: number }>`
   display: flex;
-  font-size: 14px;
+  font-size: ${({ fontSize }) => fontSize || 14}px;
   font-weight: 400;
   justify-content: ${({ end }) => (end ? 'flex-end' : 'flex-start')};
   align-items: center;
@@ -14,13 +14,19 @@ export const Label = styled(TYPE.label)<{ end?: number }>`
   }
 `
 
-export const ClickableText = styled(Label)`
-  text-align: end;
+export const TableTitle = styled(TYPE.title)<{ end?: boolean }>`
+  user-select: none;
+  text-transform: uppercase;
+
+  ${({ end }) =>
+    end &&
+    `display: flex;
+    justify-content: flex-end;`}
+`
+
+export const ClickableText = styled(TableTitle)`
   &:hover {
     cursor: pointer;
     opacity: 0.6;
   }
-  user-select: none;
-  font-size: 12px;
-  text-transform: uppercase;
 `

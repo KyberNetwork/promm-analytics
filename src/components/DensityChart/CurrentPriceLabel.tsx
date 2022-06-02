@@ -28,7 +28,7 @@ interface CurrentPriceLabelProps {
   poolData: PoolData
 }
 
-export function CurrentPriceLabel({ data, chartProps, poolData }: CurrentPriceLabelProps) {
+export function CurrentPriceLabel({ data, chartProps, poolData }: CurrentPriceLabelProps): JSX.Element | null {
   const theme = useTheme()
   const labelData = chartProps as LabelProps
   const entryData = data?.[labelData.index]
@@ -37,7 +37,7 @@ export function CurrentPriceLabel({ data, chartProps, poolData }: CurrentPriceLa
     const price1 = entryData.price1
     return (
       <g>
-        <foreignObject x={labelData.x - 80} y={318} width={'100%'} height={100}>
+        <foreignObject x={labelData.x - 80} y={318} width="100%" height={100}>
           <Wrapper>
             <AutoColumn gap="6px">
               <RowFixed align="center">

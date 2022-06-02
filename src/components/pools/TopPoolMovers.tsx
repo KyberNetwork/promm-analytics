@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { ScrollableX, GreyCard, GreyBadge } from 'components/Card'
-import Loader from 'components/Loader'
 import { AutoColumn } from 'components/Column'
 import { RowFixed } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -12,6 +11,7 @@ import { PoolData } from 'state/pools/reducer'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import HoverInlineText from 'components/HoverInlineText'
 import { feeTierPercent } from 'utils'
+import { useActiveNetworks } from 'state/application/hooks'
 
 const Container = styled(StyledInternalLink)`
   min-width: 210px;
@@ -28,12 +28,18 @@ const Wrapper = styled(GreyCard)`
 `
 
 const DataCard = ({ poolData }: { poolData: PoolData }) => {
+  const activeNetwork = useActiveNetworks()[0] // TODO namgold: handle all chain view
   return (
-    <Container to={'pools/' + poolData.address}>
+    <Container to={'pool/' + poolData.address}>
       <Wrapper>
         <AutoColumn gap="sm">
           <RowFixed>
-            <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} size={16} />
+            <DoubleCurrencyLogo
+              address0={poolData.token0.address}
+              address1={poolData.token1.address}
+              size={16}
+              activeNetwork={activeNetwork}
+            />
             <TYPE.label ml="8px">
               <HoverInlineText maxCharacters={10} text={`${poolData.token0.symbol}/${poolData.token1.symbol}`} />
             </TYPE.label>
@@ -43,7 +49,7 @@ const DataCard = ({ poolData }: { poolData: PoolData }) => {
           </RowFixed>
           <RowFixed>
             <TYPE.label mr="6px">{formatDollarAmount(poolData.volumeUSD)}</TYPE.label>
-            <Percent fontSize="14px" value={poolData.volumeUSDChange} />
+            <Percent value={poolData.volumeUSDChange} />
           </RowFixed>
         </AutoColumn>
       </Wrapper>
@@ -51,26 +57,27 @@ const DataCard = ({ poolData }: { poolData: PoolData }) => {
   )
 }
 
-export default function TopPoolMovers() {
-  const allPools = useAllPoolData()
+// export default function TopPoolMovers(): JSX.Element {
+//   const allPools = useAllPoolData()
 
-  const topVolume = useMemo(() => {
-    return Object.values(allPools)
-      .sort(({ data: a }, { data: b }) => {
-        return a && b ? (a?.volumeUSDChange > b?.volumeUSDChange ? -1 : 1) : -1
-      })
-      .slice(0, Math.min(20, Object.values(allPools).length))
-  }, [allPools])
+//   const topVolume = useMemo(() => {
+//     return Object.values(allPools)
+//       .sort(({ data: a }, { data: b }) => {
+//         return a && b ? (a?.volumeUSDChange > b?.volumeUSDChange ? -1 : 1) : -1
+//       })
+//       .slice(0, Math.min(20, Object.values(allPools).length))
+//   }, [allPools])
 
-  if (Object.keys(allPools).length === 0) {
-    return <Loader />
-  }
+//   if (Object.keys(allPools).length === 0) {
+//     return <Loader />
+//   }
 
-  return (
-    <ScrollableX>
-      {topVolume.map((entry) =>
-        entry.data ? <DataCard key={'top-card-pool-' + entry.data.address} poolData={entry.data} /> : null
-      )}
-    </ScrollableX>
-  )
-}
+//   return (
+//     <ScrollableX>
+//       {topVolume.map((entry) =>
+//         entry.data ? <DataCard key={'top-card-pool-' + entry.data.address} poolData={entry.data} /> : null
+//       )}
+//     </ScrollableX>
+//   )
+// }
+// deprecated

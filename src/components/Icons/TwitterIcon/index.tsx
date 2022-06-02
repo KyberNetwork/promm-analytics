@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TwitterIcon = ({ width, height, color }: { width?: number; height?: number; color?: string }) => {
+const TwitterIcon = ({ width, height, color }: { width?: number; height?: number; color?: string }): JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width || 15} height={height || 13} viewBox="0 0 15 13">
       <g fill="none" fillRule="evenodd">

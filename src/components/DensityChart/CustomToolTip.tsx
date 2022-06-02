@@ -22,7 +22,7 @@ interface CustomToolTipProps {
   currentPrice: number | undefined
 }
 
-export function CustomToolTip({ chartProps, poolData, currentPrice }: CustomToolTipProps) {
+export function CustomToolTip({ chartProps, poolData, currentPrice }: CustomToolTipProps): JSX.Element {
   const theme = useTheme()
   const price0 = chartProps?.payload?.[0]?.payload.price0
   const price1 = chartProps?.payload?.[0]?.payload.price1
@@ -55,7 +55,7 @@ export function CustomToolTip({ chartProps, poolData, currentPrice }: CustomTool
             {poolData?.token0?.symbol}
           </TYPE.label>
         </RowBetween>
-        {currentPrice && price0 && currentPrice > price1 ? (
+        {currentPrice && price0 && (currentPrice < 1 ? 1 / currentPrice < price0 : currentPrice > price1) ? (
           <RowBetween>
             <TYPE.label>{poolData?.token0?.symbol} Locked: </TYPE.label>
             <TYPE.label>

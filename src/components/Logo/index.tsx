@@ -9,11 +9,15 @@ export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className
   srcs: string[]
 }
 
+const WhiteHelpCircle = styled(HelpCircle)`
+  background-color: ${({ theme }) => theme.white};
+`
+
 /**
  * Renders an image by sequentially trying a list of URIs, and then eventually a fallback triangle alert
  */
-export default function Logo({ srcs, alt, ...rest }: LogoProps) {
-  const [, refresh] = useState<number>(0)
+export default function Logo({ srcs, alt, ...rest }: LogoProps): JSX.Element {
+  const [refreshTimes, setRefresh] = useState<number>(0)
 
   const src: string | undefined = srcs.find((src) => !BAD_SRCS[src])
 
@@ -25,16 +29,14 @@ export default function Logo({ srcs, alt, ...rest }: LogoProps) {
         src={src}
         onError={() => {
           if (src) BAD_SRCS[src] = true
-          refresh((i) => i + 1)
+          setTimeout(() => setRefresh((i) => i + 1), refreshTimes * 100)
+        }}
+        onLoad={() => {
+          setRefresh(0)
         }}
       />
     )
   }
 
-  return <HelpCircle {...rest} />
+  return <WhiteHelpCircle {...rest} />
 }
-
-export const GenericImageWrapper = styled.img<{ size?: string }>`
-  width: ${({ size }) => size ?? '20px'};
-  height: ${({ size }) => size ?? '20px'};
-`

@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Percent, Token } from '@uniswap/sdk-core'
 import JSBI from 'jsbi'
-import { AbstractConnector } from '@web3-react/abstract-connector'
 
 export const FACTORY_ADDRESS = '0xFeabCc62240297F1e4b238937D68e7516f0918D7'
 
@@ -12,9 +11,9 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const MAX_UINT128 = BigNumber.from(2).pow(128).sub(1)
 
 // a list of tokens by chain
-type ChainTokenList = {
-  readonly [chainId: number]: Token[]
-}
+// type ChainTokenList = {
+//   readonly [chainId: number]: Token[]
+// }
 
 export const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
@@ -41,17 +40,17 @@ export const POOL_HIDE = [
   '0x8fe8d9bb8eeba3ed688069c3d6b556c9ca258248',
 ]
 
-export interface WalletInfo {
-  connector?: AbstractConnector
-  name: string
-  iconName: string
-  description: string
-  href: string | null
-  color: string
-  primary?: true
-  mobile?: true
-  mobileOnly?: true
-}
+// export interface WalletInfo {
+//   connector?: AbstractConnector
+//   name: string
+//   iconName: string
+//   description: string
+//   href: string | null
+//   color: string
+//   primary?: true
+//   mobile?: true
+//   mobileOnly?: true
+// }
 
 export const NetworkContextName = 'NETWORK'
 

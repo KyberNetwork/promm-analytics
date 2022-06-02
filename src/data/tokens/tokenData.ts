@@ -7,7 +7,7 @@ import { get2DayChange } from 'utils/data'
 import { TokenData } from 'state/tokens/reducer'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { formatTokenSymbol, formatTokenName } from 'utils/tokens'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 
 export const TOKENS_BULK = (block: number | undefined, tokens: string[]) => {
   let tokenString = `[`
@@ -71,8 +71,8 @@ export function useFetchedTokenDatas(
       }
     | undefined
 } {
-  const activeNetwork = useActiveNetworkVersion()
-  const { dataClient } = useClients()
+  const activeNetworks = useActiveNetworks()[0]
+  const { dataClient } = useClients()[0]
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = useDeltaTimestamps()
@@ -86,21 +86,21 @@ export function useFetchedTokenDatas(
   })
 
   const { loading: loading24, error: error24, data: data24 } = useQuery<TokenDataResponse>(
-    TOKENS_BULK(parseInt(block24?.number), tokenAddresses),
+    TOKENS_BULK(block24?.number, tokenAddresses),
     {
       client: dataClient,
     }
   )
 
   const { loading: loading48, error: error48, data: data48 } = useQuery<TokenDataResponse>(
-    TOKENS_BULK(parseInt(block48?.number), tokenAddresses),
+    TOKENS_BULK(block48?.number, tokenAddresses),
     {
       client: dataClient,
     }
   )
 
   const { loading: loadingWeek, error: errorWeek, data: dataWeek } = useQuery<TokenDataResponse>(
-    TOKENS_BULK(parseInt(blockWeek?.number), tokenAddresses),
+    TOKENS_BULK(blockWeek?.number, tokenAddresses),
     {
       client: dataClient,
     }
@@ -164,6 +164,12 @@ export function useFetchedTokenDatas(
         : current
         ? [parseFloat(current.volumeUSD), 0]
         : [0, 0]
+    const [feesUSD, feesUSDChange] =
+      current && oneDay && twoDay
+        ? get2DayChange(current.feesUSD, oneDay.feesUSD, twoDay.feesUSD)
+        : current
+        ? [parseFloat(current.feesUSD), 0]
+        : [0, 0]
 
     const volumeUSDWeek =
       current && week
@@ -188,24 +194,19 @@ export function useFetchedTokenDatas(
         : current
         ? parseFloat(current.txCount)
         : 0
-    const feesUSD =
-      current && oneDay
-        ? parseFloat(current.feesUSD) - parseFloat(oneDay.feesUSD)
-        : current
-        ? parseFloat(current.feesUSD)
-        : 0
 
     accum[address] = {
       exists: !!current,
       address,
-      name: current ? formatTokenName(address, current.name, activeNetwork) : '',
-      symbol: current ? formatTokenSymbol(address, current.symbol, activeNetwork) : '',
+      name: current ? formatTokenName(address, current.name, activeNetworks) : '',
+      symbol: current ? formatTokenSymbol(address, current.symbol, activeNetworks) : '',
       volumeUSD,
       volumeUSDChange,
       volumeUSDWeek,
       txCount,
       tvlUSD,
       feesUSD,
+      feesUSDChange,
       tvlUSDChange,
       tvlToken,
       priceUSD,

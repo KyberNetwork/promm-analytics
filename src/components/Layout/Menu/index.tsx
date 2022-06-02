@@ -1,15 +1,16 @@
 import React, { useRef } from 'react'
-import { Menu as MenuIcon, TrendingUp, Disc, PieChart, Repeat, Activity } from 'react-feather'
+import { Menu as MenuIcon, Repeat, Activity } from 'react-feather'
 import styled from 'styled-components'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
-import { useModalOpen, useToggleModal, useActiveNetworkVersion } from 'state/application/hooks'
+import { useModalOpen, useToggleModal, useActiveNetworks } from 'state/application/hooks'
 
 import { useLocation } from 'react-router-dom'
 import { networkPrefix } from 'utils/networkPrefix'
 import { MenuItem, ExternalMenu, Divider, ExternalLink } from '../styled'
 import ThemeToggle from 'components/ThemeToggle'
 import SocialLinks from 'components/SocialLinks'
+import Wallet from 'components/Icons/Wallet'
 
 const StyledMenuIcon = styled(MenuIcon)`
   stroke: ${({ theme }) => theme.text};
@@ -61,48 +62,53 @@ const MenuFlyout = styled.span`
   gap: 20px;
 `
 
-export default function Menu() {
-  const node = useRef<HTMLDivElement>()
+export default function Menu(): JSX.Element {
+  const node = useRef<HTMLDivElement>(null)
   const open = useModalOpen(ApplicationModal.MENU)
   const toggle = useToggleModal(ApplicationModal.MENU)
   useOnClickOutside(node, open ? toggle : undefined)
   const { pathname } = useLocation()
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetworks = useActiveNetworks()[0]
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
-    <StyledMenu ref={node as any}>
+    <StyledMenu ref={node}>
       <StyledMenuButton onClick={toggle}>
         <StyledMenuIcon />
       </StyledMenuButton>
 
       {open && (
         <MenuFlyout>
-          <MenuItem to="/" isActive={pathname === '/'}>
+          {/* <MenuItem to="/" isActive={pathname === '/'}>
             <TrendingUp size={16} />
             Summary
           </MenuItem>
 
-          <MenuItem to={networkPrefix(activeNetwork) + 'tokens'} isActive={pathname.includes('tokens')}>
+          <MenuItem to={networkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('tokens')}>
             <Disc size={16} />
             Tokens
           </MenuItem>
 
-          <MenuItem to={networkPrefix(activeNetwork) + 'pools'} isActive={pathname.includes('pools')}>
-            <PieChart size={16} />
+          <MenuItem to={networkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
+            <Droplet size={16} />
             Pools
+          </MenuItem>
+        */}
+          <MenuItem to={networkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
+            <Wallet />
+            Wallet Analytics
           </MenuItem>
 
           <Divider />
 
-          <ExternalMenu href={'https://kyberswap.com'}>
+          <ExternalMenu href="https://kyberswap.com">
             <Repeat size={16} />
             Swap
           </ExternalMenu>
 
-          <ExternalMenu href={'https://analytics.kyberswap.com'}>
+          <ExternalMenu href="https://analytics.kyberswap.com">
             <Activity size={16} />
-            V1 Analytics
+            Classic Analytics
           </ExternalMenu>
 
           <Divider />
@@ -110,7 +116,7 @@ export default function Menu() {
           <div>
             <ThemeToggle />
             <SocialLinks />
-            <ExternalLink href="https://kyber.network">KyberNetwork</ExternalLink>
+            <ExternalLink href="https://kyber.network">Kyber Network</ExternalLink>
           </div>
         </MenuFlyout>
       )}

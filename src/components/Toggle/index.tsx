@@ -40,7 +40,7 @@ export interface ToggleProps {
   toggle: () => void
 }
 
-export default function Toggle({ id, isActive, toggle }: ToggleProps) {
+export default function Toggle({ id, isActive, toggle }: ToggleProps): JSX.Element {
   return (
     <StyledToggle id={id} isActive={isActive} onClick={toggle}>
       <ToggleElement isActive={isActive} isOnSwitch={true}>
@@ -64,6 +64,7 @@ export const ToggleWrapper = styled.button<{ width?: string }>`
   cursor: pointer;
   outline: none;
   color: ${({ theme }) => theme.text};
+  height: 26px;
 
 `
 

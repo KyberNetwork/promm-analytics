@@ -10,7 +10,7 @@ export default function FormattedCurrencyAmount({
 }: {
   currencyAmount: CurrencyAmount<Token>
   significantDigits?: number
-}) {
+}): JSX.Element {
   return (
     <>
       {currencyAmount.equalTo(JSBI.BigInt(0))

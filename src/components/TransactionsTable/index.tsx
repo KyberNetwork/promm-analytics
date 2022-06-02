@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { DarkGreyCard } from 'components/Card'
-import Loader from 'components/Loader'
 import { AutoColumn } from 'components/Column'
 import { formatDollarAmount, formatAmount } from 'utils/numbers'
 import { shortenAddress, getEtherscanLink } from 'utils'
@@ -12,7 +11,7 @@ import { ExternalLink, TYPE } from 'theme'
 import { PageButtons, Arrow, Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
 import HoverInlineText from 'components/HoverInlineText'
-import { useActiveNetworkVersion } from 'state/application/hooks'
+import { useActiveNetworks } from 'state/application/hooks'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle'
 
 const Wrapper = styled(DarkGreyCard)`
@@ -70,21 +69,6 @@ const TableHeader = styled(ResponsiveGrid)`
   padding: 18px 20px;
 `
 
-const SortText = styled.button<{ active: boolean }>`
-  cursor: pointer;
-  font-weight: ${({ active }) => (active ? 500 : 400)};
-  margin-right: 0.75rem !important;
-  border: none;
-  background-color: transparent;
-  font-size: 1rem;
-  padding: 0px;
-  color: ${({ active, theme }) => (active ? theme.text1 : theme.text3)};
-  outline: none;
-  @media screen and (max-width: 600px) {
-    font-size: 14px;
-  }
-`
-
 const SORT_FIELD = {
   amountUSD: 'amountUSD',
   timestamp: 'timestamp',
@@ -98,12 +82,12 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   const abs1 = Math.abs(transaction.amountToken1)
   const outputTokenSymbol = transaction.amountToken0 < 0 ? transaction.token0Symbol : transaction.token1Symbol
   const inputTokenSymbol = transaction.amountToken1 < 0 ? transaction.token0Symbol : transaction.token1Symbol
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from transaction
   const theme = useTheme()
 
   return (
     <ResponsiveGrid>
-      <ExternalLink href={getEtherscanLink(1, transaction.hash, 'transaction', activeNetwork)}>
+      <ExternalLink href={getEtherscanLink(activeNetworks, transaction.hash, 'transaction')}>
         <Label color={color ?? theme.primary} fontWeight={400}>
           {transaction.type === TransactionType.MINT
             ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
@@ -123,7 +107,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
-          href={getEtherscanLink(1, transaction.sender, 'address', activeNetwork)}
+          href={getEtherscanLink(activeNetworks, transaction.sender, 'address')}
           style={{ color: color ?? theme.primary }}
         >
           {shortenAddress(transaction.sender)}
@@ -142,9 +126,10 @@ export default function TransactionTable({
 }: {
   transactions: Transaction[]
   maxItems?: number
-}) {
+}): JSX.Element {
   // theming
   const theme = useTheme()
+  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from transaction
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.timestamp)
@@ -153,37 +138,53 @@ export default function TransactionTable({
   // pagination
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
+  // filter on txn type
+  const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
+  const filteredTxn = useMemo(
+    () => (txFilter === undefined ? transactions : transactions?.filter((x) => x.type === txFilter) || []),
+    [transactions, txFilter]
+  )
 
   useEffect(() => {
     let extraPages = 1
-    if (transactions.length % maxItems === 0) {
+    if (filteredTxn.length % maxItems === 0) {
       extraPages = 0
     }
-    setMaxPage(Math.floor(transactions.length / maxItems) + extraPages)
-  }, [maxItems, transactions])
+    if (filteredTxn.length === 0) {
+      setMaxPage(1)
+    } else {
+      setMaxPage(Math.floor(filteredTxn.length / maxItems) + extraPages)
+    }
+  }, [maxItems, filteredTxn, txFilter, page])
 
-  // filter on txn type
-  const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
+  useEffect(() => {
+    setPage(1)
+  }, [txFilter, activeNetworks])
 
   const sortedTransactions = useMemo(() => {
-    return transactions
-      ? transactions
+    return filteredTxn.length
+      ? filteredTxn
           .slice()
           .sort((a, b) => {
+            let valueToCompareA = null
+            let valueToCompareB = null
+
             if (a && b) {
-              return a[sortField as keyof Transaction] > b[sortField as keyof Transaction]
-                ? (sortDirection ? -1 : 1) * 1
-                : (sortDirection ? -1 : 1) * -1
+              if (sortField === SORT_FIELD.amountToken0 || sortField === SORT_FIELD.amountToken1) {
+                valueToCompareA = Math.abs(a[sortField as keyof Transaction] as number)
+                valueToCompareB = Math.abs(b[sortField as keyof Transaction] as number)
+              } else {
+                valueToCompareA = a[sortField as keyof Transaction]
+                valueToCompareB = b[sortField as keyof Transaction]
+              }
+              return valueToCompareA > valueToCompareB ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
             } else {
               return -1
             }
           })
-          .filter((x) => {
-            return txFilter === undefined || x.type === txFilter
-          })
           .slice(maxItems * (page - 1), page * maxItems)
       : []
-  }, [transactions, maxItems, page, sortField, sortDirection, txFilter])
+  }, [filteredTxn, maxItems, page, sortField, sortDirection])
 
   const handleSort = useCallback(
     (newField: string) => {
@@ -199,10 +200,6 @@ export default function TransactionTable({
     },
     [sortDirection, sortField]
   )
-
-  if (!transactions) {
-    return <Loader />
-  }
 
   return (
     <Wrapper>
@@ -245,19 +242,19 @@ export default function TransactionTable({
             Removes
           </ToggleElementFree>
         </ToggleWrapper>
-        <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end={1}>
+        <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end>
           Total Value {arrow(SORT_FIELD.amountUSD)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken0)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken0)}>
           Token Amount {arrow(SORT_FIELD.amountToken0)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amountToken1)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken1)}>
           Token Amount {arrow(SORT_FIELD.amountToken1)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.sender)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.sender)}>
           Account {arrow(SORT_FIELD.sender)}
         </ClickableText>
-        <ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.timestamp)}>
+        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.timestamp)}>
           Time {arrow(SORT_FIELD.timestamp)}
         </ClickableText>
       </TableHeader>
@@ -281,7 +278,7 @@ export default function TransactionTable({
               setPage(page === 1 ? page : page - 1)
             }}
           >
-            <Arrow faded={page === 1 ? true : false}>←</Arrow>
+            <Arrow faded={page <= 1 ? true : false}>←</Arrow>
           </div>
           <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
           <div
@@ -289,7 +286,7 @@ export default function TransactionTable({
               setPage(page === maxPage ? page : page + 1)
             }}
           >
-            <Arrow faded={page === maxPage ? true : false}>→</Arrow>
+            <Arrow faded={page >= maxPage ? true : false}>→</Arrow>
           </div>
         </PageButtons>
       </AutoColumn>

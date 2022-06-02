@@ -1,5 +1,5 @@
 import { fetchTicksSurroundingPrice, TickProcessed } from 'data/pools/tickData'
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { BarChart, Bar, LabelList, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
@@ -13,7 +13,7 @@ import CustomToolTip from './CustomToolTip'
 import { Token, CurrencyAmount } from '@vutien/sdk-core'
 import JSBI from 'jsbi'
 import { useClients } from 'state/application/hooks'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import { Flex } from 'rebass'
 
 const Wrapper = styled.div`
@@ -83,9 +83,29 @@ const initialState = {
   refAreaRight: '',
 }
 
-export default function DensityChart({ address }: DensityChartProps) {
+const CustomBar = ({
+  x,
+  y,
+  width,
+  height,
+  fill,
+}: {
+  x: number
+  y: number
+  width: number
+  height: number
+  fill: string
+}) => {
+  return (
+    <g>
+      <rect x={x} y={y} fill={fill} width={width} height={height} rx="2" />
+    </g>
+  )
+}
+
+export default function DensityChart({ address }: DensityChartProps): JSX.Element {
   const theme = useTheme()
-  const { dataClient } = useClients()
+  const { dataClient } = useClients()[0]
 
   // poolData
   const poolData: PoolData = usePoolDatas([address])[0]
@@ -106,7 +126,7 @@ export default function DensityChart({ address }: DensityChartProps) {
   }, [formattedAddress1, poolData])
 
   // tick data tracking
-  const [poolTickData, updatePoolTickData] = usePoolTickData(address)
+  const [poolTickData, setPoolTickData] = usePoolTickData(address)
   const [ticksToFetch, setTicksToFetch] = useState(INITIAL_TICKS_TO_FETCH)
   const amountTicks = ticksToFetch * 2 + 1
 
@@ -117,20 +137,22 @@ export default function DensityChart({ address }: DensityChartProps) {
     async function fetch() {
       const { data } = await fetchTicksSurroundingPrice(address, dataClient, ticksToFetch)
       if (data) {
-        updatePoolTickData(address, data)
+        setPoolTickData(address, data)
       }
     }
     if (!poolTickData || (poolTickData && poolTickData.ticksProcessed.length < amountTicks)) {
       fetch()
     }
-  }, [address, poolTickData, updatePoolTickData, ticksToFetch, amountTicks, dataClient])
+  }, [address, poolTickData, setPoolTickData, ticksToFetch, amountTicks, dataClient])
 
   const [formattedData, setFormattedData] = useState<ChartEntry[] | undefined>()
+  const tickCache = useRef<{ [key: string]: ChartEntry | undefined }>({})
   useEffect(() => {
     async function formatData() {
       if (poolTickData) {
         const newData = await Promise.all(
           poolTickData.ticksProcessed.map(async (t: TickProcessed, i) => {
+            if (tickCache.current[t.tickIdx]) return tickCache.current[t.tickIdx]!
             const active = t.tickIdx === poolTickData.activeTickIdx
             const sqrtPriceX96 = TickMath.getSqrtRatioAtTick(t.tickIdx)
             const feeAmount: FeeAmount = poolData.feeTier
@@ -148,7 +170,16 @@ export default function DensityChart({ address }: DensityChartProps) {
             ]
             const pool =
               token0 && token1 && feeTier
-                ? new Pool(token0, token1, feeTier, sqrtPriceX96, t.liquidityActive, t.tickIdx, mockTicks)
+                ? new Pool(
+                    token0,
+                    token1,
+                    feeTier,
+                    sqrtPriceX96,
+                    poolData.liquidity,
+                    poolData.reinvestL,
+                    t.tickIdx,
+                    mockTicks
+                  )
                 : undefined
             const nextSqrtX96 = poolTickData.ticksProcessed[i - 1]
               ? TickMath.getSqrtRatioAtTick(poolTickData.ticksProcessed[i - 1].tickIdx)
@@ -162,7 +193,7 @@ export default function DensityChart({ address }: DensityChartProps) {
             const amount0 = token1Amount ? parseFloat(token1Amount.toExact()) * parseFloat(t.price1) : 0
             const amount1 = token1Amount ? parseFloat(token1Amount.toExact()) : 0
 
-            return {
+            const result: ChartEntry = {
               index: i,
               isCurrent: active,
               activeLiquidity: parseFloat(t.liquidityActive.toString()),
@@ -171,6 +202,9 @@ export default function DensityChart({ address }: DensityChartProps) {
               tvlToken0: amount0,
               tvlToken1: amount1,
             }
+
+            tickCache.current[t.tickIdx] = result
+            return result
           })
         )
         // offset the values to line off bars with TVL used to swap across bar
@@ -195,7 +229,17 @@ export default function DensityChart({ address }: DensityChartProps) {
     if (!formattedData) {
       formatData()
     }
-  }, [feeTier, formattedData, loading, poolData.feeTier, poolTickData, token0, token1])
+  }, [
+    feeTier,
+    formattedData,
+    loading,
+    poolData.feeTier,
+    poolData.liquidity,
+    poolData.reinvestL,
+    poolTickData,
+    token0,
+    token1,
+  ])
 
   const atZoomMax = zoomState.left + ZOOM_INTERVAL >= zoomState.right - ZOOM_INTERVAL - 1
   const atZoomMin = zoomState.left - ZOOM_INTERVAL < 0
@@ -240,33 +284,22 @@ export default function DensityChart({ address }: DensityChartProps) {
     setFormattedData(undefined)
   }, [address])
 
+  const cells = useMemo(
+    () =>
+      zoomedData?.map((entry, index) => {
+        return <Cell key={`cell-${index}`} fill={entry.isCurrent ? theme.pink1 : theme.primary} />
+      }),
+    [theme.pink1, theme.primary, zoomedData]
+  )
+
   if (!poolTickData) {
     return (
       <Flex justifyContent="center" alignItems="center" height="60%">
-        <Loading />
+        <KyberLoading />
       </Flex>
     )
   }
 
-  const CustomBar = ({
-    x,
-    y,
-    width,
-    height,
-    fill,
-  }: {
-    x: number
-    y: number
-    width: number
-    height: number
-    fill: string
-  }) => {
-    return (
-      <g>
-        <rect x={x} y={y} fill={fill} width={width} height={height} rx="2" />
-      </g>
-    )
-  }
   return (
     <Wrapper>
       {!loading ? (
@@ -297,9 +330,7 @@ export default function DensityChart({ address }: DensityChartProps) {
                 return <CustomBar height={props.height} width={props.width} x={props.x} y={props.y} fill={props.fill} />
               }}
             >
-              {zoomedData?.map((entry, index) => {
-                return <Cell key={`cell-${index}`} fill={entry.isCurrent ? theme.pink1 : theme.primary} />
-              })}
+              {cells}
               <LabelList
                 dataKey="activeLiquidity"
                 position="inside"
@@ -310,7 +341,7 @@ export default function DensityChart({ address }: DensityChartProps) {
         </ResponsiveContainer>
       ) : (
         <Flex justifyContent="center" alignItems="center" height="70%">
-          <Loading />
+          <KyberLoading />
         </Flex>
       )}
       <ControlsWrapper>

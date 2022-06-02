@@ -47,6 +47,6 @@ export type PriceChartEntry = {
   time: number // unix timestamp
   open: number
   close: number
-  high: number
-  low: number
+  // high: number
+  // low: number
 }

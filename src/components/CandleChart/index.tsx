@@ -47,7 +47,7 @@ const CandleChart = ({
   height = DEFAULT_HEIGHT,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
+}: LineChartProps): JSX.Element => {
   const theme = useTheme()
   const textColor = theme.text3
   const chartRef = useRef<HTMLDivElement>(null)
@@ -132,12 +132,12 @@ const CandleChart = ({
   useEffect(() => {
     if (chartCreated && data) {
       const series = chartCreated.addCandlestickSeries({
-        upColor: 'green',
-        downColor: 'red',
-        borderDownColor: 'red',
-        borderUpColor: 'green',
-        wickDownColor: 'red',
-        wickUpColor: 'green',
+        upColor: '#33CB9E',
+        downColor: '#FF537B',
+        borderDownColor: '#FF537B',
+        borderUpColor: '#33CB9E',
+        wickDownColor: '#FF537B',
+        wickUpColor: '#33CB9E',
       })
 
       series.setData(data)
@@ -173,7 +173,7 @@ const CandleChart = ({
         {topLeft ?? null}
         {topRight ?? null}
       </RowBetween>
-      <div ref={chartRef} id={'candle-chart'} {...rest} />
+      <div ref={chartRef} id="candle-chart" {...rest} />
       <RowBetween>
         {bottomLeft ?? null}
         {bottomRight ?? null}

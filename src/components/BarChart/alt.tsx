@@ -5,7 +5,6 @@ import Card from 'components/Card'
 import { RowBetween } from 'components/Row'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import useTheme from 'hooks/useTheme'
 import { VolumeWindow } from 'types'
 dayjs.extend(utc)
 
@@ -74,8 +73,7 @@ const Chart = ({
   bottomRight,
   minHeight = DEFAULT_HEIGHT,
   ...rest
-}: LineChartProps) => {
-  const theme = useTheme()
+}: LineChartProps): JSX.Element => {
   const parsedValue = value
 
   const now = dayjs()

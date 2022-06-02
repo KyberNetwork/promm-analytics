@@ -23,6 +23,7 @@ const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
  * Takes in custom size and stroke for circle color, default to primary color as fill,
  * need ...rest for layered styles on top
  */
+//todo namgold: change this to KyberLoading
 export default function Loader({
   size = '16px',
   stroke,
@@ -31,7 +32,7 @@ export default function Loader({
   size?: string
   stroke?: string
   [k: string]: any
-}) {
+}): JSX.Element {
   return (
     <StyledSVG viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" size={size} stroke={stroke} {...rest}>
       <path
@@ -41,47 +42,6 @@ export default function Loader({
         strokeLinejoin="round"
       />
     </StyledSVG>
-  )
-}
-
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  60% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-`
-
-const Wrapper = styled.div<{ fill: number; height?: string }>`
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme, fill }) => (fill ? 'black' : theme.bg0)};
-  height: 100%;
-  width: 100%;
-  ${(props) =>
-    props.fill && !props.height
-      ? css`
-          height: 100vh;
-        `
-      : css`
-          height: 180px;
-        `}
-`
-
-const AnimatedImg = styled.div`
-  animation: ${pulse} 800ms linear infinite;
-  & > * {
-    width: 72px;
-  }
-`
-
-export const LocalLoader = ({ fill }: { fill: boolean }) => {
-  return (
-    <Wrapper fill={fill ? 1 : 0}>
-      <AnimatedImg>
-        <img src={'/favicon.svg'} alt="loading-icon" />
-      </AnimatedImg>
-    </Wrapper>
   )
 }
 

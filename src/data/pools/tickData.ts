@@ -11,11 +11,11 @@ const DEFAULT_SURROUNDING_TICKS = 300
 const FEE_TIER_TO_TICK_SPACING = (feeTier: string): number => {
   switch (feeTier) {
     case '100':
-      return 100
+      return 200
     case '30':
       return 60
-    case '5':
-      return 10
+    case '4':
+      return 8
     case '1':
       return 1
     default:
@@ -157,6 +157,8 @@ const poolQuery = gql`
   }
 `
 
+const cacheCompute: { [poolAddress_currentTickIdx: string]: TickProcessed } = {}
+
 export const fetchTicksSurroundingPrice = async (
   poolAddress: string,
   client: ApolloClient<NormalizedCacheObject>,
@@ -192,6 +194,10 @@ export const fetchTicksSurroundingPrice = async (
   } = poolResult
 
   // TODO: check this code, why current tick is null
+  // namgold: checked and dont found null case
+  // if (!poolCurrentTick) {
+  //   debugger
+  // }
   const poolCurrentTickIdx = parseInt(poolCurrentTick || '0')
   const tickSpacing = FEE_TIER_TO_TICK_SPACING(feeTier)
 
@@ -218,8 +224,6 @@ export const fetchTicksSurroundingPrice = async (
 
   const token0 = new Token(1, token0Address, parseInt(token0Decimals))
   const token1 = new Token(1, token1Address, parseInt(token1Decimals))
-
-  // console.log({ activeTickIdx, poolCurrentTickIdx }, 'Active ticks')
 
   // If the pool's tick is MIN_TICK (-887272), then when we find the closest
   // initializable tick to its left, the value would be smaller than MIN_TICK.
@@ -257,7 +261,7 @@ export const fetchTicksSurroundingPrice = async (
   }
 
   // Computes the numSurroundingTicks above or below the active tick.
-  const computeSurroundingTicks = (
+  const computeSurroundingTicks = async (
     activeTickProcessed: TickProcessed,
     tickSpacing: number,
     numSurroundingTicks: number,
@@ -270,53 +274,63 @@ export const fetchTicksSurroundingPrice = async (
     // Iterate outwards (either up or down depending on 'Direction') from the active tick,
     // building active liquidity for every tick.
     let processedTicks: TickProcessed[] = []
-    for (let i = 0; i < numSurroundingTicks; i++) {
+
+    const compute = async (i: number) => {
+      if (i >= numSurroundingTicks) return
       const currentTickIdx =
         direction == Direction.ASC
           ? previousTickProcessed.tickIdx + tickSpacing
           : previousTickProcessed.tickIdx - tickSpacing
 
       if (currentTickIdx < TickMath.MIN_TICK || currentTickIdx > TickMath.MAX_TICK) {
-        break
+        return
+      }
+      let result: TickProcessed | undefined
+      const key = poolAddress + '_' + currentTickIdx
+      if (cacheCompute[key]) result = cacheCompute[key]
+      else {
+        const currentTickProcessed: TickProcessed = {
+          liquidityActive: previousTickProcessed.liquidityActive,
+          tickIdx: currentTickIdx,
+          liquidityNet: JSBI.BigInt(0),
+          price0: tickToPrice(token0, token1, currentTickIdx).toFixed(PRICE_FIXED_DIGITS),
+          price1: tickToPrice(token1, token0, currentTickIdx).toFixed(PRICE_FIXED_DIGITS),
+          liquidityGross: JSBI.BigInt(0),
+        }
+
+        // Check if there is an initialized tick at our current tick.
+        // If so copy the gross and net liquidity from the initialized tick.
+        const currentInitializedTick = tickIdxToInitializedTick[currentTickIdx.toString()]
+        if (currentInitializedTick) {
+          currentTickProcessed.liquidityGross = JSBI.BigInt(currentInitializedTick.liquidityGross)
+          currentTickProcessed.liquidityNet = JSBI.BigInt(currentInitializedTick.liquidityNet)
+        }
+
+        // Update the active liquidity.
+        // If we are iterating ascending and we found an initialized tick we immediately apply
+        // it to the current processed tick we are building.
+        // If we are iterating descending, we don't want to apply the net liquidity until the following tick.
+        if (direction == Direction.ASC && currentInitializedTick) {
+          currentTickProcessed.liquidityActive = JSBI.add(
+            previousTickProcessed.liquidityActive,
+            JSBI.BigInt(currentInitializedTick.liquidityNet)
+          )
+        } else if (direction == Direction.DESC && JSBI.notEqual(previousTickProcessed.liquidityNet, JSBI.BigInt(0))) {
+          // We are iterating descending, so look at the previous tick and apply any net liquidity.
+          currentTickProcessed.liquidityActive = JSBI.subtract(
+            previousTickProcessed.liquidityActive,
+            previousTickProcessed.liquidityNet
+          )
+        }
+        result = currentTickProcessed
       }
 
-      const currentTickProcessed: TickProcessed = {
-        liquidityActive: previousTickProcessed.liquidityActive,
-        tickIdx: currentTickIdx,
-        liquidityNet: JSBI.BigInt(0),
-        price0: tickToPrice(token0, token1, currentTickIdx).toFixed(PRICE_FIXED_DIGITS),
-        price1: tickToPrice(token1, token0, currentTickIdx).toFixed(PRICE_FIXED_DIGITS),
-        liquidityGross: JSBI.BigInt(0),
-      }
-
-      // Check if there is an initialized tick at our current tick.
-      // If so copy the gross and net liquidity from the initialized tick.
-      const currentInitializedTick = tickIdxToInitializedTick[currentTickIdx.toString()]
-      if (currentInitializedTick) {
-        currentTickProcessed.liquidityGross = JSBI.BigInt(currentInitializedTick.liquidityGross)
-        currentTickProcessed.liquidityNet = JSBI.BigInt(currentInitializedTick.liquidityNet)
-      }
-
-      // Update the active liquidity.
-      // If we are iterating ascending and we found an initialized tick we immediately apply
-      // it to the current processed tick we are building.
-      // If we are iterating descending, we don't want to apply the net liquidity until the following tick.
-      if (direction == Direction.ASC && currentInitializedTick) {
-        currentTickProcessed.liquidityActive = JSBI.add(
-          previousTickProcessed.liquidityActive,
-          JSBI.BigInt(currentInitializedTick.liquidityNet)
-        )
-      } else if (direction == Direction.DESC && JSBI.notEqual(previousTickProcessed.liquidityNet, JSBI.BigInt(0))) {
-        // We are iterating descending, so look at the previous tick and apply any net liquidity.
-        currentTickProcessed.liquidityActive = JSBI.subtract(
-          previousTickProcessed.liquidityActive,
-          previousTickProcessed.liquidityNet
-        )
-      }
-
-      processedTicks.push(currentTickProcessed)
-      previousTickProcessed = currentTickProcessed
+      processedTicks.push(result)
+      previousTickProcessed = result
+      cacheCompute[key] = result
+      compute(i + 1)
     }
+    await compute(0)
 
     if (direction == Direction.DESC) {
       processedTicks = processedTicks.reverse()
@@ -325,14 +339,14 @@ export const fetchTicksSurroundingPrice = async (
     return processedTicks
   }
 
-  const subsequentTicks: TickProcessed[] = computeSurroundingTicks(
+  const subsequentTicks: TickProcessed[] = await computeSurroundingTicks(
     activeTickProcessed,
     tickSpacing,
     numSurroundingTicks,
     Direction.ASC
   )
 
-  const previousTicks: TickProcessed[] = computeSurroundingTicks(
+  const previousTicks: TickProcessed[] = await computeSurroundingTicks(
     activeTickProcessed,
     tickSpacing,
     numSurroundingTicks,

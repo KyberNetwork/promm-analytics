@@ -16,7 +16,7 @@ export function unixToMonth(unix: number): number {
 export function useTransformedVolumeData(
   chartData: ChartDayData[] | PoolChartEntry[] | TokenChartEntry[] | undefined,
   type: 'month' | 'week'
-) {
+): GenericChartEntry[] {
   return useMemo(() => {
     if (chartData) {
       let currentIndex = -1
@@ -34,7 +34,7 @@ export function useTransformedVolumeData(
         }
         data[currentIndex].value = (data[currentIndex].value ?? 0) + day.volumeUSD
       })
-      return data.filter((x) => !!x)
+      return data.filter(Boolean)
     } else {
       return []
     }

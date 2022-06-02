@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
+import { ChainId } from 'constants/networks'
 
 export type PopupContent = {
   listUpdate: {
@@ -12,22 +13,21 @@ export type PopupContent = {
 }
 
 export enum ApplicationModal {
-  WALLET,
-  SETTINGS,
-  MENU,
+  WALLET = 'WALLET',
+  SETTINGS = 'SETTINGS',
+  MENU = 'MENU',
+  DROPDOWN = 'DROPDOWN',
+  CHART_VIEW_DROPDOWN = 'CHART_VIEW_DROPDOWN',
+  TIME_DROPDOWN = 'TIME_DROPDOWN',
 }
 
-export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>('application/updateBlockNumber')
-export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
-export const addPopup = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(
-  'application/addPopup'
+export const updateBlockNumber = createAction<{ chainId: ChainId; blockNumber: number }>(
+  'application/updateBlockNumber'
 )
-export const removePopup = createAction<{ key: string }>('application/removePopup')
+export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 export const updateSubgraphStatus = createAction<{
   available: boolean | null
   syncedBlock: number | undefined
   headBlock: number | undefined
 }>('application/updateSubgraphStatus')
-// export const updateActiveNetworkVersion = createAction<{ activeNetworkVersion: NetworkInfo }>(
-//   'application/updateActiveNetworkVersion'
-// )
+export const updateActiveNetwork = createAction<{ chainId: ChainId | 'allchain' }>('application/updateActiveNetwork')

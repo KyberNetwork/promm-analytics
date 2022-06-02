@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AddBookmark = ({ width, height }: { width?: number; height?: number }) => {
+const AddBookmark = ({ width, height }: { width?: number; height?: number }): JSX.Element => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width || 21} height={height || 23} viewBox="0 0 21 23">
       <g fill="none" fillRule="evenodd">

@@ -20,11 +20,11 @@ export default function Updater(): null {
   }, [addTokenKeys, addresses, error, loading])
 
   // detect for which addresses we havent loaded token data yet
-  const unfetchedTokenAddresses = useMemo(() => {
-    return Object.keys(allTokenData).reduce((accum: string[], key) => {
-      const tokenData = allTokenData[key]
+  const unfetchedTokenAddresses: string[] = useMemo(() => {
+    return Object.keys(allTokenData).reduce((accum: string[], address) => {
+      const tokenData = allTokenData[address]
       if (!tokenData || !tokenData.data || !tokenData.lastUpdated) {
-        accum.push(key)
+        accum.push(address)
       }
       return accum
     }, [])

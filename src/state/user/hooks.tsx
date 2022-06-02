@@ -1,42 +1,11 @@
-import { Token } from '@uniswap/sdk-core'
-import { useCallback, useMemo } from 'react'
+// import { Token } from '@uniswap/sdk-core'
+import { useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import {
-  addSerializedToken,
-  removeSerializedToken,
-  SerializedToken,
-  updateUserDarkMode,
-  toggleURLWarning,
-  addSavedToken,
-  addSavedPool,
-} from './actions'
-import { useAppSelector } from 'hooks/useAppDispatch'
+import { updateUserDarkMode, addSavedToken, addSavedPool, toggleIsFirstTimeVisit, addSavedAccount } from './actions'
 import { PoolData } from 'state/pools/reducer'
-import { useActiveNetworkVersion } from 'state/application/hooks'
 import { TokenData } from 'state/tokens/reducer'
-import { SupportedNetwork } from 'constants/networks'
-
-function serializeToken(token: Token): SerializedToken {
-  return {
-    chainId: token.chainId,
-    address: token.address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    name: token.name,
-  }
-}
-
-function deserializeToken(serializedToken: SerializedToken): Token {
-  return new Token(
-    serializedToken.chainId,
-    serializedToken.address,
-    serializedToken.decimals,
-    serializedToken.symbol,
-    serializedToken.name
-  )
-}
+import { ChainId } from 'constants/networks'
 
 export function useIsDarkMode(): boolean {
   const { userDarkMode, matchesDarkMode } = useSelector<
@@ -53,6 +22,17 @@ export function useIsDarkMode(): boolean {
   return userDarkMode === null ? matchesDarkMode : userDarkMode
 }
 
+export function useIsFirstTimeVisit(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const isFirstTimeVisit = useSelector((state: AppState) => state.user.isFirstTimeVisit)
+
+  const toggle = useCallback(() => {
+    dispatch(toggleIsFirstTimeVisit())
+  }, [dispatch])
+
+  return [isFirstTimeVisit, toggle]
+}
+
 export function useDarkModeManager(): [boolean, () => void] {
   const dispatch = useDispatch<AppDispatch>()
   const darkMode = useIsDarkMode()
@@ -64,49 +44,39 @@ export function useDarkModeManager(): [boolean, () => void] {
   return [darkMode, toggleSetDarkMode]
 }
 
-export function useAddUserToken(): (token: Token) => void {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (token: Token) => {
-      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
-    },
-    [dispatch]
-  )
-}
-
 export function useSavedTokens(): [
   {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       [tokenAddress: string]: TokenData
     }
   },
-  (id: SupportedNetwork, token: TokenData) => void
+  (id: ChainId, token: TokenData) => void
 ] {
   const dispatch = useDispatch<AppDispatch>()
   const savedTokens = useSelector((state: AppState) => state.user.savedTokens) || {}
 
-  const updatedSavedTokens = useCallback(
-    (id: SupportedNetwork, token: TokenData) => {
+  const updateSavedTokens = useCallback(
+    (id: ChainId, token: TokenData) => {
       dispatch(addSavedToken({ networkId: id, token }))
     },
     [dispatch]
   )
-  return [savedTokens, updatedSavedTokens]
+  return [savedTokens, updateSavedTokens]
 }
 
 export function useSavedPools(): [
   {
-    [chainId: number]: {
+    [chainId in ChainId]?: {
       [address: string]: PoolData
     }
   },
-  (id: SupportedNetwork, pool: PoolData) => void
+  (id: ChainId, pool: PoolData) => void
 ] {
   const dispatch = useDispatch<AppDispatch>()
 
   const savedPools = useSelector((state: AppState) => state.user.savedPools)
   const updateSavedPools = useCallback(
-    (id: SupportedNetwork, pool: PoolData) => {
+    (id: ChainId, pool: PoolData) => {
       dispatch(addSavedPool({ networkId: id, pool }))
     },
     [dispatch]
@@ -114,31 +84,22 @@ export function useSavedPools(): [
   return [savedPools ?? {}, updateSavedPools]
 }
 
-export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
+export function useSavedAccounts(): [
+  {
+    [chainId in ChainId]?: {
+      [address: string]: boolean
+    }
+  },
+  (id: ChainId, accountAddress: string) => void
+] {
   const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    (chainId: number, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }))
+
+  const savedAccounts = useSelector((state: AppState) => state.user.savedAccounts)
+  const updateSavedAccounts = useCallback(
+    (id: ChainId, accountAddress: string) => {
+      dispatch(addSavedAccount({ networkId: id, accountAddress }))
     },
     [dispatch]
   )
-}
-
-export function useUserAddedTokens(): Token[] {
-  const { chainId } = useActiveWeb3React()
-  const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
-
-  return useMemo(() => {
-    if (!chainId) return []
-    return Object.values(serializedTokensMap?.[chainId] ?? {}).map(deserializeToken)
-  }, [serializedTokensMap, chainId])
-}
-
-export function useURLWarningVisible(): boolean {
-  return useSelector((state: AppState) => state.user.URLWarningVisible)
-}
-
-export function useURLWarningToggle(): () => void {
-  const dispatch = useDispatch()
-  return useCallback(() => dispatch(toggleURLWarning()), [dispatch])
+  return [savedAccounts ?? {}, updateSavedAccounts]
 }

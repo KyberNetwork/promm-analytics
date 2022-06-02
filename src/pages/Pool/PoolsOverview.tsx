@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo } from 'react'
 import { Text } from 'rebass'
+import { useMedia } from 'react-use'
+
 import { PageWrapper } from 'pages/styled'
 import { AutoColumn } from 'components/Column'
-import PoolTable from 'components/pools/PoolTable'
 import { useAllPoolData } from 'state/pools/hooks'
 import { notEmpty } from 'utils'
 import { PoolData } from 'state/pools/reducer'
-import PairTable from 'components/pools/PairTable'
+import PairPoolsTable from 'components/pools/PairPoolsTable'
+import Search from 'components/Search'
+import { RowBetween } from 'components/Row'
 
-export default function PoolPage() {
+export default function PoolOverview(): JSX.Element {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -34,31 +37,19 @@ export default function PoolPage() {
     }, initPairs)
     return Object.values(poolsGroupByPair).sort((a, b) => b[0].tvlUSD - a[0].tvlUSD)
   }, [poolDatas])
+  const below600 = useMedia('(max-width: 600px)')
 
   return (
     <PageWrapper>
       <AutoColumn gap="lg">
-        {/* <TYPE.main>Your Watchlist</TYPE.main> */}
-        {/* watchlistPools.length > 0 ? (
-          <PoolTable poolDatas={watchlistPools} />
-        ) : (
-          <DarkGreyCard>
-            <TYPE.main>Saved pools will appear here</TYPE.main>
-          </DarkGreyCard>
-        ) */}
-        {/* <HideSmall>
-          <DarkGreyCard style={{ paddingTop: '12px' }}>
-            <AutoColumn gap="md">
-              <TYPE.mediumHeader fontSize="16px">Trending by 24H Volume</TYPE.mediumHeader>
-              <TopPoolMovers />
-            </AutoColumn>
-          </DarkGreyCard>
-        </HideSmall> */}
-        <Text fontWeight="500" fontSize="24px">
-          All Pools
-        </Text>
+        <RowBetween>
+          <Text fontWeight="500" fontSize="24px">
+            All Pools
+          </Text>
+          {!below600 && <Search />}
+        </RowBetween>
 
-        <PairTable pairDatas={pairDatas} maxItems={15} />
+        <PairPoolsTable pairDatas={pairDatas} />
       </AutoColumn>
     </PageWrapper>
   )

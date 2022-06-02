@@ -2,12 +2,15 @@ import { currentTimestamp } from './../../utils/index'
 import { updateProtocolData, updateChartData, updateTransactions } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { ChartDayData, Transaction } from 'types'
-import { SupportedNetwork } from 'constants/networks'
+import { ChainId } from 'constants/networks'
 
 export interface ProtocolData {
   // volume
   volumeUSD: number
   volumeUSDChange: number
+
+  volumeUSDWeek: number
+  volumeUSDChangeWeek: number
 
   // in range liquidity
   tvlUSD: number
@@ -34,25 +37,31 @@ export interface ProtocolState {
 }
 
 export const initialState: ProtocolState = {
-  [SupportedNetwork.RINKEBY]: {
+  [ChainId.ETHEREUM]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [SupportedNetwork.ETHEREUM]: {
+  [ChainId.RINKEBY]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [SupportedNetwork.ARBITRUM]: {
+  [ChainId.ROPSTEN]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [SupportedNetwork.POLYGON]: {
+  [ChainId.ARBITRUM]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.POLYGON]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,

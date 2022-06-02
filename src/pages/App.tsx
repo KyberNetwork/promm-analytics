@@ -1,7 +1,6 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import Popups from '../components/Popups'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Home from './Home'
 import PoolsOverview from './Pool/PoolsOverview'
@@ -9,42 +8,53 @@ import TokensOverview from './Token/TokensOverview'
 import { RedirectInvalidToken } from './Token/redirects'
 import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
-import { useActiveNetworkVersion, useSubgraphStatus } from 'state/application/hooks'
+import { useActiveNetworks, useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
 import SideNav from 'components/Layout/SideNav'
-import Loading from 'components/Loader/Loading'
+import KyberLoading from 'components/Loader/KyberLoading'
 import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
+import { NETWORKS_INFO_LIST, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
+import { updateActiveNetwork } from 'state/application/actions'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'state'
 
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
   display: grid;
-  grid-template-columns: ${({ open }) => (open ? '208px 1fr 220px' : '208px 1fr 64px')};
+  grid-template-columns: ${({ open }) => (open ? '220px 1fr 200px' : '220px 1fr 64px')};
+
+  ${({ theme }) => theme.mediaWidth.upToExtraLarge`
+    grid-template-columns: 220px 1fr;
+  `}
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
     grid-template-columns: 1fr;
+    max-width: 100vw;
+    overflow: hidden;
+    grid-gap: 0;
   `}
+  background-color: ${({ theme }) => theme.buttonBlack};
 `
 
 const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 24px;
-  margin-top: 28px;
+  padding-top: 36px;
   align-items: center;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
 
   > * {
-    max-width: 1280px;
+    max-width: 1440px;
   }
 
   @media (max-width: 1080px) {
-    padding-top: 2rem;
+    padding-top: 36px;
     margin-top: 0;
   }
 `
@@ -77,7 +87,25 @@ const WarningBanner = styled.div`
 
 const BLOCK_DIFFERENCE_THRESHOLD = 30
 
-export default function App() {
+const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ children }) => {
+  const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
+
+  const networkInfoFromURL = NETWORKS_INFO_LIST.find((networkInfo) => networkInfo.route === currentNetworkURL)
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    if (!currentNetworkURL) {
+      dispatch(updateActiveNetwork({ chainId: 'allchain' }))
+    } else if (networkInfoFromURL) {
+      dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || 'allchain' }))
+    }
+  }, [currentNetworkURL, networkInfoFromURL, dispatch])
+  if (currentNetworkURL && !networkInfoFromURL) return <Redirect to="/home" />
+
+  return children
+}
+
+export default function App(): JSX.Element {
   const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
   const [loading, setLoading] = useState(true)
@@ -85,7 +113,7 @@ export default function App() {
     setTimeout(() => setLoading(false), 1300)
   }, [])
 
-  const activeNetwork = useActiveNetworkVersion()
+  const activeNetwork = useActiveNetworks()
   // subgraph health
   const [subgraphStatus] = useSubgraphStatus()
 
@@ -99,7 +127,7 @@ export default function App() {
       <Route component={DarkModeQueryParamReader} />
       {loading ? (
         <Flex width="100vw" height="100vh" justifyContent="center" alignItems="center">
-          <Loading />
+          <KyberLoading />
         </Flex>
       ) : (
         <>
@@ -133,15 +161,77 @@ export default function App() {
             <ContentWrapper open={savedOpen}>
               <SideNav />
               <BodyWrapper>
-                <Popups />
                 <Switch>
-                  <Route exact strict path="/:networkID?/pools/:address" component={PoolPage} />
-                  <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
-                  <Route exact strict path="/:networkID?/tokens/:address" component={RedirectInvalidToken} />
-                  <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
-                  <Route exact strict path="/:networkID?/accounts" component={AccountsOverview} />
-                  <Route exact strict path="/:networkID?/accounts/:address" component={AccountPage} />
-                  <Route exact path="/:networkID?" component={Home} />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/pools"
+                    render={() => (
+                      <NetworkReader>
+                        <PoolsOverview />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/pool/:address"
+                    render={() => (
+                      <NetworkReader>
+                        <PoolPage />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/tokens"
+                    render={() => (
+                      <NetworkReader>
+                        <TokensOverview />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/token/:address"
+                    render={() => (
+                      <NetworkReader>
+                        <RedirectInvalidToken />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/accounts"
+                    render={() => (
+                      <NetworkReader>
+                        <AccountsOverview />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    strict
+                    path="/:networkID?/account/:address"
+                    render={() => (
+                      <NetworkReader>
+                        <AccountPage />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/:networkID?/home"
+                    render={() => (
+                      <NetworkReader>
+                        <Home />
+                      </NetworkReader>
+                    )}
+                  />
+                  <Redirect to={`/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`} />
                 </Switch>
                 <Marginer />
               </BodyWrapper>

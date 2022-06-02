@@ -5,9 +5,9 @@ import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
-import { useActiveNetworkVersion, useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 
-export const POOLS_BULK = (block: number | undefined, pools: string[]) => {
+export const POOLS_BULK = (block: number | string | undefined, pools: string[]) => {
   let poolString = `[`
   pools.map((address) => {
     return (poolString += `"${address}",`)
@@ -22,18 +22,19 @@ export const POOLS_BULK = (block: number | undefined, pools: string[]) => {
         id
         feeTier
         liquidity
+        reinvestL
         sqrtPrice
         tick
         token0 {
             id
-            symbol 
+            symbol
             name
             decimals
             derivedETH
         }
         token1 {
             id
-            symbol 
+            symbol
             name
             decimals
             derivedETH
@@ -55,6 +56,7 @@ interface PoolFields {
   id: string
   feeTier: string
   liquidity: string
+  reinvestL: string
   sqrtPrice: string
   tick: string
   token0: {
@@ -99,8 +101,8 @@ export function usePoolDatas(
     | undefined
 } {
   // get client
-  const { dataClient } = useClients()
-  const activeNetwork = useActiveNetworkVersion()
+  const { dataClient } = useClients()[0]
+  const activeNetwork = useActiveNetworks()[0]
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = useDeltaTimestamps()
@@ -200,7 +202,9 @@ export function usePoolDatas(
       accum[address] = {
         address,
         feeTier,
+        fee: volumeUSD * (feeTier / 1000000),
         liquidity: parseFloat(current.liquidity),
+        reinvestL: parseFloat(current.reinvestL),
         sqrtPrice: parseFloat(current.sqrtPrice),
         tick: parseFloat(current.tick),
         token0: {

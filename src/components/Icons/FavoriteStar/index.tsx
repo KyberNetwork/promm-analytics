@@ -1,7 +1,7 @@
 import React from 'react'
 import useTheme from '../../../hooks/useTheme'
 
-const FavoriteStar = ({ width, height }: { width?: number; height?: number }) => {
+const FavoriteStar = ({ width, height }: { width?: number; height?: number }): JSX.Element => {
   const theme = useTheme()
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={width || 34} height={height || 33} viewBox="0 0 34 33">

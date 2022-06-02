@@ -15,7 +15,7 @@ const StyledIcon = styled.div`
   margin-right: 12px;
 `
 
-const SocialLinks = () => {
+const SocialLinks = (): JSX.Element => {
   const theme = useTheme()
   return (
     <StyledSocialLinks>

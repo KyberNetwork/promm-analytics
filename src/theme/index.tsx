@@ -15,7 +15,8 @@ export const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
   upToSmall: 720,
   upToMedium: 960,
-  upToLarge: 1280,
+  upToLarge: 1080,
+  upToExtraLarge: 1400,
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
@@ -41,7 +42,7 @@ export function colors(darkMode: boolean): Colors {
 
     text: darkMode ? '#FFFFFF' : '#3A3A3A',
     textReverse: !darkMode ? '#FFFFFF' : '#3A3A3A',
-    subText: darkMode ? '#A7B6BD' : '#868787',
+    subText: darkMode ? '#A7B6BD' : '#5C6468',
     disabledText: darkMode ? '#6C7284' : '#B6B6B6',
     apr: '#0FAAA2',
 
@@ -60,6 +61,7 @@ export function colors(darkMode: boolean): Colors {
     text3: darkMode ? '#6C7284' : '#888D9B',
     text4: darkMode ? '#565A69' : '#C3C5CB',
     text5: darkMode ? '#2C2F36' : '#EDEEF2',
+    text6: darkMode ? '#FAFAFA' : '#1F1F1F',
 
     // backgrounds / greys
     bg0: darkMode ? '#191B1F' : '#F7F8FA',
@@ -74,7 +76,7 @@ export function colors(darkMode: boolean): Colors {
     advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
 
     //primary colors
-    primary1: darkMode ? '#2172E5' : '#ff007a',
+    primary1: '#31CB9E',
     primary2: darkMode ? '#3680E7' : '#FF8CC3',
     primary3: darkMode ? '#4D8FEA' : '#FF99C9',
     primary4: darkMode ? '#376bad70' : '#F6DDE8',
@@ -134,7 +136,7 @@ export function theme(darkMode: boolean): DefaultTheme {
   }
 }
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+export default function ThemeProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const darkMode = useIsDarkMode()
 
   const themeObject = useMemo(() => theme(darkMode), [darkMode])
@@ -143,57 +145,69 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 }
 
 const TextWrapper = styled(Text)<{ color: keyof Colors }>`
-  color: ${({ color, theme }) => (theme as any)[color]};
+  color: ${({ color, theme }) => (theme as any)[color]} !important;
 `
 
 export const TYPE = {
-  main(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'subText'} {...props} />
+  main(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} fontSize={14} color="text6" {...props} />
   },
-  link(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'primary'} {...props} />
+  link(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="primary" {...props} />
   },
-  label(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text'} {...props} />
+  label(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="text" {...props} />
   },
-  black(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text'} {...props} />
+  black(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="text" {...props} />
   },
-  white(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'white'} {...props} />
+  white(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="white" {...props} />
   },
-  body(props: TextProps) {
-    return <TextWrapper fontWeight={400} fontSize={16} color={'text1'} {...props} />
+  body(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} fontSize={16} color="text1" {...props} />
   },
-  largeHeader(props: TextProps) {
-    return <TextWrapper fontWeight={600} fontSize={24} color={'text1'} {...props} />
+  largeHeader(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={600} fontSize={24} color="text1" {...props} />
   },
-  mediumHeader(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={20} color={'text3'} {...props} />
+  mediumHeader(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} fontSize={20} color="text3" {...props} />
   },
-  subHeader(props: TextProps) {
+  subHeader(props: TextProps): JSX.Element {
     return <TextWrapper fontWeight={400} fontSize={14} {...props} />
   },
-  small(props: TextProps) {
+  small(props: TextProps): JSX.Element {
     return <TextWrapper fontWeight={500} fontSize={11} {...props} />
   },
-  blue(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'blue1'} {...props} />
+  blue(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="blue1" {...props} />
   },
-  yellow(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'yellow3'} {...props} />
+  yellow(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="yellow3" {...props} />
   },
-  darkGray(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'text3'} {...props} />
+  darkGray(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="text3" {...props} />
   },
-  gray(props: TextProps) {
-    return <TextWrapper fontWeight={500} color={'bg3'} {...props} />
+  gray(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} color="bg3" {...props} />
   },
-  italic(props: TextProps) {
-    return <TextWrapper fontWeight={500} fontSize={12} fontStyle={'italic'} color={'text2'} {...props} />
+  italic(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={500} fontSize={12} fontStyle="italic" color="text2" {...props} />
   },
-  error({ error, ...props }: { error: boolean } & TextProps) {
+  error({ error, ...props }: { error: boolean } & TextProps): JSX.Element {
     return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
+  },
+  header(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={600} color="text1" {...props} />
+  },
+  light(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} color={'text3'} fontSize={14} {...props} />
+  },
+  title(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} color={'subText'} fontSize={12} {...props} />
+  },
+  breadcrumb(props: TextProps): JSX.Element {
+    return <TextWrapper fontWeight={400} color={'text6'} fontSize={14} {...props} />
   },
 }
 
@@ -215,7 +229,7 @@ body {
 }
 
  a {
-   color: ${colors(false).blue1};
+   color: ${colors(false).primary1};
  }
 
 * {
@@ -224,6 +238,26 @@ body {
 
 button {
   user-select: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  background: #878787;
+  border-radius: 999px;
+}
+
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
 }
 
 html {
@@ -240,7 +274,19 @@ html {
 export const ThemedGlobalStyle = createGlobalStyle`
 html {
   color: ${({ theme }) => theme.text};
-  background-color: ${({ theme }) => theme.buttonBlack};
+  background-color: ${({ theme }) => theme.background};
+}
+
+.three-line-legend {
+	height: 70px;
+	position: absolute;
+	padding: 8px;
+	font-size: 12px;
+	color: #20262E;
+	background-color: rgba(255, 255, 255, 0.23);
+	text-align: left;
+	z-index: 10;
+  pointer-events: none;
 }
 
 .three-line-legend-dark {
@@ -252,7 +298,6 @@ html {
 	color: white;
 	background-color: transparent;
 	text-align: left;
-	z-index: 10;
   pointer-events: none;
 }
 

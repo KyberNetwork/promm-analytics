@@ -1,5 +1,6 @@
 import { Currency, Token } from '@uniswap/sdk-core'
 import { Tags, TokenInfo, TokenList } from '@uniswap/token-lists'
+import { ChainId } from 'constants/networks'
 
 import { isAddress } from '../../utils'
 
@@ -31,7 +32,7 @@ export class WrappedTokenInfo implements Token {
     return (this._checksummedAddress = checksummedAddress)
   }
 
-  public get chainId(): number {
+  public get chainId(): ChainId {
     return this.tokenInfo.chainId
   }
 

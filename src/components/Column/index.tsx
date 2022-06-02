@@ -20,4 +20,7 @@ export const AutoColumn = styled.div<{
   justify-items: ${({ justify }) => justify && justify};
 `
 
+export const AutoColumnFullWidth = styled(AutoColumn)`
+  width: 100%;
+`
 export default Column
