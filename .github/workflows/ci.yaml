@@ -1,14 +1,14 @@
-name: "Docker build"
+name: "KyberSwap ProMM Analytics CI"
 
 concurrency:
-  group: ci-workflow-${{ github.ref }}
+  group: ci-workflow-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 on:
-  pull_request:
   push:
     branches:
-      - develop
+      - main
+      - release-v**
 
 env:
   SERVICE: promm-analytics
@@ -20,7 +20,7 @@ jobs:
       current_branch: ${{ steps.current_branch.outputs.value }}
       head_sha: ${{ steps.head_sha.outputs.value }}
       image_name: "asia.gcr.io/kyber-operation/core/${{ env.SERVICE }}"
-      image_tag: ${{ steps.get_tag.outputs.image_tag }}
+      image_tag: ${{ steps.get_tag.outputs.value }}
       branch_tag: ${{ steps.get_tag.outputs.branch_tag }}
     steps:
       - name: Checkout
@@ -57,12 +57,22 @@ jobs:
         env:
           CURRENT_BRANCH: ${{ steps.current_branch.outputs.value }}
         run: |
-          short_sha="$(git rev-parse --short HEAD)"
-          branch_tag="$(echo "$CURRENT_BRANCH" | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/--*/-/g' | sed 's/-$//g')"
-          echo "::set-output name=image_tag::$branch_tag-$short_sha"
-          echo "::set-output name=branch_tag::$branch_tag"
+          if [[ $CURRENT_BRANCH = "main" ]]; then
+            short_sha="$(git rev-parse --short HEAD)"
+            branch_tag="$(echo "$CURRENT_BRANCH" | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/--*/-/g' | sed 's/-$//g')"
+            echo "::set-output name=image_tag::$branch_tag-$short_sha"
+            echo "::set-output name=branch_tag::$branch_tag-$short_sha"
+          else
+            branch_tag="$(echo "$CURRENT_BRANCH")"
+            if [[ ! $CURRENT_BRANCH =~ release-* ]]; then
+              branch_tag="$(echo "$CURRENT_BRANCH" | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/--*/-/g' | sed 's/-$//g')"
+            fi
+            echo "::set-output name=image_tag::$branch_tag.${GITHUB_RUN_NUMBER}"
+            echo "::set-output name=branch_tag::$branch_tag.${GITHUB_RUN_NUMBER}"
+          fi
 
-  build:
+
+build:
     runs-on: ubuntu-18.04
     needs:
       - prepare
@@ -114,7 +124,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           labels: |
             kyber.network.schema-version=1.0
             kyber.network.vcs-ref=${{ github.sha }}
@@ -122,7 +132,7 @@ jobs:
             kyber.network.name=${{ env.SERVICE }}
           tags: |
             ${{ needs.prepare.outputs.image_name }}:${{ needs.prepare.outputs.image_tag }}
-            ${{ needs.prepare.outputs.image_name }}:${{ needs.prepare.outputs.branch_tag }}
+            ${{ needs.prepare.outputs.image_name }}:${{ needs.prepare.outputs.current_branch }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
