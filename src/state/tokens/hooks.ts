@@ -139,7 +139,7 @@ export function useTokenChartData(address: string): TokenChartEntry[] | undefine
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.chainId]?.[address])
-  const chartData = token.chartData
+  const chartData = token?.chartData
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
 
@@ -175,11 +175,11 @@ export function useTokenPriceData(
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.chainId]?.[address])
-  const priceData = token.priceData[interval]
+  const priceData = token?.priceData?.[interval]
   const [error, setError] = useState(false)
   const { dataClient, blockClient } = useClients()[0]
   // construct timestamps and check if we need to fetch more data
-  const oldestTimestampFetched = token.priceData.oldestFetchedTimestamp
+  const oldestTimestampFetched = token?.priceData?.oldestFetchedTimestamp
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
 
   useEffect(() => {

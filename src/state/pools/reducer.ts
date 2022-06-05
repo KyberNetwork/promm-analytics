@@ -1,10 +1,18 @@
 import { currentTimestamp } from './../../utils/index'
-import { updatePoolData, addPoolKeys, updatePoolChartData, updatePoolTransactions, updateTickData } from './actions'
+import {
+  updatePoolData,
+  addPoolKeys,
+  updatePoolChartData,
+  updatePoolTransactions,
+  updateTickData,
+  updatePoolRatesData,
+} from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { SerializedToken } from 'state/user/actions'
 import { Transaction } from 'types'
 import { PoolTickData } from 'data/pools/tickData'
 import { ChainId } from 'constants/networks'
+import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 
 export interface Pool {
   address: string
@@ -65,6 +73,12 @@ export type PoolChartEntry = {
   feesUSD: number
 }
 
+export type PoolRatesEntry = {
+  time: number
+  open: number
+  close: number
+}
+
 export interface PoolsState {
   // analytics data from
   byAddress: {
@@ -72,6 +86,11 @@ export interface PoolsState {
       [address: string]: {
         data: PoolData | undefined
         chartData: PoolChartEntry[] | undefined
+        ratesData:
+          | {
+              [timeWindow in TimeframeOptions]?: [PoolRatesEntry[], PoolRatesEntry[]] | undefined
+            }
+          | undefined
         transactions: Transaction[] | undefined
         lastUpdated: number | undefined
         tickData: PoolTickData | undefined
@@ -109,6 +128,7 @@ export default createReducer(initialState, (builder) =>
           state.byAddress[networkId][address] = {
             data: undefined,
             chartData: undefined,
+            ratesData: undefined,
             transactions: undefined,
             lastUpdated: undefined,
             tickData: undefined,
@@ -118,6 +138,15 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updatePoolChartData, (state, { payload: { poolAddress, chartData, networkId } }) => {
       state.byAddress[networkId][poolAddress] = { ...state.byAddress[networkId][poolAddress], chartData: chartData }
+    })
+    .addCase(updatePoolRatesData, (state, { payload: { poolAddress, ratesData, timeWindow, networkId } }) => {
+      state.byAddress[networkId][poolAddress] = {
+        ...state.byAddress[networkId][poolAddress],
+        ratesData: {
+          ...state.byAddress[networkId][poolAddress].ratesData,
+          [timeWindow]: ratesData,
+        },
+      }
     })
     .addCase(updatePoolTransactions, (state, { payload: { poolAddress, transactions, networkId } }) => {
       state.byAddress[networkId][poolAddress] = { ...state.byAddress[networkId][poolAddress], transactions }

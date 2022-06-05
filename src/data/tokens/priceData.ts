@@ -85,7 +85,7 @@ export const getIntervalTokenData = async (
     for (const row in result) {
       if (row[0] === 't') {
         const timestamp = row.split('t')[1]
-        if (timestamp) {
+        if (timestamp && result[row] && result['b' + timestamp]) {
           const derivedETH = parseFloat((result[row] as TokenResult)?.derivedETH)
           const priceUSD = parseFloat((result['b' + timestamp] as BundleResult).ethPriceUSD) * derivedETH
           values.push({

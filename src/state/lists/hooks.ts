@@ -5,7 +5,6 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from '../index'
 import sortByListPriority from 'utils/listSort'
-import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/uniswap-v2-unsupported.tokenlist.json'
 import { WrappedTokenInfo } from './wrappedTokenInfo'
 import { ChainId } from 'constants/networks'
 
@@ -137,18 +136,6 @@ export function useCombinedActiveList(): TokenAddressMap {
 //   const allInactiveListUrls: string[] = useInactiveListUrls()
 //   return useCombinedTokenMapFromUrls(allInactiveListUrls)
 // }
-
-// list of tokens not supported on interface, used to show warnings and prevent swaps and adds
-export function useUnsupportedTokenList(): TokenAddressMap {
-  // get hard coded unsupported tokens
-  const localUnsupportedListMap = listToTokenMap(UNSUPPORTED_TOKEN_LIST)
-
-  // get any loaded unsupported tokens
-  const loadedUnsupportedListMap = useCombinedTokenMapFromUrls(UNSUPPORTED_LIST_URLS)
-
-  // format into one token address map
-  return combineMaps(localUnsupportedListMap, loadedUnsupportedListMap)
-}
 
 export function useIsListActive(url: string): boolean {
   const activeListUrls = useActiveListUrls()

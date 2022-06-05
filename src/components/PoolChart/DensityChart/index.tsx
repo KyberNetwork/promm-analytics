@@ -1,20 +1,21 @@
-import { fetchTicksSurroundingPrice, TickProcessed } from 'data/pools/tickData'
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react'
+import { Flex } from 'rebass'
 import { BarChart, Bar, LabelList, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import styled from 'styled-components'
+import JSBI from 'jsbi'
+import { Pool, TickMath, TICK_SPACINGS, FeeAmount } from '@vutien/dmm-v3-sdk'
+import { Token, CurrencyAmount } from '@vutien/sdk-core'
+
 import useTheme from 'hooks/useTheme'
 import { usePoolDatas, usePoolTickData } from 'state/pools/hooks'
-import { MAX_UINT128 } from '../../constants/index'
+import { MAX_UINT128 } from '../../../constants'
 import { isAddress } from 'utils'
-import { Pool, TickMath, TICK_SPACINGS, FeeAmount } from '@vutien/dmm-v3-sdk'
 import { PoolData } from 'state/pools/reducer'
 import { CurrentPriceLabel } from './CurrentPriceLabel'
 import CustomToolTip from './CustomToolTip'
-import { Token, CurrencyAmount } from '@vutien/sdk-core'
-import JSBI from 'jsbi'
+import { fetchTicksSurroundingPrice, TickProcessed } from 'data/pools/tickData'
 import { useClients } from 'state/application/hooks'
 import KyberLoading from 'components/Loader/KyberLoading'
-import { Flex } from 'rebass'
 
 const Wrapper = styled.div`
   position: relative;

@@ -10,13 +10,15 @@ const DEFAULT_SURROUNDING_TICKS = 300
 
 const FEE_TIER_TO_TICK_SPACING = (feeTier: string): number => {
   switch (feeTier) {
-    case '100':
+    case '1000':
       return 200
-    case '30':
+    case '300':
       return 60
-    case '4':
+    case '40':
       return 8
-    case '1':
+    case '10':
+      return 1
+    case '8':
       return 1
     default:
       throw Error(`Tick spacing for fee tier ${feeTier} undefined.`)

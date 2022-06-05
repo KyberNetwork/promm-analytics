@@ -11,11 +11,6 @@ export interface SerializedToken {
   name?: string
 }
 
-export interface SerializedPair {
-  token0: SerializedToken
-  token1: SerializedToken
-}
-
 export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>('user/updateMatchesDarkMode')
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const addSavedToken = createAction<{ networkId: ChainId; token: TokenData }>('user/addSavedToken')

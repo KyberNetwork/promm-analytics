@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Plus } from 'react-feather'
@@ -17,25 +17,19 @@ import { formatDollarAmount, formatAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import { ButtonPrimary, SavedIcon, ButtonOutlined } from 'components/Button'
 import { DarkGreyCard, GreyCard } from 'components/Card'
-import { usePoolDatas, usePoolChartData, usePoolTransactions } from 'state/pools/hooks'
-import LineChart from 'components/LineChart/alt'
-import { unixToDate } from 'utils/date'
-import { ToggleWrapper, ToggleElementFree } from 'components/Toggle/index'
-import BarChart from 'components/BarChart/alt'
+import { usePoolDatas, usePoolTransactions } from 'state/pools/hooks'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import TransactionTable from 'components/TransactionsTable'
 import { useSavedPools } from 'state/user/hooks'
-import DensityChart from 'components/DensityChart'
-import { MonoSpace } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
-import { ChainId } from 'constants/networks'
 import KyberLoading from 'components/Loader/KyberLoading'
 import Search from 'components/Search'
 import { UnSelectable } from 'components'
 import CopyHelper from 'components/Copy'
 import Panel from 'components/Panel'
 import FormattedName from 'components/FormattedName'
+import PoolChart from 'components/PoolChart'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -70,7 +64,7 @@ const TokenDetailsLayout = styled.div`
   display: inline-grid;
   width: 100%;
   // grid-template-columns: auto auto auto;
-  grid-template-areas: 'name address token0 token1 button'; //todo namgold: continue this
+  grid-template-areas: 'name address token0 token1 button';
   column-gap: 60px;
   row-gap: 1rem;
   justify-content: space-between;
@@ -99,19 +93,10 @@ const ResponsiveRow = styled(RowBetween)`
   `};
 `
 
-const ToggleRow = styled(RowBetween)`
-  @media screen and (max-width: 600px) {
-    flex-direction: column;
-  }
+const RelativeDarkGreyCard = styled(DarkGreyCard)`
+  position: relative;
+  padding: 20px;
 `
-
-enum ChartView {
-  TVL,
-  VOL,
-  PRICE,
-  DENSITY,
-  FEES,
-}
 
 export default function PoolPage(): JSX.Element {
   const { address } = useParams<{ address: string }>()
@@ -126,47 +111,8 @@ export default function PoolPage(): JSX.Element {
 
   // token data
   const poolData = usePoolDatas([address])[0]
-  const chartData = usePoolChartData(address)
+  // const chartData = usePoolChartData(address)
   const transactions = usePoolTransactions(address)
-
-  const [view, setView] = useState(ChartView.VOL)
-  const [latestValue, setLatestValue] = useState<number | undefined>()
-  const [valueLabel, setValueLabel] = useState<string | undefined>()
-
-  const formattedTvlData = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day) => {
-        return {
-          time: unixToDate(day.date),
-          value: day.totalValueLockedUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
-
-  const formattedVolumeData = useMemo(
-    () =>
-      chartData?.map((day) => ({
-        time: unixToDate(day.date),
-        value: day.volumeUSD,
-      })) ?? [],
-    [chartData]
-  )
-
-  const formattedFeesUSD = useMemo(() => {
-    if (chartData) {
-      return chartData.map((day) => {
-        return {
-          time: unixToDate(day.date),
-          value: day.feesUSD,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [chartData])
 
   //watchlist
   const [savedPools, addSavedPool] = useSavedPools()
@@ -312,93 +258,9 @@ export default function PoolPage(): JSX.Element {
                   </AutoColumn>
                 </DarkGreyCard>
               </InfoLayout>
-              <DarkGreyCard>
-                <ToggleRow align="flex-start">
-                  <AutoColumn>
-                    <TYPE.label fontSize="24px" height="30px">
-                      <MonoSpace>
-                        {latestValue !== undefined
-                          ? formatDollarAmount(latestValue)
-                          : view === ChartView.VOL
-                          ? formatDollarAmount(formattedVolumeData[formattedVolumeData.length - 1]?.value)
-                          : view === ChartView.FEES
-                          ? formatDollarAmount(formattedFeesUSD[formattedFeesUSD.length - 1]?.value)
-                          : view === ChartView.DENSITY
-                          ? ''
-                          : formatDollarAmount(formattedTvlData[formattedTvlData.length - 1]?.value)}{' '}
-                      </MonoSpace>
-                    </TYPE.label>
-                    <TYPE.main height="20px" fontSize="12px">
-                      {valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : ''}
-                    </TYPE.main>
-                  </AutoColumn>
-                  <ToggleWrapper width="240px">
-                    <ToggleElementFree
-                      isActive={view === ChartView.VOL}
-                      fontSize="12px"
-                      onClick={() => view !== ChartView.VOL && setView(ChartView.VOL)}
-                    >
-                      Volume
-                    </ToggleElementFree>
-                    <ToggleElementFree
-                      isActive={view === ChartView.TVL}
-                      fontSize="12px"
-                      onClick={() => view !== ChartView.TVL && setView(ChartView.TVL)}
-                    >
-                      TVL
-                    </ToggleElementFree>
-                    {activeNetwork.chainId === ChainId.ARBITRUM ? null : ( //todo namgold: check this
-                      <ToggleElementFree
-                        isActive={view === ChartView.DENSITY}
-                        fontSize="12px"
-                        onClick={() => view !== ChartView.DENSITY && setView(ChartView.DENSITY)}
-                      >
-                        Liquidity
-                      </ToggleElementFree>
-                    )}
-                    <ToggleElementFree
-                      isActive={view === ChartView.FEES}
-                      fontSize="12px"
-                      onClick={() => view !== ChartView.FEES && setView(ChartView.FEES)}
-                    >
-                      Fees
-                    </ToggleElementFree>
-                  </ToggleWrapper>
-                </ToggleRow>
-                {view === ChartView.TVL ? (
-                  <LineChart
-                    data={formattedTvlData}
-                    setLabel={setValueLabel}
-                    color={theme.primary}
-                    minHeight={340}
-                    setValue={setLatestValue}
-                    value={latestValue}
-                    label={valueLabel}
-                  />
-                ) : view === ChartView.VOL ? (
-                  <BarChart
-                    data={formattedVolumeData}
-                    color={theme.primary}
-                    minHeight={340}
-                    setValue={setLatestValue}
-                    setLabel={setValueLabel}
-                    value={latestValue}
-                    label={valueLabel}
-                  />
-                ) : view === ChartView.FEES ? (
-                  <BarChart
-                    data={formattedFeesUSD}
-                    color={theme.primary}
-                    minHeight={340}
-                    setValue={setLatestValue}
-                    setLabel={setValueLabel}
-                    value={latestValue}
-                    label={valueLabel}
-                  />
-                ) : (
-                  <DensityChart address={address} />
-                )}
-              </DarkGreyCard>
+              <RelativeDarkGreyCard>
+                <PoolChart address={address} />
+              </RelativeDarkGreyCard>
             </ContentLayout>
           </AutoColumn>
 

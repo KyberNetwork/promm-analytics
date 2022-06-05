@@ -1,8 +1,9 @@
 import { TickProcessed } from './../../data/pools/tickData'
 import { createAction } from '@reduxjs/toolkit'
-import { PoolData, PoolChartEntry } from './reducer'
+import { PoolData, PoolChartEntry, PoolRatesEntry } from './reducer'
 import { Transaction } from 'types'
 import { ChainId } from 'constants/networks'
+import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 
 // protocol wide info
 export const updatePoolData = createAction<{ pools: PoolData[]; networkId: ChainId }>('pools/updatePoolData')
@@ -15,6 +16,13 @@ export const updatePoolChartData = createAction<{
   chartData: PoolChartEntry[]
   networkId: ChainId
 }>('pool/updatePoolChartData')
+
+export const updatePoolRatesData = createAction<{
+  poolAddress: string
+  ratesData: [PoolRatesEntry[], PoolRatesEntry[]]
+  timeWindow: TimeframeOptions
+  networkId: ChainId
+}>('pool/updatePoolRatesData')
 
 export const updatePoolTransactions = createAction<{
   poolAddress: string

@@ -128,7 +128,6 @@ export default function AccountsOverview(): JSX.Element {
                         {below800 ? item.owner.slice(0, 5) + '...' + item.owner.slice(39, 42) : item.owner}
                       </Label>
                     </LinkWrapper>
-                    {/* //todo namgold continue responsive */}
                     {!below600 && (
                       <Label end={1}>
                         <RowFixed>

@@ -107,7 +107,6 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
             options={CHART_VIEW}
             active={chartFilter}
             setActive={(value: CHART_VIEW) => {
-              debugger
               setChartFilter(value)
               if (value === CHART_VIEW.TVL || value === CHART_VIEW.VOLUME) setTimeWindow(TimeframeOptions.THERE_DAYS)
             }}

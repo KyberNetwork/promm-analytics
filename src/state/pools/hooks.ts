@@ -1,8 +1,14 @@
-import { addPoolKeys, updatePoolChartData, updatePoolTransactions, updateTickData } from 'state/pools/actions'
+import {
+  addPoolKeys,
+  updatePoolChartData,
+  updatePoolRatesData,
+  updatePoolTransactions,
+  updateTickData,
+} from 'state/pools/actions'
 import { AppState, AppDispatch } from './../index'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { PoolData, PoolChartEntry } from './reducer'
+import { PoolData, PoolChartEntry, PoolRatesEntry } from './reducer'
 import { updatePoolData } from './actions'
 import { notEmpty } from 'utils'
 import { fetchPoolChartData } from 'data/pools/chartData'
@@ -10,6 +16,10 @@ import { Transaction } from 'types'
 import { fetchPoolTransactions } from 'data/pools/transactions'
 import { PoolTickData } from 'data/pools/tickData'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
+import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
+import { getHourlyRateData } from 'data/pools/hourlyRatesData'
+import dayjs from 'dayjs'
+import { useFetchedSubgraphStatus } from 'data/application'
 
 export function useAllPoolData(): {
   [address: string]: { data: PoolData | undefined; lastUpdated: number | undefined }
@@ -143,4 +153,61 @@ export function usePoolTickData(
   )
 
   return [tickData, setPoolTickData]
+}
+export function useHourlyRateData(
+  poolAddress: string,
+  timeWindow: TimeframeOptions,
+  frequency: number
+): [PoolRatesEntry[], PoolRatesEntry[]] | undefined {
+  const dispatch = useDispatch<AppDispatch>()
+  const activeNetwork = useActiveNetworks()[0]
+  const ratesData = useSelector(
+    (state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[poolAddress]?.ratesData?.[timeWindow]
+  )
+  const { dataClient } = useClients()[0]
+  const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
+
+  useEffect(() => {
+    const currentTime = dayjs.utc()
+    let startTime: number
+
+    switch (timeWindow) {
+      case TimeframeOptions.FOUR_HOURS:
+        startTime = currentTime.subtract(4, 'hour').startOf('second').unix()
+        break
+      case TimeframeOptions.ONE_DAY:
+        startTime = currentTime.subtract(1, 'day').startOf('minute').unix()
+        break
+      case TimeframeOptions.THERE_DAYS:
+        startTime = currentTime.subtract(3, 'day').startOf('hour').unix()
+        break
+      case TimeframeOptions.WEEK:
+        startTime = currentTime.subtract(1, 'week').startOf('hour').unix()
+        break
+      case TimeframeOptions.MONTH:
+        startTime = currentTime.subtract(1, 'month').startOf('hour').unix()
+        break
+      default:
+        startTime = currentTime.subtract(3, 'day').startOf('hour').unix()
+        break
+    }
+
+    async function fetch() {
+      const ratesData = await getHourlyRateData(
+        dataClient,
+        poolAddress,
+        startTime,
+        latestBlock,
+        frequency,
+        activeNetwork
+      )
+      ratesData &&
+        dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))
+    }
+    if (!ratesData) {
+      fetch()
+    }
+  }, [timeWindow, poolAddress, latestBlock, frequency, dataClient, ratesData, activeNetwork, dispatch])
+
+  return ratesData
 }

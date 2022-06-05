@@ -9,7 +9,7 @@ import { useClients } from 'state/application/hooks'
 import { client, blockClient, arbitrumClient, arbitrumBlockClient } from 'apollo/client'
 
 export const GLOBAL_DATA = (block?: string | number) => {
-  const queryString = ` query uniswapFactories {
+  const queryString = ` query kyberswapFactories {
       factories(
        ${block !== undefined ? `block: { number: ${block}}` : ``}
        first: 1, subgraphError: allow) {
