@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Flex, Text } from 'rebass'
+import { Flex } from 'rebass'
 import styled from 'styled-components'
 import { Area, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, BarChart, Bar } from 'recharts'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
@@ -33,9 +33,13 @@ const ChartWrapper = styled.div`
 
 enum CHART_VIEW {
   TVL = 'TVL',
-  VOL = 'VOL',
-  DENSITY = 'DENSITY',
-  FEES = 'FEES',
+  Volume = 'Volume',
+  Liquidity = 'Liquidity',
+  Fees = 'Fees',
+  Price = 'Price',
+}
+
+enum PRICE_CHART_VIEW {
   PRICE0 = 'PRICE0',
   PRICE1 = 'PRICE1',
 }
@@ -46,6 +50,7 @@ type PoolChartProps = {
 
 const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
   const [view, setView] = useState(CHART_VIEW.TVL)
+  const [priceView, setPriceView] = useState(PRICE_CHART_VIEW.PRICE1)
 
   const [timeWindow, setTimeWindow] = useState(TimeframeOptions.MONTH)
 
@@ -102,7 +107,6 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
   const formattedSymbol1 =
     poolData?.token1?.symbol.length > 6 ? poolData?.token1?.symbol.slice(0, 5) + '...' : poolData?.token1?.symbol
 
-  const below1600 = useMedia('(max-width: 1600px)')
   const below1080 = useMedia('(max-width: 1080px)')
   const below600 = useMedia('(max-width: 600px)')
 
@@ -116,7 +120,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
    */
   const valueFormatter = useCallback(
     (val: number) => {
-      if (view === CHART_VIEW.PRICE0) {
+      if (priceView === PRICE_CHART_VIEW.PRICE0) {
         return (
           formatDollarAmount(val, 10) +
           `<span style="font-size: 12px; margin-left: 4px;">${formattedSymbol0}/${formattedSymbol1}<span>`
@@ -127,7 +131,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
         `<span style="font-size: 12px; margin-left: 4px;">${formattedSymbol1}/${formattedSymbol0}<span>`
       )
     },
-    [view, formattedSymbol0, formattedSymbol1]
+    [priceView, formattedSymbol1, formattedSymbol0]
   )
 
   if (chartData && chartData.length === 0) {
@@ -138,10 +142,8 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
     )
   }
 
-  const aspect = below600 ? 60 / 42 : below1080 ? 60 / 15 : below1600 ? 60 / 40 : 60 / 32
-
-  const { ONE_DAY, FOUR_HOURS, ALL_TIME, ...timeWindowOptionsExcept1Day } = TimeframeOptions
-  const { ALL_TIME: alltime, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
+  const { ONE_DAY, FOUR_HOURS, ALL_TIME, THREE_MONTHS, YEAR, ...timeWindowOptionsExcept1Day } = TimeframeOptions
+  const { ALL_TIME: _0, THREE_MONTHS: _1, YEAR: _2, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
 
   return (
     <ChartWrapper>
@@ -156,14 +158,10 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
             }}
             color={theme.primary}
           />
-          {CHART_VIEW.DENSITY || (
+          {view == CHART_VIEW.Liquidity || (
             <DropdownSelect
               name={ApplicationModal.TIME_DROPDOWN}
-              options={
-                [CHART_VIEW.PRICE0, CHART_VIEW.PRICE1].includes(view)
-                  ? timeWindowOptionsExcept1Day
-                  : timeWindowOptionsExceptAllTime
-              }
+              options={view == CHART_VIEW.Price ? timeWindowOptionsExceptAllTime : timeWindowOptionsExcept1Day}
               active={timeWindow}
               setActive={setTimeWindow}
               color={theme.primary}
@@ -182,30 +180,30 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
             </OptionButton>
 
             <OptionButton
-              active={view === CHART_VIEW.VOL}
-              onClick={() => setView(CHART_VIEW.VOL)}
+              active={view === CHART_VIEW.Volume}
+              onClick={() => setView(CHART_VIEW.Volume)}
               style={{ padding: '6px 12px', borderRadius: '999px' }}
             >
               Volume
             </OptionButton>
 
             <OptionButton
-              active={view === CHART_VIEW.DENSITY}
-              onClick={() => setView(CHART_VIEW.DENSITY)}
+              active={view === CHART_VIEW.Liquidity}
+              onClick={() => setView(CHART_VIEW.Liquidity)}
               style={{ padding: '6px 12px', borderRadius: '999px' }}
             >
               Liquidity
             </OptionButton>
             <OptionButton
-              active={view === CHART_VIEW.FEES}
-              onClick={() => setView(CHART_VIEW.FEES)}
+              active={view === CHART_VIEW.Fees}
+              onClick={() => setView(CHART_VIEW.Fees)}
               style={{ padding: '6px 12px', borderRadius: '999px' }}
             >
               Fees
             </OptionButton>
             <OptionButton
-              active={[CHART_VIEW.PRICE0, CHART_VIEW.PRICE1].includes(view)}
-              onClick={() => setView(CHART_VIEW.PRICE1)}
+              active={view == CHART_VIEW.Price}
+              onClick={() => setView(CHART_VIEW.Price)}
               style={{ padding: '6px 12px', borderRadius: '999px' }}
             >
               Price
@@ -213,11 +211,13 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
           </RowFixed>
           <AutoColumn justify="flex-end" gap="20px">
             <AutoRow justify="flex-end" align="flex-start" style={{ width: 'fit-content', gap: '6px' }}>
-              {[CHART_VIEW.PRICE0, CHART_VIEW.PRICE1].includes(view) && (
+              {view == CHART_VIEW.Price && (
                 <>
                   <OptionButton
                     onClick={() =>
-                      setView((view) => (view == CHART_VIEW.PRICE1 ? CHART_VIEW.PRICE0 : CHART_VIEW.PRICE1))
+                      setPriceView((priceView) =>
+                        priceView == PRICE_CHART_VIEW.PRICE1 ? PRICE_CHART_VIEW.PRICE0 : PRICE_CHART_VIEW.PRICE1
+                      )
                     }
                   >
                     <Repeat size={12} />
@@ -256,7 +256,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
               </OptionButton>
             </AutoRow>
             {/* <Text color={theme.subText} fontSize={10} marginTop="12px">
-              {![CHART_VIEW.LINE_PRICE, CHART_VIEW.PRICE].includes(view)
+              {![CHART_VIEW.LINE_PRICE, CHART_VIEW.Price].includes(view)
                 ? ' '
                 : timeWindow === TimeframeOptions.FOUR_HOURS
                 ? '30s'
@@ -271,8 +271,13 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
       )}
 
       {view === CHART_VIEW.TVL && (
-        <ResponsiveContainer aspect={aspect}>
-          <AreaChart margin={{ top: 0, right: 10, bottom: 6, left: 0 }} barCategoryGap={1} data={chartData}>
+        <ResponsiveContainer width="100%" height={355.5}>
+          <AreaChart
+            margin={{ top: 0, right: 10, bottom: 6, left: 0 }}
+            barCategoryGap={1}
+            data={chartData}
+            height={355.5}
+          >
             <defs>
               <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={theme.primary} stopOpacity={0.35} />
@@ -330,8 +335,8 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
         </ResponsiveContainer>
       )}
 
-      {view === CHART_VIEW.VOL && (
-        <ResponsiveContainer aspect={aspect}>
+      {view === CHART_VIEW.Volume && (
+        <ResponsiveContainer width="100%" height={355.5}>
           <BarChart
             margin={{ top: 0, right: 0, bottom: 6, left: below1080 ? 0 : 10 }}
             barCategoryGap={1}
@@ -387,8 +392,8 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
         </ResponsiveContainer>
       )}
 
-      {view === CHART_VIEW.FEES && (
-        <ResponsiveContainer aspect={aspect}>
+      {view === CHART_VIEW.Fees && (
+        <ResponsiveContainer width="100%" height={355.5}>
           <BarChart
             margin={{ top: 0, right: 0, bottom: 6, left: below1080 ? 0 : 10 }}
             barCategoryGap={1}
@@ -443,11 +448,12 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
           </BarChart>
         </ResponsiveContainer>
       )}
-      {view === CHART_VIEW.DENSITY && <DensityChart address={address} />}
+      {view === CHART_VIEW.Liquidity && <DensityChart address={address} />}
 
-      {view === CHART_VIEW.PRICE0 &&
+      {view === CHART_VIEW.Price &&
+        priceView === PRICE_CHART_VIEW.PRICE0 &&
         (hourlyRate0 ? (
-          <ResponsiveContainer aspect={aspect} ref={ref}>
+          <ResponsiveContainer ref={ref} width="100%" height={355.5}>
             <CandleStickChart
               data={hourlyRate0}
               base={poolData.token0Price}
@@ -461,9 +467,10 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
           </Flex>
         ))}
 
-      {view === CHART_VIEW.PRICE1 &&
+      {view === CHART_VIEW.Price &&
+        priceView === PRICE_CHART_VIEW.PRICE1 &&
         (hourlyRate1 ? (
-          <ResponsiveContainer aspect={aspect} ref={ref}>
+          <ResponsiveContainer ref={ref} width="100%" height={355.5}>
             <CandleStickChart
               data={hourlyRate1}
               base={poolData.token1Price}
