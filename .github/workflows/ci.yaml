@@ -105,11 +105,11 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-${{ env.SERVICE }}-buildx
 
-      - name: Restore node_modules
-        uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - name: Restore node_modules
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependences
         uses: bahmutov/npm-install@HEAD
@@ -133,10 +133,10 @@ jobs:
           tags: |
             ${{ needs.prepare.outputs.image_name }}:${{ needs.prepare.outputs.image_tag }}
             ${{ needs.prepare.outputs.image_name }}:${{ needs.prepare.outputs.current_branch }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      #     cache-from: type=local,src=/tmp/.buildx-cache
+      #     cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      - name: Move Docker cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      # - name: Move Docker cache
+      #   run: |
+      #     rm -rf /tmp/.buildx-cache
+      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
