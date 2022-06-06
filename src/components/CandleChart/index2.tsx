@@ -78,7 +78,7 @@ const CandleStickChart = ({
     if (chartCreated && previousTheme !== darkMode) {
       // remove the tooltip element
       const tooltip = document.getElementById('tooltip-id')
-      const node = document.getElementById('test-id')
+      const node = ref.current
       tooltip && node?.removeChild(tooltip)
       chartCreated.resize(0, 0)
       setChartCreated(null)
@@ -90,7 +90,7 @@ const CandleStickChart = ({
       // remove the tooltip element
       const tooltip = document.getElementById('tooltip-id')
       const currentChart = document.getElementsByClassName('tv-lightweight-charts')
-      const node = document.getElementById('test-id')
+      const node = ref.current
       tooltip && node?.removeChild(tooltip)
       if (currentChart.length > 0) {
         node?.removeChild(currentChart[0])

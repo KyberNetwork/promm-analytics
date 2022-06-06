@@ -113,7 +113,7 @@ export default function TokenPage(): JSX.Element {
       {tokenData ? (
         !tokenData.exists ? (
           <LightGreyCard style={{ textAlign: 'center' }}>
-            No pool has been created with this token yet. Create one
+            No pool has been created with this token yet. Create one {/* todo namgold: fix this 404 */}
             <StyledExternalLink
               style={{ marginLeft: '4px' }}
               href={`https://kyberswap.com/#/proamm/add/${address}?networkId=${activeNetwork.chainId}`}

@@ -34,7 +34,7 @@ ReactDOM.render(
     <FixedGlobalStyle />
     <ApolloProvider client={client}>
       <Provider store={store}>
-        <BrowserRouter>
+        <BrowserRouter basename="/elastic">
           <Updaters />
           <ThemeProvider>
             <ThemedGlobalStyle />
