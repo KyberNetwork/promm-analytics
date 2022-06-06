@@ -254,7 +254,7 @@ function SideNav(): JSX.Element {
           </TabItem>
           {/* <TabItem active={tab === 2} onClick={() => setTab(2)} role="button"> */}
           <TabItem active={tab === 2} role="button">
-            <LinkWrapper href="https://analytics.kyberswap.com">Classic Analytics</LinkWrapper>
+            <LinkWrapper href="/classic">Classic Analytics</LinkWrapper>
           </TabItem>
         </TabWrapper>
 
