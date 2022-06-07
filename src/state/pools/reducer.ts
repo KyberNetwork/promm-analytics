@@ -102,6 +102,7 @@ export interface PoolsState {
 export const initialState: PoolsState = {
   byAddress: {
     [ChainId.ETHEREUM]: {},
+    [ChainId.BSCMAINNET]: {},
     [ChainId.ROPSTEN]: {},
     [ChainId.RINKEBY]: {},
     [ChainId.ARBITRUM]: {},
