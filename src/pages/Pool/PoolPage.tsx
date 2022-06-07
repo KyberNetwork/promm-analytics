@@ -6,7 +6,7 @@ import { Flex } from 'rebass'
 import { useMedia } from 'react-use'
 
 import { PageWrapper } from 'pages/styled'
-import { feeTierPercent, getEtherscanLink, shortenAddress } from 'utils'
+import { feeTierPercent, FEE_BASE_UNITS, getEtherscanLink, shortenAddress } from 'utils'
 import Column, { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -236,7 +236,7 @@ export default function PoolPage(): JSX.Element {
                   <AutoColumn gap="16px">
                     <TYPE.title fontSize="14px">Fees (24H)</TYPE.title>
                     <TYPE.label fontSize="20px">
-                      {formatDollarAmount(poolData.volumeUSD * (poolData.feeTier / 1000000))}
+                      {formatDollarAmount(poolData.volumeUSD * (poolData.feeTier / FEE_BASE_UNITS))}
                     </TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>

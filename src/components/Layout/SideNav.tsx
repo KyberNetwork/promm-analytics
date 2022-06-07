@@ -28,7 +28,7 @@ import { useSessionStart } from 'hooks/useSectionStart'
 
 const NetworkModalContent = styled.div`
   width: 100%;
-  padding: 28px 24px;
+  padding: 30px 22px 28px 24px;
 `
 
 const Wrapper = styled.div`
@@ -95,7 +95,7 @@ const TabWrapper = styled.div`
   width: 100%;
   margin-top: 24px;
 `
-const TabItem = styled.div<{ active: boolean }>`
+const TabItem = styled.div<{ active?: boolean }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -209,7 +209,6 @@ function SideNav(): JSX.Element {
   const { isAllChain } = useActiveNetworkUtils()
   const { pathname } = useLocation()
   const [showNetworkModal, setShow] = useState(false)
-  const [tab, setTab] = useState<1 | 2>(1)
   const [isFirstTimeVisit, toggleFirstTimeVisit] = useIsFirstTimeVisit()
   const { width } = useWindowSize()
   const history = useHistory()
@@ -240,21 +239,20 @@ function SideNav(): JSX.Element {
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
       <NetworkModalContent>
         <Flex width="100%" justifyContent="space-between" alignItems="center">
-          <Text fontSize={20} fontWeight="500">
+          <Text fontSize={16} fontWeight="500">
             Select a Network
           </Text>
-          <ButtonEmpty width="fit-content" onClick={() => setShowNetworkModal(false)}>
-            <X color={theme.text} />
+          <ButtonEmpty width="fit-content" onClick={() => setShowNetworkModal(false)} style={{ padding: 0 }}>
+            <X size={16} color={theme.text} />
           </ButtonEmpty>
         </Flex>
 
         <TabWrapper>
-          <TabItem active={tab === 1} onClick={() => setTab(1)} role="button">
+          <TabItem active role="button">
             Elastic Analytics
           </TabItem>
-          {/* <TabItem active={tab === 2} onClick={() => setTab(2)} role="button"> */}
-          <TabItem active={tab === 2} role="button">
-            <LinkWrapper href="https://analytics.kyberswap.com">Classic Analytics</LinkWrapper>
+          <TabItem role="button">
+            <LinkWrapper href="/classic">Classic Analytics</LinkWrapper>
           </TabItem>
         </TabWrapper>
 
@@ -262,7 +260,7 @@ function SideNav(): JSX.Element {
           {SHOW_NETWORKS.map((chainId) => (
             <StyledInternalLink key={chainId} to={`/${NETWORKS_INFO_MAP[chainId].route}/home`}>
               <NetworkItem
-                active={!isAllChain && tab === 1 && chainId === activeNetworks[0].chainId}
+                active={!isAllChain && chainId === activeNetworks[0].chainId}
                 key={chainId}
                 onClick={() => setShowNetworkModal(false)}
               >

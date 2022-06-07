@@ -62,8 +62,10 @@ export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
+export const FEE_BASE_UNITS = 100_000
+
 export function feeTierPercent(fee: number): string {
-  return (fee / 1000).toPrecision(1) + '%'
+  return ((fee * 100) / FEE_BASE_UNITS).toPrecision(1) + '%'
 }
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {

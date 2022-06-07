@@ -11,6 +11,7 @@ import { networkPrefix } from 'utils/networkPrefix'
 import HoverInlineText from 'components/HoverInlineText'
 import { TYPE } from 'theme'
 import { AutoColumn } from 'components/Column'
+import { feeTierPercent } from 'utils'
 
 const RightColumn = styled.div<{ open: boolean }>`
   padding: 1.25rem;
@@ -100,7 +101,7 @@ const PinnedData: React.FunctionComponent<PinnedDataPropType> = ({ open, setSave
           <img src={networkInfo.imageURL} width="16px" height="16px" alt="" />
           <HoverInlineText
             maxCharacters={18}
-            text={`${pool.token0.symbol}/${pool.token1.symbol} (${pool.feeTier / 100}%)`}
+            text={`${pool.token0.symbol}/${pool.token1.symbol} (${feeTierPercent(pool.feeTier)})`}
           />
         </TagItem>
         <X color={theme.subText} role="button" onClick={() => updateSavedPools(id, pool)} size={24} />

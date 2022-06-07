@@ -6,9 +6,8 @@ import { useDeltaTimestamps } from 'utils/queries'
 import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { useMemo } from 'react'
 import { useClients } from 'state/application/hooks'
-import { client, blockClient, arbitrumClient, arbitrumBlockClient } from 'apollo/client'
 
-export const GLOBAL_DATA = (block?: string | number) => {
+export const GLOBAL_DATA = (block?: string | number): import('graphql').DocumentNode => {
   const queryString = ` query kyberswapFactories {
       factories(
        ${block !== undefined ? `block: { number: ${block}}` : ``}
@@ -131,40 +130,5 @@ export function useFetchProtocolData(
     loading: anyLoading,
     error: anyError,
     data: formattedData,
-  }
-}
-
-//todo namgold: clear this
-export function useFetchAggregateProtocolData(): {
-  loading: boolean
-  error: boolean
-  data: ProtocolData | undefined
-} {
-  const { data: ethereumData, loading: loadingEthereum, error: errorEthereum } = useFetchProtocolData(
-    client,
-    blockClient
-  )
-  const { data: arbitrumData, loading: loadingArbitrum, error: errorArbitrum } = useFetchProtocolData(
-    arbitrumClient,
-    arbitrumBlockClient
-  )
-
-  if (!ethereumData && !arbitrumData) {
-    return {
-      data: undefined,
-      loading: false,
-      error: false,
-    }
-  }
-
-  // for now until useMultipleDatas hook just manuall construct ProtocolData object
-
-  // console.log(ethereumData)
-  // console.log(arbitrumData)
-
-  return {
-    data: undefined,
-    loading: false,
-    error: false,
   }
 }

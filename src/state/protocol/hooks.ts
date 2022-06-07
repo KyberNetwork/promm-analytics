@@ -5,7 +5,6 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ChartDayData, Transaction } from 'types'
 import { useActiveNetworks } from 'state/application/hooks'
-import { useFetchAggregateProtocolData } from 'data/protocol/overview'
 
 export function useProtocolData(): [ProtocolData | undefined, (protocolData: ProtocolData) => void] {
   const activeNetwork = useActiveNetworks()[0]
@@ -46,8 +45,4 @@ export function useProtocolTransactions(): [Transaction[] | undefined, (transact
     [activeNetwork.chainId, dispatch]
   )
   return [transactions, setTransactions]
-}
-
-export function useAggregateOverviewData() {
-  useFetchAggregateProtocolData()
 }
