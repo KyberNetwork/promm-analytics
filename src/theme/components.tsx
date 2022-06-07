@@ -47,7 +47,6 @@ export const StyledLink = styled.a<{ fontSize?: string }>`
   cursor: pointer;
   color: ${({ theme }) => theme.primary};
   font-weight: 500;
-  font-size: ${({ fontSize }) => fontSize ?? '16px'};
 
   :hover {
     text-decoration: none;

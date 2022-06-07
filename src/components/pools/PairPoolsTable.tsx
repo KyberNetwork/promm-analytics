@@ -298,6 +298,7 @@ export default function PairPoolsTable({
                                     <ExternalLink
                                       href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
                                       style={{
+                                        display: 'flex',
                                         justifyContent: 'flex-end',
                                       }}
                                     >
