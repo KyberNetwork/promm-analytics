@@ -13,7 +13,7 @@ import KyberLoading from 'components/Loader/KyberLoading'
 import useTheme from 'hooks/useTheme'
 import { useDarkModeManager } from 'state/user/hooks'
 import { OptionButton } from 'components/Button'
-import { formatDollarAmount } from 'utils/numbers'
+import { formatAmount, formatDollarAmount } from 'utils/numbers'
 import CandleStickChart from 'components/CandleChart/index2'
 import { ApplicationModal } from 'state/application/actions'
 import { useHourlyRateData, usePoolChartData, usePoolDatas } from 'state/pools/hooks'
@@ -120,15 +120,15 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
    */
   const valueFormatter = useCallback(
     (val: number) => {
+      const formattedVal = val < 1 ? formatAmount(val, 10) : formatAmount(val)
       if (priceView === PRICE_CHART_VIEW.PRICE0) {
         return (
-          formatDollarAmount(val, 10) +
+          formattedVal +
           `<span style="font-size: 12px; margin-left: 4px;">${formattedSymbol0}/${formattedSymbol1}<span>`
         )
       }
       return (
-        formatDollarAmount(val) +
-        `<span style="font-size: 12px; margin-left: 4px;">${formattedSymbol1}/${formattedSymbol0}<span>`
+        formattedVal + `<span style="font-size: 12px; margin-left: 4px;">${formattedSymbol1}/${formattedSymbol0}<span>`
       )
     },
     [priceView, formattedSymbol1, formattedSymbol0]
