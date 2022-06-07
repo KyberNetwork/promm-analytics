@@ -232,9 +232,9 @@ function SideNav(): JSX.Element {
   const [tab, setTab] = useState<'Elastic' | 'Classic'>('Elastic')
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
   const networkListToShow: ('allchain' | ChainId)[] = [...SHOW_NETWORKS]
-  // if (tab == 'Classic')
-  //todo namgold: remove above if line
-  networkListToShow.unshift('allchain')
+  if (tab == 'Classic')
+    //todo namgold: remove above if line
+    networkListToShow.unshift('allchain')
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
       <NetworkModalContent>
