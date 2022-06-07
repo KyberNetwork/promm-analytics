@@ -244,6 +244,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
               tick={{ fill: textColor }}
               type={'number'}
               domain={['dataMin', 'dataMax']}
+              scale="time"
             />
             <YAxis
               type="number"
@@ -354,7 +355,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
           <BarChart margin={{ top: 0, right: 10, bottom: 6, left: 10 }} barCategoryGap={1} data={chartData}>
             <XAxis
               tickLine={false}
-              axisLine={false}
+              // axisLine={false}
               interval="preserveEnd"
               minTickGap={80}
               tickMargin={14}
@@ -363,6 +364,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
               tick={{ fill: textColor }}
               type={'number'}
               domain={['dataMin', 'dataMax']}
+              scale="time"
             />
             <YAxis
               type="number"
