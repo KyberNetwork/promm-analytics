@@ -2,8 +2,7 @@ import React, { HTMLProps, useCallback } from 'react'
 import ReactGA from 'react-ga'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
-import { darken } from 'polished'
-import { ArrowLeft, X, ExternalLink as LinkIconFeather, Trash } from 'react-feather'
+import { ExternalLink as LinkIconFeather, Trash } from 'react-feather'
 
 export const ButtonText = styled.button`
   outline: none;
@@ -29,6 +28,7 @@ export const StyledInternalLink = styled(Link)<{ fontSize?: string }>`
 
   :hover {
     text-decoration: none;
+    opacity: 0.7;
   }
 
   :focus {
@@ -37,43 +37,17 @@ export const StyledInternalLink = styled(Link)<{ fontSize?: string }>`
   }
 
   :active {
+    outline: none;
     text-decoration: none;
   }
 `
 
-const StyledLink = styled.a`
+export const StyledLink = styled.a<{ fontSize?: string }>`
   text-decoration: none;
   cursor: pointer;
   color: ${({ theme }) => theme.primary};
   font-weight: 500;
-  display: inline;
-  flex-direction: center;
-  align-items: center;
-  display: flex;
-
-  :hover {
-    text-decoration: underline;
-    text-decoration: none;
-    opacity: 0.7;
-  }
-
-  :focus {
-    outline: none;
-    text-decoration: none;
-  }
-
-  :active {
-    outline: none;
-    text-decoration: none;
-  }
-`
-
-const LinkIconWrapper = styled.a`
-  text-decoration: none;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  display: flex;
+  font-size: ${({ fontSize }) => fontSize ?? '16px'};
 
   :hover {
     text-decoration: none;
@@ -86,6 +60,7 @@ const LinkIconWrapper = styled.a`
   }
 
   :active {
+    outline: none;
     text-decoration: none;
   }
 `
