@@ -49,13 +49,13 @@ export const initialState: ProtocolState = {
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [ChainId.RINKEBY]: {
+  [ChainId.ROPSTEN]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,
     lastUpdated: undefined,
   },
-  [ChainId.ROPSTEN]: {
+  [ChainId.RINKEBY]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,
@@ -68,6 +68,48 @@ export const initialState: ProtocolState = {
     lastUpdated: undefined,
   },
   [ChainId.POLYGON]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.AVAXMAINNET]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.FANTOM]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.CRONOS]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.BTTC]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.VELAS]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.AURORA]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
+  [ChainId.OASIS]: {
     data: undefined,
     chartData: undefined,
     transactions: undefined,

@@ -296,7 +296,7 @@ export default function PairPoolsTable({
                                       {formatDollarAmount(poolData.tvlUSD)}
                                     </Label>
                                     <ExternalLink
-                                      href={`https://kyberswap.com/#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
+                                      href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
                                       style={{
                                         justifyContent: 'flex-end',
                                       }}
@@ -371,7 +371,7 @@ export default function PairPoolsTable({
 
                                     <Flex justifyContent="flex-end">
                                       <ExternalLink
-                                        href={`https://kyberswap.com/#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
+                                        href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
                                       >
                                         <Add>
                                           <Plus color={theme.primary} size="16px" />

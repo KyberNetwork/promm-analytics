@@ -52,19 +52,19 @@ export const ButtonDark = styled(Base)<{ color?: string }>`
   }
 `
 
-export const ButtonPrimary = styled(Base)<{ bgColor?: string }>`
-  background-color: ${({ theme, bgColor }) => bgColor ?? theme.primary};
+export const ButtonPrimary = styled(Base)`
+  background-color: ${({ theme }) => theme.primary};
   color: ${({ theme }) => theme.textReverse};
   &:focus {
-    box-shadow: 0 0 0 1pt ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary)};
-    background-color: ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary)};
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.primary)};
+    background-color: ${({ theme }) => darken(0.05, theme.primary)};
   }
   &:hover {
-    background-color: ${({ theme, bgColor }) => darken(0.05, bgColor ?? theme.primary)};
+    background-color: ${({ theme }) => darken(0.05, theme.primary)};
   }
   &:active {
-    box-shadow: 0 0 0 1pt ${({ theme, bgColor }) => darken(0.1, bgColor ?? theme.primary)};
-    background-color: ${({ theme, bgColor }) => darken(0.1, bgColor ?? theme.primary)};
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.primary)};
+    background-color: ${({ theme }) => darken(0.1, theme.primary)};
   }
   &:disabled {
     background-color: ${({ theme, altDisabledStyle, disabled }) =>
