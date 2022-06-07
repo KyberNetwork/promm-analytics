@@ -73,6 +73,13 @@ export const initialState: TokensState = {
     [ChainId.RINKEBY]: {},
     [ChainId.ARBITRUM]: {},
     [ChainId.POLYGON]: {},
+    [ChainId.AVAXMAINNET]: {},
+    [ChainId.FANTOM]: {},
+    [ChainId.CRONOS]: {},
+    [ChainId.BTTC]: {},
+    [ChainId.VELAS]: {},
+    [ChainId.AURORA]: {},
+    [ChainId.OASIS]: {},
   },
 }
 

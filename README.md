@@ -2,7 +2,7 @@
 
 An open sourced interface for ProMM Analytics.
 
-URL: https://promm-analytics.kyberswap.com/#/
+URL: https://analytics.kyberswap.com/elastic
 
 ## Development
 

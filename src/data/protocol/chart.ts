@@ -6,7 +6,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
-import { arbitrumClient } from 'apollo/client'
+import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -45,7 +45,7 @@ async function fetchChartData(client: ApolloClient<NormalizedCacheObject>) {
     volumeUSD: string
     tvlUSD: string
   }[] = []
-  const startTimestamp = client === arbitrumClient ? 1630423606 : 1619170975
+  const startTimestamp = client === NETWORKS_INFO_MAP[ChainId.ARBITRUM].client ? 1630423606 : 1619170975
   const endTimestamp = dayjs.utc().unix()
 
   let error = false

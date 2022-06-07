@@ -116,7 +116,7 @@ export default function TokenPage(): JSX.Element {
             No pool has been created with this token yet. Create one {/* todo namgold: fix this 404 */}
             <StyledExternalLink
               style={{ marginLeft: '4px' }}
-              href={`https://kyberswap.com/#/proamm/add/${address}?networkId=${activeNetwork.chainId}`}
+              href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${address}?networkId=${activeNetwork.chainId}`}
             >
               here.
             </StyledExternalLink>
@@ -160,7 +160,7 @@ export default function TokenPage(): JSX.Element {
                       fill={!!savedTokens?.[activeNetwork.chainId]?.[address]}
                       onClick={() => addSavedToken(activeNetwork.chainId, tokenData)}
                     />
-                    <StyledExternalLink href={`https://kyberswap.com/#/proamm/add/${address}`}>
+                    <StyledExternalLink href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${address}`}>
                       <ButtonOutlined width="max-content" mr="12px" height="100%" style={{ height: '38px' }}>
                         <RowBetween>
                           <Plus size={20} />
@@ -169,7 +169,7 @@ export default function TokenPage(): JSX.Element {
                       </ButtonOutlined>
                     </StyledExternalLink>
                     <StyledExternalLink
-                      href={`https://kyberswap.com/#/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
+                      href={`${process.env.REACT_APP_DMM_SWAP_URL}swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
                     >
                       <ButtonPrimary width="100px" style={{ height: '38px' }}>
                         Swap

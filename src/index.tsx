@@ -14,7 +14,7 @@ import ApplicationUpdater from './state/application/updater'
 import ListUpdater from './state/lists/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import { ApolloProvider } from '@apollo/client/react'
-import { client } from 'apollo/client'
+import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
 
 function Updaters() {
   return (
@@ -32,7 +32,7 @@ function Updaters() {
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <ApolloProvider client={client}>
+    <ApolloProvider client={NETWORKS_INFO_MAP[ChainId.ETHEREUM].client}>
       <Provider store={store}>
         <BrowserRouter basename="/elastic">
           <Updaters />

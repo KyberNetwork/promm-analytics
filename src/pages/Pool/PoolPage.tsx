@@ -192,7 +192,7 @@ export default function PoolPage(): JSX.Element {
                   />
 
                   <StyledExternalLink
-                    href={`https://kyberswap.com/#/proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}?networkId=${activeNetwork.chainId}`}
+                    href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}?networkId=${activeNetwork.chainId}`}
                   >
                     <ButtonOutlined width="max-content" mr="12px" style={{ height: '38px' }}>
                       <RowBetween>
@@ -202,7 +202,7 @@ export default function PoolPage(): JSX.Element {
                     </ButtonOutlined>
                   </StyledExternalLink>
                   <StyledExternalLink
-                    href={`https://kyberswap.com/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
+                    href={`${process.env.REACT_APP_DMM_SWAP_URL}swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
                   >
                     <ButtonPrimary width="100px" style={{ height: '38px' }}>
                       Trade
@@ -344,7 +344,7 @@ export default function PoolPage(): JSX.Element {
                 </Column>
                 <Column style={{ gridArea: 'button' }}>
                   <StyledExternalLink
-                    href={`https://kyberswap.com/#/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
+                    href={`${process.env.REACT_APP_DMM_SWAP_URL}swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
                   >
                     <ButtonPrimary style={{ height: 'fit-content', width: 'fit-content' }}>
                       <span>
