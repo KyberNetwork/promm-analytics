@@ -71,7 +71,6 @@ export default function Menu(): JSX.Element {
   const activeNetworks = useActiveNetworks()[0]
 
   return (
-    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node}>
       <StyledMenuButton onClick={toggle}>
         <StyledMenuIcon />
@@ -79,21 +78,6 @@ export default function Menu(): JSX.Element {
 
       {open && (
         <MenuFlyout>
-          {/* <MenuItem to="/" isActive={pathname === '/'}>
-            <TrendingUp size={16} />
-            Summary
-          </MenuItem>
-
-          <MenuItem to={networkPrefix(activeNetworks) + 'tokens'} isActive={pathname.includes('tokens')}>
-            <Disc size={16} />
-            Tokens
-          </MenuItem>
-
-          <MenuItem to={networkPrefix(activeNetworks) + 'pools'} isActive={pathname.includes('pools')}>
-            <Droplet size={16} />
-            Pools
-          </MenuItem>
-        */}
           <MenuItem to={networkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
             <Wallet />
             Wallet Analytics
@@ -106,7 +90,7 @@ export default function Menu(): JSX.Element {
             Swap
           </ExternalMenu>
 
-          <ExternalMenu href="https://analytics.kyberswap.com">
+          <ExternalMenu href="/classic">
             <Activity size={16} />
             Classic Analytics
           </ExternalMenu>

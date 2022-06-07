@@ -382,7 +382,7 @@ function SideNav(): JSX.Element {
               Swap
             </ExternalMenu>
 
-            <ExternalMenu href="https://analytics.kyberswap.com">
+            <ExternalMenu href="/classic">
               <Activity size={16} />
               Classic Analytics
             </ExternalMenu>
@@ -395,7 +395,7 @@ function SideNav(): JSX.Element {
           <ExternalLink href="https://kyber.network">Kyber Network</ExternalLink>
           <Polling>
             <PollingDot />
-            <a href="/" style={{ textDecoration: 'none' }}>
+            <a href="/elastic" style={{ textDecoration: 'none' }}>
               Updated {seconds ? seconds + 's' : '-'} ago <br />
             </a>
           </Polling>
