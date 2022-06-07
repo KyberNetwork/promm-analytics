@@ -45,7 +45,7 @@ export default function Percent({ value, decimals = 2, fontSize, fontWeight }: L
   if (value < 0 && value > -0.0001) {
     return (
       <PercentText fontWeight={fontWeight} fontSize={fontSize} color="#FF537B">
-        {'< 0.0001%'}
+        {'-0%'}
       </PercentText>
     )
   }

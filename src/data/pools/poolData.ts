@@ -6,6 +6,7 @@ import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
+import { FEE_BASE_UNITS } from 'utils'
 
 export const POOLS_BULK = (block: number | string | undefined, pools: string[]): import('graphql').DocumentNode => {
   let poolString = `[`
@@ -202,7 +203,7 @@ export function usePoolDatas(
       accum[address] = {
         address,
         feeTier,
-        fee: volumeUSD * (feeTier / 1000000),
+        fee: volumeUSD * (feeTier / FEE_BASE_UNITS),
         liquidity: parseFloat(current.liquidity),
         reinvestL: parseFloat(current.reinvestL),
         sqrtPrice: parseFloat(current.sqrtPrice),
