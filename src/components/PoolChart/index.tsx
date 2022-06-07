@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 import { Area, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, BarChart, Bar } from 'recharts'
@@ -21,6 +21,7 @@ import DensityChart from 'components/PoolChart/DensityChart'
 import DropdownSelect from 'components/DropdownSelect'
 import { EmptyCard } from 'components'
 import { Repeat } from 'react-feather'
+import { isMobile } from 'react-device-detect'
 
 const ChartWrapper = styled.div`
   height: 100%;
@@ -134,6 +135,32 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
     [priceView, formattedSymbol1, formattedSymbol0]
   )
 
+  const { ONE_DAY, FOUR_HOURS, ALL_TIME, THREE_MONTHS, YEAR, ...timeWindowOptionsExcept1Day } = TimeframeOptions
+  const { ALL_TIME: _0, THREE_MONTHS: _1, YEAR: _2, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
+
+  const dataMax = useMemo(() => Math.max(...(chartData?.map((item) => item.volumeUSD) ?? [])), [chartData])
+  const dataMin = useMemo(() => Math.min(...(chartData?.map((item) => item.volumeUSD) ?? [])), [chartData])
+
+  const ticks = useMemo(() => {
+    if (chartData && chartData.length > 0) {
+      const firstTime = chartData[0].date
+      const lastTime = chartData[chartData.length - 1].date
+      const length = lastTime - firstTime
+      let padding = 0.06
+      let counts = 6
+      if (isMobile) {
+        padding = 0.1
+        counts = 4
+      }
+      const positions = []
+      for (let i = 0; i < counts; i++) {
+        positions.push(padding + (i * (1 - 2 * padding)) / (counts - 1))
+      }
+      return positions.map((v) => firstTime + length * v)
+    }
+    return []
+  }, [chartData])
+
   if (chartData && chartData.length === 0) {
     return (
       <ChartWrapper>
@@ -141,9 +168,6 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
       </ChartWrapper>
     )
   }
-
-  const { ONE_DAY, FOUR_HOURS, ALL_TIME, THREE_MONTHS, YEAR, ...timeWindowOptionsExcept1Day } = TimeframeOptions
-  const { ALL_TIME: _0, THREE_MONTHS: _1, YEAR: _2, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
 
   return (
     <ChartWrapper>
@@ -351,6 +375,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
               tickFormatter={(tick) => toNiceDate(tick)}
               dataKey="date"
               tick={{ fill: textColor }}
+              ticks={ticks}
               type={'number'}
               domain={['dataMin', 'dataMax']}
             />
@@ -365,6 +390,14 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
               minTickGap={80}
               yAxisId={0}
               tick={{ fill: textColor }}
+              ticks={[
+                dataMin,
+                dataMin + (1 * (dataMax - dataMin)) / 4,
+                dataMin + (2 * (dataMax - dataMin)) / 4,
+                dataMin + (3 * (dataMax - dataMin)) / 4,
+                dataMin + (4 * (dataMax - dataMin)) / 4,
+                dataMin + (5 * (dataMax - dataMin)) / 4,
+              ]}
             />
             <Tooltip
               cursor={{ fill: theme.primary, opacity: 0.1 }}
