@@ -218,7 +218,7 @@ export default function PairPoolsTable({
               </ClickableText>
 
               <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.apr)}>
-                AVG APR {arrow(SORT_FIELD.apr)}
+                AVG APY {arrow(SORT_FIELD.apr)}
                 <QuestionHelper text="Average estimated return based on yearly fees of the pool" />
               </ClickableText>
 
