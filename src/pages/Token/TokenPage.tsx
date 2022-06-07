@@ -185,10 +185,10 @@ export default function TokenPage(): JSX.Element {
                   <DarkGreyCard>
                     <AutoColumn gap="16px">
                       <Flex justifyContent="space-between">
-                        <TYPE.label fontSize="14px">Price</TYPE.label>
-                        <Percent value={tokenData.priceUSDChange} />
+                        <TYPE.title fontSize="14px">Price</TYPE.title>
+                        <Percent fontSize={12} value={tokenData.priceUSDChange} />
                       </Flex>
-                      <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.priceUSD)}</TYPE.label>
+                      <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.priceUSD)}</TYPE.label>
                     </AutoColumn>
                   </DarkGreyCard>
                 </OnlyMedium>

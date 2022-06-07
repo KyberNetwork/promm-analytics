@@ -73,11 +73,10 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
     timeWindow
   )
 
-  const below1080 = useMedia('(max-width: 1080px)')
+  const below960 = useMedia('(max-width: 960px)')
   const below600 = useMedia('(max-width: 600px)')
 
   const utcStartTime = getTimeframe(timeWindow)
-  const aspect = below600 ? 60 / 42 : below1080 ? 60 / 30 : 60 / 20
 
   chartData = chartData?.filter((entry) => entry.date >= utcStartTime)
 
@@ -98,6 +97,9 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
 
   const { ONE_DAY, FOUR_HOURS, ALL_TIME, ...timeWindowOptionsExcept1Day } = TimeframeOptions
   const { ALL_TIME: alltime, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
+
+  const height = below960 ? 398 : 292
+
   return (
     <ChartWrapper>
       {below600 ? (
@@ -225,7 +227,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
         </RowBetween>
       )}
       {chartFilter === CHART_VIEW.TVL && chartData && (
-        <ResponsiveContainer aspect={aspect}>
+        <ResponsiveContainer width="100%" height={height}>
           <AreaChart margin={{ top: 0, right: 10, bottom: 6, left: 0 }} barCategoryGap={1} data={chartData}>
             <defs>
               <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -287,7 +289,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
       )}
       {[CHART_VIEW.PRICE, CHART_VIEW.LINE_PRICE].includes(chartFilter) &&
         (priceData && CHART_VIEW.LINE_PRICE === chartFilter ? (
-          <ResponsiveContainer aspect={aspect}>
+          <ResponsiveContainer width="100%" height={height}>
             <AreaChart margin={{ top: 0, right: 10, bottom: 6, left: 0 }} barCategoryGap={1} data={priceData}>
               <defs>
                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -341,7 +343,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
             </AreaChart>
           </ResponsiveContainer>
         ) : priceData ? (
-          <ResponsiveContainer aspect={aspect} ref={ref}>
+          <ResponsiveContainer width="100%" height={height} ref={ref}>
             <CandleStickChart data={priceData} width={width} base={base} />
           </ResponsiveContainer>
         ) : (
@@ -351,7 +353,7 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
         ))}
 
       {chartFilter === CHART_VIEW.VOLUME && (
-        <ResponsiveContainer aspect={aspect}>
+        <ResponsiveContainer width="100%" height={height}>
           <BarChart margin={{ top: 0, right: 10, bottom: 6, left: 10 }} barCategoryGap={1} data={chartData}>
             <XAxis
               tickLine={false}
