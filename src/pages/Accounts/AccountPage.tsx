@@ -249,39 +249,45 @@ export default function AccountPage(): JSX.Element {
   return (
     <PageWrapper>
       {data ? (
-        <AutoColumn gap="24px">
-          <RowBetween>
-            <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'accounts'}>
-                <TYPE.breadcrumb>{` Wallet Analytics `}</TYPE.breadcrumb>
-              </StyledInternalLink>
-              <UnSelectable>
-                <TYPE.main>{` → `}</TYPE.main>
-              </UnSelectable>
-              <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                <TYPE.link fontWeight={400} fontSize={14}>
-                  {(below1200 && !below1080) || (below900 && !below600) || below520 ? shortenAddress(address) : address}
-                </TYPE.link>
-              </StyledExternalLink>
-              <CopyHelper toCopy={address} />
-            </AutoRow>
-            {!below600 && <Search />}
-          </RowBetween>
-          <ResponsiveRow align="flex-end" padding="6px 16px 6px 0">
-            <Label fontSize={24}>{(below1200 && !below1080) || below900 ? shortenAddress(address) : address}</Label>
-            <RowFixed>
-              <SavedIcon
-                fill={!!savedAccounts?.[activeNetwork.chainId]?.[lowercasedAddress]}
-                onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
-              />
-              <StyledExternalLink href={getEtherscanLink(activeNetwork, lowercasedAddress, 'address')}>
-                <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }}>
-                  View on {activeNetwork.etherscanName}↗
-                </ButtonPrimary>
-              </StyledExternalLink>
-            </RowFixed>
-          </ResponsiveRow>
-          <AutoColumn gap="3rem">
+        <AutoColumn gap="28px">
+          <AutoColumn gap="32px">
+            <RowBetween>
+              <AutoRow gap="4px">
+                <StyledInternalLink to={networkPrefix(activeNetwork) + 'accounts'}>
+                  <TYPE.breadcrumb>{` Wallet Analytics `}</TYPE.breadcrumb>
+                </StyledInternalLink>
+                <UnSelectable>
+                  <TYPE.main>{` → `}</TYPE.main>
+                </UnSelectable>
+                <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
+                  <TYPE.link fontWeight={400} fontSize={14}>
+                    {(below1200 && !below1080) || (below900 && !below600) || below520
+                      ? shortenAddress(address)
+                      : address}
+                  </TYPE.link>
+                </StyledExternalLink>
+                <CopyHelper toCopy={address} />
+              </AutoRow>
+              {!below600 && <Search />}
+            </RowBetween>
+
+            <ResponsiveRow align="flex-end">
+              <Label fontSize={24}>{(below1200 && !below1080) || below900 ? shortenAddress(address) : address}</Label>
+              <RowFixed>
+                <SavedIcon
+                  fill={!!savedAccounts?.[activeNetwork.chainId]?.[lowercasedAddress]}
+                  onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
+                />
+                <StyledExternalLink href={getEtherscanLink(activeNetwork, lowercasedAddress, 'address')}>
+                  <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }}>
+                    View on {activeNetwork.etherscanName}↗
+                  </ButtonPrimary>
+                </StyledExternalLink>
+              </RowFixed>
+            </ResponsiveRow>
+          </AutoColumn>
+
+          <AutoColumn gap="40px">
             <AutoColumn gap="1rem">
               <DropdownWrapper ref={node}>
                 <ButtonDropdown
