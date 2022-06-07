@@ -218,8 +218,8 @@ export default function PairPoolsTable({
               </ClickableText>
 
               <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.apr)}>
-                APR {arrow(SORT_FIELD.apr)}
-                <QuestionHelper text="Estimated return based on yearly fees of the pool" />
+                AVG APR {arrow(SORT_FIELD.apr)}
+                <QuestionHelper text="Average estimated return based on yearly fees of the pool" />
               </ClickableText>
 
               <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
@@ -361,7 +361,7 @@ export default function PairPoolsTable({
                                     <Label end={1} fontWeight={400}>
                                       {formatDollarAmount(poolData.tvlUSD)}
                                     </Label>
-                                    <Label>{/* TODO: apr */}</Label>
+                                    <Label end={1}>{formatDollarAmount(poolData.apr)}</Label>
                                     <Label end={1} fontWeight={400}>
                                       {formatDollarAmount(poolData.volumeUSD)}
                                     </Label>
