@@ -4,6 +4,8 @@ import {
   arbitrumBlockClient,
   arbitrumClient,
   blockClient,
+  bscBlockClient,
+  bscClient,
   client,
   polygonBlockClient,
   polygonClient,
@@ -14,6 +16,7 @@ import {
 } from 'apollo/client'
 import ARBITRUM_LOGO_URL from '../assets/network-logo/arbitrum.svg'
 import ETHEREUM_LOGO_URL from '../assets/network-logo/ethereum.png'
+import BNB_LOGO_URL from '../assets/network-logo/bnb.png'
 import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
 
 export enum ChainId {
@@ -23,7 +26,7 @@ export enum ChainId {
   POLYGON = 137,
   // MUMBAI = 80001,
   // BSCTESTNET = 97,
-  // BSCMAINNET = 56,
+  BSCMAINNET = 56,
   // AVAXTESTNET = 43113,
   // AVAXMAINNET = 43114,
   // FANTOM = 250,
@@ -122,6 +125,27 @@ const EthereumNetworkInfo: NetworkInfo = {
   },
 }
 
+const BscNetworkInfo: NetworkInfo = {
+  chainId: ChainId.BSCMAINNET,
+  route: 'bnb',
+  name: 'BNB',
+  bgColor: '#fc077d',
+  primaryColor: '#fc077d',
+  secondaryColor: '#2172E5',
+  imageURL: BNB_LOGO_URL,
+  client: bscClient,
+  blockClient: bscBlockClient,
+  subgraphName: 'viet-nv/kyberswap-elastic',
+  etherscanUrl: 'https://bscscan.com',
+  etherscanName: 'Bscscan',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/bsc.mainnet.tokenlist.json',
+  nativeToken: {
+    symbol: 'BNB',
+    name: 'BNB (Wrapped)',
+    address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+  },
+}
+
 const ArbitrumNetworkInfo: NetworkInfo = {
   chainId: ChainId.ARBITRUM,
   route: 'arbitrum',
@@ -167,10 +191,11 @@ const PolygonNetworkInfo: NetworkInfo = {
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
-export const SHOW_NETWORKS = [ChainId.RINKEBY, ChainId.ROPSTEN]
+export const SHOW_NETWORKS = [ChainId.BSCMAINNET, ChainId.RINKEBY, ChainId.ROPSTEN]
 
 export const NETWORKS_INFO_LIST: NetworkInfo[] = [
   EthereumNetworkInfo,
+  BscNetworkInfo,
   RopstenNetworkInfo,
   RinkebyNetworkInfo,
   ArbitrumNetworkInfo,
@@ -179,6 +204,7 @@ export const NETWORKS_INFO_LIST: NetworkInfo[] = [
 
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
+  [ChainId.BSCMAINNET]: BscNetworkInfo,
   [ChainId.ROPSTEN]: RopstenNetworkInfo,
   [ChainId.RINKEBY]: RinkebyNetworkInfo,
   [ChainId.ARBITRUM]: ArbitrumNetworkInfo,

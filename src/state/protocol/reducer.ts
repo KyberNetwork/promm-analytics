@@ -43,6 +43,12 @@ export const initialState: ProtocolState = {
     transactions: undefined,
     lastUpdated: undefined,
   },
+  [ChainId.BSCMAINNET]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
   [ChainId.RINKEBY]: {
     data: undefined,
     chartData: undefined,
