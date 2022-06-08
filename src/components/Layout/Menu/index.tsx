@@ -7,7 +7,7 @@ import { useModalOpen, useToggleModal, useActiveNetworks } from 'state/applicati
 
 import { useLocation } from 'react-router-dom'
 import { networkPrefix } from 'utils/networkPrefix'
-import { MenuItem, ExternalMenu, Divider, ExternalLink } from '../styled'
+import { MenuItem, ExternalMenu, Divider, KyberNetworkLink } from '../styled'
 import ThemeToggle from 'components/ThemeToggle'
 import SocialLinks from 'components/SocialLinks'
 import Wallet from 'components/Icons/Wallet'
@@ -100,7 +100,7 @@ export default function Menu(): JSX.Element {
           <div>
             <ThemeToggle />
             <SocialLinks />
-            <ExternalLink href="https://kyber.network">Kyber Network</ExternalLink>
+            <KyberNetworkLink href="https://kyber.network">Kyber Network</KyberNetworkLink>
           </div>
         </MenuFlyout>
       )}

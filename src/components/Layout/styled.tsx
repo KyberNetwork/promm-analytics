@@ -41,7 +41,7 @@ export const Divider = styled.div`
   background: ${({ theme }) => theme.border};
 `
 
-export const ExternalLink = styled(ExternalLinkRaw)`
+export const KyberNetworkLink = styled(ExternalLinkRaw)`
   margin-top: 12px;
   font-size: 12px;
   color: ${({ theme }) => theme.subText};

@@ -44,7 +44,6 @@ export function colors(darkMode: boolean): Colors {
     textReverse: !darkMode ? '#FFFFFF' : '#3A3A3A',
     subText: darkMode ? '#A7B6BD' : '#5C6468',
     disabledText: darkMode ? '#6C7284' : '#B6B6B6',
-    apr: '#0FAAA2',
 
     background: darkMode ? '#243036' : '#FFFFFF',
     buttonBlack: darkMode ? '#11171A' : '#F5F5F5',

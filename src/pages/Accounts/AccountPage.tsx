@@ -6,7 +6,7 @@ import { Activity } from 'react-feather'
 import { useMedia } from 'react-use'
 
 import { PageWrapper } from 'pages/styled'
-import { shortenAddress, getEtherscanLink, getPoolLink, feeTierPercent } from 'utils'
+import { shortenAddress, getEtherscanLink, feeTierPercent } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -249,39 +249,45 @@ export default function AccountPage(): JSX.Element {
   return (
     <PageWrapper>
       {data ? (
-        <AutoColumn gap="24px">
-          <RowBetween>
-            <AutoRow gap="4px">
-              <StyledInternalLink to={networkPrefix(activeNetwork) + 'accounts'}>
-                <TYPE.breadcrumb>{` Wallet Analytics `}</TYPE.breadcrumb>
-              </StyledInternalLink>
-              <UnSelectable>
-                <TYPE.main>{` → `}</TYPE.main>
-              </UnSelectable>
-              <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
-                <TYPE.link fontWeight={400} fontSize={14}>
-                  {(below1200 && !below1080) || (below900 && !below600) || below520 ? shortenAddress(address) : address}
-                </TYPE.link>
-              </StyledExternalLink>
-              <CopyHelper toCopy={address} />
-            </AutoRow>
-            {!below600 && <Search />}
-          </RowBetween>
-          <ResponsiveRow align="flex-end" padding="6px 16px 6px 0">
-            <Label fontSize={24}>{(below1200 && !below1080) || below900 ? shortenAddress(address) : address}</Label>
-            <RowFixed>
-              <SavedIcon
-                fill={!!savedAccounts?.[activeNetwork.chainId]?.[lowercasedAddress]}
-                onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
-              />
-              <StyledExternalLink href={getEtherscanLink(activeNetwork, lowercasedAddress, 'address')}>
-                <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }}>
-                  View on {activeNetwork.etherscanName}↗
-                </ButtonPrimary>
-              </StyledExternalLink>
-            </RowFixed>
-          </ResponsiveRow>
-          <AutoColumn gap="3rem">
+        <AutoColumn gap="28px">
+          <AutoColumn gap="32px">
+            <RowBetween>
+              <AutoRow gap="4px">
+                <StyledInternalLink to={networkPrefix(activeNetwork) + 'accounts'}>
+                  <TYPE.breadcrumb>{` Wallet Analytics `}</TYPE.breadcrumb>
+                </StyledInternalLink>
+                <UnSelectable>
+                  <TYPE.main>{` → `}</TYPE.main>
+                </UnSelectable>
+                <StyledExternalLink href={getEtherscanLink(activeNetwork, address, 'address')}>
+                  <TYPE.link fontWeight={400} fontSize={14}>
+                    {(below1200 && !below1080) || (below900 && !below600) || below520
+                      ? shortenAddress(address)
+                      : address}
+                  </TYPE.link>
+                </StyledExternalLink>
+                <CopyHelper toCopy={address} />
+              </AutoRow>
+              {!below600 && <Search />}
+            </RowBetween>
+
+            <ResponsiveRow align="flex-end">
+              <Label fontSize={24}>{(below1200 && !below1080) || below900 ? shortenAddress(address) : address}</Label>
+              <RowFixed>
+                <SavedIcon
+                  fill={!!savedAccounts?.[activeNetwork.chainId]?.[lowercasedAddress]}
+                  onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
+                />
+                <StyledExternalLink href={getEtherscanLink(activeNetwork, lowercasedAddress, 'address')}>
+                  <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }}>
+                    View on {activeNetwork.etherscanName}↗
+                  </ButtonPrimary>
+                </StyledExternalLink>
+              </RowFixed>
+            </ResponsiveRow>
+          </AutoColumn>
+
+          <AutoColumn gap="40px">
             <AutoColumn gap="1rem">
               <DropdownWrapper ref={node}>
                 <ButtonDropdown
@@ -481,24 +487,18 @@ export default function AccountPage(): JSX.Element {
                                 sx={{ gap: '6px' }}
                               >
                                 <ExternalLink
-                                  href={getPoolLink(
-                                    positionsMap[item.id].data.token0.id,
-                                    activeNetwork,
-                                    positionsMap[item.id].data.token1.id,
-                                    false,
-                                    positionsMap[item.id].data.pool.id
-                                  )}
+                                  href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${
+                                    positionsMap[item.id].data.token0.id
+                                  }/${positionsMap[item.id].data.token1.id}/${
+                                    positionsMap[item.id].data.pool.feeTier
+                                  }?networkId=${activeNetwork.chainId}`}
                                 >
                                   <ButtonLight style={{ padding: '4px 6px', borderRadius: '4px' }}>+ Add</ButtonLight>
                                 </ExternalLink>
                                 <ExternalLink
-                                  href={getPoolLink(
-                                    positionsMap[item.id].data.token0.id,
-                                    activeNetwork,
-                                    positionsMap[item.id].data.token1.id,
-                                    true,
-                                    positionsMap[item.id].data.pool.id
-                                  )}
+                                  href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/remove/${
+                                    positionsMap[item.id].data.id
+                                  }?networkId=${activeNetwork.chainId}`}
                                 >
                                   <RemoveBtn
                                     style={{
@@ -517,13 +517,11 @@ export default function AccountPage(): JSX.Element {
                         {below740 && (
                           <Flex sx={{ gap: '8px', marginBottom: '16px' }}>
                             <ExternalLink
-                              href={getPoolLink(
-                                positionsMap[item.id].data.token0.id,
-                                activeNetwork,
-                                positionsMap[item.id].data.token1.id,
-                                false,
-                                positionsMap[item.id].data.pool.id
-                              )}
+                              href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${
+                                positionsMap[item.id].data.token0.id
+                              }/${positionsMap[item.id].data.token1.id}/${
+                                positionsMap[item.id].data.pool.feeTier
+                              }?networkId=${activeNetwork.chainId}`}
                               style={{ marginRight: '.5rem', flex: 1 }}
                             >
                               <ButtonLight style={{ padding: '10px', borderRadius: '4px', width: '100%' }}>
@@ -531,13 +529,9 @@ export default function AccountPage(): JSX.Element {
                               </ButtonLight>
                             </ExternalLink>
                             <ExternalLink
-                              href={getPoolLink(
-                                positionsMap[item.id].data.token0.id,
-                                activeNetwork,
-                                positionsMap[item.id].data.token1.id,
-                                true,
-                                positionsMap[item.id].data.pool.id
-                              )}
+                              href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/remove/${
+                                positionsMap[item.id].data.id
+                              }?networkId=${activeNetwork.chainId}`}
                               style={{ flex: 1 }}
                             >
                               <RemoveBtn

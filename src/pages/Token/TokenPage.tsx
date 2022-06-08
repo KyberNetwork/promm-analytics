@@ -36,7 +36,6 @@ const PriceText = styled(TYPE.label)`
 `
 
 const ContentLayout = styled.div`
-  margin-top: 16px;
   display: grid;
   grid-template-columns: 260px 1fr;
   grid-gap: 1em;
@@ -64,7 +63,7 @@ const ResponsiveRow = styled(RowBetween)`
 `
 
 const Label = styled(TYPE.label)`
-  font-size: 32px;
+  font-size: 28px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 24px;
   `}
@@ -122,9 +121,9 @@ export default function TokenPage(): JSX.Element {
             </StyledExternalLink>
           </LightGreyCard>
         ) : (
-          <AutoColumn gap="32px">
-            <AutoColumn gap="32px">
-              <AutoColumn gap="calc(1rem + 24px)">
+          <AutoColumn gap="40px">
+            <AutoColumn gap="28px">
+              <AutoColumn gap="32px">
                 <RowBetween>
                   <AutoRow gap="4px">
                     <StyledInternalLink to={networkPrefix(activeNetwork) + 'tokens'}>
@@ -160,7 +159,9 @@ export default function TokenPage(): JSX.Element {
                       fill={!!savedTokens?.[activeNetwork.chainId]?.[address]}
                       onClick={() => addSavedToken(activeNetwork.chainId, tokenData)}
                     />
-                    <StyledExternalLink href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${address}`}>
+                    <StyledExternalLink
+                      href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${address}?networkId=${activeNetwork.chainId}`}
+                    >
                       <ButtonOutlined width="max-content" mr="12px" height="100%" style={{ height: '38px' }}>
                         <RowBetween>
                           <Plus size={20} />
@@ -178,71 +179,76 @@ export default function TokenPage(): JSX.Element {
                   </RowFixed>
                 </ResponsiveRow>
               </AutoColumn>
-            </AutoColumn>
-            <ContentLayout>
-              <InfoLayout>
-                <OnlyMedium>
+              <ContentLayout>
+                <InfoLayout>
+                  <OnlyMedium>
+                    <DarkGreyCard>
+                      <AutoColumn gap="16px">
+                        <Flex justifyContent="space-between">
+                          <TYPE.title fontSize="14px">Price</TYPE.title>
+                          <Percent fontSize={12} value={tokenData.priceUSDChange} />
+                        </Flex>
+                        <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.priceUSD)}</TYPE.label>
+                      </AutoColumn>
+                    </DarkGreyCard>
+                  </OnlyMedium>
+
                   <DarkGreyCard>
                     <AutoColumn gap="16px">
                       <Flex justifyContent="space-between">
-                        <TYPE.label fontSize="14px">Price</TYPE.label>
-                        <Percent value={tokenData.priceUSDChange} />
+                        <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
+                        <Percent fontSize={12} value={tokenData.tvlUSDChange} />
                       </Flex>
-                      <TYPE.label fontSize="24px">{formatDollarAmount(tokenData.priceUSD)}</TYPE.label>
+                      <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.tvlUSD)}</TYPE.label>
                     </AutoColumn>
                   </DarkGreyCard>
-                </OnlyMedium>
+                  <DarkGreyCard>
+                    <AutoColumn gap="16px">
+                      <Flex justifyContent="space-between">
+                        <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
+                        <Percent fontSize={12} value={tokenData.volumeUSDChange} />
+                      </Flex>
+                      <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.volumeUSD)}</TYPE.label>
+                    </AutoColumn>
+                  </DarkGreyCard>
+                  <DarkGreyCard>
+                    <AutoColumn gap="16px">
+                      <Flex justifyContent="space-between">
+                        <TYPE.title fontSize="14px">Fees (24H)</TYPE.title>
+                        <Percent fontSize={12} value={tokenData.feesUSDChange} />
+                      </Flex>
+                      <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
+                    </AutoColumn>
+                  </DarkGreyCard>
+                  <DarkGreyCard>
+                    <AutoColumn gap="16px">
+                      <TYPE.title fontSize="14px">Transactions (24H)</TYPE.title>
+                      <TYPE.label fontSize="20px">{tokenData.txCount}</TYPE.label>
+                    </AutoColumn>
+                  </DarkGreyCard>
+                </InfoLayout>
+                <RelativeDarkGreyCard>
+                  <TokenChart address={tokenData.address} base={tokenData.priceUSD} />
+                </RelativeDarkGreyCard>
+              </ContentLayout>
+            </AutoColumn>
 
+            <AutoColumn gap="16px">
+              <TYPE.label fontSize="18px">Pools</TYPE.label>
+              <PairPoolsTable pairDatas={pairDatas} />
+            </AutoColumn>
+            <AutoColumn gap="16px">
+              <TYPE.label fontSize="18px">Transactions</TYPE.label>
+              {transactions ? (
+                <TransactionTable transactions={transactions} />
+              ) : (
                 <DarkGreyCard>
-                  <AutoColumn gap="16px">
-                    <Flex justifyContent="space-between">
-                      <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
-                      <Percent fontSize={12} value={tokenData.tvlUSDChange} />
-                    </Flex>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.tvlUSD)}</TYPE.label>
-                  </AutoColumn>
+                  <Flex justifyContent="center">
+                    <KyberLoading size={120} />
+                  </Flex>
                 </DarkGreyCard>
-                <DarkGreyCard>
-                  <AutoColumn gap="16px">
-                    <Flex justifyContent="space-between">
-                      <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
-                      <Percent fontSize={12} value={tokenData.volumeUSDChange} />
-                    </Flex>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.volumeUSD)}</TYPE.label>
-                  </AutoColumn>
-                </DarkGreyCard>
-                <DarkGreyCard>
-                  <AutoColumn gap="16px">
-                    <Flex justifyContent="space-between">
-                      <TYPE.title fontSize="14px">Fees (24H)</TYPE.title>
-                      <Percent fontSize={12} value={tokenData.feesUSDChange} />
-                    </Flex>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
-                  </AutoColumn>
-                </DarkGreyCard>
-                <DarkGreyCard>
-                  <AutoColumn gap="16px">
-                    <TYPE.title fontSize="14px">Transactions (24H)</TYPE.title>
-                    <TYPE.label fontSize="20px">{tokenData.txCount}</TYPE.label>
-                  </AutoColumn>
-                </DarkGreyCard>
-              </InfoLayout>
-              <RelativeDarkGreyCard>
-                <TokenChart address={tokenData.address} base={tokenData.priceUSD} />
-              </RelativeDarkGreyCard>
-            </ContentLayout>
-            <TYPE.label fontSize="18px">Pools</TYPE.label>
-            <PairPoolsTable pairDatas={pairDatas} />
-            <TYPE.label fontSize="18px">Transactions</TYPE.label>
-            {transactions ? (
-              <TransactionTable transactions={transactions} />
-            ) : (
-              <DarkGreyCard>
-                <Flex justifyContent="center">
-                  <KyberLoading size={120} />
-                </Flex>
-              </DarkGreyCard>
-            )}
+              )}
+            </AutoColumn>
           </AutoColumn>
         )
       ) : (

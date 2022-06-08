@@ -262,7 +262,7 @@ const TradingViewChart = ({
 
   return (
     <Wrapper>
-      <div ref={ref} />
+      <div style={{ paddingTop: '50px' }} ref={ref} />
       <IconWrapper>
         <Play
           onClick={() => {

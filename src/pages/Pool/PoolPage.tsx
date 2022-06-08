@@ -343,9 +343,7 @@ export default function PoolPage(): JSX.Element {
                   </RowFixed>
                 </Column>
                 <Column style={{ gridArea: 'button' }}>
-                  <StyledExternalLink
-                    href={`${process.env.REACT_APP_DMM_SWAP_URL}swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
-                  >
+                  <StyledExternalLink href={getEtherscanLink(activeNetwork, poolData.address, 'address')}>
                     <ButtonPrimary style={{ height: 'fit-content', width: 'fit-content' }}>
                       <span>
                         View on <span style={{ whiteSpace: 'nowrap' }}>{activeNetwork.etherscanName} ↗</span>

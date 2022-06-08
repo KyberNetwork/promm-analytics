@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 import { Area, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, BarChart, Bar } from 'recharts'
@@ -21,6 +21,7 @@ import DensityChart from 'components/PoolChart/DensityChart'
 import DropdownSelect from 'components/DropdownSelect'
 import { EmptyCard } from 'components'
 import { Repeat } from 'react-feather'
+import { isMobile } from 'react-device-detect'
 
 const ChartWrapper = styled.div`
   height: 100%;
@@ -134,6 +135,9 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
     [priceView, formattedSymbol1, formattedSymbol0]
   )
 
+  const { ONE_DAY, FOUR_HOURS, ALL_TIME, THREE_MONTHS, YEAR, ...timeWindowOptionsExcept1Day } = TimeframeOptions
+  const { ALL_TIME: _0, THREE_MONTHS: _1, YEAR: _2, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
+
   if (chartData && chartData.length === 0) {
     return (
       <ChartWrapper>
@@ -141,9 +145,6 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
       </ChartWrapper>
     )
   }
-
-  const { ONE_DAY, FOUR_HOURS, ALL_TIME, THREE_MONTHS, YEAR, ...timeWindowOptionsExcept1Day } = TimeframeOptions
-  const { ALL_TIME: _0, THREE_MONTHS: _1, YEAR: _2, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
 
   return (
     <ChartWrapper>
@@ -294,6 +295,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
               dataKey="date"
               tick={{ fill: textColor }}
               type={'number'}
+              scale="time"
               domain={['dataMin', 'dataMax']}
             />
             <YAxis
@@ -344,7 +346,6 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
           >
             <XAxis
               tickLine={false}
-              axisLine={false}
               interval="preserveEnd"
               minTickGap={80}
               tickMargin={14}
@@ -353,6 +354,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
               tick={{ fill: textColor }}
               type={'number'}
               domain={['dataMin', 'dataMax']}
+              scale="time"
             />
             <YAxis
               type="number"
@@ -401,7 +403,6 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
           >
             <XAxis
               tickLine={false}
-              axisLine={false}
               interval="preserveEnd"
               minTickGap={80}
               tickMargin={14}
@@ -410,6 +411,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
               tick={{ fill: textColor }}
               type={'number'}
               domain={['dataMin', 'dataMax']}
+              scale="time"
             />
             <YAxis
               type="number"

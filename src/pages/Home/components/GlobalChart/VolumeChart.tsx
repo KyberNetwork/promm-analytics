@@ -72,9 +72,9 @@ const VolumeChart = (): React.ReactElement | null => {
       </ResponsiveContainer>
       <RowFixed
         style={{
-          top: '100px',
+          top: '20px',
           position: 'absolute',
-          left: '20px',
+          right: '20px',
           zIndex: 10,
         }}
       >

@@ -231,6 +231,7 @@ export function usePoolDatas(
         tvlUSDChange,
         tvlToken0,
         tvlToken1,
+        apr: tvlUSD > 0 ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD : 0,
       }
     }
 

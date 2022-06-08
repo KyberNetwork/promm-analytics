@@ -1,30 +1,32 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useMedia } from 'react-use'
+import { Text, Flex } from 'rebass'
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom'
+import { TrendingUp, Disc, Repeat, Activity, X, Droplet } from 'react-feather'
+
+import Kyber from 'assets/svg/kyber.svg'
+import KyberBlack from 'assets/svg/kyber-black.svg'
 import ProMMAnalyticsLogo from 'assets/svg/logo_dark.svg'
 import ProMMAnalyticsLogoLight from 'assets/svg/logo_light.svg'
 import SwitchNetWorkIcon from 'assets/svg/switch-network.svg'
-import { Text, Flex } from 'rebass'
-import useTheme from 'hooks/useTheme'
-import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
-import { InfoHelper } from 'components/QuestionHelper'
-import { Link, useHistory, useLocation, useParams } from 'react-router-dom'
-import { TrendingUp, Disc, Repeat, Activity, X, Droplet } from 'react-feather'
-import { activeNetworkPrefix } from 'utils/networkPrefix'
-import ThemeToggle from 'components/ThemeToggle'
-import SocialLinks from 'components/SocialLinks'
-import { MEDIA_WIDTHS, StyledInternalLink } from 'theme'
-import { useWindowSize } from 'hooks/useWindowSize'
-import Menu from './Menu'
-import { ExternalLink, MenuItem, Divider, ExternalMenu } from './styled'
-import Modal from 'components/Modal'
-import { ButtonEmpty } from 'components/Button'
-import { NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
-import { useDarkModeManager, useIsFirstTimeVisit } from 'state/user/hooks'
-import Wallet from 'components/Icons/Wallet'
-import Kyber from '../../assets/svg/kyber.svg'
-import { useMedia } from 'react-use'
+import { ChainId, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
 import { UnSelectable } from 'components'
+import SocialLinks from 'components/SocialLinks'
+import { InfoHelper } from 'components/QuestionHelper'
+import ThemeToggle from 'components/ThemeToggle'
+import Modal from 'components/Modal'
+import Wallet from 'components/Icons/Wallet'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { ButtonEmpty } from 'components/Button'
+import Menu from './Menu'
+import { KyberNetworkLink, MenuItem, Divider, ExternalMenu } from './styled'
+import useTheme from 'hooks/useTheme'
 import { useSessionStart } from 'hooks/useSectionStart'
+import { useDarkModeManager, useIsFirstTimeVisit } from 'state/user/hooks'
+import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
+import { activeNetworkPrefix } from 'utils/networkPrefix'
+import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -140,15 +142,7 @@ const DMMIcon = styled(Link)`
   }
 `
 
-const LinkWrapper = styled.a`
-  text-decoration: none;
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
-  color: ${({ theme }) => theme.subText};
-`
-const LeverageZIndex = styled.div`
+const ZIndex100 = styled.div`
   z-index: 100;
 `
 
@@ -163,6 +157,7 @@ const Polling = styled.div`
     color: ${({ theme }) => theme.subText};
   }
 `
+
 const PollingDot = styled.div`
   width: 8px;
   height: 8px;
@@ -173,6 +168,7 @@ const PollingDot = styled.div`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.green1};
 `
+
 type SelectNetworkButtonPropType = {
   onClick: React.MouseEventHandler
   marginTop?: string
@@ -233,8 +229,12 @@ function SideNav(): JSX.Element {
   const prefixNetworkURL = currentNetworkURL ? `/${currentNetworkURL}` : ''
   const below1080 = useMedia('(max-width: 1080px)')
   const [isDark] = useDarkModeManager()
-
+  const [tab, setTab] = useState<'Elastic' | 'Classic'>('Elastic')
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
+  const networkListToShow: ('allchain' | ChainId)[] = [...SHOW_NETWORKS]
+  if (tab === 'Classic')
+    //todo namgold: remove above if line
+    networkListToShow.unshift('allchain')
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
       <NetworkModalContent>
@@ -248,32 +248,60 @@ function SideNav(): JSX.Element {
         </Flex>
 
         <TabWrapper>
-          <TabItem active role="button">
+          <TabItem active={tab === 'Elastic'} role="button" onClick={() => setTab('Elastic')}>
             Elastic Analytics
           </TabItem>
-          <TabItem role="button">
-            <LinkWrapper href="/classic">Classic Analytics</LinkWrapper>
+          <TabItem active={tab === 'Classic'} role="button" onClick={() => setTab('Classic')}>
+            Classic Analytics
           </TabItem>
         </TabWrapper>
 
         <NetworkList>
-          {SHOW_NETWORKS.map((chainId) => (
-            <StyledInternalLink key={chainId} to={`/${NETWORKS_INFO_MAP[chainId].route}/home`}>
-              <NetworkItem
-                active={!isAllChain && chainId === activeNetworks[0].chainId}
+          {networkListToShow.map((chainId: 'allchain' | ChainId) =>
+            tab === 'Classic' ? (
+              <StyledLink
                 key={chainId}
-                onClick={() => setShowNetworkModal(false)}
+                href={`/classic/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
-                <img
-                  src={NETWORKS_INFO_MAP[chainId].imageURL}
-                  width="24px"
-                  height="24px"
-                  alt={NETWORKS_INFO_MAP[chainId].name}
-                />
-                <Text>{NETWORKS_INFO_MAP[chainId].name}</Text>
-              </NetworkItem>
-            </StyledInternalLink>
-          ))}
+                <NetworkItem
+                  active={isAllChain ? chainId === 'allchain' : chainId === activeNetworks[0].chainId}
+                  key={chainId}
+                  onClick={() => setShowNetworkModal(false)}
+                >
+                  <img
+                    src={
+                      chainId === 'allchain' ? (isAllChain ? KyberBlack : Kyber) : NETWORKS_INFO_MAP[chainId].imageURL
+                    }
+                    width="24px"
+                    height="24px"
+                    alt={chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
+                  />
+                  <Text>{chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
+                </NetworkItem>
+              </StyledLink>
+            ) : (
+              <StyledInternalLink
+                key={chainId}
+                to={`/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
+              >
+                <NetworkItem
+                  active={isAllChain ? chainId === 'allchain' : chainId === activeNetworks[0].chainId}
+                  key={chainId}
+                  onClick={() => setShowNetworkModal(false)}
+                >
+                  <img
+                    src={
+                      chainId === 'allchain' ? (isAllChain ? KyberBlack : Kyber) : NETWORKS_INFO_MAP[chainId].imageURL
+                    }
+                    width="24px"
+                    height="24px"
+                    alt={chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
+                  />
+                  <Text>{chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
+                </NetworkItem>
+              </StyledInternalLink>
+            )
+          )}
         </NetworkList>
       </NetworkModalContent>
     </Modal>
@@ -281,7 +309,7 @@ function SideNav(): JSX.Element {
 
   if (hideNav) {
     return (
-      <LeverageZIndex>
+      <ZIndex100>
         {networkModal}
         <Header>
           <div>
@@ -321,7 +349,7 @@ function SideNav(): JSX.Element {
           <SelectNetworkButton onClick={() => setShowNetworkModal(true)} />
           <Menu />
         </Bottom>
-      </LeverageZIndex>
+      </ZIndex100>
     )
   }
 
@@ -392,7 +420,7 @@ function SideNav(): JSX.Element {
         <div>
           <ThemeToggle />
           <SocialLinks />
-          <ExternalLink href="https://kyber.network">Kyber Network</ExternalLink>
+          <KyberNetworkLink href="https://kyber.network">Kyber Network</KyberNetworkLink>
           <Polling>
             <PollingDot />
             <a href="/elastic" style={{ textDecoration: 'none' }}>

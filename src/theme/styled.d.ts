@@ -10,7 +10,6 @@ export interface Colors {
   textReverse: Color
   subText: Color
   disabledText: Color
-  apr: Color
 
   background: Color
   buttonBlack: Color
