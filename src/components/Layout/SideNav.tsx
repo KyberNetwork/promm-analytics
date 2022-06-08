@@ -232,7 +232,7 @@ function SideNav(): JSX.Element {
   const [tab, setTab] = useState<'Elastic' | 'Classic'>('Elastic')
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
   const networkListToShow: ('allchain' | ChainId)[] = [...SHOW_NETWORKS]
-  if (tab == 'Classic')
+  if (tab === 'Classic')
     //todo namgold: remove above if line
     networkListToShow.unshift('allchain')
   const networkModal = (
@@ -248,10 +248,10 @@ function SideNav(): JSX.Element {
         </Flex>
 
         <TabWrapper>
-          <TabItem active={tab == 'Elastic'} role="button" onClick={() => setTab('Elastic')}>
+          <TabItem active={tab === 'Elastic'} role="button" onClick={() => setTab('Elastic')}>
             Elastic Analytics
           </TabItem>
-          <TabItem active={tab == 'Classic'} role="button" onClick={() => setTab('Classic')}>
+          <TabItem active={tab === 'Classic'} role="button" onClick={() => setTab('Classic')}>
             Classic Analytics
           </TabItem>
         </TabWrapper>
@@ -264,7 +264,7 @@ function SideNav(): JSX.Element {
                 href={`/classic/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
                 <NetworkItem
-                  active={isAllChain ? chainId == 'allchain' : chainId === activeNetworks[0].chainId}
+                  active={isAllChain ? chainId === 'allchain' : chainId === activeNetworks[0].chainId}
                   key={chainId}
                   onClick={() => setShowNetworkModal(false)}
                 >
@@ -285,7 +285,7 @@ function SideNav(): JSX.Element {
                 to={`/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
                 <NetworkItem
-                  active={isAllChain ? chainId == 'allchain' : chainId === activeNetworks[0].chainId}
+                  active={isAllChain ? chainId === 'allchain' : chainId === activeNetworks[0].chainId}
                   key={chainId}
                   onClick={() => setShowNetworkModal(false)}
                 >
