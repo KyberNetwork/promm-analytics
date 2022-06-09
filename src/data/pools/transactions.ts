@@ -153,7 +153,7 @@ export async function fetchPoolTransactions(
     }
   }
 
-  if (loading && !data) {
+  if (loading || !data) {
     return {
       data: undefined,
       error: false,
