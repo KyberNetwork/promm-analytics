@@ -1,4 +1,4 @@
-name: "KyberSwap ProMM Analytics CI"
+name: "CI"
 
 concurrency:
   group: ci-workflow-${{ github.ref }}-${{ github.event_name }}

@@ -1,4 +1,4 @@
-name: 'KyberSwap Elastic Analytics Release'
+name: 'Release'
 
 on:
   workflow_dispatch:
