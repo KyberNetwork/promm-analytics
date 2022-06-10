@@ -96,7 +96,7 @@ const EthereumNetworkInfo: NetworkInfo = {
   imageURL: ETHEREUM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet'),
   blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-ethereum'),
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  subgraphName: 'kybernetwork/kyberswap-elastic-mainnet',
   etherscanUrl: 'https://etherscan.io',
   etherscanName: 'Etherscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ethereum.tokenlist.json',
