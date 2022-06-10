@@ -1,4 +1,4 @@
-name: 'Release'
+name: 'KyberSwap Elastic Analytics Release'
 
 on:
   workflow_dispatch:
@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-18.04
     outputs:
       version_tag: ${{ steps.version_tag.outputs.value }}
+      build_date: ${{ steps.build_date.outputs.value }}
     steps:
       - name: Format version tag
         shell: bash
@@ -22,33 +23,23 @@ jobs:
         run: |
           TAG=${INPUT_TAG#v}
           echo "::set-output name=value::v$TAG"
+      - name: Build date
+        shell: bash
+        id: build_date
+        run: echo "::set-output name=value::$(date +%FT%T%z)"
 
   build:
     needs:
       - prepare
     runs-on: ubuntu-18.04
-    env:
-      SERVICE: dmm-interface
-      VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Node.js 16.x
+      - name: Set up Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
-
-      - name: Gcloud Auth
-        uses: google-github-actions/auth@v0
-        with:
-          credentials_json: '${{ secrets.GCR_CREDENTIALS }}'
-
-      - name: Setup Gcloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-
-      - name: Configure docker
-        run: gcloud auth configure-docker
+          node-version: 14.x
 
       - name: Restore node_modules
         uses: actions/cache@v2
@@ -63,7 +54,50 @@ jobs:
         env:
           CI: false
           REACT_APP_VERSION: ${{ github.sha }}
-        run: yarn build
+        run: yarn build-production
+
+      - name: Save build
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-production
+          path: build
+          if-no-files-found: error
+
+  docker:
+    needs:
+      - prepare
+      - build
+    env:
+      SERVICE: promm-analytics
+      VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
+      BUILD_DATE: ${{ needs.prepare.outputs.build_date }}
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore build
+        uses: actions/download-artifact@v2
+        with:
+          name: build-production
+          path: build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Gcloud Auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCR_CREDENTIALS }}'
+
+      - name: Setup Gcloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Configure docker
+        run: gcloud auth configure-docker
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -95,7 +129,7 @@ jobs:
   release:
     needs:
       - prepare
-      - build
+      - docker
     runs-on: ubuntu-18.04
     env:
       VERSION_TAG: ${{ needs.prepare.outputs.version_tag }}
@@ -110,13 +144,14 @@ jobs:
 
       - name: Create tag
         run: |
-          git tag -am $VERSION_TAG $VERSION_TAG
+          git tag -d "$VERSION_TAG" 2> /dev/null || echo "Release tag '$VERSION_TAG' does NOT exist"
+          git tag --annotate --message "KyberSwap Elastic Analytics - $VERSION_TAG" "$VERSION_TAG"
           git push origin "refs/tags/$VERSION_TAG"
 
       - name: Create release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.GH_PAT }}
-          automatic_release_tag: ${{ env.VERSION_TAG }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ env.VERSION_TAG }}
           prerelease: false
-          title: '${{ env.VERSION_TAG }}'
+          title: 'KyberSwap Elastic Analytics - ${{ env.VERSION_TAG }}'
