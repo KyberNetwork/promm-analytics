@@ -257,9 +257,9 @@ const AuroraNetworkInfo: NetworkInfo = {
   route: 'aurora',
   name: 'Aurora',
   imageURL: AURORA_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora'),
   blockClient: createBlockClient('https://aurora-graph.kyberengineering.io/subgraphs/name/kybernetwork/aurora-blocks'),
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  subgraphName: 'kybernetwork/kyberswap-elastic-aurora',
   etherscanUrl: 'https://aurorascan.dev',
   etherscanName: 'Aurora Explorer',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/aurora.tokenlist.json',
