@@ -312,7 +312,7 @@ export async function fetchTokenTransactions(
       }
     }
 
-    if (loading && !data) {
+    if (loading || !data) {
       return {
         data: undefined,
         error: false,

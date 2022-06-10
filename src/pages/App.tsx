@@ -16,7 +16,7 @@ import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
-import { NETWORKS_INFO_LIST, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
+import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
 import { updateActiveNetwork } from 'state/application/actions'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
@@ -100,8 +100,11 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
       dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || 'allchain' }))
     }
   }, [currentNetworkURL, networkInfoFromURL, dispatch])
-  if (currentNetworkURL && !networkInfoFromURL) return <Redirect to="/home" />
-
+  // const homeLink = '/home'
+  const homeLink = `/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`
+  if (currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} />
+  if (!currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} /> //not support all chains yet
+  if (networkInfoFromURL?.chainId === ChainId.AURORA) return <Redirect to={homeLink} /> //not support Aurora yet
   return children
 }
 

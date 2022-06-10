@@ -94,9 +94,9 @@ const EthereumNetworkInfo: NetworkInfo = {
   route: 'ethereum',
   name: 'Ethereum',
   imageURL: ETHEREUM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet'),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-ethereum'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-mainnet',
   etherscanUrl: 'https://etherscan.io',
   etherscanName: 'Etherscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ethereum.tokenlist.json',
@@ -112,9 +112,9 @@ const BscNetworkInfo: NetworkInfo = {
   route: 'bnb',
   name: 'BNB Chain',
   imageURL: BNB_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'),
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-bsc'),
   blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'),
-  subgraphName: 'viet-nv/kyberswap-elastic',
+  subgraphName: 'kybernetwork/kyberswap-elastic-bsc',
   etherscanUrl: 'https://bscscan.com',
   etherscanName: 'BscScan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/bsc.mainnet.tokenlist.json',
@@ -130,9 +130,9 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   route: 'arbitrum',
   name: 'Arbitrum',
   imageURL: ARBITRUM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum-one'),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/viet-nv/arbitrum-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-arbitrum-one',
   etherscanUrl: 'https://arbiscan.io',
   etherscanName: 'Arbiscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/arbitrum.tokenlist.json',
@@ -148,9 +148,9 @@ const PolygonNetworkInfo: NetworkInfo = {
   route: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-matic'),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-polygon'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-matic',
   etherscanUrl: 'https://polygonscan.com',
   etherscanName: 'Polygonscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/matic.tokenlist.json',
@@ -166,9 +166,9 @@ const AvaxNetworkInfo: NetworkInfo = {
   route: 'avalanche',
   name: 'Avalanche',
   imageURL: AVAX_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-avalanche'),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/ducquangkstn/avalache-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-avalanche',
   etherscanUrl: 'https://snowtrace.io',
   etherscanName: 'Snowtrace',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/avax.mainnet.tokenlist.json',
@@ -184,9 +184,9 @@ const FantomNetworkInfo: NetworkInfo = {
   route: 'fantom',
   name: 'Fantom',
   imageURL: FANTOM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-fantom'),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-fantom'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-fantom',
   etherscanUrl: 'https://ftmscan.com',
   etherscanName: 'Ftmscan',
   tokenListUrl:
@@ -203,9 +203,9 @@ const CronosNetworkInfo: NetworkInfo = {
   route: 'cronos',
   name: 'Cronos',
   imageURL: CRONOS_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-cronos'),
+  blockClient: createBlockClient('https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/cronos-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-cronos',
   etherscanUrl: 'https://cronos.org/explorer',
   etherscanName: 'Cronos explorer',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/cronos.tokenlist.json',
@@ -221,9 +221,9 @@ const BTTCNetworkInfo: NetworkInfo = {
   route: 'bittorrent',
   name: 'BitTorrent',
   imageURL: BTTC_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc'),
+  blockClient: createBlockClient('https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/bttc-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-bttc',
   etherscanUrl: 'https://bttcscan.com',
   etherscanName: 'Bttcscan',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/bttc.tokenlist.json',
@@ -239,9 +239,9 @@ const VelasNetworkInfo: NetworkInfo = {
   route: 'velas',
   name: 'Velas',
   imageURL: VELAS_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas'),
+  blockClient: createBlockClient('https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/velas-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-velas',
   etherscanUrl: 'https://evmexplorer.velas.com',
   etherscanName: 'Velas EVM Explorer',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/velas.tokenlist.json',
@@ -257,9 +257,9 @@ const AuroraNetworkInfo: NetworkInfo = {
   route: 'aurora',
   name: 'Aurora',
   imageURL: AURORA_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora'),
+  blockClient: createBlockClient('https://aurora-graph.kyberengineering.io/subgraphs/name/kybernetwork/aurora-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-aurora',
   etherscanUrl: 'https://aurorascan.dev',
   etherscanName: 'Aurora Explorer',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/aurora.tokenlist.json',
@@ -275,9 +275,9 @@ const OasisNetworkInfo: NetworkInfo = {
   route: 'oasis',
   name: 'Oasis',
   imageURL: OASIS_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/kyberswap-elastic'), //todo namgold: change this
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'), //todo namgold: change this
-  subgraphName: 'viet-nv/kyberswap-elastic', //todo namgold: change this
+  client: createClient('https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis'),
+  blockClient: createBlockClient('https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/oasis-blocks'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-oasis',
   etherscanUrl: 'https://explorer.emerald.oasis.dev',
   etherscanName: 'Oasis Emerald Explorer',
   tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/oasis.tokenlist.json',
