@@ -235,7 +235,8 @@ export default function App(): JSX.Element {
                       </NetworkReader>
                     )}
                   />
-                  <Redirect to={`/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`} />
+                  <Route path="/:networkID" render={() => <RedirectToHome />} />
+                  <Route path="*" render={() => <RedirectToHome />} />
                 </Switch>
                 <Marginer />
               </BodyWrapper>
@@ -246,4 +247,11 @@ export default function App(): JSX.Element {
       )}
     </Suspense>
   )
+}
+
+const RedirectToHome = () => {
+  const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
+  const prefixNetworkURL = currentNetworkURL ? `/${currentNetworkURL}` : ''
+
+  return <Redirect to={prefixNetworkURL + '/home'} />
 }
