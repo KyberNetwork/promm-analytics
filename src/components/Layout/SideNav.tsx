@@ -279,7 +279,7 @@ function SideNav(): JSX.Element {
                   <Text>{chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
                 </NetworkItem>
               </StyledLink>
-            ) : chainId === ChainId.AURORA ? undefined : (
+            ) : chainId === ChainId.AURORA || chainId === ChainId.VELAS ? undefined : (
               <StyledInternalLink
                 key={chainId}
                 to={`/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}

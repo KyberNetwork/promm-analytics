@@ -105,6 +105,7 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
   if (currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} />
   if (!currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} /> //not support all chains yet
   if (networkInfoFromURL?.chainId === ChainId.AURORA) return <Redirect to={homeLink} /> //not support Aurora yet
+  if (networkInfoFromURL?.chainId === ChainId.VELAS) return <Redirect to={homeLink} /> //not support Velas yet
   return children
 }
 
