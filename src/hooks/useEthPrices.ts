@@ -52,7 +52,7 @@ async function fetchEthPrices(
     const { data, error } = await client.query<PricesResponse>({
       query: ETH_PRICES,
       variables: {
-        block24: blocks[0],
+        block24: blocks[0] ?? 1,
         block48: blocks[1] ?? 1,
         blockWeek: blocks[2] ?? 1,
       },
