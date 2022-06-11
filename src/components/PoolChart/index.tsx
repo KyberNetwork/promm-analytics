@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 import { Area, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, BarChart, Bar } from 'recharts'
@@ -21,7 +21,6 @@ import DensityChart from 'components/PoolChart/DensityChart'
 import DropdownSelect from 'components/DropdownSelect'
 import { EmptyCard } from 'components'
 import { Repeat } from 'react-feather'
-import { isMobile } from 'react-device-detect'
 
 const ChartWrapper = styled.div`
   height: 100%;
