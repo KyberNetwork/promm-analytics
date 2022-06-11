@@ -6,7 +6,7 @@ import { Activity } from 'react-feather'
 import { useMedia } from 'react-use'
 
 import { PageWrapper } from 'pages/styled'
-import { shortenAddress, getEtherscanLink, feeTierPercent } from 'utils'
+import { shortenAddress, getEtherscanLink, feeTierPercent, getPoolLink } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -487,18 +487,26 @@ export default function AccountPage(): JSX.Element {
                                 sx={{ gap: '6px' }}
                               >
                                 <ExternalLink
-                                  href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${
-                                    positionsMap[item.id].data.token0.id
-                                  }/${positionsMap[item.id].data.token1.id}/${
-                                    positionsMap[item.id].data.pool.feeTier
-                                  }?networkId=${activeNetwork.chainId}`}
+                                  href={getPoolLink(
+                                    {
+                                      type: 'add',
+                                      token0Address: positionsMap[item.id].data.token0.id,
+                                      token1Address: positionsMap[item.id].data.token1.id,
+                                      feeTier: positionsMap[item.id].data.pool.feeTier,
+                                    },
+                                    activeNetwork
+                                  )}
                                 >
                                   <ButtonLight style={{ padding: '4px 6px', borderRadius: '4px' }}>+ Add</ButtonLight>
                                 </ExternalLink>
                                 <ExternalLink
-                                  href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/remove/${
-                                    positionsMap[item.id].data.id
-                                  }?networkId=${activeNetwork.chainId}`}
+                                  href={getPoolLink(
+                                    {
+                                      type: 'remove',
+                                      positionId: positionsMap[item.id].data.id,
+                                    },
+                                    activeNetwork
+                                  )}
                                 >
                                   <RemoveBtn
                                     style={{
@@ -517,21 +525,29 @@ export default function AccountPage(): JSX.Element {
                         {below740 && (
                           <Flex sx={{ gap: '8px', marginBottom: '16px' }}>
                             <ExternalLink
-                              href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${
-                                positionsMap[item.id].data.token0.id
-                              }/${positionsMap[item.id].data.token1.id}/${
-                                positionsMap[item.id].data.pool.feeTier
-                              }?networkId=${activeNetwork.chainId}`}
                               style={{ marginRight: '.5rem', flex: 1 }}
+                              href={getPoolLink(
+                                {
+                                  type: 'add',
+                                  token0Address: positionsMap[item.id].data.token0.id,
+                                  token1Address: positionsMap[item.id].data.token1.id,
+                                  feeTier: positionsMap[item.id].data.pool.feeTier,
+                                },
+                                activeNetwork
+                              )}
                             >
                               <ButtonLight style={{ padding: '10px', borderRadius: '4px', width: '100%' }}>
                                 + Add
                               </ButtonLight>
                             </ExternalLink>
                             <ExternalLink
-                              href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/remove/${
-                                positionsMap[item.id].data.id
-                              }?networkId=${activeNetwork.chainId}`}
+                              href={getPoolLink(
+                                {
+                                  type: 'remove',
+                                  positionId: positionsMap[item.id].data.id,
+                                },
+                                activeNetwork
+                              )}
                               style={{ flex: 1 }}
                             >
                               <RemoveBtn

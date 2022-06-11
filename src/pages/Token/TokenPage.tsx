@@ -7,7 +7,7 @@ import { Flex } from 'rebass'
 
 import { useTokenData, usePoolsForToken, useTokenTransactions } from 'state/tokens/hooks'
 import { PageWrapper } from 'pages/styled'
-import { shortenAddress, getEtherscanLink } from 'utils'
+import { shortenAddress, getEtherscanLink, getPoolLink } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -112,10 +112,16 @@ export default function TokenPage(): JSX.Element {
       {tokenData ? (
         !tokenData.exists ? (
           <LightGreyCard style={{ textAlign: 'center' }}>
-            No pool has been created with this token yet. Create one {/* todo namgold: fix this 404 */}
+            No pool has been created with this token yet. Create one{/* todo namgold: fix this 404 */}
             <StyledExternalLink
               style={{ marginLeft: '4px' }}
-              href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${address}?networkId=${activeNetwork.chainId}`}
+              href={getPoolLink(
+                {
+                  type: 'add',
+                  token0Address: address,
+                },
+                activeNetwork
+              )}
             >
               here.
             </StyledExternalLink>
@@ -160,7 +166,13 @@ export default function TokenPage(): JSX.Element {
                       onClick={() => addSavedToken(activeNetwork.chainId, tokenData)}
                     />
                     <StyledExternalLink
-                      href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${address}?networkId=${activeNetwork.chainId}`}
+                      href={getPoolLink(
+                        {
+                          type: 'add',
+                          token0Address: address,
+                        },
+                        activeNetwork
+                      )}
                     >
                       <ButtonOutlined width="max-content" mr="12px" height="100%" style={{ height: '38px' }}>
                         <RowBetween>
@@ -170,7 +182,7 @@ export default function TokenPage(): JSX.Element {
                       </ButtonOutlined>
                     </StyledExternalLink>
                     <StyledExternalLink
-                      href={`${process.env.REACT_APP_DMM_SWAP_URL}swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
+                      href={`${process.env.REACT_APP_DMM_SWAP_URL}/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
                     >
                       <ButtonPrimary width="100px" style={{ height: '38px' }}>
                         Swap

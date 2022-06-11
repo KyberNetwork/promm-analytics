@@ -27,6 +27,7 @@ import { useDarkModeManager, useIsFirstTimeVisit } from 'state/user/hooks'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { activeNetworkPrefix } from 'utils/networkPrefix'
 import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
+import { addNetworkIdQueryString } from 'utils'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -405,7 +406,12 @@ function SideNav(): JSX.Element {
 
             <Divider />
 
-            <ExternalMenu href="https://kyberswap.com">
+            <ExternalMenu
+              href={addNetworkIdQueryString(
+                process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com',
+                isAllChain ? NETWORKS_INFO_MAP[ChainId.ETHEREUM] : activeNetworks[0]
+              )}
+            >
               <Repeat size={16} />
               Swap
             </ExternalMenu>

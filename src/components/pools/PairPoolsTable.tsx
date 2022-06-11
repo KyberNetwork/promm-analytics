@@ -9,7 +9,7 @@ import { RowFixed } from 'components/Row'
 import { formatDollarAmount } from 'utils/numbers'
 import { PoolData } from 'state/pools/reducer'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import { feeTierPercent, shortenAddress } from 'utils'
+import { feeTierPercent, getPoolLink, shortenAddress } from 'utils'
 import { Label, ClickableText } from 'components/Text'
 import { PageButtons, Arrow, Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
@@ -296,7 +296,15 @@ export default function PairPoolsTable({
                                       {formatDollarAmount(poolData.tvlUSD)}
                                     </Label>
                                     <ExternalLink
-                                      href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
+                                      href={getPoolLink(
+                                        {
+                                          type: 'add',
+                                          token0Address: poolData.token0.address,
+                                          token1Address: poolData.token1.address,
+                                          feeTier: poolData.feeTier,
+                                        },
+                                        activeNetworks
+                                      )}
                                       style={{
                                         display: 'flex',
                                         justifyContent: 'flex-end',
@@ -372,7 +380,15 @@ export default function PairPoolsTable({
 
                                     <Flex justifyContent="flex-end">
                                       <ExternalLink
-                                        href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}`}
+                                        href={getPoolLink(
+                                          {
+                                            type: 'add',
+                                            token0Address: poolData.token0.address,
+                                            token1Address: poolData.token1.address,
+                                            feeTier: poolData.feeTier,
+                                          },
+                                          activeNetworks
+                                        )}
                                       >
                                         <Add>
                                           <Plus color={theme.primary} size="16px" />

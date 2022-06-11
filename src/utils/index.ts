@@ -111,58 +111,40 @@ export function addNetworkIdQueryString(url: string, networkInfo: NetworkInfo): 
   return `${url}?networkId=${networkInfo.chainId}`
 }
 
-export function getPoolLink(
-  token0Address: string,
-  networkInfo: NetworkInfo,
-  token1Address?: string,
-  remove = false,
-  poolAddress?: string
-): string {
-  const nativeTokenSymbol = networkInfo.nativeToken.symbol
+type PoolLinkInfo =
+  | {
+      type: 'add'
+      token0Address: string
+      token1Address?: string
+      feeTier?: string | number
+    }
+  | {
+      type: 'remove'
+      positionId: string | number
+    }
 
-  if (poolAddress) {
-    if (!token1Address) {
-      return addNetworkIdQueryString(
-        process.env.REACT_APP_DMM_SWAP_URL +
-          'promm/' +
-          (remove ? `remove` : `add`) + //todo namgold: complete this
-          `/${
-            token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
-          }/${nativeTokenSymbol}/${poolAddress}`,
-        networkInfo
-      )
+export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): string {
+  const swapURL = (process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com') + '/proamm'
+  let resultURL
+
+  if (info.type === 'remove') {
+    resultURL = `${swapURL}/remove/${info.positionId}`
+  } else {
+    const token0 =
+      info.token0Address == networkInfo.nativeToken.address ? networkInfo.nativeToken.symbol : info.token0Address
+    const token1 = info.token1Address
+      ? info.token1Address === networkInfo.nativeToken.address
+        ? networkInfo.nativeToken.symbol
+        : info.token1Address
+      : undefined
+    if (info.feeTier) {
+      resultURL = `${swapURL}/add/${token0}/${token1}/${info.feeTier}`
+    } else if (info.token1Address) {
+      resultURL = `${swapURL}/add/${token0}/${token1}`
     } else {
-      return addNetworkIdQueryString(
-        process.env.REACT_APP_DMM_SWAP_URL +
-          'promm/' +
-          (remove ? `remove` : `add`) +
-          `/${token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address}/${
-            token1Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token1Address
-          }/${poolAddress}`,
-        networkInfo
-      )
+      resultURL = `${swapURL}/add/${token0}`
     }
   }
 
-  if (!token1Address) {
-    return addNetworkIdQueryString(
-      process.env.REACT_APP_DMM_SWAP_URL +
-        'promm/' +
-        (remove ? `remove` : `add`) +
-        `/${
-          token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address
-        }/${nativeTokenSymbol}`,
-      networkInfo
-    )
-  } else {
-    return addNetworkIdQueryString(
-      process.env.REACT_APP_DMM_SWAP_URL +
-        'promm/' +
-        (remove ? `remove` : `add`) +
-        `/${token0Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token0Address}/${
-          token1Address === networkInfo.nativeToken.address ? nativeTokenSymbol : token1Address
-        }`,
-      networkInfo
-    )
-  }
+  return addNetworkIdQueryString(resultURL, networkInfo)
 }
