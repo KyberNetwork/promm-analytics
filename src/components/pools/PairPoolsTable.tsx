@@ -370,7 +370,7 @@ export default function PairPoolsTable({
                                     <Label end={1} fontWeight={400}>
                                       {formatDollarAmount(poolData.tvlUSD)}
                                     </Label>
-                                    <Label end={1}>{formatDollarAmount(poolData.apr)}</Label>
+                                    <Label end={1}>{Math.round(poolData.apr * 100) / 100}%</Label>
                                     <Label end={1} fontWeight={400}>
                                       {formatDollarAmount(poolData.volumeUSD)}
                                     </Label>
