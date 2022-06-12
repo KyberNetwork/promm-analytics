@@ -6,7 +6,7 @@ import { Flex } from 'rebass'
 import { useMedia } from 'react-use'
 
 import { PageWrapper } from 'pages/styled'
-import { feeTierPercent, FEE_BASE_UNITS, getEtherscanLink, shortenAddress } from 'utils'
+import { feeTierPercent, FEE_BASE_UNITS, getEtherscanLink, getPoolLink, shortenAddress } from 'utils'
 import Column, { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -192,7 +192,15 @@ export default function PoolPage(): JSX.Element {
                   />
 
                   <StyledExternalLink
-                    href={`${process.env.REACT_APP_DMM_SWAP_URL}proamm/add/${poolData.token0.address}/${poolData.token1.address}/${poolData.feeTier}?networkId=${activeNetwork.chainId}`}
+                    href={getPoolLink(
+                      {
+                        type: 'add',
+                        token0Address: poolData.token0.address,
+                        token1Address: poolData.token1.address,
+                        feeTier: poolData.feeTier,
+                      },
+                      activeNetwork
+                    )}
                   >
                     <ButtonOutlined width="max-content" mr="12px" style={{ height: '38px' }}>
                       <RowBetween>
@@ -202,7 +210,7 @@ export default function PoolPage(): JSX.Element {
                     </ButtonOutlined>
                   </StyledExternalLink>
                   <StyledExternalLink
-                    href={`${process.env.REACT_APP_DMM_SWAP_URL}swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
+                    href={`${process.env.REACT_APP_DMM_SWAP_URL}/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
                   >
                     <ButtonPrimary width="100px" style={{ height: '38px' }}>
                       Trade

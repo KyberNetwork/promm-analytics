@@ -11,6 +11,7 @@ import { MenuItem, ExternalMenu, Divider, KyberNetworkLink } from '../styled'
 import ThemeToggle from 'components/ThemeToggle'
 import SocialLinks from 'components/SocialLinks'
 import Wallet from 'components/Icons/Wallet'
+import { addNetworkIdQueryString } from 'utils'
 
 const StyledMenuIcon = styled(MenuIcon)`
   stroke: ${({ theme }) => theme.text};
@@ -85,7 +86,12 @@ export default function Menu(): JSX.Element {
 
           <Divider />
 
-          <ExternalMenu href="https://kyberswap.com">
+          <ExternalMenu
+            href={addNetworkIdQueryString(
+              process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com',
+              activeNetworks
+            )}
+          >
             <Repeat size={16} />
             Swap
           </ExternalMenu>

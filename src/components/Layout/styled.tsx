@@ -22,7 +22,7 @@ export const MenuItem = styled(Link)<{ isActive: boolean }>`
   }
 `
 
-export const ExternalMenu = styled.a`
+export const ExternalMenu = styled(ExternalLinkRaw)`
   display: flex;
   text-decoration: none;
   gap: 8px;
