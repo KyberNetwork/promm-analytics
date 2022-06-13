@@ -37,7 +37,7 @@ const GLOBAL_TRANSACTIONS = gql`
       first: 500
       orderBy: timestamp
       orderDirection: desc
-      where: { token0: $address }
+      where: { token1: $address }
       subgraphError: allow
     ) {
       timestamp
