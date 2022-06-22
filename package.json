@@ -1,6 +1,6 @@
 {
   "name": "@kyberswap/promm-analytics",
-  "description": "KyberSwap ProMM Analytics",
+  "description": "KyberSwap Elastic Analytics",
   "homepage": "/elastic",
   "private": true,
   "devDependencies": {

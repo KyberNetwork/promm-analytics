@@ -1,4 +1,4 @@
-## KyberSwap ProMM Analytics
+## KyberSwap Elastic Analytics
 
 An open sourced interface for ProMM Analytics.
 
