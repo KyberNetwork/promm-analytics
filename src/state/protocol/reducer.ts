@@ -115,6 +115,12 @@ export const initialState: ProtocolState = {
     transactions: undefined,
     lastUpdated: undefined,
   },
+  [ChainId.OPTIMISM]: {
+    data: undefined,
+    chartData: undefined,
+    transactions: undefined,
+    lastUpdated: undefined,
+  },
 }
 
 export default createReducer(initialState, (builder) =>
