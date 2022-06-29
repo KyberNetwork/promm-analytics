@@ -13,6 +13,7 @@ import FANTOM_LOGO_URL from '../assets/network-logo/fantom.png'
 import OASIS_LOGO_URL from '../assets/network-logo/oasis.svg'
 import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
 import VELAS_LOGO_URL from '../assets/network-logo/velas.png'
+import OPTIMISM_LOGO_URL from '../assets/network-logo/optimism.svg'
 
 export enum ChainId {
   ETHEREUM = 1,
@@ -33,6 +34,7 @@ export enum ChainId {
   VELAS = 106,
   AURORA = 1313161554,
   OASIS = 42262,
+  OPTIMISM = 10,
 }
 
 export type NetworkInfo = {
@@ -288,6 +290,24 @@ const OasisNetworkInfo: NetworkInfo = {
   },
 }
 
+const OptimismNetworkInfo: NetworkInfo = {
+  chainId: ChainId.OPTIMISM,
+  route: 'optimism',
+  name: 'Optimism',
+  imageURL: OPTIMISM_LOGO_URL,
+  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism'),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/ianlapham/uni-testing-subgraph'),
+  subgraphName: 'kybernetwork/kyberswap-elastic-optimism',
+  etherscanUrl: 'https://optimistic.etherscan.io',
+  etherscanName: 'Optimistic Ethereum Explorer',
+  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/optimism.tokenlist.json',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x4200000000000000000000000000000000000006',
+  },
+}
+
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
 export const SHOW_NETWORKS = [
   ChainId.ETHEREUM,
@@ -301,6 +321,7 @@ export const SHOW_NETWORKS = [
   ChainId.VELAS,
   ChainId.AURORA,
   ChainId.OASIS,
+  ChainId.OPTIMISM,
 ]
 
 export const NETWORKS_INFO_LIST: NetworkInfo[] = [
@@ -317,6 +338,7 @@ export const NETWORKS_INFO_LIST: NetworkInfo[] = [
   VelasNetworkInfo,
   AuroraNetworkInfo,
   OasisNetworkInfo,
+  OptimismNetworkInfo,
 ]
 
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
@@ -333,4 +355,5 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.VELAS]: VelasNetworkInfo,
   [ChainId.AURORA]: AuroraNetworkInfo,
   [ChainId.OASIS]: OasisNetworkInfo,
+  [ChainId.OPTIMISM]: OptimismNetworkInfo,
 }

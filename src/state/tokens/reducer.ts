@@ -80,6 +80,7 @@ export const initialState: TokensState = {
     [ChainId.VELAS]: {},
     [ChainId.AURORA]: {},
     [ChainId.OASIS]: {},
+    [ChainId.OPTIMISM]: {},
   },
 }
 

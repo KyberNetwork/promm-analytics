@@ -115,6 +115,7 @@ export const initialState: PoolsState = {
     [ChainId.VELAS]: {},
     [ChainId.AURORA]: {},
     [ChainId.OASIS]: {},
+    [ChainId.OPTIMISM]: {},
   },
 }
 
