@@ -1,12 +1,12 @@
 import { ApolloClient } from '@apollo/client'
 import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
-import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 
-export const PRICES_BY_BLOCK = (blocks: any): import('graphql').DocumentNode => {
+const PRICES_BY_BLOCK = (blocks: Block[]): import('graphql').DocumentNode => {
   const queryString = `query bundles {
     ${blocks.map(
-      (block: any) => `
+      (block) => `
         b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }, subgraphError: allow) {
           ethPriceUSD
         }

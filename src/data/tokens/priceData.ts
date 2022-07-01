@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import gql from 'graphql-tag'
-import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PriceChartEntry } from 'types'
 import { splitQuery } from 'utils/queries'
 
@@ -11,11 +11,13 @@ import { splitQuery } from 'utils/queries'
 dayjs.extend(utc)
 dayjs.extend(weekOfYear)
 
-export const PRICES_BY_BLOCK = (tokenAddress: string, blocks: any[]): import('graphql').DocumentNode => {
+const PRICES_BY_BLOCK = (blocks: Block[], tokenAddress: string): import('graphql').DocumentNode => {
   let queryString = 'query blocks {'
   queryString += blocks.map(
-    (block: any) => `
-      t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }, subgraphError: allow) {
+    (block) => `
+      t${block.timestamp}:token(id:"${tokenAddress.toLowerCase()}", block: { number: ${
+      block.number
+    } }, subgraphError: allow) {
         derivedETH
       }
     `
@@ -78,7 +80,13 @@ export const getIntervalTokenData = async (
       })
     }
 
-    const result = await splitQuery<PriceByBlockResult>(PRICES_BY_BLOCK, client, [tokenAddress], blocks, 100)
+    const result = await splitQuery<PriceByBlockResult, Block, string>(
+      PRICES_BY_BLOCK,
+      client,
+      blocks,
+      [tokenAddress],
+      100
+    )
 
     // format token ETH price results
     const values: { timestamp: number; derivedETH: number; priceUSD: number }[] = []

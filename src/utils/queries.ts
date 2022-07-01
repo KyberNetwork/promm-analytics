@@ -9,19 +9,19 @@ import dayjs from 'dayjs'
  * @param values - the keys that are used as the values to map over if
  * @param skipCount - amount of entities to skip per query
  */
-export async function splitQuery<Type>(
-  query: any,
+export async function splitQuery<ResultType, T, U>(
+  query: (values: T[], ...vars: U[]) => import('graphql').DocumentNode,
   client: ApolloClient<NormalizedCacheObject>,
-  vars: any[],
-  values: any[],
+  values: T[],
+  vars: U[],
   skipCount = 1000
 ): Promise<
   | {
-      [key: string]: Type
+      [key: string]: ResultType
     }
   | undefined
 > {
-  let fetchedData: { [key: string]: Type } = {}
+  let fetchedData: { [key: string]: ResultType } = {}
   let allFound = false
   let skip = 0
   try {
@@ -31,8 +31,8 @@ export async function splitQuery<Type>(
         end = skip + skipCount
       }
       const sliced = values.slice(skip, end)
-      const result = await client.query<Type>({
-        query: query(...vars, sliced),
+      const result = await client.query<{ [key: string]: ResultType }>({
+        query: query(sliced, ...vars),
         fetchPolicy: 'network-only',
       })
       fetchedData = {

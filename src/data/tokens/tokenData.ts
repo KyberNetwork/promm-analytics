@@ -9,10 +9,10 @@ import { useEthPrices } from 'hooks/useEthPrices'
 import { formatTokenSymbol, formatTokenName } from 'utils/tokens'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
 
-export const TOKENS_BULK = (block: number | undefined, tokens: string[]) => {
+export const TOKENS_BULK = (block: number | undefined, tokens: string[]): import('graphql').DocumentNode => {
   let tokenString = `[`
-  tokens.map((address) => {
-    return (tokenString += `"${address}",`)
+  tokens.forEach((address) => {
+    tokenString += `"${address.toLowerCase()}",`
   })
   tokenString += ']'
   const queryString =
