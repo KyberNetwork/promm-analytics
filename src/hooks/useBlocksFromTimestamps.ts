@@ -3,8 +3,9 @@ import { useState, useEffect, useMemo } from 'react'
 import { splitQuery } from 'utils/queries'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { ChainId } from 'constants/networks'
 
-export const GET_BLOCKS = (timestamps: string[]): import('graphql').DocumentNode => {
+const GET_BLOCKS = (timestamps: number[]): import('graphql').DocumentNode => {
   let queryString = 'query blocks {'
   queryString += timestamps.map((timestamp) => {
     return `t${timestamp}:blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: { timestamp_gt: ${timestamp}, timestamp_lt: ${
@@ -22,6 +23,11 @@ export type Block = {
   number: number
 }
 
+type BlockResult = {
+  timestamp: string
+  number: string
+}
+
 /**
  * for a given array of timestamps, returns block entities
  * @param timestamps
@@ -34,7 +40,7 @@ export function useBlocksFromTimestamps(
   error: boolean
 } {
   const activeNetwork = useActiveNetworks()[0]
-  const [blocks, setBlocks] = useState<any>()
+  const [blocks, setBlocks] = useState<{ [key in ChainId]?: { [key: string]: BlockResult[] } | undefined }>()
   const [error, setError] = useState(false)
 
   const { blockClient } = useClients()[0]
@@ -45,7 +51,7 @@ export function useBlocksFromTimestamps(
 
   useEffect(() => {
     async function fetchData() {
-      const results = await splitQuery(GET_BLOCKS, activeBlockClient, [], timestamps)
+      const results = await splitQuery<BlockResult[], number, unknown>(GET_BLOCKS, activeBlockClient, timestamps, [])
       if (results) {
         setBlocks({ ...(blocks ?? {}), [activeNetwork.chainId]: results })
       } else {
@@ -58,15 +64,15 @@ export function useBlocksFromTimestamps(
   })
 
   const blocksFormatted = useMemo(() => {
-    if (blocks?.[activeNetwork.chainId]) {
-      const networkBlocks = blocks?.[activeNetwork.chainId]
+    const networkBlocks = blocks?.[activeNetwork.chainId]
+    if (networkBlocks) {
       const formatted = []
       for (const t in networkBlocks) {
         if (networkBlocks[t].length > 0) {
           formatted.push({
             timestamp: t.split('t')[1],
-            number: parseInt(networkBlocks[t][0]['number']),
-          })
+            number: parseInt(networkBlocks[t][0].number),
+          } as Block)
         }
       }
       return formatted
@@ -95,16 +101,22 @@ export async function getBlocksFromTimestamps(
   if (timestamps?.length === 0) {
     return []
   }
-  const fetchedData: any = await splitQuery(GET_BLOCKS, blockClient, [], timestamps, skipCount)
+  const fetchedData = await splitQuery<BlockResult[], number, unknown>(
+    GET_BLOCKS,
+    blockClient,
+    timestamps,
+    [],
+    skipCount
+  )
 
   const blocks: Block[] = []
   if (fetchedData) {
     for (const t in fetchedData) {
-      if (fetchedData[t].length > 0) {
+      if (fetchedData[t]?.length > 0) {
         blocks.push({
           timestamp: t.split('t')[1],
-          number: parseInt(fetchedData[t][0]['number']),
-        })
+          number: parseInt(fetchedData[t][0].number),
+        } as Block)
       }
     }
   }

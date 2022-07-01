@@ -12,7 +12,7 @@ import { splitQuery } from 'utils/queries'
 dayjs.extend(utc)
 dayjs.extend(weekOfYear)
 
-export const HOURLY_POOL_RATES = (poolAddress: string, blocks: Block[]): import('graphql').DocumentNode => {
+const HOURLY_POOL_RATES = (blocks: Block[], poolAddress: string): import('graphql').DocumentNode => {
   let queryString = 'query poolRates {'
   queryString += blocks.map(
     (block) => `
@@ -26,6 +26,7 @@ export const HOURLY_POOL_RATES = (poolAddress: string, blocks: Block[]): import(
   queryString += '}'
   return gql(queryString)
 }
+
 interface ChartResults {
   token0Price: string
   token1Price: string
@@ -71,7 +72,7 @@ export const getHourlyRateData = async (
       })
     }
 
-    const result = await splitQuery<ChartResults>(HOURLY_POOL_RATES, client, [poolAddress], blocks, 100)
+    const result = await splitQuery<ChartResults, Block, string>(HOURLY_POOL_RATES, client, blocks, [poolAddress], 100)
 
     // format token ETH price results
     const values: {
