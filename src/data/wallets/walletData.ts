@@ -155,9 +155,7 @@ export function useFetchedPositionsDatas(): {
   }
 }
 
-export function useFetchedUserPositionData(
-  address: string
-): {
+export function useFetchedUserPositionData(address: string): {
   loading: boolean
   error?: boolean
   data?: PositionFields[]
@@ -242,9 +240,7 @@ const GLOBAL_TRANSACTIONS = gql`
   }
 `
 
-export function useUserTransactions(
-  address: string
-): {
+export function useUserTransactions(address: string): {
   loading: boolean
   error: boolean
   data: any[]

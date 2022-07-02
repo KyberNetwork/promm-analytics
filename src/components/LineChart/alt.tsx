@@ -17,7 +17,7 @@ const Wrapper = styled(Card)`
   padding: 1rem;
   padding-right: 2rem;
   display: flex;
-  background-color: ${({ theme }) => theme.background}
+  background-color: ${({ theme }) => theme.background};
   flex-direction: column;
   > * {
     font-size: 1rem;
@@ -59,8 +59,10 @@ const Chart = ({
   return (
     <Wrapper minHeight={minHeight} {...rest}>
       <RowBetween>
-        {topLeft ?? null}
-        {topRight ?? null}
+        <>
+          {topLeft ?? null}
+          {topRight ?? null}
+        </>
       </RowBetween>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
@@ -106,8 +108,10 @@ const Chart = ({
         </AreaChart>
       </ResponsiveContainer>
       <RowBetween>
-        {bottomLeft ?? null}
-        {bottomRight ?? null}
+        <>
+          {bottomLeft ?? null}
+          {bottomRight ?? null}
+        </>
       </RowBetween>
     </Wrapper>
   )

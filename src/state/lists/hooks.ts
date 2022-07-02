@@ -13,13 +13,11 @@ export interface TagInfo extends TagDetails {
   id: string
 }
 
-export type TokenAddressMap = Readonly<
-  {
-    [chainId in ChainId]?: Readonly<{
-      [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList }
-    }>
-  }
->
+export type TokenAddressMap = Readonly<{
+  [chainId in ChainId]?: Readonly<{
+    [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList }
+  }>
+}>
 
 type Mutable<T> = {
   -readonly [P in keyof T]: Mutable<T[P]>

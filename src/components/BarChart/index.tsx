@@ -15,7 +15,7 @@ const Wrapper = styled(Card)`
   padding: 1rem;
   padding-right: 2rem;
   display: flex;
-  background-color: ${({ theme }) => theme.bg0}
+  background-color: ${({ theme }) => theme.bg0};
   flex-direction: column;
   > * {
     font-size: 1rem;
@@ -186,13 +186,17 @@ const BarChart = ({
   return (
     <Wrapper minHeight={minHeight}>
       <RowBetween>
-        {topLeft ?? null}
-        {topRight ?? null}
+        <>
+          {topLeft ?? null}
+          {topRight ?? null}
+        </>
       </RowBetween>
       <div ref={chartRef} id="bar-chart" {...rest} />
       <RowBetween>
-        {bottomLeft ?? null}
-        {bottomRight ?? null}
+        <>
+          {bottomLeft ?? null}
+          {bottomRight ?? null}
+        </>
       </RowBetween>
     </Wrapper>
   )
