@@ -16,7 +16,7 @@ const HOURLY_POOL_RATES = (blocks: Block[], poolAddress: string): import('graphq
   let queryString = 'query poolRates {'
   queryString += blocks.map(
     (block) => `
-      t${block.timestamp}: pool(id:"${poolAddress}", block: { number: ${block.number} }) {
+      t${block.timestamp}: pool(id:"${poolAddress.toLowerCase()}", block: { number: ${block.number} }) {
         token0Price
         token1Price
       }
