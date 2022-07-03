@@ -99,9 +99,9 @@ const RelativeDarkGreyCard = styled(DarkGreyCard)`
 `
 
 export default function PoolPage(): JSX.Element {
-  const { address } = useParams<{ address: string }>()
+  let { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
-
+  address = address.toLowerCase()
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
