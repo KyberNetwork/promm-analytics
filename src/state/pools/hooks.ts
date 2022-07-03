@@ -41,8 +41,7 @@ export function useAddPoolKeys(): (addresses: string[]) => void {
   const dispatch = useDispatch<AppDispatch>()
   const network = useActiveNetworks()[0]
   return useCallback(
-    (poolAddresses: string[]) =>
-      dispatch(addPoolKeys({ poolAddresses: poolAddresses.map((i) => i.toLowerCase()), networkId: network.chainId })),
+    (poolAddresses: string[]) => dispatch(addPoolKeys({ poolAddresses, networkId: network.chainId })),
     [dispatch, network.chainId]
   )
 }
@@ -52,12 +51,8 @@ export function usePoolDatas(poolAddresses: string[]): PoolData[] {
   const addPoolKeys = useAddPoolKeys()
 
   const untrackedAddresses = poolAddresses.reduce((accum: string[], address) => {
-    if (
-      !Object.keys(allPoolData)
-        .map((i) => i.toLowerCase())
-        .includes(address.toLowerCase())
-    ) {
-      accum.push(address.toLowerCase())
+    if (!Object.keys(allPoolData).includes(address)) {
+      accum.push(address)
     }
     return accum
   }, [])
@@ -72,7 +67,7 @@ export function usePoolDatas(poolAddresses: string[]): PoolData[] {
   // filter for pools with data
   const poolsWithData = poolAddresses
     .map((address) => {
-      const poolData = allPoolData[address.toLowerCase()]?.data
+      const poolData = allPoolData[address]?.data
       return poolData ?? undefined
     })
     .filter(notEmpty)
@@ -89,18 +84,16 @@ export function usePoolChartData(address: string): PoolChartEntry[] | undefined 
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
 
-  const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address.toLowerCase()])
+  const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address])
   const chartData = pool?.chartData
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
 
   useEffect(() => {
     async function fetch() {
-      const { error, data } = await fetchPoolChartData(address.toLowerCase(), dataClient)
+      const { error, data } = await fetchPoolChartData(address, dataClient)
       if (!error && data) {
-        dispatch(
-          updatePoolChartData({ poolAddress: address.toLowerCase(), chartData: data, networkId: activeNetwork.chainId })
-        )
+        dispatch(updatePoolChartData({ poolAddress: address, chartData: data, networkId: activeNetwork.chainId }))
       }
       if (error) {
         setError(error)
@@ -122,24 +115,18 @@ export function usePoolChartData(address: string): PoolChartEntry[] | undefined 
 export function usePoolTransactions(address: string): Transaction[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
-  const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address.toLowerCase()])
+  const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address])
   const transactions = pool?.transactions
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
 
   useEffect(() => {
     async function fetch() {
-      const { error, data } = await fetchPoolTransactions(address.toLowerCase(), dataClient)
+      const { error, data } = await fetchPoolTransactions(address, dataClient)
       if (error) {
         setError(true)
       } else if (data) {
-        dispatch(
-          updatePoolTransactions({
-            poolAddress: address.toLowerCase(),
-            transactions: data,
-            networkId: activeNetwork.chainId,
-          })
-        )
+        dispatch(updatePoolTransactions({ poolAddress: address, transactions: data, networkId: activeNetwork.chainId }))
       }
     }
     if (!transactions && !error) {
@@ -156,12 +143,12 @@ export function usePoolTickData(
 ): [PoolTickData | undefined, (poolAddress: string, tickData: PoolTickData) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
-  const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address.toLowerCase()])
+  const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address])
   const tickData = pool.tickData
 
   const setPoolTickData = useCallback(
     (address: string, tickData: PoolTickData) =>
-      dispatch(updateTickData({ poolAddress: address.toLowerCase(), tickData, networkId: activeNetwork.chainId })),
+      dispatch(updateTickData({ poolAddress: address, tickData, networkId: activeNetwork.chainId })),
     [activeNetwork.chainId, dispatch]
   )
 
@@ -175,8 +162,7 @@ export function useHourlyRateData(
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
   const ratesData = useSelector(
-    (state: AppState) =>
-      state.pools.byAddress[activeNetwork.chainId]?.[poolAddress.toLowerCase()]?.ratesData?.[timeWindow]
+    (state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[poolAddress]?.ratesData?.[timeWindow]
   )
   const { dataClient } = useClients()[0]
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
@@ -209,21 +195,14 @@ export function useHourlyRateData(
     async function fetch() {
       const ratesData = await getHourlyRateData(
         dataClient,
-        poolAddress.toLowerCase(),
+        poolAddress,
         startTime,
         latestBlock,
         frequency,
         activeNetwork
       )
       ratesData &&
-        dispatch(
-          updatePoolRatesData({
-            poolAddress: poolAddress.toLowerCase(),
-            ratesData,
-            timeWindow,
-            networkId: activeNetwork.chainId,
-          })
-        )
+        dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))
     }
     if (!ratesData) {
       fetch()

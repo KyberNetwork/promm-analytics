@@ -83,7 +83,7 @@ export type PoolRatesEntry = {
 export interface PoolsState {
   // analytics data from
   byAddress: {
-    readonly [networkId: string]: {
+    [networkId: string]: {
       [address: string]: {
         data: PoolData | undefined
         chartData: PoolChartEntry[] | undefined
@@ -99,19 +99,6 @@ export interface PoolsState {
     }
   }
 }
-
-// wip
-// const getAutoLowercaseObj = () =>
-//   new Proxy({} as { [key: string]: unknown }, {
-//     get(target, p, ...args) {
-//       if (typeof p === 'string') return target[p.toLowerCase()]
-//       return Reflect.get(target, p, ...args)
-//     },
-//     set(target, p, value, ...args) {
-//       if (typeof p === 'string') target[p.toLowerCase()] = value
-//       return Reflect.set(target, p, ...args)
-//     },
-//   })
 
 export const initialState: PoolsState = {
   byAddress: {
@@ -137,8 +124,8 @@ export default createReducer(initialState, (builder) =>
     .addCase(updatePoolData, (state, { payload: { pools, networkId } }) => {
       pools.map(
         (poolData) =>
-          (state.byAddress[networkId][poolData.address.toLowerCase()] = {
-            ...state.byAddress[networkId][poolData.address.toLowerCase()],
+          (state.byAddress[networkId][poolData.address] = {
+            ...state.byAddress[networkId][poolData.address],
             data: poolData,
             lastUpdated: currentTimestamp(),
           })
@@ -147,8 +134,8 @@ export default createReducer(initialState, (builder) =>
     // add address to byAddress keys if not included yet
     .addCase(addPoolKeys, (state, { payload: { poolAddresses, networkId } }) => {
       poolAddresses.map((address) => {
-        if (!state.byAddress[networkId][address.toLowerCase()]) {
-          state.byAddress[networkId][address.toLowerCase()] = {
+        if (!state.byAddress[networkId][address]) {
+          state.byAddress[networkId][address] = {
             data: undefined,
             chartData: undefined,
             ratesData: undefined,
@@ -160,30 +147,21 @@ export default createReducer(initialState, (builder) =>
       })
     })
     .addCase(updatePoolChartData, (state, { payload: { poolAddress, chartData, networkId } }) => {
-      state.byAddress[networkId][poolAddress.toLowerCase()] = {
-        ...state.byAddress[networkId][poolAddress.toLowerCase()],
-        chartData,
-      }
+      state.byAddress[networkId][poolAddress] = { ...state.byAddress[networkId][poolAddress], chartData: chartData }
     })
     .addCase(updatePoolRatesData, (state, { payload: { poolAddress, ratesData, timeWindow, networkId } }) => {
-      state.byAddress[networkId][poolAddress.toLowerCase()] = {
-        ...state.byAddress[networkId][poolAddress.toLowerCase()],
+      state.byAddress[networkId][poolAddress] = {
+        ...state.byAddress[networkId][poolAddress],
         ratesData: {
-          ...state.byAddress[networkId][poolAddress.toLowerCase()].ratesData,
+          ...state.byAddress[networkId][poolAddress].ratesData,
           [timeWindow]: ratesData,
         },
       }
     })
     .addCase(updatePoolTransactions, (state, { payload: { poolAddress, transactions, networkId } }) => {
-      state.byAddress[networkId][poolAddress.toLowerCase()] = {
-        ...state.byAddress[networkId][poolAddress.toLowerCase()],
-        transactions,
-      }
+      state.byAddress[networkId][poolAddress] = { ...state.byAddress[networkId][poolAddress], transactions }
     })
     .addCase(updateTickData, (state, { payload: { poolAddress, tickData, networkId } }) => {
-      state.byAddress[networkId][poolAddress.toLowerCase()] = {
-        ...state.byAddress[networkId][poolAddress.toLowerCase()],
-        tickData,
-      }
+      state.byAddress[networkId][poolAddress] = { ...state.byAddress[networkId][poolAddress], tickData }
     })
 )
