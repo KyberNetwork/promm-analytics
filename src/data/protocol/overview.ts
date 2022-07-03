@@ -7,7 +7,7 @@ import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { useMemo } from 'react'
 import { useClients } from 'state/application/hooks'
 
-export const GLOBAL_DATA = (block?: string | number): import('graphql').DocumentNode => {
+const GLOBAL_DATA = (block?: string | number): import('graphql').DocumentNode => {
   const queryString = ` query kyberswapFactories {
       factories(
        ${block !== undefined ? `block: { number: ${block}}` : ``}
