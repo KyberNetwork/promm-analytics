@@ -37,7 +37,13 @@ interface ChartResults {
   }[]
 }
 
-export async function fetchPoolChartData(address: string, client: ApolloClient<NormalizedCacheObject>) {
+export async function fetchPoolChartData(
+  address: string,
+  client: ApolloClient<NormalizedCacheObject>
+): Promise<{
+  data: PoolChartEntry[] | undefined
+  error: boolean
+}> {
   let data: {
     date: number
     volumeUSD: string
@@ -56,7 +62,7 @@ export async function fetchPoolChartData(address: string, client: ApolloClient<N
       const { data: chartResData, error, loading } = await client.query<ChartResults>({
         query: POOL_CHART,
         variables: {
-          address: address,
+          address: address.toLowerCase(),
           startTime: startTimestamp,
           skip,
         },

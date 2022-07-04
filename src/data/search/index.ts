@@ -8,7 +8,7 @@ import { PoolData } from 'state/pools/reducer'
 import { notEmpty, escapeRegExp } from 'utils'
 import { useClients } from 'state/application/hooks'
 
-export const TOKEN_SEARCH = gql`
+const TOKEN_SEARCH = gql`
   query tokens($value: String, $id: String) {
     asSymbol: tokens(
       where: { symbol_contains: $value }
@@ -41,7 +41,7 @@ export const TOKEN_SEARCH = gql`
   }
 `
 
-export const POOL_SEARCH = gql`
+const POOL_SEARCH = gql`
   query pools($tokens: [Bytes]!, $id: String) {
     as0: pools(where: { token0_in: $tokens }, subgraphError: allow) {
       id
@@ -152,14 +152,14 @@ export function useFetchSearchResults(
           query: TOKEN_SEARCH,
           variables: {
             value: value ? value.toUpperCase() : '',
-            id: value,
+            id: value?.toLowerCase(),
           },
         })
         const pools = await dataClient.query<PoolRes>({
           query: POOL_SEARCH,
           variables: {
             tokens: tokens.data.asSymbol?.map((t) => t.id),
-            id: value,
+            id: value.toLowerCase(),
           },
         })
 

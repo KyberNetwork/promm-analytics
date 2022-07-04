@@ -11,7 +11,7 @@ import { FEE_BASE_UNITS } from 'utils'
 export const POOLS_BULK = (block: number | string | undefined, pools: string[]): import('graphql').DocumentNode => {
   let poolString = `[`
   pools.map((address) => {
-    return (poolString += `"${address}",`)
+    return (poolString += `"${address.toLowerCase()}",`)
   })
   poolString += ']'
   const queryString =

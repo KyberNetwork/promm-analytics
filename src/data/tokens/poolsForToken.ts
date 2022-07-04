@@ -48,7 +48,7 @@ export async function fetchPoolsForToken(
     const { loading, error, data } = await client.query<PoolsForTokenResponse>({
       query: POOLS_FOR_TOKEN,
       variables: {
-        address: address,
+        address: address.toLowerCase(),
       },
       fetchPolicy: 'cache-first',
     })
