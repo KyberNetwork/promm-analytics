@@ -53,6 +53,7 @@ export type NetworkInfo = {
     name: string
     address: string
   }
+  startBlock: number
 }
 
 const RinkebyNetworkInfo: NetworkInfo = {
@@ -71,6 +72,7 @@ const RinkebyNetworkInfo: NetworkInfo = {
     name: 'ETH (Wrapped)',
     address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
   },
+  startBlock: 10781862,
 }
 
 const RopstenNetworkInfo: NetworkInfo = {
@@ -89,6 +91,7 @@ const RopstenNetworkInfo: NetworkInfo = {
     name: 'ETH (Wrapped)',
     address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
   },
+  startBlock: 12319943,
 }
 
 const EthereumNetworkInfo: NetworkInfo = {
@@ -107,6 +110,7 @@ const EthereumNetworkInfo: NetworkInfo = {
     name: 'ETH (Wrapped)',
     address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   },
+  startBlock: 14932476,
 }
 
 const BscNetworkInfo: NetworkInfo = {
@@ -125,6 +129,7 @@ const BscNetworkInfo: NetworkInfo = {
     name: 'BNB (Wrapped)',
     address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
   },
+  startBlock: 18532980,
 }
 
 const ArbitrumNetworkInfo: NetworkInfo = {
@@ -143,6 +148,7 @@ const ArbitrumNetworkInfo: NetworkInfo = {
     name: 'ETH (Wrapped)',
     address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
   },
+  startBlock: 14137735,
 }
 
 const PolygonNetworkInfo: NetworkInfo = {
@@ -161,6 +167,7 @@ const PolygonNetworkInfo: NetworkInfo = {
     name: 'MATIC (Wrapped)',
     address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   },
+  startBlock: 29347468,
 }
 
 const AvaxNetworkInfo: NetworkInfo = {
@@ -179,6 +186,7 @@ const AvaxNetworkInfo: NetworkInfo = {
     name: 'AVAX (Wrapped)',
     address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
   },
+  startBlock: 15795578,
 }
 
 const FantomNetworkInfo: NetworkInfo = {
@@ -198,6 +206,7 @@ const FantomNetworkInfo: NetworkInfo = {
     name: 'FTM (Wrapped)',
     address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
   },
+  startBlock: 40124588,
 }
 
 const CronosNetworkInfo: NetworkInfo = {
@@ -216,6 +225,7 @@ const CronosNetworkInfo: NetworkInfo = {
     name: 'CRO (Wrapped)',
     address: '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23',
   },
+  startBlock: 3152290,
 }
 
 const BTTCNetworkInfo: NetworkInfo = {
@@ -234,6 +244,7 @@ const BTTCNetworkInfo: NetworkInfo = {
     name: 'BTT (Wrapped)',
     address: '0x8D193c6efa90BCFf940A98785d1Ce9D093d3DC8A',
   },
+  startBlock: 7570793,
 }
 
 const VelasNetworkInfo: NetworkInfo = {
@@ -252,9 +263,11 @@ const VelasNetworkInfo: NetworkInfo = {
     name: 'VLX (Wrapped)',
     address: '0xc579D1f3CF86749E05CD06f7ADe17856c2CE3126',
   },
+  startBlock: 40962641,
 }
 
 const AuroraNetworkInfo: NetworkInfo = {
+  // not support yet
   chainId: ChainId.AURORA,
   route: 'aurora',
   name: 'Aurora',
@@ -270,6 +283,7 @@ const AuroraNetworkInfo: NetworkInfo = {
     name: 'ETH (Wrapped)',
     address: '0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB',
   },
+  startBlock: 0,
 }
 
 const OasisNetworkInfo: NetworkInfo = {
@@ -288,6 +302,7 @@ const OasisNetworkInfo: NetworkInfo = {
     name: 'ROSE (Wrapped)',
     address: '0x21C718C22D52d0F3a789b752D4c2fD5908a8A733',
   },
+  startBlock: 1656923,
 }
 
 const OptimismNetworkInfo: NetworkInfo = {
@@ -306,6 +321,7 @@ const OptimismNetworkInfo: NetworkInfo = {
     name: 'ETH (Wrapped)',
     address: '0x4200000000000000000000000000000000000006',
   },
+  startBlock: 12001267,
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
