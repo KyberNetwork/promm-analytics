@@ -57,7 +57,7 @@ export async function fetchTokenChartData(address: string, client: ApolloClient<
       } = await client.query<ChartResults>({
         query: TOKEN_CHART,
         variables: {
-          address: address,
+          address: address.toLowerCase(),
           startTime: startTimestamp,
           skip,
         },

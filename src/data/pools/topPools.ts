@@ -3,7 +3,7 @@ import { ApolloClient, NormalizedCacheObject, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
-export const TOP_POOLS = gql`
+const TOP_POOLS = gql`
   query topPools {
     pools(first: 50, orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
       id

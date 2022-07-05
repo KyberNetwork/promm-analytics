@@ -142,7 +142,7 @@ export async function fetchPoolTransactions(
   const { data, error, loading } = await client.query<TransactionResults>({
     query: POOL_TRANSACTIONS,
     variables: {
-      address: address,
+      address: address.toLowerCase(),
     },
     fetchPolicy: 'cache-first',
   })

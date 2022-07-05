@@ -106,7 +106,7 @@ const fetchInitializedTicks = async (
       query: tickQuery,
       fetchPolicy: 'cache-first',
       variables: {
-        poolAddress,
+        poolAddress: poolAddress.toLowerCase(),
         tickIdxLowerBound,
         tickIdxUpperBound,
         skip,
@@ -177,7 +177,7 @@ export const fetchTicksSurroundingPrice = async (
   } = await client.query<PoolResult>({
     query: poolQuery,
     variables: {
-      poolAddress,
+      poolAddress: poolAddress.toLowerCase(),
     },
   })
 

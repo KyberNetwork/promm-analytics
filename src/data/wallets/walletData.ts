@@ -48,7 +48,7 @@ const USER_POSITIONS = (user: string) => {
   const queryString = gql`
   ${POSITION_FRAGMENT}
   query positions {
-    positions(where: {owner: "${user}",liquidity_gt: 0}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
+    positions(where: {owner: "${user.toLowerCase()}",liquidity_gt: 0}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
       ...PositionFragment
     }
   }
@@ -59,7 +59,7 @@ const USER_POSITIONS = (user: string) => {
 export const TOP_POSITIONS = (poolIds: string[]): import('graphql').DocumentNode => {
   let poolStrings = `[`
   poolIds.forEach((id) => {
-    poolStrings += `"${id}",`
+    poolStrings += `"${id.toLowerCase()}",`
   })
   poolStrings += ']'
 
@@ -250,7 +250,7 @@ export function useUserTransactions(address: string): {
   const { loading, error, data } = useQuery(GLOBAL_TRANSACTIONS, {
     client: dataClient,
     variables: {
-      address,
+      address: address.toLowerCase(),
     },
     fetchPolicy: 'cache-first',
   })

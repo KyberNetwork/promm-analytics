@@ -52,7 +52,6 @@ const TRANSFORMED_DEFAULT_TOKEN_LIST = listToTokenMap(DEFAULT_TOKEN_LIST)
 export function useAllLists(): {
   readonly [url: string]: {
     readonly current: TokenList | null
-    readonly pendingUpdate: TokenList | null
     readonly loadingRequestId: string | null
     readonly error: string | null
   }

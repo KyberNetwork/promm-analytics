@@ -148,3 +148,9 @@ export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): strin
 
   return addNetworkIdQueryString(resultURL, networkInfo)
 }
+
+export const pushUnique = <T>(array: T[] | undefined, element: T): T[] => {
+  const set = new Set<T>(array)
+  set.add(element)
+  return Array.from(set)
+}

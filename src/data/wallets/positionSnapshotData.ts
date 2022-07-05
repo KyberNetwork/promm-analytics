@@ -52,7 +52,7 @@ export async function fetchPositionSnapshots(
         query: POSITION_SNAPSHOT,
         variables: {
           skip,
-          owner: address,
+          owner: address.toLowerCase(),
         },
         fetchPolicy: 'network-only',
       })

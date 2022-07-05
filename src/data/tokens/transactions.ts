@@ -301,7 +301,7 @@ export async function fetchTokenTransactions(
     const { data, error, loading } = await client.query<TransactionResults>({
       query: GLOBAL_TRANSACTIONS,
       variables: {
-        address: address,
+        address: address.toLowerCase(),
       },
       fetchPolicy: 'cache-first',
     })

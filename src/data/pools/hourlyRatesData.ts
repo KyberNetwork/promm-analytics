@@ -16,7 +16,7 @@ const HOURLY_POOL_RATES = (blocks: Block[], poolAddress: string): import('graphq
   let queryString = 'query poolRates {'
   queryString += blocks.map(
     (block) => `
-      t${block.timestamp}: pool(id:"${poolAddress}", block: { number: ${block.number} }) {
+      t${block.timestamp}: pool(id:"${poolAddress.toLowerCase()}", block: { number: ${block.number} }) {
         token0Price
         token1Price
       }
@@ -57,15 +57,13 @@ export const getHourlyRateData = async (
     }
 
     // once you have all the timestamps, get the blocks for each timestamp in a bulk query
-    let blocks
-
-    blocks = await getBlocksFromTimestamps(timestamps, networksInfo.blockClient)
+    let blocks = await getBlocksFromTimestamps(timestamps, networksInfo.blockClient)
 
     // catch failing case
     if (!blocks || blocks?.length === 0) {
       return
     }
-
+    blocks = blocks.filter((b) => b.number >= networksInfo.startBlock)
     if (latestBlock) {
       blocks = blocks.filter((b) => {
         return b.number <= latestBlock
