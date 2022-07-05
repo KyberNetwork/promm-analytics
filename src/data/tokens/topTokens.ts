@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { NormalizedCacheObject, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
+import ApolloClient from 'apollo-client'
 
 export const TOP_TOKENS = gql`
   query topPools {
@@ -41,5 +42,17 @@ export function useTopTokenAddresses(): {
     loading: loading,
     error: Boolean(error),
     addresses: formattedData,
+  }
+}
+
+export async function getTopTokenAddresses(dataClient: ApolloClient<NormalizedCacheObject>): Promise<string[]> {
+  const { data } = await dataClient.query<TopTokensResponse>({
+    query: TOP_TOKENS,
+    fetchPolicy: 'cache-first',
+  })
+  if (data) {
+    return data.tokens.map((t) => t.id)
+  } else {
+    return []
   }
 }

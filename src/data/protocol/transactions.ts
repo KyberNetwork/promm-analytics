@@ -1,4 +1,5 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { NetworkInfo } from 'constants/networks'
 import gql from 'graphql-tag'
 import { Transaction, TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
@@ -121,11 +122,9 @@ interface TransactionResults {
   transactions: TransactionEntry[]
 }
 
-export async function fetchTopTransactions(
-  client: ApolloClient<NormalizedCacheObject>
-): Promise<Transaction[] | undefined> {
+export async function fetchTopTransactions(network: NetworkInfo): Promise<Transaction[] | undefined> {
   try {
-    const { data, error, loading } = await client.query<TransactionResults>({
+    const { data, error, loading } = await network.client.query<TransactionResults>({
       query: GLOBAL_TRANSACTIONS,
       fetchPolicy: 'cache-first',
     })
@@ -148,6 +147,7 @@ export async function fetchTopTransactions(
           amountUSD: parseFloat(m.amountUSD),
           amountToken0: parseFloat(m.amount0),
           amountToken1: parseFloat(m.amount1),
+          chainId: network.chainId,
         }
       })
       const burnEntries = t.burns.map((m) => {
@@ -163,6 +163,7 @@ export async function fetchTopTransactions(
           amountUSD: parseFloat(m.amountUSD),
           amountToken0: parseFloat(m.amount0),
           amountToken1: parseFloat(m.amount1),
+          chainId: network.chainId,
         }
       })
 
@@ -179,6 +180,7 @@ export async function fetchTopTransactions(
           amountUSD: parseFloat(m.amountUSD),
           amountToken0: parseFloat(m.amount0),
           amountToken1: parseFloat(m.amount1),
+          chainId: network.chainId,
         }
       })
       accum = [...accum, ...mintEntries, ...burnEntries, ...swapEntries]

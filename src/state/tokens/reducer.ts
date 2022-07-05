@@ -38,6 +38,8 @@ export type TokenData = {
   priceUSD: number
   priceUSDChange: number
   priceUSDChangeWeek: number
+
+  chainId: ChainId
 }
 
 export interface TokenChartEntry {

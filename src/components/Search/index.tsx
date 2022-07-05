@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Search as SearchIcon, X } from 'react-feather'
 
 import Row, { RowFixed } from 'components/Row'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { TYPE } from 'theme'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
@@ -132,8 +132,9 @@ const Blue = styled.span`
   }
 `
 
-export const Search = (): JSX.Element => {
+export const Search = (): JSX.Element | null => {
   const activeNetwork = useActiveNetworks()[0]
+  const { isAllChain } = useActiveNetworkUtils()
   const [showMenu, toggleMenu] = useState(false)
   const [value, setValue] = useState('')
   const { tokens, pools } = useFetchSearchResults(value)
@@ -174,6 +175,8 @@ export const Search = (): JSX.Element => {
       document.removeEventListener('click', handleClick)
     }
   }, [handleClick])
+
+  if (isAllChain) return null
 
   return (
     <Container>

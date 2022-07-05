@@ -28,6 +28,7 @@ import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hook
 import { activeNetworkPrefix } from 'utils/networkPrefix'
 import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
 import { addNetworkIdQueryString } from 'utils'
+import { ALL_CHAIN_ID } from 'constants/index'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -200,6 +201,11 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
   )
 }
 
+const ListTabs = {
+  ELASTIC: 'Elastic',
+  CLASSIC: 'Classic',
+}
+
 function SideNav(): JSX.Element {
   const theme = useTheme()
   const activeNetworks = useActiveNetworks() //todo namgold: useParams()
@@ -230,12 +236,12 @@ function SideNav(): JSX.Element {
   const prefixNetworkURL = currentNetworkURL ? `/${currentNetworkURL}` : ''
   const below1080 = useMedia('(max-width: 1080px)')
   const [isDark] = useDarkModeManager()
-  const [tab, setTab] = useState<'Elastic' | 'Classic'>('Elastic')
+  const [tab, setTab] = useState<string>(ListTabs.ELASTIC)
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
   const networkListToShow: ('allchain' | ChainId)[] = [...SHOW_NETWORKS]
-  if (tab === 'Classic')
-    //todo namgold: remove above if line
-    networkListToShow.unshift('allchain')
+
+  networkListToShow.unshift(ALL_CHAIN_ID)
+
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
       <NetworkModalContent>
@@ -249,60 +255,56 @@ function SideNav(): JSX.Element {
         </Flex>
 
         <TabWrapper>
-          <TabItem active={tab === 'Elastic'} role="button" onClick={() => setTab('Elastic')}>
-            Elastic Analytics
-          </TabItem>
-          <TabItem active={tab === 'Classic'} role="button" onClick={() => setTab('Classic')}>
-            Classic Analytics
-          </TabItem>
+          {Object.entries(ListTabs).map(([key, value]) => (
+            <TabItem key={key} active={tab === value} role="button" onClick={() => setTab(value)}>
+              {value} Analytics
+            </TabItem>
+          ))}
         </TabWrapper>
 
         <NetworkList>
-          {networkListToShow.map((chainId: 'allchain' | ChainId) =>
-            tab === 'Classic' ? (
+          {networkListToShow.map((chainId: 'allchain' | ChainId) => {
+            const isAllChainId = chainId === ALL_CHAIN_ID
+            return tab === ListTabs.CLASSIC ? (
               <StyledLink
                 key={chainId}
-                href={`/classic/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
+                href={`/classic/${isAllChainId ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
                 <NetworkItem
-                  active={isAllChain ? chainId === 'allchain' : chainId === activeNetworks[0].chainId}
+                  active={isAllChain ? isAllChainId : chainId === activeNetworks[0].chainId}
                   key={chainId}
                   onClick={() => setShowNetworkModal(false)}
                 >
                   <img
-                    src={
-                      chainId === 'allchain' ? (isAllChain ? KyberBlack : Kyber) : NETWORKS_INFO_MAP[chainId].imageURL
-                    }
+                    src={isAllChainId ? (isAllChain ? KyberBlack : Kyber) : NETWORKS_INFO_MAP[chainId].imageURL}
                     width="24px"
                     height="24px"
-                    alt={chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
+                    alt={isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
                   />
-                  <Text>{chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
+                  <Text>{isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
                 </NetworkItem>
               </StyledLink>
-            ) : chainId === ChainId.AURORA ? undefined : (
+            ) : chainId === ChainId.AURORA ? null : (
               <StyledInternalLink
                 key={chainId}
-                to={`/${chainId === 'allchain' ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
+                to={`/${isAllChainId ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
                 <NetworkItem
-                  active={isAllChain ? chainId === 'allchain' : chainId === activeNetworks[0].chainId}
+                  active={isAllChain ? isAllChainId : chainId === activeNetworks[0].chainId}
                   key={chainId}
                   onClick={() => setShowNetworkModal(false)}
                 >
                   <img
-                    src={
-                      chainId === 'allchain' ? (isAllChain ? KyberBlack : Kyber) : NETWORKS_INFO_MAP[chainId].imageURL
-                    }
+                    src={isAllChainId ? (isAllChain ? KyberBlack : Kyber) : NETWORKS_INFO_MAP[chainId].imageURL}
                     width="24px"
                     height="24px"
-                    alt={chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
+                    alt={isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
                   />
-                  <Text>{chainId === 'allchain' ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
+                  <Text>{isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
                 </NetworkItem>
               </StyledInternalLink>
             )
-          )}
+          })}
         </NetworkList>
       </NetworkModalContent>
     </Modal>
@@ -399,10 +401,12 @@ function SideNav(): JSX.Element {
               Pools
             </MenuItem>
 
-            <MenuItem to={activeNetworkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
-              <Wallet />
-              Wallet Analytics
-            </MenuItem>
+            {!isAllChain && (
+              <MenuItem to={activeNetworkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
+                <Wallet />
+                Wallet Analytics
+              </MenuItem>
+            )}
 
             <Divider />
 

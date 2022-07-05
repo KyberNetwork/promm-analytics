@@ -14,13 +14,15 @@ import { Label, ClickableText } from 'components/Text'
 import { PageButtons, Arrow, Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
 import { networkPrefix } from 'utils/networkPrefix'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { Text, Flex } from 'rebass'
 import CopyHelper from 'components/Copy'
 import { ChevronDown, ChevronUp, Plus } from 'react-feather'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { QuestionHelper } from 'components/QuestionHelper'
 import { useMedia } from 'react-use'
+import { NETWORKS_INFO_MAP } from 'constants/networks'
+import CurrencyLogo from 'components/CurrencyLogo'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -28,19 +30,18 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const GridWrapper = styled.div`
+const GridWrapper = styled.div<{ isAllChain: boolean }>`
   display: grid;
   align-items: center;
-
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: 140px ${({ isAllChain }) => `${isAllChain ? '80px' : ''}`} 1fr;
 `
 
-const ResponsiveGrid = styled.div`
+const ResponsiveGrid = styled.div<{ totalColumn: number }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(${({ totalColumn }) => `${totalColumn}`}, 1fr);
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: repeat(4, 1fr);
@@ -116,6 +117,7 @@ enum SORT_FIELD {
   tvlUSD = 'tvlUSD',
   volumeUSDWeek = 'volumeUSDWeek',
   apr = 'apr',
+  chainId = 'chainId',
 }
 
 const MAX_ITEMS = 10
@@ -129,7 +131,9 @@ export default function PairPoolsTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()[0] // TODO namgold: handle all chain view
+  const activeNetworks = useActiveNetworks()[0]
+
+  const { isAllChain } = useActiveNetworkUtils()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
@@ -198,11 +202,14 @@ export default function PairPoolsTable({
     return <Loader />
   }
 
+  const NUM_COLUMN = 6
+  const totalColumn = isAllChain ? NUM_COLUMN : NUM_COLUMN + 1 // except token pair name, network
+
   return (
     <Wrapper>
       {sortedPairs.length > 0 ? (
         <>
-          <GridWrapper>
+          <GridWrapper isAllChain={isAllChain}>
             <Flex
               padding="20px"
               height={below960 ? undefined : 'calc(19px + 20px * 2)'} // = APR? icon height + row padding top bot
@@ -210,7 +217,18 @@ export default function PairPoolsTable({
             >
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>
             </Flex>
-            <TableHeader>
+            {isAllChain && (
+              <Flex
+                padding="20px"
+                height={below960 ? undefined : 'calc(19px + 20px * 2)'} // = APR? icon height + row padding top bot
+                backgroundColor={theme.tableHeader}
+              >
+                <ClickableText onClick={() => handleSort(SORT_FIELD.chainId)} color={theme.subText}>
+                  Network
+                </ClickableText>
+              </Flex>
+            )}
+            <TableHeader totalColumn={NUM_COLUMN}>
               <ClickableText color={theme.subText}>Pool | FEE</ClickableText>
 
               <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
@@ -239,7 +257,9 @@ export default function PairPoolsTable({
           <AutoColumn>
             {sortedPairs.map((pair, i) => {
               if (pair) {
+                const pairInfo = pair[0]
                 const id = `${pair[0].token0.address}_${pair[0].token1.address}`
+                const networkInfo = NETWORKS_INFO_MAP[pairInfo.chainId]
                 return (
                   <React.Fragment key={i}>
                     {size?.width && size.width <= MEDIA_WIDTHS.upToSmall ? (
@@ -260,7 +280,7 @@ export default function PairPoolsTable({
                             <DoubleCurrencyLogo
                               address0={pair[0].token0.address}
                               address1={pair[0].token1.address}
-                              activeNetwork={activeNetworks}
+                              activeNetwork={networkInfo}
                             />
                             <Label marginLeft="8px">
                               {pair[0].token0.symbol} - {pair[0].token1.symbol}
@@ -274,8 +294,9 @@ export default function PairPoolsTable({
                         {isOpen[id] &&
                           pair.map((poolData, i) => (
                             <React.Fragment key={poolData.address}>
-                              <LinkWrapper to={networkPrefix(activeNetworks) + 'pool/' + poolData.address}>
+                              <LinkWrapper to={networkPrefix(networkInfo) + 'pool/' + poolData.address}>
                                 <GridWrapper
+                                  isAllChain={isAllChain}
                                   role="button"
                                   style={{ padding: '16px 20px', background: theme.tableHeader }}
                                 >
@@ -291,7 +312,7 @@ export default function PairPoolsTable({
                                     </AutoColumn>
                                   </Label>
 
-                                  <ResponsiveGrid>
+                                  <ResponsiveGrid totalColumn={totalColumn}>
                                     <Label end={1} fontWeight={400}>
                                       {formatDollarAmount(poolData.tvlUSD)}
                                     </Label>
@@ -303,7 +324,7 @@ export default function PairPoolsTable({
                                           token1Address: poolData.token1.address,
                                           feeTier: poolData.feeTier,
                                         },
-                                        activeNetworks
+                                        networkInfo
                                       )}
                                       style={{
                                         display: 'flex',
@@ -323,6 +344,7 @@ export default function PairPoolsTable({
                       </>
                     ) : (
                       <GridWrapper
+                        isAllChain={isAllChain}
                         style={{
                           padding: '16px 20px',
                           backgroundColor: openPair === id ? theme.tableHeader : theme.background,
@@ -332,32 +354,39 @@ export default function PairPoolsTable({
                           <DoubleCurrencyLogo
                             address0={pair[0].token0.address}
                             address1={pair[0].token1.address}
-                            activeNetwork={activeNetworks}
+                            activeNetwork={networkInfo}
                           />
                           <Label marginTop="8px">
                             {pair[0].token0.symbol} - {pair[0].token1.symbol}
                           </Label>
                         </div>
+                        {isAllChain && (
+                          <div>
+                            <Link to={'/' + networkInfo.route} className="network">
+                              <img src={networkInfo.imageURL} width={25} />
+                            </Link>
+                          </div>
+                        )}
                         <AutoColumn gap="16px">
                           {pair.map((poolData, index) => {
                             if (index === 0 || openPair === id)
                               return (
                                 <React.Fragment key={poolData.address}>
                                   <ResponsiveGrid
+                                    totalColumn={NUM_COLUMN}
                                     onClick={(e) => {
                                       e.preventDefault()
                                       e.stopPropagation()
                                       if (pair.length === 1) {
                                         return
                                       }
-
                                       setOpenPair((prev) => (prev === id ? '' : id))
                                     }}
                                   >
                                     <Label fontWeight={400}>
                                       <AutoColumn gap="8px">
                                         <RowFixed>
-                                          <LinkWrapper to={networkPrefix(activeNetworks) + 'pool/' + poolData.address}>
+                                          <LinkWrapper to={networkPrefix(networkInfo) + 'pool/' + poolData.address}>
                                             <Label color={theme.primary}>{shortenAddress(poolData.address)}</Label>
                                           </LinkWrapper>
                                           <CopyHelper toCopy={poolData.address} />
@@ -367,6 +396,7 @@ export default function PairPoolsTable({
                                         </Text>
                                       </AutoColumn>
                                     </Label>
+
                                     <Label end={1} fontWeight={400}>
                                       {formatDollarAmount(poolData.tvlUSD)}
                                     </Label>
@@ -387,7 +417,7 @@ export default function PairPoolsTable({
                                             token1Address: poolData.token1.address,
                                             feeTier: poolData.feeTier,
                                           },
-                                          activeNetworks
+                                          networkInfo
                                         )}
                                       >
                                         <Add>
@@ -418,7 +448,7 @@ export default function PairPoolsTable({
                                   {index !== pair.length - 1 && openPair === id && <Break />}
                                 </React.Fragment>
                               )
-                            else return null
+                            return null
                           })}
                         </AutoColumn>
                       </GridWrapper>

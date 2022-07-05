@@ -20,6 +20,7 @@ import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'c
 import { updateActiveNetwork } from 'state/application/actions'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
+import { ALL_CHAIN_ID } from 'constants/index'
 
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
@@ -63,29 +64,29 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
-const Hide1080 = styled.div`
-  @media (max-width: 1080px) {
-    display: none;
-  }
-`
+// const Hide1080 = styled.div`
+//   @media (max-width: 1080px) {
+//     display: none;
+//   }
+// `
 
-const WarningWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`
+// const WarningWrapper = styled.div`
+//   width: 100%;
+//   display: flex;
+//   justify-content: center;
+// `
 
-const WarningBanner = styled.div`
-  background-color: ${({ theme }) => theme.bg3};
-  padding: 1rem;
-  color: white;
-  font-size: 14px;
-  width: 100%;
-  text-align: center;
-  font-weight: 500;
-`
+// const WarningBanner = styled.div`
+//   background-color: ${({ theme }) => theme.bg3};
+//   padding: 1rem;
+//   color: white;
+//   font-size: 14px;
+//   width: 100%;
+//   text-align: center;
+//   font-weight: 500;
+// `
 
-const BLOCK_DIFFERENCE_THRESHOLD = 30
+// const BLOCK_DIFFERENCE_THRESHOLD = 30
 
 const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ children }) => {
   const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
@@ -95,15 +96,15 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
 
   useEffect(() => {
     if (!currentNetworkURL) {
-      dispatch(updateActiveNetwork({ chainId: 'allchain' }))
+      dispatch(updateActiveNetwork({ chainId: ALL_CHAIN_ID }))
     } else if (networkInfoFromURL) {
-      dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || 'allchain' }))
+      dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || ALL_CHAIN_ID }))
     }
   }, [currentNetworkURL, networkInfoFromURL, dispatch])
-  // const homeLink = '/home'
   const homeLink = `/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`
-  if (currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} />
-  if (!currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} /> //not support all chains yet
+
+  // if (currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} />
+
   if (networkInfoFromURL?.chainId === ChainId.AURORA) return <Redirect to={homeLink} /> //not support Aurora yet
   return children
 }
@@ -116,14 +117,14 @@ export default function App(): JSX.Element {
     setTimeout(() => setLoading(false), 1300)
   }, [])
 
-  const activeNetwork = useActiveNetworks()
+  // const activeNetwork = useActiveNetworks()
   // subgraph health
   const [subgraphStatus] = useSubgraphStatus()
 
-  const showNotSyncedWarning =
-    subgraphStatus.headBlock && subgraphStatus.syncedBlock
-      ? subgraphStatus.headBlock - subgraphStatus.syncedBlock > BLOCK_DIFFERENCE_THRESHOLD
-      : false
+  // const showNotSyncedWarning =
+  //   subgraphStatus.headBlock && subgraphStatus.syncedBlock
+  //     ? subgraphStatus.headBlock - subgraphStatus.syncedBlock > BLOCK_DIFFERENCE_THRESHOLD
+  //     : false
 
   return (
     <Suspense fallback={null}>

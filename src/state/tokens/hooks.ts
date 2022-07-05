@@ -269,7 +269,7 @@ export function useTokenTransactions(address: string): Transaction[] | undefined
 
   useEffect(() => {
     async function fetch() {
-      const { error, data } = await fetchTokenTransactions(address, dataClient)
+      const { error, data } = await fetchTokenTransactions(address, dataClient, activeNetwork.chainId)
       if (error) {
         setError(true)
       } else if (data) {

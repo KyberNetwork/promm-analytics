@@ -15,9 +15,12 @@ import { PageButtons, Arrow, Break } from 'components/shared'
 import HoverInlineText from '../HoverInlineText'
 import useTheme from 'hooks/useTheme'
 import { TOKEN_HIDE } from '../../constants/index'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { useMedia } from 'react-use'
+import { NETWORKS_INFO_MAP } from 'constants/networks'
+
+const TOTAL_COLUMN = 7
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -25,33 +28,40 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const ResponsiveGrid = styled.div`
+const ResponsiveGrid = styled.div<{ totalColumn: number }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 20px 2fr 85px repeat(4, 1fr);
+  grid-template-columns: 20px 2fr repeat(${({ totalColumn }) => `${totalColumn - 2}`}, 1fr);
+
+  > .network {
+    text-align: center;
+  }
 
   @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1fr 85px repeat(3, 1fr);
-    & :nth-child(7) {
+    grid-template-columns: 20px 1.5fr repeat(${({ totalColumn }) => `${totalColumn - 3}`}, 1fr);
+    > .price-change {
       display: none;
     }
   }
 
   @media screen and (max-width: 800px) {
-    grid-template-columns: 20px 1fr 85px repeat(2, 1fr);
-    & :nth-child(3) {
+    grid-template-columns: 20px 1fr 85px repeat(${({ totalColumn }) => `${totalColumn - 5}`}, 1fr);
+    > .tvl {
       display: none;
     }
   }
 
   @media screen and (max-width: 670px) {
-    grid-template-columns: 1fr 85px 1fr;
-    > *:first-child {
+    grid-template-columns: repeat(4, 1fr);
+    > .stt {
       display: none;
     }
-    > *:nth-child(6) {
+    > .tvl {
+      display: ${({ totalColumn }) => `${totalColumn === TOTAL_COLUMN ? 'block' : 'none'}`};
+    }
+    > .symbol {
       display: none;
     }
   }
@@ -79,33 +89,40 @@ const ResponsiveLogo = styled(CurrencyLogo)`
 
 const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) => {
   const below680 = useMedia('(max-width: 680px)')
-  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
   const theme = useTheme()
+  const { isAllChain } = useActiveNetworkUtils()
+  const tokenNetworkInfo = NETWORKS_INFO_MAP[tokenData.chainId]
+  const totalColumn = isAllChain ? TOTAL_COLUMN + 1 : TOTAL_COLUMN
   return (
-    <LinkWrapper to={networkPrefix(activeNetworks) + 'token/' + tokenData.address}>
-      <ResponsiveGrid>
-        <Label>{index + 1}</Label>
+    <LinkWrapper to={networkPrefix(tokenNetworkInfo) + 'token/' + tokenData.address}>
+      <ResponsiveGrid totalColumn={totalColumn}>
+        <Label className="stt">{index + 1}</Label>
         <Label>
           <RowFixed>
-            <ResponsiveLogo address={tokenData.address} activeNetwork={activeNetworks} />
+            <ResponsiveLogo address={tokenData.address} activeNetwork={tokenNetworkInfo} />
             <div style={{ marginLeft: '8px' }}>
               <HoverInlineText color={theme.primary} text={below680 ? tokenData.symbol : tokenData.name} />
             </div>
           </RowFixed>
         </Label>
-        <Label end={1} fontWeight={400}>
+        {isAllChain && (
+          <Link to={'/' + tokenNetworkInfo.route} className="network">
+            <img src={tokenNetworkInfo.imageURL} width={25} />
+          </Link>
+        )}
+        <Label className="symbol" end={1} fontWeight={400}>
           {tokenData.symbol}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="tvl">
           {formatDollarAmount(tokenData.tvlUSD)}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="volume">
           {formatDollarAmount(tokenData.volumeUSD)}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="price">
           {formatDollarAmount(tokenData.priceUSD)}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="price-change">
           <Percent value={tokenData.priceUSDChange} fontWeight={400} />
         </Label>
       </ResponsiveGrid>
@@ -121,6 +138,7 @@ const SORT_FIELD = {
   priceUSD: 'priceUSD',
   priceUSDChange: 'priceUSDChange',
   priceUSDChangeWeek: 'priceUSDChangeWeek',
+  chain: 'chainId',
 }
 
 const MAX_ITEMS = 15
@@ -135,6 +153,7 @@ export default function TokenTable({
   // theming
   const theme = useTheme()
   const activeNetworks = useActiveNetworks()
+  const { isAllChain } = useActiveNetworkUtils()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
@@ -194,20 +213,27 @@ export default function TokenTable({
   if (!tokenDatas) {
     return <Loader />
   }
-
+  const totalColumn = isAllChain ? TOTAL_COLUMN + 1 : TOTAL_COLUMN
   return (
     <Wrapper>
       {sortedTokens.length > 0 ? (
         <>
-          <TableHeader>
-            <Label color={theme.subText}>#</Label>
+          <TableHeader totalColumn={totalColumn}>
+            <Label className="stt" color={theme.subText}>
+              #
+            </Label>
             <ClickableText color={theme.subText} onClick={() => handleSort(SORT_FIELD.name)}>
               Name {arrow(SORT_FIELD.name)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.symbol)}>
+            {isAllChain && (
+              <ClickableText className="network" color={theme.subText} onClick={() => handleSort(SORT_FIELD.chain)}>
+                Network {arrow(SORT_FIELD.name)}
+              </ClickableText>
+            )}
+            <ClickableText className="symbol" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.symbol)}>
               Symbol {arrow(SORT_FIELD.symbol)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+            <ClickableText className="tvl" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
               TVL {arrow(SORT_FIELD.tvlUSD)}
             </ClickableText>
             {/* <ClickableText end onClick={() => handleSort(SORT_FIELD.priceUSDChangeWeek)}>
@@ -216,10 +242,15 @@ export default function TokenTable({
             <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume (24H) {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSD)}>
+            <ClickableText className="price" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSD)}>
               Price {arrow(SORT_FIELD.priceUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
+            <ClickableText
+              className="price-change"
+              color={theme.subText}
+              end
+              onClick={() => handleSort(SORT_FIELD.priceUSDChange)}
+            >
               Price Change (24H) {arrow(SORT_FIELD.priceUSDChange)}
             </ClickableText>
           </TableHeader>

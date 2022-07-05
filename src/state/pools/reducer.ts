@@ -65,6 +65,8 @@ export interface PoolData {
   tvlToken0: number
   tvlToken1: number
   apr: number
+
+  chainId: ChainId
 }
 
 export type PoolChartEntry = {

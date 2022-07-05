@@ -122,7 +122,7 @@ export function usePoolTransactions(address: string): Transaction[] | undefined 
 
   useEffect(() => {
     async function fetch() {
-      const { error, data } = await fetchPoolTransactions(address, dataClient)
+      const { error, data } = await fetchPoolTransactions(address, dataClient, activeNetwork.chainId)
       if (error) {
         setError(true)
       } else if (data) {

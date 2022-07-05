@@ -194,7 +194,7 @@ export function useFetchSearchResults(value: string): {
   const { data: tokenFullDatas, loading: tokenFullLoading } = useFetchedTokenDatas(allFetchedTokens.map((t) => t.id))
 
   const poolDatasFull = usePoolDatas(allFetchedPools.map((p) => p.id))
-  const formattedTokens = useMemo(() => (tokenFullDatas ? Object.values(tokenFullDatas) : []), [tokenFullDatas])
+  const formattedTokens = useMemo(() => tokenFullDatas || [], [tokenFullDatas])
 
   const newTokens = useMemo(() => {
     return formattedTokens.filter((t) => !Object.keys(allTokens).includes(t.address))

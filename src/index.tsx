@@ -7,7 +7,6 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './pages/App'
 import store from './state'
 import UserUpdater from './state/user/updater'
-import ProtocolUpdater from './state/protocol/updater'
 import TokenUpdater from './state/tokens/updater'
 import PoolUpdater from './state/pools/updater'
 import ApplicationUpdater from './state/application/updater'
@@ -15,13 +14,14 @@ import ListUpdater from './state/lists/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import { ApolloProvider } from '@apollo/client/react'
 import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
+import { useGlobalData } from 'data'
 
 function Updaters() {
+  useGlobalData()
   return (
     <>
       <ListUpdater />
       <UserUpdater />
-      <ProtocolUpdater />
       <TokenUpdater />
       <PoolUpdater />
       <ApplicationUpdater />

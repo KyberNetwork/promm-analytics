@@ -11,8 +11,10 @@ import { ExternalLink, TYPE } from 'theme'
 import { PageButtons, Arrow, Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
 import HoverInlineText from 'components/HoverInlineText'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle'
+import { Link } from 'react-router-dom'
+import { NETWORKS_INFO_MAP } from 'constants/networks'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -20,15 +22,15 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const ResponsiveGrid = styled.div`
+const ResponsiveGrid = styled.div<{ totalColumn: number }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(5, 1fr);
+  grid-template-columns: 1.5fr repeat(${({ totalColumn }) => `${totalColumn}`}, 1fr);
 
   @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(4, 1fr);
+    grid-template-columns: 1.5fr repeat(${({ totalColumn }) => `${totalColumn - 1}`}, 1fr);
     & > *:nth-child(5) {
       display: none;
     }
@@ -75,6 +77,7 @@ const SORT_FIELD = {
   sender: 'sender',
   amountToken0: 'amountToken0',
   amountToken1: 'amountToken1',
+  chainId: 'chainId',
 }
 
 const DataRow = ({ transaction, color }: { transaction: Transaction; color?: string }) => {
@@ -82,12 +85,13 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   const abs1 = Math.abs(transaction.amountToken1)
   const outputTokenSymbol = transaction.amountToken0 < 0 ? transaction.token0Symbol : transaction.token1Symbol
   const inputTokenSymbol = transaction.amountToken1 < 0 ? transaction.token0Symbol : transaction.token1Symbol
-  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from transaction
+  const { isAllChain } = useActiveNetworkUtils()
   const theme = useTheme()
-
+  const networkInfo = NETWORKS_INFO_MAP[transaction.chainId]
+  const totalColumn = isAllChain ? 6 : 5
   return (
-    <ResponsiveGrid>
-      <ExternalLink href={getEtherscanLink(activeNetworks, transaction.hash, 'transaction')}>
+    <ResponsiveGrid totalColumn={totalColumn}>
+      <ExternalLink href={getEtherscanLink(networkInfo, transaction.hash, 'transaction')}>
         <Label color={color ?? theme.primary} fontWeight={400}>
           {transaction.type === TransactionType.MINT
             ? `Add ${transaction.token0Symbol} and ${transaction.token1Symbol}`
@@ -96,6 +100,11 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
             : `Remove ${transaction.token0Symbol} and ${transaction.token1Symbol}`}
         </Label>
       </ExternalLink>
+      {isAllChain && (
+        <Link to={'/' + networkInfo.route} className="network">
+          <img src={networkInfo.imageURL} width={25} />
+        </Link>
+      )}
       <Label end={1} fontWeight={400}>
         {formatDollarAmount(transaction.amountUSD)}
       </Label>
@@ -107,7 +116,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
       </Label>
       <Label end={1} fontWeight={400}>
         <ExternalLink
-          href={getEtherscanLink(activeNetworks, transaction.sender, 'address')}
+          href={getEtherscanLink(networkInfo, transaction.sender, 'address')}
           style={{ color: color ?? theme.primary }}
         >
           {shortenAddress(transaction.sender)}
@@ -129,7 +138,8 @@ export default function TransactionTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from transaction
+  const activeNetworks = useActiveNetworks()[0]
+  const { isAllChain } = useActiveNetworkUtils()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.timestamp)
@@ -200,10 +210,10 @@ export default function TransactionTable({
     },
     [sortDirection, sortField]
   )
-
+  const totalColumn = isAllChain ? 6 : 5
   return (
     <Wrapper>
-      <TableHeader>
+      <TableHeader totalColumn={totalColumn}>
         <ToggleWrapper>
           <ToggleElementFree
             fontSize="12px"
@@ -242,6 +252,11 @@ export default function TransactionTable({
             Removes
           </ToggleElementFree>
         </ToggleWrapper>
+        {isAllChain && (
+          <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.chainId)} end>
+            Network
+          </ClickableText>
+        )}
         <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end>
           Total Value {arrow(SORT_FIELD.amountUSD)}
         </ClickableText>

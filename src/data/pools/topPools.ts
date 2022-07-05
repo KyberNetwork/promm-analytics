@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useQuery } from '@apollo/client'
+import { ApolloClient, NormalizedCacheObject, useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
 
@@ -43,5 +43,17 @@ export function useTopPoolAddresses(): {
     loading: loading,
     error: Boolean(error),
     addresses: formattedData,
+  }
+}
+
+/**
+ * Fetch top addresses by volume
+ */
+export async function fetchTopPoolAddresses(dataClient: ApolloClient<NormalizedCacheObject>): Promise<string[]> {
+  const { data } = await dataClient.query<TopPoolsResponse>({ query: TOP_POOLS, fetchPolicy: 'cache-first' })
+  if (data) {
+    return data.pools.map((p) => p.id)
+  } else {
+    return []
   }
 }
