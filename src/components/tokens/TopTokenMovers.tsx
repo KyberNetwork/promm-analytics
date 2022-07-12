@@ -1,6 +1,5 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { useAllTokenData } from 'state/tokens/hooks'
 import { GreyCard } from 'components/Card'
 import { TokenData } from 'state/tokens/reducer'
 import { AutoColumn } from 'components/Column'
@@ -10,7 +9,7 @@ import { TYPE, StyledInternalLink } from 'theme'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import HoverInlineText from 'components/HoverInlineText'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworkUtils } from 'state/application/hooks'
 
 const CardWrapper = styled(StyledInternalLink)`
   min-width: 190px;
@@ -21,8 +20,6 @@ const CardWrapper = styled(StyledInternalLink)`
     opacity: 0.6;
   }
 `
-
-const FixedContainer = styled(AutoColumn)``
 
 export const ScrollableRow = styled.div`
   display: flex;
@@ -37,7 +34,8 @@ export const ScrollableRow = styled.div`
 `
 
 const DataCard = ({ tokenData }: { tokenData: TokenData }) => {
-  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
+  // todo namgold: get network from tokenData
+  const { networkInfo: activeNetwork } = useActiveNetworkUtils()
   return (
     <CardWrapper to={'token/' + tokenData.address}>
       <GreyCard padding="16px">

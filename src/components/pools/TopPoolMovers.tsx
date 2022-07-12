@@ -10,7 +10,7 @@ import { PoolData } from 'state/pools/reducer'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import HoverInlineText from 'components/HoverInlineText'
 import { feeTierPercent } from 'utils'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 
 const Container = styled(StyledInternalLink)`
   min-width: 210px;
@@ -27,7 +27,7 @@ const Wrapper = styled(GreyCard)`
 `
 
 const DataCard = ({ poolData }: { poolData: PoolData }) => {
-  const activeNetwork = useActiveNetworks()[0] // TODO namgold: handle all chain view
+  const { networkInfo: activeNetwork } = useActiveNetworkUtils()
   return (
     <Container to={'pool/' + poolData.address}>
       <Wrapper>

@@ -1,26 +1,24 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { TYPE } from 'theme'
 import { DarkGreyCard } from 'components/Card'
 import { TokenData } from '../../state/tokens/reducer'
 import Loader, { LoadingRows } from 'components/Loader'
 import { Link } from 'react-router-dom'
 import { AutoColumn } from 'components/Column'
+import Pagination from 'components/Pagination'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RowFixed } from 'components/Row'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import { Label, ClickableText } from '../Text'
-import { PageButtons, Arrow, Break } from 'components/shared'
+import { Break } from 'components/shared'
 import HoverInlineText from '../HoverInlineText'
 import useTheme from 'hooks/useTheme'
 import { TOKEN_HIDE } from '../../constants/index'
-import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
+import { useActiveNetworkUtils } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { useMedia } from 'react-use'
 import { NETWORKS_INFO_MAP } from 'constants/networks'
-
-const TOTAL_COLUMN = 7
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -28,43 +26,46 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const ResponsiveGrid = styled.div<{ totalColumn: number }>`
+const ResponsiveGrid = styled.div<{ isAllChain: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
-
-  grid-template-columns: 20px 2fr repeat(${({ totalColumn }) => `${totalColumn - 2}`}, 1fr);
+  grid-template-columns: 2fr repeat(${({ isAllChain }) => `${isAllChain ? 6 : 5}`}, 1fr);
 
   > .network {
     text-align: center;
   }
 
-  @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1.5fr repeat(${({ totalColumn }) => `${totalColumn - 3}`}, 1fr);
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(${isAllChain ? 6 : 5}, 1fr);
     > .price-change {
       display: none;
     }
-  }
+  `}
 
-  @media screen and (max-width: 800px) {
-    grid-template-columns: 20px 1fr 85px repeat(${({ totalColumn }) => `${totalColumn - 5}`}, 1fr);
-    > .tvl {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: 670px) {
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(4, 1fr);
     > .stt {
       display: none;
     }
-    > .tvl {
-      display: ${({ totalColumn }) => `${totalColumn === TOTAL_COLUMN ? 'block' : 'none'}`};
-    }
     > .symbol {
       display: none;
     }
-  }
+    > .tvl {
+      display: ${isAllChain ? 'none' : 'block'};
+    }
+  `}
+
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToExtraSmall`
+    grid-template-columns: repeat(3, 1fr);
+    > .tvl {
+      display: none;
+    }
+    > .price {
+      display: ${isAllChain ? 'none' : 'block'};
+      text-align: right
+    }
+  `}
 `
 
 const TableHeader = styled(ResponsiveGrid)`
@@ -92,12 +93,18 @@ const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) 
   const theme = useTheme()
   const { isAllChain } = useActiveNetworkUtils()
   const tokenNetworkInfo = NETWORKS_INFO_MAP[tokenData.chainId]
-  const totalColumn = isAllChain ? TOTAL_COLUMN + 1 : TOTAL_COLUMN
   return (
     <LinkWrapper to={networkPrefix(tokenNetworkInfo) + 'token/' + tokenData.address}>
-      <ResponsiveGrid totalColumn={totalColumn}>
-        <Label className="stt">{index + 1}</Label>
+      <ResponsiveGrid isAllChain={isAllChain}>
         <Label>
+          <div
+            style={{
+              marginRight: '1rem',
+              width: '10px',
+            }}
+          >
+            {index + 1}
+          </div>
           <RowFixed>
             <ResponsiveLogo address={tokenData.address} activeNetwork={tokenNetworkInfo} />
             <div style={{ marginLeft: '8px' }}>
@@ -152,8 +159,8 @@ export default function TokenTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()
-  const { isAllChain } = useActiveNetworkUtils()
+
+  const { isAllChain, chainId } = useActiveNetworkUtils()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
@@ -165,7 +172,7 @@ export default function TokenTable({
 
   useEffect(() => {
     setPage(1)
-  }, [activeNetworks])
+  }, [chainId])
 
   useEffect(() => {
     let extraPages = 1
@@ -199,6 +206,7 @@ export default function TokenTable({
     (newField: string) => {
       setSortField(newField)
       setSortDirection(sortField !== newField ? true : !sortDirection)
+      setPage(1)
     },
     [sortDirection, sortField]
   )
@@ -213,15 +221,11 @@ export default function TokenTable({
   if (!tokenDatas) {
     return <Loader />
   }
-  const totalColumn = isAllChain ? TOTAL_COLUMN + 1 : TOTAL_COLUMN
   return (
     <Wrapper>
       {sortedTokens.length > 0 ? (
         <>
-          <TableHeader totalColumn={totalColumn}>
-            <Label className="stt" color={theme.subText}>
-              #
-            </Label>
+          <TableHeader isAllChain={isAllChain}>
             <ClickableText color={theme.subText} onClick={() => handleSort(SORT_FIELD.name)}>
               Name {arrow(SORT_FIELD.name)}
             </ClickableText>
@@ -267,23 +271,7 @@ export default function TokenTable({
               }
               return null
             })}
-            <PageButtons>
-              <div
-                onClick={() => {
-                  setPage(page === 1 ? page : page - 1)
-                }}
-              >
-                <Arrow faded={page === 1 ? true : false}>←</Arrow>
-              </div>
-              <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
-              <div
-                onClick={() => {
-                  setPage(page === maxPage ? page : page + 1)
-                }}
-              >
-                <Arrow faded={page === maxPage ? true : false}>→</Arrow>
-              </div>
-            </PageButtons>
+            <Pagination setPage={setPage} page={page} maxPage={maxPage} />
           </AutoColumn>
         </>
       ) : (

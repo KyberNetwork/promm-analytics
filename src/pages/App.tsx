@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { Redirect, Route, Switch, useParams } from 'react-router-dom'
+import { matchPath, Redirect, Route, Switch, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Home from './Home'
@@ -8,7 +8,7 @@ import TokensOverview from './Token/TokensOverview'
 import { RedirectInvalidToken } from './Token/redirects'
 import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
-import { useActiveNetworks, useSubgraphStatus } from 'state/application/hooks'
+import { useAppLoading, useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
 import SideNav from 'components/Layout/SideNav'
 import KyberLoading from 'components/Loader/KyberLoading'
@@ -103,19 +103,24 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
   }, [currentNetworkURL, networkInfoFromURL, dispatch])
   const homeLink = `/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`
 
-  // if (currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} />
-
   if (networkInfoFromURL?.chainId === ChainId.AURORA) return <Redirect to={homeLink} /> //not support Aurora yet
   return children
 }
 
+export const AppRoutes = [
+  { path: '/:networkID?/pools', element: (): JSX.Element => <PoolsOverview /> },
+  { path: '/:networkID?/pool/:address', element: (): JSX.Element => <PoolPage /> },
+  { path: '/:networkID?/tokens', element: (): JSX.Element => <TokensOverview /> },
+  { path: '/:networkID?/token/:address', element: (): JSX.Element => <RedirectInvalidToken /> },
+  { path: '/:networkID?/accounts', element: (): JSX.Element => <AccountsOverview /> },
+  { path: '/:networkID?/account/:address', element: (): JSX.Element => <AccountPage /> },
+  { path: '/:networkID?/home', element: (): JSX.Element => <Home />, strict: false },
+]
+
 export default function App(): JSX.Element {
   const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
-  const [loading, setLoading] = useState(true)
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1300)
-  }, [])
+  const [loading] = useAppLoading()
 
   // const activeNetwork = useActiveNetworks()
   // subgraph health
@@ -166,75 +171,15 @@ export default function App(): JSX.Element {
               <SideNav />
               <BodyWrapper>
                 <Switch>
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/pools"
-                    render={() => (
-                      <NetworkReader>
-                        <PoolsOverview />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/pool/:address"
-                    render={() => (
-                      <NetworkReader>
-                        <PoolPage />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/tokens"
-                    render={() => (
-                      <NetworkReader>
-                        <TokensOverview />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/token/:address"
-                    render={() => (
-                      <NetworkReader>
-                        <RedirectInvalidToken />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/accounts"
-                    render={() => (
-                      <NetworkReader>
-                        <AccountsOverview />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/account/:address"
-                    render={() => (
-                      <NetworkReader>
-                        <AccountPage />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    path="/:networkID?/home"
-                    render={() => (
-                      <NetworkReader>
-                        <Home />
-                      </NetworkReader>
-                    )}
-                  />
+                  {AppRoutes.map((item) => (
+                    <Route
+                      key={item.path}
+                      exact
+                      strict={item.strict ?? true}
+                      path={item.path}
+                      render={() => <NetworkReader>{item.element()}</NetworkReader>}
+                    />
+                  ))}
                   <Route path="/:networkID" render={() => <RedirectToHome />} />
                   <Route path="*" render={() => <RedirectToHome />} />
                 </Switch>

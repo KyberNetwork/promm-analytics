@@ -1,5 +1,5 @@
 import { getPercentChange } from './../../utils/data'
-import { ApolloClient, NormalizedCacheObject, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { getDeltaTimestamps, useDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
@@ -229,7 +229,7 @@ export async function fetchedTokenDatas(
   ethPrices: EthPrices | undefined
 ): Promise<TokenData[] | undefined> {
   const [tokenAddresses, blocks] = await Promise.all([
-    getTopTokenAddresses(network.client as any), // todo any
+    getTopTokenAddresses(network.client),
     getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient),
   ])
 

@@ -1,8 +1,8 @@
 import { ALL_CHAIN_ID } from 'constants/index'
-import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
+import { ChainIdType, NET_WORKS_SUPPORTED } from 'constants/networks'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { useEffect } from 'react'
-import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
+import { useActiveNetworks, useActiveNetworkUtils, useAppLoading } from 'state/application/hooks'
 import { useUpdatePoolData } from 'state/pools/hooks'
 import { PoolData } from 'state/pools/reducer'
 import { useProtocolChartData, useProtocolData, useProtocolTransactions } from 'state/protocol/hooks'
@@ -11,20 +11,15 @@ import { useUpdateTokenData } from 'state/tokens/hooks'
 import { TokenData } from 'state/tokens/reducer'
 import { ChartDayData, Transaction } from 'types'
 import { fetchPoolDatas } from './pools/poolData'
-import { fetchChartData } from './protocol/chart'
+import { fetchChartDataV2 } from './protocol/chart'
 import { calcProtocolData, Factory, fetchProtocolData } from './protocol/overview'
 import { fetchTopTransactions } from './protocol/transactions'
 import { fetchedTokenDatas } from './tokens/tokenData'
-// todo danh cache/memo if possible
-// todo danh rename factory
-// todo danh factory number | string => tranh sai so
-// todo danh check interval, change net
-// todo replace allChain text
-// todo logic logo url
-// todo change network mấy filed chưa đúng
-// todo resposive các bảng. algin icon netwỏk cac bảng
 
-function mergeData(dataAllChain: Factory[], data1Chain: Factory[]) {
+// todo mới vô bị fetch ether
+// todo pool table network lech
+
+function mergeProtocalData(dataAllChain: Factory[], data1Chain: Factory[]) {
   dataAllChain.forEach((elment, i) => {
     const info = data1Chain[i]
     if (!info) return
@@ -45,24 +40,48 @@ function mergeData(dataAllChain: Factory[], data1Chain: Factory[]) {
   return dataAllChain
 }
 
-const cacheData = {}
-// function requestWithCache(function:any, key:string) {}
+const KeysCaches = {
+  PROTOCOL: 'PROTOCOL',
+  CHART: 'CHART',
+  TOKEN: 'TOKEN',
+  POOL: 'POOL',
+  TRANSACTION: 'TRANSACTION',
+}
+const cacheData: { [key: string]: any } = {}
+const memoRequest = async (key: string, callback: () => Promise<any>) => {
+  if (cacheData[key]) {
+    return Promise.resolve(cacheData[key])
+  }
+  try {
+    const data = await callback()
+    cacheData[key] = data
+    return data
+  } catch (error) {
+    throw error
+  }
+}
 
-export function useGlobalData() {
+export function useGlobalData(): Array<any> {
   const ethPrices = useEthPrices()
-  const networks = Object.values(NETWORKS_INFO_MAP).filter((e) => e.chainId !== ChainId.AURORA) // todo 1 or n
-
   const activeNetworks = useActiveNetworks()
+  const networks = activeNetworks.filter(
+    (e) => NET_WORKS_SUPPORTED.find((el: ChainIdType) => el == e.chainId) && e.chainId.toString() != ALL_CHAIN_ID
+  )
 
-  const { isAllChain } = useActiveNetworkUtils()
+  const { isAllChain, chainId, networkInfo } = useActiveNetworkUtils()
+  const [loading, setLoading] = useAppLoading()
 
   const getDataByNetwork = (result: { [chainId: string]: any }) => {
+    if (loading) setLoading(false) // off loading when at least one data finished
     if (isAllChain) return result[ALL_CHAIN_ID]
-    else return result[activeNetworks[0].chainId]
+    return result[networkInfo.chainId]
   }
 
   async function fetchProtocalData() {
-    const promises = networks.map((net) => fetchProtocolData(net.client, net.blockClient))
+    const promises = networks.map((net) =>
+      memoRequest(KeysCaches.PROTOCOL + net.chainId, () => fetchProtocolData(net.client, net.blockClient))
+    )
+
     const data = await Promise.allSettled(promises)
     const results: { [key: string]: ProtocolData } = {}
 
@@ -75,22 +94,18 @@ export function useGlobalData() {
 
     data.forEach((el, index) => {
       const info = el.status === 'fulfilled' ? el.value : []
-      mergeData(allData, info)
+      mergeProtocalData(allData, info)
       results[networks[index].chainId] = calcProtocolData(info)
     })
 
-    // tesst
-    //   const list = Object.values(results)
-    //   console.log(
-    //     list.map((e) => e.volumeUSDWeek || 0).reduce((a, b) => a + b, 0),
-    //     list.map((e) => e.txCount || 0).reduce((a, b) => a + b)
-    //   )
     results[ALL_CHAIN_ID] = calcProtocolData(allData)
     return results
   }
 
   async function fetchAllTokens() {
-    const promises = networks.map((net) => fetchedTokenDatas(net, ethPrices))
+    const promises = networks.map((net) =>
+      memoRequest(KeysCaches.TOKEN + net.chainId, () => fetchedTokenDatas(net, ethPrices))
+    )
     const response = await Promise.allSettled(promises)
     const result: { [chainId: string]: TokenData[] } = {}
     let resultAllChain: TokenData[] = []
@@ -104,18 +119,20 @@ export function useGlobalData() {
   }
 
   async function fetchAllChartData() {
-    const promises = networks.map((net) => fetchChartData(net.client))
+    const promises = networks.map((net) =>
+      memoRequest(KeysCaches.CHART + net.chainId, () => fetchChartDataV2(net.client) as Promise<ChartDayData[]>)
+    )
     const response = await Promise.allSettled(promises)
-    const data = response.map((data) => (data.status === 'fulfilled' ? data.value.data : []))
+    const data = response.map((data) => (data.status === 'fulfilled' ? data.value : []))
     const result: { [chainId: string]: ChartDayData[] } = {}
     const resultAllChain: { [key: number]: ChartDayData } = {}
     data.forEach((chartData, i) => {
       result[networks[i].chainId] = chartData || []
       // data for all chain
       if (chartData) {
-        chartData.forEach((dayData) => {
+        chartData.forEach((dayData: ChartDayData) => {
           const { date, tvlUSD, volumeUSD } = dayData
-          if (!resultAllChain[date]) resultAllChain[date] = dayData
+          if (!resultAllChain[date]) resultAllChain[date] = { ...dayData }
           else {
             // add data
             resultAllChain[date].tvlUSD += tvlUSD
@@ -125,16 +142,11 @@ export function useGlobalData() {
       }
     })
     result[ALL_CHAIN_ID] = Object.values(resultAllChain)
-    //test
-    // Object.values(result).forEach((el) => {
-    //   const getTime = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`
-    //   console.log(el.map((e) => getTime(new Date(e.date * 1000))))
-    // })
     return result
   }
 
   async function fetchAllPoolData() {
-    const promises = networks.map((net) => fetchPoolDatas(net))
+    const promises = networks.map((net) => memoRequest(KeysCaches.POOL + net.chainId, () => fetchPoolDatas(net)))
     const response = await Promise.allSettled(promises)
     const data = response.map((data) => (data.status === 'fulfilled' ? data.value : {}))
     const result: { [chainId: string]: { [address: string]: PoolData } } = {}
@@ -148,16 +160,13 @@ export function useGlobalData() {
       })
     })
     result[ALL_CHAIN_ID] = resultAllChain
-    //test
-    // Object.values(result).forEach((el) => {
-    //   const getTime = (d: Date) => `${d.getDate()}/${d.getMonth() + 1}`
-    //   console.log(el.map((e) => getTime(new Date(e.date * 1000))))
-    // })
     return result
   }
 
   async function fetchAllTransactionData() {
-    const promises = networks.map((net) => fetchTopTransactions(net))
+    const promises = networks.map((net) =>
+      memoRequest(KeysCaches.TRANSACTION + net.chainId, () => fetchTopTransactions(net))
+    )
     const data = await Promise.allSettled(promises)
     const results: { [key: string]: Transaction[] } = {}
     let dataAllChain: Transaction[] = []
@@ -170,33 +179,47 @@ export function useGlobalData() {
     return results
   }
 
-  const [protocolData, updateProtocolData] = useProtocolData()
-  const [chartData, updateChartData] = useProtocolChartData()
-  const [transactions, updateTransactions] = useProtocolTransactions()
+  const updateProtocolData = useProtocolData()[1]
+  const updateChartData = useProtocolChartData()[1]
+  const updateTransactions = useProtocolTransactions()[1]
   const updatePoolData = useUpdatePoolData()
   const updateTokenDatas = useUpdateTokenData()
 
   useEffect(() => {
-    fetchProtocalData().then((data) => {
-      updateProtocolData(getDataByNetwork(data))
-    })
-    fetchAllChartData().then((data) => {
-      updateChartData(getDataByNetwork(data))
-    })
-    fetchAllPoolData().then((data) => {
-      updatePoolData(Object.values(getDataByNetwork(data)))
-    })
-    fetchAllTransactionData().then((data) => {
-      updateTransactions(getDataByNetwork(data))
-    })
-  }, [activeNetworks]) // todo dependenci
+    fetchProtocalData()
+      .then((data) => {
+        updateProtocolData(getDataByNetwork(data))
+      })
+      .catch(console.error)
+
+    fetchAllChartData()
+      .then((data) => {
+        updateChartData(getDataByNetwork(data))
+      })
+      .catch(console.error)
+
+    fetchAllPoolData()
+      .then((data) => {
+        updatePoolData(Object.values(getDataByNetwork(data)))
+      })
+      .catch(console.error)
+
+    fetchAllTransactionData()
+      .then((data) => {
+        updateTransactions(getDataByNetwork(data))
+      })
+      .catch(console.error)
+  }, [chainId])
 
   useEffect(() => {
-    if (ethPrices)
-      fetchAllTokens().then((data) => {
-        updateTokenDatas(getDataByNetwork(data))
-      })
-  }, [ethPrices, activeNetworks]) // todo dependenci
+    if (ethPrices) {
+      fetchAllTokens()
+        .then((data) => {
+          updateTokenDatas(getDataByNetwork(data))
+        })
+        .catch(console.error)
+    }
+  }, [ethPrices, chainId])
 
   return []
 }

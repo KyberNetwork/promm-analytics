@@ -204,7 +204,7 @@ const HoverIcon = styled.div`
 
 export const SavedIcon = ({
   fill = false,
-  size = '20px',
+  // size = '20px',
   ...rest
 }: { fill: boolean; size?: string } & HTMLAttributes<HTMLDivElement>): JSX.Element => {
   return (

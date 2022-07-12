@@ -2,19 +2,21 @@ import React, { useCallback, useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { DarkGreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
+import Pagination from 'components/Pagination'
 import { formatDollarAmount, formatAmount } from 'utils/numbers'
 import { shortenAddress, getEtherscanLink } from 'utils'
 import { Label, ClickableText } from 'components/Text'
 import { Transaction, TransactionType } from 'types'
 import { formatTime } from 'utils/date'
 import { ExternalLink, TYPE } from 'theme'
-import { PageButtons, Arrow, Break } from 'components/shared'
+import { Break } from 'components/shared'
 import useTheme from 'hooks/useTheme'
 import HoverInlineText from 'components/HoverInlineText'
-import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
+import { useActiveNetworkUtils } from 'state/application/hooks'
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle'
 import { Link } from 'react-router-dom'
 import { NETWORKS_INFO_MAP } from 'constants/networks'
+import { useMedia } from 'react-use'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -22,48 +24,35 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const ResponsiveGrid = styled.div<{ totalColumn: number }>`
+const ResponsiveGrid = styled.div<{ isAllChain: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
 
-  grid-template-columns: 1.5fr repeat(${({ totalColumn }) => `${totalColumn}`}, 1fr);
-
-  @media screen and (max-width: 940px) {
-    grid-template-columns: 1.5fr repeat(${({ totalColumn }) => `${totalColumn - 1}`}, 1fr);
-    & > *:nth-child(5) {
-      display: none;
-    }
+  grid-template-columns: 2fr repeat(${({ isAllChain }) => `${isAllChain ? 6 : 5}`}, 1fr);
+  > .network {
+    text-align: center;
   }
 
-  @media screen and (max-width: 800px) {
-    grid-template-columns: 1.5fr repeat(2, 1fr);
-    & > *:nth-child(5) {
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(${isAllChain ? 6 : 5}, 1fr);
+    > .total{
       display: none;
     }
-    & > *:nth-child(3) {
-      display: none;
-    }
-    & > *:nth-child(4) {
-      display: none;
-    }
-  }
+  `}
 
-  @media screen and (max-width: 500px) {
-    grid-template-columns: 1.5fr repeat(1, 1fr);
-    & > *:nth-child(5) {
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: 1.5fr repeat(${isAllChain ? 2 : 1}, 1fr);
+    > .amount1 {
       display: none;
     }
-    & > *:nth-child(3) {
+    > .amount2{
       display: none;
     }
-    & > *:nth-child(4) {
+    > .account{
       display: none;
     }
-    & > *:nth-child(2) {
-      display: none;
-    }
-  }
+  `}
 `
 
 const TableHeader = styled(ResponsiveGrid)`
@@ -80,6 +69,16 @@ const SORT_FIELD = {
   chainId: 'chainId',
 }
 
+const Select = styled.select`
+  background: ${({ theme }) => theme.buttonBlack};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 8px;
+  padding: 10px;
+  color: ${({ theme }) => theme.text};
+  outline: none;
+  width: fit-content;
+`
+
 const DataRow = ({ transaction, color }: { transaction: Transaction; color?: string }) => {
   const abs0 = Math.abs(transaction.amountToken0)
   const abs1 = Math.abs(transaction.amountToken1)
@@ -88,9 +87,9 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   const { isAllChain } = useActiveNetworkUtils()
   const theme = useTheme()
   const networkInfo = NETWORKS_INFO_MAP[transaction.chainId]
-  const totalColumn = isAllChain ? 6 : 5
+
   return (
-    <ResponsiveGrid totalColumn={totalColumn}>
+    <ResponsiveGrid isAllChain={isAllChain}>
       <ExternalLink href={getEtherscanLink(networkInfo, transaction.hash, 'transaction')}>
         <Label color={color ?? theme.primary} fontWeight={400}>
           {transaction.type === TransactionType.MINT
@@ -105,16 +104,16 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
           <img src={networkInfo.imageURL} width={25} />
         </Link>
       )}
-      <Label end={1} fontWeight={400}>
+      <Label className="total" end={1} fontWeight={400}>
         {formatDollarAmount(transaction.amountUSD)}
       </Label>
-      <Label end={1} fontWeight={400}>
+      <Label className="amount1" end={1} fontWeight={400}>
         <HoverInlineText text={`${formatAmount(abs0)}  ${transaction.token0Symbol}`} maxCharacters={16} />
       </Label>
-      <Label end={1} fontWeight={400}>
+      <Label className="amount2" end={1} fontWeight={400}>
         <HoverInlineText text={`${formatAmount(abs1)}  ${transaction.token1Symbol}`} maxCharacters={16} />
       </Label>
-      <Label end={1} fontWeight={400}>
+      <Label className="account" end={1} fontWeight={400}>
         <ExternalLink
           href={getEtherscanLink(networkInfo, transaction.sender, 'address')}
           style={{ color: color ?? theme.primary }}
@@ -128,7 +127,12 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
     </ResponsiveGrid>
   )
 }
-
+const ListTabs = [
+  { value: '', label: 'All' },
+  { value: TransactionType.SWAP, label: 'Swaps' },
+  { value: TransactionType.MINT, label: 'Adds' },
+  { value: TransactionType.BURN, label: 'Removes' },
+]
 export default function TransactionTable({
   transactions,
   maxItems = 10,
@@ -138,8 +142,7 @@ export default function TransactionTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()[0]
-  const { isAllChain } = useActiveNetworkUtils()
+  const { isAllChain, chainId } = useActiveNetworkUtils()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.timestamp)
@@ -149,9 +152,9 @@ export default function TransactionTable({
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
   // filter on txn type
-  const [txFilter, setTxFilter] = useState<TransactionType | undefined>(undefined)
+  const [txFilter, setTxFilter] = useState<TransactionType | string>('')
   const filteredTxn = useMemo(
-    () => (txFilter === undefined ? transactions : transactions?.filter((x) => x.type === txFilter) || []),
+    () => (!txFilter ? transactions : transactions?.filter((x) => x.type.toString() === txFilter.toString()) || []),
     [transactions, txFilter]
   )
 
@@ -169,7 +172,7 @@ export default function TransactionTable({
 
   useEffect(() => {
     setPage(1)
-  }, [txFilter, activeNetworks])
+  }, [txFilter, chainId])
 
   const sortedTransactions = useMemo(() => {
     return filteredTxn.length
@@ -200,6 +203,7 @@ export default function TransactionTable({
     (newField: string) => {
       setSortField(newField)
       setSortDirection(sortField !== newField ? true : !sortDirection)
+      setPage(1)
     },
     [sortDirection, sortField]
   )
@@ -210,63 +214,51 @@ export default function TransactionTable({
     },
     [sortDirection, sortField]
   )
-  const totalColumn = isAllChain ? 6 : 5
+  const below960 = useMedia('(max-width: 960px)')
+
   return (
     <Wrapper>
-      <TableHeader totalColumn={totalColumn}>
-        <ToggleWrapper>
-          <ToggleElementFree
-            fontSize="12px"
-            onClick={() => {
-              setTxFilter(undefined)
-            }}
-            isActive={txFilter === undefined}
-          >
-            All
-          </ToggleElementFree>
-          <ToggleElementFree
-            fontSize="12px"
-            onClick={() => {
-              setTxFilter(TransactionType.SWAP)
-            }}
-            isActive={txFilter === TransactionType.SWAP}
-          >
-            Swaps
-          </ToggleElementFree>
-          <ToggleElementFree
-            fontSize="12px"
-            onClick={() => {
-              setTxFilter(TransactionType.MINT)
-            }}
-            isActive={txFilter === TransactionType.MINT}
-          >
-            Adds
-          </ToggleElementFree>
-          <ToggleElementFree
-            fontSize="12px"
-            onClick={() => {
-              setTxFilter(TransactionType.BURN)
-            }}
-            isActive={txFilter === TransactionType.BURN}
-          >
-            Removes
-          </ToggleElementFree>
-        </ToggleWrapper>
+      <TableHeader isAllChain={isAllChain}>
+        {below960 ? (
+          <Select onChange={(e) => setTxFilter(e.target.value)}>
+            {ListTabs.map((item) => (
+              <option value={item.value} key={item.label}>
+                {item.label}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <ToggleWrapper>
+            {ListTabs.map((item) => (
+              <ToggleElementFree
+                key={item.label}
+                fontSize="12px"
+                onClick={() => {
+                  setTxFilter(item.value)
+                }}
+                isActive={txFilter === item.value}
+              >
+                {item.label}
+              </ToggleElementFree>
+            ))}
+          </ToggleWrapper>
+        )}
+
         {isAllChain && (
-          <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.chainId)} end>
+          <ClickableText textAlign="center" color={theme.text2} onClick={() => handleSort(SORT_FIELD.chainId)}>
             Network
           </ClickableText>
         )}
-        <ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end>
+        <ClickableText className="total" color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end>
           Total Value {arrow(SORT_FIELD.amountUSD)}
         </ClickableText>
-        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken0)}>
+        <ClickableText className="amount1" color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken0)}>
           Token Amount {arrow(SORT_FIELD.amountToken0)}
         </ClickableText>
-        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken1)}>
+        <ClickableText className="amount2" color={theme.text2} end onClick={() => handleSort(SORT_FIELD.amountToken1)}>
           Token Amount {arrow(SORT_FIELD.amountToken1)}
         </ClickableText>
-        <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.sender)}>
+        <ClickableText className="account" color={theme.text2} end onClick={() => handleSort(SORT_FIELD.sender)}>
           Account {arrow(SORT_FIELD.sender)}
         </ClickableText>
         <ClickableText color={theme.text2} end onClick={() => handleSort(SORT_FIELD.timestamp)}>
@@ -287,23 +279,7 @@ export default function TransactionTable({
           return null
         })}
         {sortedTransactions.length === 0 ? <TYPE.main>No Transactions</TYPE.main> : undefined}
-        <PageButtons>
-          <div
-            onClick={() => {
-              setPage(page === 1 ? page : page - 1)
-            }}
-          >
-            <Arrow faded={page <= 1 ? true : false}>←</Arrow>
-          </div>
-          <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
-          <div
-            onClick={() => {
-              setPage(page === maxPage ? page : page + 1)
-            }}
-          >
-            <Arrow faded={page >= maxPage ? true : false}>→</Arrow>
-          </div>
-        </PageButtons>
+        <Pagination setPage={setPage} page={page} maxPage={maxPage} />
       </AutoColumn>
     </Wrapper>
   )

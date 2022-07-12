@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
-import { NormalizedCacheObject, useQuery } from '@apollo/client'
+import { NormalizedCacheObject, useQuery, ApolloClient } from '@apollo/client'
 import gql from 'graphql-tag'
 import { useClients } from 'state/application/hooks'
-import ApolloClient from 'apollo-client'
 
 export const TOP_TOKENS = gql`
   query topPools {

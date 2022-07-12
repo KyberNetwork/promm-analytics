@@ -1,4 +1,3 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { NetworkInfo } from 'constants/networks'
 import gql from 'graphql-tag'
 import { Transaction, TransactionType } from 'types'

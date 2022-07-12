@@ -181,18 +181,17 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
   marginTop,
 }: SelectNetworkButtonPropType) => {
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()
-  const { isAllChain } = useActiveNetworkUtils()
+  const { isAllChain, networkInfo: activeNetworkInfo } = useActiveNetworkUtils()
   return (
     <SelectNetwork role="button" onClick={onClick} marginTop={marginTop}>
       <img
-        src={isAllChain ? Kyber : activeNetworks[0].imageURL}
+        src={isAllChain ? Kyber : activeNetworkInfo.imageURL}
         width="20px"
         height="20px"
-        alt={`${isAllChain ? 'All Chain' : activeNetworks[0].name} Logo`}
+        alt={`${isAllChain ? 'All Chain' : activeNetworkInfo.name} Logo`}
       />
       <Text fontWeight="500" color={theme.primary} fontSize="1rem">
-        {isAllChain ? 'All Chain' : activeNetworks[0].name}
+        {isAllChain ? 'All Chain' : activeNetworkInfo.name}
       </Text>
       <Flex flex={1} justifyContent="flex-end" alignItems="center" marginLeft="8px" marginTop="3px">
         <img src={SwitchNetWorkIcon} width="20px" />
@@ -208,8 +207,9 @@ const ListTabs = {
 
 function SideNav(): JSX.Element {
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks() //todo namgold: useParams()
-  const { isAllChain } = useActiveNetworkUtils()
+  const activeNetworks = useActiveNetworks()
+  const { isAllChain, networkInfo: activeNetworkInfo } = useActiveNetworkUtils()
+
   const { pathname } = useLocation()
   const [showNetworkModal, setShow] = useState(false)
   const [isFirstTimeVisit, toggleFirstTimeVisit] = useIsFirstTimeVisit()
@@ -271,7 +271,7 @@ function SideNav(): JSX.Element {
                 href={`/classic/${isAllChainId ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
                 <NetworkItem
-                  active={isAllChain ? isAllChainId : chainId === activeNetworks[0].chainId}
+                  active={isAllChain ? isAllChainId : chainId === activeNetworkInfo.chainId}
                   key={chainId}
                   onClick={() => setShowNetworkModal(false)}
                 >
@@ -290,7 +290,7 @@ function SideNav(): JSX.Element {
                 to={`/${isAllChainId ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
               >
                 <NetworkItem
-                  active={isAllChain ? isAllChainId : chainId === activeNetworks[0].chainId}
+                  active={isAllChain ? isAllChainId : chainId === activeNetworkInfo.chainId}
                   key={chainId}
                   onClick={() => setShowNetworkModal(false)}
                 >
@@ -413,7 +413,7 @@ function SideNav(): JSX.Element {
             <ExternalMenu
               href={addNetworkIdQueryString(
                 process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com',
-                isAllChain ? NETWORKS_INFO_MAP[ChainId.ETHEREUM] : activeNetworks[0]
+                isAllChain ? NETWORKS_INFO_MAP[ChainId.ETHEREUM] : activeNetworkInfo
               )}
             >
               <Repeat size={16} />

@@ -2,7 +2,7 @@ import { currentTimestamp } from './../../utils/index'
 import { updateProtocolData, updateChartData, updateTransactions } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { ChartDayData, Transaction } from 'types'
-import { ChainId } from 'constants/networks'
+import { NET_WORKS_SUPPORTED } from 'constants/networks'
 
 export interface ProtocolData {
   // volume
@@ -38,23 +38,7 @@ export interface ProtocolState {
 
 export const initialState: ProtocolState = {}
 
-const networks = [
-  ChainId.ETHEREUM,
-  ChainId.BSCMAINNET,
-  ChainId.ROPSTEN,
-  ChainId.RINKEBY,
-  ChainId.ARBITRUM,
-  ChainId.POLYGON,
-  ChainId.AVAXMAINNET,
-  ChainId.FANTOM,
-  ChainId.CRONOS,
-  ChainId.BTTC,
-  ChainId.VELAS,
-  ChainId.AURORA,
-  ChainId.OASIS,
-  ChainId.OPTIMISM,
-]
-networks.forEach((net) => {
+NET_WORKS_SUPPORTED.forEach((net) => {
   initialState[net] = { data: undefined, chartData: undefined, transactions: undefined, lastUpdated: undefined }
 })
 
