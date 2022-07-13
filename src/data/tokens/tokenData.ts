@@ -62,7 +62,9 @@ interface TokenDataResponse {
 /**
  * Fetch top addresses by volume
  */
-export function useFetchedTokenDatas(tokenAddresses: string[]): {
+export function useFetchedTokenDatas(
+  tokenAddresses: string[]
+): {
   loading: boolean
   error: boolean
   data: TokenData[] | undefined
@@ -81,29 +83,26 @@ export function useFetchedTokenDatas(tokenAddresses: string[]): {
     client: dataClient,
   })
 
-  const {
-    loading: loading24,
-    error: error24,
-    data: data24,
-  } = useQuery<TokenDataResponse>(TOKENS_BULK(block24?.number, tokenAddresses), {
-    client: dataClient,
-  })
+  const { loading: loading24, error: error24, data: data24 } = useQuery<TokenDataResponse>(
+    TOKENS_BULK(block24?.number, tokenAddresses),
+    {
+      client: dataClient,
+    }
+  )
 
-  const {
-    loading: loading48,
-    error: error48,
-    data: data48,
-  } = useQuery<TokenDataResponse>(TOKENS_BULK(block48?.number, tokenAddresses), {
-    client: dataClient,
-  })
+  const { loading: loading48, error: error48, data: data48 } = useQuery<TokenDataResponse>(
+    TOKENS_BULK(block48?.number, tokenAddresses),
+    {
+      client: dataClient,
+    }
+  )
 
-  const {
-    loading: loadingWeek,
-    error: errorWeek,
-    data: dataWeek,
-  } = useQuery<TokenDataResponse>(TOKENS_BULK(blockWeek?.number, tokenAddresses), {
-    client: dataClient,
-  })
+  const { loading: loadingWeek, error: errorWeek, data: dataWeek } = useQuery<TokenDataResponse>(
+    TOKENS_BULK(blockWeek?.number, tokenAddresses),
+    {
+      client: dataClient,
+    }
+  )
 
   const anyError = Boolean(error || error24 || error48 || blockError || errorWeek)
   const anyLoading = Boolean(loading || loading24 || loading48 || loadingWeek || !blocks)

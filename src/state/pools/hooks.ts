@@ -31,10 +31,10 @@ export function useAllPoolData(): {
 export function useUpdatePoolData(): (pools: PoolData[]) => void {
   const dispatch = useDispatch<AppDispatch>()
   const { chainId } = useActiveNetworkUtils()
-  return useCallback(
-    (pools: PoolData[]) => dispatch(updatePoolData({ pools, networkId: chainId })),
-    [dispatch, chainId]
-  )
+  return useCallback((pools: PoolData[]) => dispatch(updatePoolData({ pools, networkId: chainId })), [
+    dispatch,
+    chainId,
+  ])
 }
 
 export function useAddPoolKeys(): (addresses: string[]) => void {

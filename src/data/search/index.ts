@@ -130,7 +130,9 @@ interface PoolRes {
   asAddress: PoolResFields[]
 }
 
-export function useFetchSearchResults(value: string): {
+export function useFetchSearchResults(
+  value: string
+): {
   tokens: TokenData[]
   pools: PoolData[]
   loading: boolean

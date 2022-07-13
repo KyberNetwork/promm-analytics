@@ -59,11 +59,7 @@ export async function fetchPoolChartData(
 
   try {
     while (!allFound) {
-      const {
-        data: chartResData,
-        error,
-        loading,
-      } = await client.query<ChartResults>({
+      const { data: chartResData, error, loading } = await client.query<ChartResults>({
         query: POOL_CHART,
         variables: {
           address: address.toLowerCase(),

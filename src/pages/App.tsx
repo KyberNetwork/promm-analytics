@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react'
-import { matchPath, Redirect, Route, Switch, useParams } from 'react-router-dom'
+import { Redirect, Route, Switch, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Home from './Home'

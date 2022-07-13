@@ -55,29 +55,25 @@ export function useFetchProtocolData(
   // fetch all data
   const { loading, error, data } = useQuery<GlobalResponse>(GLOBAL_DATA(), { client: activeDataClient })
 
-  const {
-    loading: loading24,
-    error: error24,
-    data: data24,
-  } = useQuery<GlobalResponse>(GLOBAL_DATA(block24?.number ?? 0), { client: activeDataClient })
+  const { loading: loading24, error: error24, data: data24 } = useQuery<GlobalResponse>(
+    GLOBAL_DATA(block24?.number ?? 0),
+    { client: activeDataClient }
+  )
 
-  const {
-    loading: loading48,
-    error: error48,
-    data: data48,
-  } = useQuery<GlobalResponse>(GLOBAL_DATA(block48?.number ?? 0), { client: activeDataClient })
+  const { loading: loading48, error: error48, data: data48 } = useQuery<GlobalResponse>(
+    GLOBAL_DATA(block48?.number ?? 0),
+    { client: activeDataClient }
+  )
 
-  const {
-    loading: loadingWeek,
-    error: errorWeek,
-    data: dataWeek,
-  } = useQuery<GlobalResponse>(GLOBAL_DATA(blockWeek?.number ?? 0), { client: activeDataClient })
+  const { loading: loadingWeek, error: errorWeek, data: dataWeek } = useQuery<GlobalResponse>(
+    GLOBAL_DATA(blockWeek?.number ?? 0),
+    { client: activeDataClient }
+  )
 
-  const {
-    loading: loading2Weeks,
-    error: error2Weeks,
-    data: data2Weeks,
-  } = useQuery<GlobalResponse>(GLOBAL_DATA(block2Weeks?.number ?? 0), { client: activeDataClient })
+  const { loading: loading2Weeks, error: error2Weeks, data: data2Weeks } = useQuery<GlobalResponse>(
+    GLOBAL_DATA(block2Weeks?.number ?? 0),
+    { client: activeDataClient }
+  )
 
   const anyError = Boolean(error || error24 || error48 || errorWeek || error2Weeks || blockError)
   const anyLoading = Boolean(loading || loading24 || loading48 || loadingWeek || loading2Weeks)

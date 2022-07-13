@@ -37,7 +37,9 @@ interface ChartResults {
   }[]
 }
 
-export async function fetchChartData(client: ApolloClient<NormalizedCacheObject>): Promise<{
+export async function fetchChartData(
+  client: ApolloClient<NormalizedCacheObject>
+): Promise<{
   data: ChartDayData[] | undefined
   error: boolean
 }> {
@@ -55,11 +57,7 @@ export async function fetchChartData(client: ApolloClient<NormalizedCacheObject>
 
   try {
     while (!allFound) {
-      const {
-        data: chartResData,
-        error,
-        loading,
-      } = await client.query<ChartResults>({
+      const { data: chartResData, error, loading } = await client.query<ChartResults>({
         query: GLOBAL_CHART,
         variables: {
           startTime: startTimestamp,

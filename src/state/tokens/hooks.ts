@@ -47,10 +47,10 @@ export function useUpdateTokenData(): (tokens: TokenData[]) => void {
 export function useAddTokenKeys(): (addresses: string[]) => void {
   const dispatch = useDispatch<AppDispatch>()
   const { chainId } = useActiveNetworkUtils()
-  return useCallback(
-    (tokenAddresses: string[]) => dispatch(addTokenKeys({ tokenAddresses, networkId: chainId })),
-    [chainId, dispatch]
-  )
+  return useCallback((tokenAddresses: string[]) => dispatch(addTokenKeys({ tokenAddresses, networkId: chainId })), [
+    chainId,
+    dispatch,
+  ])
 }
 
 export function useTokenDatas(addresses: string[] | undefined): TokenData[] | undefined {

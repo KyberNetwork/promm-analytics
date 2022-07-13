@@ -170,11 +170,7 @@ export const fetchTicksSurroundingPrice = async (
   error?: boolean
   data?: PoolTickData
 }> => {
-  const {
-    data: poolResult,
-    error,
-    loading,
-  } = await client.query<PoolResult>({
+  const { data: poolResult, error, loading } = await client.query<PoolResult>({
     query: poolQuery,
     variables: {
       poolAddress: poolAddress.toLowerCase(),
