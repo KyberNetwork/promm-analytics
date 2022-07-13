@@ -246,7 +246,7 @@ export default function TransactionTable({
 
         {isAllChain && (
           <ClickableText textAlign="center" color={theme.text2} onClick={() => handleSort(SORT_FIELD.chainId)}>
-            Network
+            Network {arrow(SORT_FIELD.chainId)}
           </ClickableText>
         )}
         <ClickableText className="total" color={theme.text2} onClick={() => handleSort(SORT_FIELD.amountUSD)} end>

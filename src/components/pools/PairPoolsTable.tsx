@@ -231,7 +231,7 @@ export default function PairPoolsTable({
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>
               {isAllChain && !isMobile && (
                 <ClickableText className="network" onClick={() => handleSort(SORT_FIELD.chainId)} color={theme.subText}>
-                  Network
+                  Network {arrow(SORT_FIELD.chainId)}
                 </ClickableText>
               )}
             </TableHeaderLeft>

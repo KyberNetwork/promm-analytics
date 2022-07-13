@@ -18,6 +18,7 @@ import { fetchedTokenDatas } from './tokens/tokenData'
 
 // todo mới vô bị fetch ether
 // todo pool table network lech
+// todo logo 404
 
 function mergeProtocalData(dataAllChain: Factory[], data1Chain: Factory[]) {
   dataAllChain.forEach((elment, i) => {

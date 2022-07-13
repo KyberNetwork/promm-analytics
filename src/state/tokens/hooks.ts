@@ -260,9 +260,9 @@ export function useTokenPriceData(
  */
 export function useTokenTransactions(address: string): Transaction[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
-  const activeNetwork = useActiveNetworks()[0]
+  const { networkInfo: activeNetwork } = useActiveNetworkUtils()
   const token = useSelector((state: AppState) => state.tokens.byAddress[activeNetwork.chainId]?.[address])
-  const transactions = token.transactions
+  const transactions = token?.transactions
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
 

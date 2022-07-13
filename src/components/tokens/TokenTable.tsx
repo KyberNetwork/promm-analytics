@@ -231,7 +231,7 @@ export default function TokenTable({
             </ClickableText>
             {isAllChain && (
               <ClickableText className="network" color={theme.subText} onClick={() => handleSort(SORT_FIELD.chain)}>
-                Network {arrow(SORT_FIELD.name)}
+                Network {arrow(SORT_FIELD.chain)}
               </ClickableText>
             )}
             <ClickableText className="symbol" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.symbol)}>
