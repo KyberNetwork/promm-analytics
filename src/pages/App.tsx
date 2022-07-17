@@ -8,7 +8,7 @@ import TokensOverview from './Token/TokensOverview'
 import { RedirectInvalidToken } from './Token/redirects'
 import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
-import { useAppLoading, useSubgraphStatus } from 'state/application/hooks'
+import { useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
 import SideNav from 'components/Layout/SideNav'
 import KyberLoading from 'components/Loader/KyberLoading'
@@ -120,7 +120,11 @@ export const AppRoutes = [
 export default function App(): JSX.Element {
   const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
-  const [loading] = useAppLoading()
+  // pretend load buffer
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1000)
+  }, [])
 
   // const activeNetwork = useActiveNetworks()
   // subgraph health

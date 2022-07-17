@@ -188,10 +188,10 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
         src={isAllChain ? Kyber : activeNetworkInfo.imageURL}
         width="20px"
         height="20px"
-        alt={`${isAllChain ? 'All Chain' : activeNetworkInfo.name} Logo`}
+        alt={`${isAllChain ? 'All Chains' : activeNetworkInfo.name} Logo`}
       />
       <Text fontWeight="500" color={theme.primary} fontSize="1rem">
-        {isAllChain ? 'All Chain' : activeNetworkInfo.name}
+        {isAllChain ? 'All Chains' : activeNetworkInfo.name}
       </Text>
       <Flex flex={1} justifyContent="flex-end" alignItems="center" marginLeft="8px" marginTop="3px">
         <img src={SwitchNetWorkIcon} width="20px" />
@@ -238,7 +238,7 @@ function SideNav(): JSX.Element {
   const [isDark] = useDarkModeManager()
   const [tab, setTab] = useState<string>(ListTabs.ELASTIC)
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
-  const networkListToShow: ('allchain' | ChainId)[] = [...SHOW_NETWORKS]
+  const networkListToShow: ('allChain' | ChainId)[] = [...SHOW_NETWORKS]
 
   networkListToShow.unshift(ALL_CHAIN_ID)
 
@@ -263,7 +263,7 @@ function SideNav(): JSX.Element {
         </TabWrapper>
 
         <NetworkList>
-          {networkListToShow.map((chainId: 'allchain' | ChainId) => {
+          {networkListToShow.map((chainId: 'allChain' | ChainId) => {
             const isAllChainId = chainId === ALL_CHAIN_ID
             return tab === ListTabs.CLASSIC ? (
               <StyledLink

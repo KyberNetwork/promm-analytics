@@ -19,6 +19,4 @@ export const updateSubgraphStatus = createAction<{
   syncedBlock: number | undefined
   headBlock: number | undefined
 }>('application/updateSubgraphStatus')
-export const updateActiveNetwork = createAction<{ chainId: ChainId | 'allchain' }>('application/updateActiveNetwork')
-
-export const setLoading = createAction<{ loading: boolean }>('application/setLoading')
+export const updateActiveNetwork = createAction<{ chainId: ChainId | 'allChain' }>('application/updateActiveNetwork')

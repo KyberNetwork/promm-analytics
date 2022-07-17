@@ -1,14 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { ALL_CHAIN_ID } from 'constants/index'
 import { ChainId, ALL_SUPPORT_NETWORKS_ID, SHOW_NETWORKS } from 'constants/networks'
-import {
-  updateBlockNumber,
-  updateSubgraphStatus,
-  ApplicationModal,
-  setOpenModal,
-  updateActiveNetwork,
-  setLoading,
-} from './actions'
+import { updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal, updateActiveNetwork } from './actions'
 
 export interface ApplicationState {
   readonly blockNumber: { readonly [chainId in ChainId]?: number }
@@ -19,7 +12,7 @@ export interface ApplicationState {
     headBlock: number | undefined
   }
   activeNetworksId: ChainId[]
-  loading: boolean
+  isAppInit: boolean
 }
 
 const initialState: ApplicationState = {
@@ -31,7 +24,7 @@ const initialState: ApplicationState = {
     headBlock: undefined,
   },
   activeNetworksId: [SHOW_NETWORKS[0]],
-  loading: true,
+  isAppInit: false,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -49,11 +42,13 @@ export default createReducer(initialState, (builder) =>
         return {
           ...state,
           activeNetworksId: ALL_SUPPORT_NETWORKS_ID,
+          isAppInit: true,
         }
       }
       return {
         ...state,
         activeNetworksId: [chainId as ChainId],
+        isAppInit: true,
       }
     })
     .addCase(updateSubgraphStatus, (state, { payload: { available, syncedBlock, headBlock } }) => {
@@ -62,8 +57,5 @@ export default createReducer(initialState, (builder) =>
         syncedBlock,
         headBlock,
       }
-    })
-    .addCase(setLoading, (state, { payload: { loading } }) => {
-      state.loading = loading
     })
 )

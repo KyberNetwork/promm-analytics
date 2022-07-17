@@ -223,7 +223,7 @@ export function useFetchedTokenDatas(
   }
 }
 
-export async function fetchedTokenDatas(
+export async function fetchedTokenData(
   network: NetworkInfo,
   ethPrices: EthPrices | undefined
 ): Promise<TokenData[] | undefined> {

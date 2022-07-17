@@ -5,7 +5,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isAllChain } from 'utils'
 import { AppDispatch, AppState } from '../index'
-import { ApplicationModal, setLoading, setOpenModal, updateSubgraphStatus } from './actions'
+import { ApplicationModal, setOpenModal, updateSubgraphStatus } from './actions'
 
 export function useModalOpen(modal: ApplicationModal): boolean {
   const openModal = useSelector((state: AppState) => state.application.openModal)
@@ -64,11 +64,4 @@ export function useClients(): {
     dataClient: network.client,
     blockClient: network.blockClient,
   }))
-}
-
-export function useAppLoading(): [boolean, (val: boolean) => void] {
-  const dispatch = useDispatch<AppDispatch>()
-  const { loading } = useSelector((state: AppState) => state.application)
-  const setLoadingFunc = (val: boolean) => dispatch(setLoading({ loading: val }))
-  return [loading, setLoadingFunc]
 }
