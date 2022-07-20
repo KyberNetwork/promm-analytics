@@ -37,9 +37,9 @@ const Wrapper = styled(DarkGreyCard)`
 const GridWrapper = styled.div<{ isAllChain: boolean }>`
   display: grid;
   align-items: center;
-  grid-template-columns: ${({ isAllChain }) => `${isAllChain ? 2 : 1}fr 6fr`};
-  ${({ theme, isAllChain }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: ${`${isAllChain ? 2 : 1}`}fr 4fr;
+  grid-template-columns: ${({ isAllChain }) => `1fr ${isAllChain ? 7 : 6}fr`};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 1fr 4fr;
   `};
   ${({ theme, isAllChain }) => theme.mediaWidth.upToSmall`
     grid-template-columns: ${`${isAllChain ? '1fr 2fr' : '1fr 4fr'}`};
@@ -51,10 +51,10 @@ const ResponsiveGrid = styled.div<{ isAllChain: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(${({ isAllChain }) => (isAllChain ? 7 : 6)}, 1fr);
 
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: repeat(4, 1fr);
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(${isAllChain ? 5 : 4}, 1fr);
     & .avg {
       display: none;
     }
@@ -72,6 +72,9 @@ const TableHeader = styled(ResponsiveGrid)`
   background: ${({ theme }) => theme.tableHeader};
   padding: 20px;
   height: 100%;
+  & .network {
+    text-align: center;
+  }
 
   ${({ theme, isAllChain }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(${isAllChain ? 2 : 2}, 1fr);
@@ -84,16 +87,13 @@ const TableHeader = styled(ResponsiveGrid)`
   `}
 `
 
-const TableHeaderLeft = styled.div<{ isAllChain: boolean }>`
+const TableHeaderLeft = styled.div`
   display: grid;
   grid-gap: 1em;
   padding: 20px;
-  grid-template-columns: ${({ isAllChain }) => `${isAllChain ? '1fr 1fr' : '1fr'}`};
+  grid-template-columns: 1fr;
   background: ${({ theme }) => theme.tableHeader};
   height: 100%;
-  & .network {
-    text-align: center;
-  }
 `
 
 const ColumnLeft = styled(TableHeaderLeft)`
@@ -227,18 +227,19 @@ export default function PairPoolsTable({
       {sortedPairs.length > 0 ? (
         <>
           <GridWrapper isAllChain={isAllChain}>
-            <TableHeaderLeft isAllChain={isAllChain}>
+            <TableHeaderLeft>
               <ClickableText color={theme.subText}>TOKEN PAIR</ClickableText>
-              {isAllChain && !isMobile && (
-                <ClickableText className="network" onClick={() => handleSort(SORT_FIELD.chainId)} color={theme.subText}>
-                  Network {arrow(SORT_FIELD.chainId)}
-                </ClickableText>
-              )}
             </TableHeaderLeft>
             <TableHeader isAllChain={isAllChain}>
               <ClickableText className="pool" color={theme.subText}>
                 Pool | FEE
               </ClickableText>
+
+              {isAllChain && !isMobile && (
+                <ClickableText className="network" onClick={() => handleSort(SORT_FIELD.chainId)} color={theme.subText}>
+                  Network {arrow(SORT_FIELD.chainId)}
+                </ClickableText>
+              )}
 
               <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
                 TVL {arrow(SORT_FIELD.tvlUSD)}
@@ -364,7 +365,7 @@ export default function PairPoolsTable({
                         backgroundColor: openPair === id ? theme.tableHeader : theme.background,
                       }}
                     >
-                      <ColumnLeft isAllChain={isAllChain}>
+                      <ColumnLeft>
                         <Flex flexDirection="column" justifyContent="center">
                           <DoubleCurrencyLogo
                             address0={pair[0].token0.address}
@@ -375,17 +376,10 @@ export default function PairPoolsTable({
                             {pair[0].token0.symbol} - {pair[0].token1.symbol}
                           </Label>
                         </Flex>
-                        {isAllChain && (
-                          <Flex justifyContent="center" alignItems="center">
-                            <Link to={'/' + networkInfo.route} className="network">
-                              <img src={networkInfo.imageURL} width={25} />
-                            </Link>
-                          </Flex>
-                        )}
                       </ColumnLeft>
                       <AutoColumn gap="16px">
                         {pair.map((poolData, index) => {
-                          if (index === 0 || openPair === id)
+                          if (index === 0 || openPair === id) {
                             return (
                               <React.Fragment key={poolData.address}>
                                 <ResponsiveGrid
@@ -412,6 +406,14 @@ export default function PairPoolsTable({
                                       </Text>
                                     </AutoColumn>
                                   </Label>
+
+                                  {isAllChain && (
+                                    <Flex justifyContent="center" alignItems="center">
+                                      <Link to={'/' + networkInfo.route} className="network">
+                                        <img src={networkInfo.imageURL} width={25} />
+                                      </Link>
+                                    </Flex>
+                                  )}
 
                                   <Label className="tvl" end={1} fontWeight={400}>
                                     {formatDollarAmount(poolData.tvlUSD)}
@@ -466,6 +468,8 @@ export default function PairPoolsTable({
                                 {index !== pair.length - 1 && openPair === id && <BreakWrapper />}
                               </React.Fragment>
                             )
+                          }
+
                           return null
                         })}
                       </AutoColumn>

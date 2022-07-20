@@ -18,9 +18,6 @@ import { calcProtocolData, Factory, fetchProtocolData } from './protocol/overvie
 import { fetchTopTransactions } from './protocol/transactions'
 import { fetchedTokenData } from './tokens/tokenData'
 
-// todo pool table network lech
-// todo logo 404
-
 function mergeProtocolData(dataAllChain: Factory[], data1Chain: Factory[]) {
   dataAllChain.forEach((element, i) => {
     const info = data1Chain[i]
