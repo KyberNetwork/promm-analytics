@@ -19,6 +19,7 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
+  if (!networkInfo) return ''
   switch (type) {
     case 'transaction': {
       return `${networkInfo.etherscanUrl}/tx/${data}`

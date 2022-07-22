@@ -1,23 +1,24 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { TYPE } from 'theme'
 import { DarkGreyCard } from 'components/Card'
 import { TokenData } from '../../state/tokens/reducer'
 import Loader, { LoadingRows } from 'components/Loader'
 import { Link } from 'react-router-dom'
 import { AutoColumn } from 'components/Column'
+import Pagination from 'components/Pagination'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { RowFixed } from 'components/Row'
 import { formatDollarAmount } from 'utils/numbers'
 import Percent from 'components/Percent'
 import { Label, ClickableText } from '../Text'
-import { PageButtons, Arrow, Break } from 'components/shared'
+import { Break } from 'components/shared'
 import HoverInlineText from '../HoverInlineText'
 import useTheme from 'hooks/useTheme'
 import { TOKEN_HIDE } from '../../constants/index'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworkUtils } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import { useMedia } from 'react-use'
+import { NETWORKS_INFO_MAP } from 'constants/networks'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -25,36 +26,46 @@ const Wrapper = styled(DarkGreyCard)`
   padding: 0;
 `
 
-const ResponsiveGrid = styled.div`
+const ResponsiveGrid = styled.div<{ isAllChain: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
+  grid-template-columns: 2fr repeat(${({ isAllChain }) => `${isAllChain ? 6 : 5}`}, 1fr);
 
-  grid-template-columns: 20px 2fr 85px repeat(4, 1fr);
-
-  @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1fr 85px repeat(3, 1fr);
-    & :nth-child(7) {
-      display: none;
-    }
+  > .network {
+    text-align: center;
   }
 
-  @media screen and (max-width: 800px) {
-    grid-template-columns: 20px 1fr 85px repeat(2, 1fr);
-    & :nth-child(3) {
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(${isAllChain ? 6 : 5}, 1fr);
+    > .price-change {
       display: none;
     }
-  }
+  `}
 
-  @media screen and (max-width: 670px) {
-    grid-template-columns: 1fr 85px 1fr;
-    > *:first-child {
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: repeat(4, 1fr);
+    > .stt {
       display: none;
     }
-    > *:nth-child(6) {
+    > .symbol {
       display: none;
     }
-  }
+    > .tvl {
+      display: ${isAllChain ? 'none' : 'block'};
+    }
+  `}
+
+  ${({ theme, isAllChain }) => theme.mediaWidth.upToExtraSmall`
+    grid-template-columns: repeat(3, 1fr);
+    > .tvl {
+      display: none;
+    }
+    > .price {
+      display: ${isAllChain ? 'none' : 'block'};
+      text-align: right
+    }
+  `}
 `
 
 const TableHeader = styled(ResponsiveGrid)`
@@ -79,33 +90,46 @@ const ResponsiveLogo = styled(CurrencyLogo)`
 
 const DataRow = ({ tokenData, index }: { tokenData: TokenData; index: number }) => {
   const below680 = useMedia('(max-width: 680px)')
-  const activeNetworks = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
   const theme = useTheme()
+  const { isAllChain } = useActiveNetworkUtils()
+  const tokenNetworkInfo = NETWORKS_INFO_MAP[tokenData.chainId]
   return (
-    <LinkWrapper to={networkPrefix(activeNetworks) + 'token/' + tokenData.address}>
-      <ResponsiveGrid>
-        <Label>{index + 1}</Label>
+    <LinkWrapper to={networkPrefix(tokenNetworkInfo) + 'token/' + tokenData.address}>
+      <ResponsiveGrid isAllChain={isAllChain}>
         <Label>
+          <div
+            style={{
+              marginRight: '1rem',
+              width: '10px',
+            }}
+          >
+            {index + 1}
+          </div>
           <RowFixed>
-            <ResponsiveLogo address={tokenData.address} activeNetwork={activeNetworks} />
+            <ResponsiveLogo address={tokenData.address} activeNetwork={tokenNetworkInfo} />
             <div style={{ marginLeft: '8px' }}>
               <HoverInlineText color={theme.primary} text={below680 ? tokenData.symbol : tokenData.name} />
             </div>
           </RowFixed>
         </Label>
-        <Label end={1} fontWeight={400}>
+        {isAllChain && (
+          <Link to={'/' + tokenNetworkInfo.route} className="network">
+            <img src={tokenNetworkInfo.imageURL} width={25} />
+          </Link>
+        )}
+        <Label className="symbol" end={1} fontWeight={400}>
           {tokenData.symbol}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="tvl">
           {formatDollarAmount(tokenData.tvlUSD)}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="volume">
           {formatDollarAmount(tokenData.volumeUSD)}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="price">
           {formatDollarAmount(tokenData.priceUSD)}
         </Label>
-        <Label end={1} fontWeight={400}>
+        <Label end={1} fontWeight={400} className="price-change">
           <Percent value={tokenData.priceUSDChange} fontWeight={400} />
         </Label>
       </ResponsiveGrid>
@@ -121,6 +145,7 @@ const SORT_FIELD = {
   priceUSD: 'priceUSD',
   priceUSDChange: 'priceUSDChange',
   priceUSDChangeWeek: 'priceUSDChangeWeek',
+  chain: 'chainId',
 }
 
 const MAX_ITEMS = 15
@@ -134,7 +159,8 @@ export default function TokenTable({
 }): JSX.Element {
   // theming
   const theme = useTheme()
-  const activeNetworks = useActiveNetworks()
+
+  const { isAllChain, chainId } = useActiveNetworkUtils()
 
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD)
@@ -146,7 +172,7 @@ export default function TokenTable({
 
   useEffect(() => {
     setPage(1)
-  }, [activeNetworks])
+  }, [chainId])
 
   useEffect(() => {
     let extraPages = 1
@@ -180,6 +206,7 @@ export default function TokenTable({
     (newField: string) => {
       setSortField(newField)
       setSortDirection(sortField !== newField ? true : !sortDirection)
+      setPage(1)
     },
     [sortDirection, sortField]
   )
@@ -194,20 +221,23 @@ export default function TokenTable({
   if (!tokenDatas) {
     return <Loader />
   }
-
   return (
     <Wrapper>
       {sortedTokens.length > 0 ? (
         <>
-          <TableHeader>
-            <Label color={theme.subText}>#</Label>
+          <TableHeader isAllChain={isAllChain}>
             <ClickableText color={theme.subText} onClick={() => handleSort(SORT_FIELD.name)}>
               Name {arrow(SORT_FIELD.name)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.symbol)}>
+            {isAllChain && (
+              <ClickableText className="network" color={theme.subText} onClick={() => handleSort(SORT_FIELD.chain)}>
+                Network {arrow(SORT_FIELD.chain)}
+              </ClickableText>
+            )}
+            <ClickableText className="symbol" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.symbol)}>
               Symbol {arrow(SORT_FIELD.symbol)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+            <ClickableText className="tvl" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
               TVL {arrow(SORT_FIELD.tvlUSD)}
             </ClickableText>
             {/* <ClickableText end onClick={() => handleSort(SORT_FIELD.priceUSDChangeWeek)}>
@@ -216,10 +246,15 @@ export default function TokenTable({
             <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
               Volume (24H) {arrow(SORT_FIELD.volumeUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSD)}>
+            <ClickableText className="price" color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSD)}>
               Price {arrow(SORT_FIELD.priceUSD)}
             </ClickableText>
-            <ClickableText color={theme.subText} end onClick={() => handleSort(SORT_FIELD.priceUSDChange)}>
+            <ClickableText
+              className="price-change"
+              color={theme.subText}
+              end
+              onClick={() => handleSort(SORT_FIELD.priceUSDChange)}
+            >
               Price Change (24H) {arrow(SORT_FIELD.priceUSDChange)}
             </ClickableText>
           </TableHeader>
@@ -236,23 +271,7 @@ export default function TokenTable({
               }
               return null
             })}
-            <PageButtons>
-              <div
-                onClick={() => {
-                  setPage(page === 1 ? page : page - 1)
-                }}
-              >
-                <Arrow faded={page === 1 ? true : false}>←</Arrow>
-              </div>
-              <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
-              <div
-                onClick={() => {
-                  setPage(page === maxPage ? page : page + 1)
-                }}
-              >
-                <Arrow faded={page === maxPage ? true : false}>→</Arrow>
-              </div>
-            </PageButtons>
+            <Pagination setPage={setPage} page={page} maxPage={maxPage} />
           </AutoColumn>
         </>
       ) : (

@@ -15,7 +15,7 @@ const Wrapper = styled(Card)`
   width: 100%;
   padding: 1rem;
   display: flex;
-  background-color: ${({ theme }) => theme.bg0}
+  background-color: ${({ theme }) => theme.bg0};
   flex-direction: column;
   > * {
     font-size: 1rem;
@@ -188,13 +188,17 @@ const LineChart = ({
   return (
     <Wrapper minHeight={minHeight}>
       <RowBetween>
-        {topLeft ?? null}
-        {topRight ?? null}
+        <>
+          {topLeft ?? null}
+          {topRight ?? null}
+        </>
       </RowBetween>
       <div ref={chartRef} id="line-chart" {...rest} />
       <RowBetween>
-        {bottomLeft ?? null}
-        {bottomRight ?? null}
+        <>
+          {bottomLeft ?? null}
+          {bottomRight ?? null}
+        </>
       </RowBetween>
     </Wrapper>
   )

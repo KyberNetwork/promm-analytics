@@ -1,5 +1,6 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
+import { ALL_CHAIN_ID } from 'constants/index'
+import { ChainIdType, NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isAllChain } from 'utils'
@@ -43,10 +44,13 @@ export function useActiveNetworks(): NetworkInfo[] {
   return useMemo(() => activeNetworksId.map((id) => NETWORKS_INFO_MAP[id]), [activeNetworksId])
 }
 
-export function useActiveNetworkUtils(): { isAllChain: boolean } {
+export function useActiveNetworkUtils(): { isAllChain: boolean; chainId: ChainIdType; networkInfo: NetworkInfo } {
   const activeNetworks = useActiveNetworks()
+  const allChain = isAllChain(activeNetworks)
   return {
-    isAllChain: isAllChain(activeNetworks),
+    isAllChain: allChain,
+    chainId: allChain ? ALL_CHAIN_ID : activeNetworks[0].chainId,
+    networkInfo: activeNetworks[0],
   }
 }
 
@@ -56,9 +60,6 @@ export function useClients(): {
   blockClient: ApolloClient<NormalizedCacheObject>
 }[] {
   const activeNetwork = useActiveNetworks()
-
-  // const dataClient = activeNetwork.map((network) => network.client)
-  // const blockClient = activeNetwork.map((network) => network.blockClient)
   return activeNetwork.map((network) => ({
     dataClient: network.client,
     blockClient: network.blockClient,

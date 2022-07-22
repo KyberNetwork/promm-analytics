@@ -1,3 +1,5 @@
+import { ChainId } from 'constants/networks'
+
 export interface Block {
   number: number
   timestamp: string
@@ -38,6 +40,7 @@ export type Transaction = {
   amountUSD: number
   amountToken0: number
   amountToken1: number
+  chainId: ChainId
 }
 
 /**

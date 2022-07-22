@@ -2,11 +2,11 @@ import { TickProcessed } from './../../data/pools/tickData'
 import { createAction } from '@reduxjs/toolkit'
 import { PoolData, PoolChartEntry, PoolRatesEntry } from './reducer'
 import { Transaction } from 'types'
-import { ChainId } from 'constants/networks'
+import { ChainId, ChainIdType } from 'constants/networks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 
 // protocol wide info
-export const updatePoolData = createAction<{ pools: PoolData[]; networkId: ChainId }>('pools/updatePoolData')
+export const updatePoolData = createAction<{ pools: PoolData[]; networkId: ChainIdType }>('pools/updatePoolData')
 
 // add pool address to byAddress
 export const addPoolKeys = createAction<{ poolAddresses: string[]; networkId: ChainId }>('pool/addPoolKeys')

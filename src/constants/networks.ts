@@ -14,6 +14,7 @@ import OASIS_LOGO_URL from '../assets/network-logo/oasis.svg'
 import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
 import VELAS_LOGO_URL from '../assets/network-logo/velas.png'
 import OPTIMISM_LOGO_URL from '../assets/network-logo/optimism.svg'
+import { ALL_CHAIN_ID } from 'constants/index'
 
 export enum ChainId {
   ETHEREUM = 1,
@@ -36,6 +37,8 @@ export enum ChainId {
   OASIS = 42262,
   OPTIMISM = 10,
 }
+
+export type ChainIdType = ChainId | string
 
 export type NetworkInfo = {
   chainId: ChainId
@@ -325,6 +328,7 @@ const OptimismNetworkInfo: NetworkInfo = {
 }
 
 export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
+
 export const SHOW_NETWORKS = [
   ChainId.ETHEREUM,
   ChainId.POLYGON,
@@ -373,3 +377,5 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.OASIS]: OasisNetworkInfo,
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
 }
+
+export const NET_WORKS_SUPPORTED: ChainIdType[] = [...SHOW_NETWORKS, ALL_CHAIN_ID].filter((e) => e != ChainId.AURORA)

@@ -59,7 +59,7 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
   const theme = useTheme()
 
   // update the width on a window resize
-  const ref = useRef<ResponsiveContainer>(null)
+  const ref = useRef(null)
   const isClient = typeof window === 'object'
   const [width, setWidth] = useState((ref?.current as any | undefined)?.container?.clientWidth)
   const [height, setHeight] = useState((ref?.current as any | undefined)?.container?.clientHeight)
