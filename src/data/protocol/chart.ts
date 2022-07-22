@@ -37,12 +37,7 @@ interface ChartResults {
   }[]
 }
 
-export async function fetchChartData(
-  client: ApolloClient<NormalizedCacheObject>
-): Promise<{
-  data: ChartDayData[] | undefined
-  error: boolean
-}> {
+export async function fetchChartData(client: ApolloClient<NormalizedCacheObject>): Promise<ChartDayData[]> {
   let data: {
     date: number
     volumeUSD: string
@@ -51,7 +46,6 @@ export async function fetchChartData(
   const startTimestamp = client === NETWORKS_INFO_MAP[ChainId.ARBITRUM].client ? 1630423606 : 1619170975
   const endTimestamp = dayjs.utc().unix()
 
-  let error = false
   let skip = 0
   let allFound = false
 
@@ -75,60 +69,37 @@ export async function fetchChartData(
         }
       }
     }
-  } catch {
-    error = true
-  }
+  } catch {}
+  if (!data) return []
+  const formattedExisting = data.reduce((accum: { [date: number]: ChartDayData }, dayData) => {
+    const roundedDate = parseInt((dayData.date / ONE_DAY_UNIX).toFixed(0))
+    accum[roundedDate] = {
+      date: dayData.date,
+      volumeUSD: parseFloat(dayData.volumeUSD),
+      tvlUSD: parseFloat(dayData.tvlUSD),
+    }
+    return accum
+  }, {})
 
-  if (data) {
-    const formattedExisting = data.reduce((accum: { [date: number]: ChartDayData }, dayData) => {
-      const roundedDate = parseInt((dayData.date / ONE_DAY_UNIX).toFixed(0))
-      accum[roundedDate] = {
-        date: dayData.date,
-        volumeUSD: parseFloat(dayData.volumeUSD),
-        tvlUSD: parseFloat(dayData.tvlUSD),
+  const firstEntry = formattedExisting[parseInt(Object.keys(formattedExisting)[0])]
+
+  // fill in empty days ( there will be no day datas if no trades made that day )
+  let timestamp = firstEntry?.date ?? startTimestamp
+  let latestTvl = firstEntry?.tvlUSD ?? 0
+  while (timestamp < endTimestamp - ONE_DAY_UNIX) {
+    const nextDay = timestamp + ONE_DAY_UNIX
+    const currentDayIndex = parseInt((nextDay / ONE_DAY_UNIX).toFixed(0))
+    if (!Object.keys(formattedExisting).includes(currentDayIndex.toString())) {
+      formattedExisting[currentDayIndex] = {
+        date: nextDay,
+        volumeUSD: 0,
+        tvlUSD: latestTvl,
       }
-      return accum
-    }, {})
-
-    const firstEntry = formattedExisting[parseInt(Object.keys(formattedExisting)[0])]
-
-    // fill in empty days ( there will be no day datas if no trades made that day )
-    let timestamp = firstEntry?.date ?? startTimestamp
-    let latestTvl = firstEntry?.tvlUSD ?? 0
-    while (timestamp < endTimestamp - ONE_DAY_UNIX) {
-      const nextDay = timestamp + ONE_DAY_UNIX
-      const currentDayIndex = parseInt((nextDay / ONE_DAY_UNIX).toFixed(0))
-      if (!Object.keys(formattedExisting).includes(currentDayIndex.toString())) {
-        formattedExisting[currentDayIndex] = {
-          date: nextDay,
-          volumeUSD: 0,
-          tvlUSD: latestTvl,
-        }
-      } else {
-        latestTvl = formattedExisting[currentDayIndex].tvlUSD
-      }
-      timestamp = nextDay
+    } else {
+      latestTvl = formattedExisting[currentDayIndex].tvlUSD
     }
-
-    return {
-      data: Object.values(formattedExisting),
-      error: false,
-    }
-  } else {
-    return {
-      data: undefined,
-      error,
-    }
+    timestamp = nextDay
   }
-}
 
-export async function fetchChartDataV2(
-  client: ApolloClient<NormalizedCacheObject>
-): Promise<ChartDayData[] | undefined> {
-  try {
-    const { data } = await fetchChartData(client)
-    return data
-  } catch (error) {
-    return []
-  }
+  return Object.values(formattedExisting)
 }

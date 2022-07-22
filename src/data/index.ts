@@ -13,7 +13,7 @@ import { useUpdateTokenData } from 'state/tokens/hooks'
 import { TokenData } from 'state/tokens/reducer'
 import { ChartDayData, Transaction } from 'types'
 import { fetchPoolData } from './pools/poolData'
-import { fetchChartDataV2 } from './protocol/chart'
+import { fetchChartData } from './protocol/chart'
 import { calcProtocolData, Factory, fetchProtocolData } from './protocol/overview'
 import { fetchTopTransactions } from './protocol/transactions'
 import { fetchedTokenData } from './tokens/tokenData'
@@ -117,7 +117,7 @@ export function useGlobalData(): Array<any> {
 
   async function fetchAllChartData() {
     const promises = networks.map((net) =>
-      memoRequest(KeysCaches.CHART + net.chainId, () => fetchChartDataV2(net.client) as Promise<ChartDayData[]>)
+      memoRequest(KeysCaches.CHART + net.chainId, () => fetchChartData(net.client) as Promise<ChartDayData[]>)
     )
     const response = await Promise.allSettled(promises)
     const data = response.map((data) => (data.status === 'fulfilled' ? data.value : []))

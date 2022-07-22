@@ -44,6 +44,4 @@ export default async function getETHPriceFromTimestamps(
   } catch (e) {
     throw e
   }
-
-  return [1]
 }
