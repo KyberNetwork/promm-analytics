@@ -59,10 +59,8 @@ const Chart = ({
   return (
     <Wrapper minHeight={minHeight} {...rest}>
       <RowBetween>
-        <>
-          {topLeft ?? null}
-          {topRight ?? null}
-        </>
+        {topLeft ?? null}
+        {topRight ?? null}
       </RowBetween>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
@@ -108,10 +106,8 @@ const Chart = ({
         </AreaChart>
       </ResponsiveContainer>
       <RowBetween>
-        <>
-          {bottomLeft ?? null}
-          {bottomRight ?? null}
-        </>
+        {bottomLeft ?? null}
+        {bottomRight ?? null}
       </RowBetween>
     </Wrapper>
   )

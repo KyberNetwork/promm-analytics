@@ -81,10 +81,8 @@ const Chart = ({
   return (
     <Wrapper minHeight={minHeight} {...rest}>
       <RowBetween style={{ alignItems: 'flex-start' }}>
-        <>
-          {topLeft ?? null}
-          {topRight ?? null}
-        </>
+        {topLeft ?? null}
+        {topRight ?? null}
       </RowBetween>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
@@ -144,10 +142,8 @@ const Chart = ({
         </BarChart>
       </ResponsiveContainer>
       <RowBetween>
-        <>
-          {bottomLeft ?? null}
-          {bottomRight ?? null}
-        </>
+        {bottomLeft ?? null}
+        {bottomRight ?? null}
       </RowBetween>
     </Wrapper>
   )

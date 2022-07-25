@@ -69,7 +69,7 @@ export default function Menu(): JSX.Element {
   const toggle = useToggleModal(ApplicationModal.MENU)
   useOnClickOutside(node, open ? toggle : undefined)
   const { pathname } = useLocation()
-  const { networkInfo } = useActiveNetworkUtils()
+  const { networkInfo, isAllChain } = useActiveNetworkUtils()
 
   return (
     <StyledMenu ref={node}>
@@ -79,12 +79,15 @@ export default function Menu(): JSX.Element {
 
       {open && (
         <MenuFlyout>
-          <MenuItem to={networkPrefix(networkInfo) + 'accounts'} isActive={pathname.includes('account')}>
-            <Wallet />
-            Wallet Analytics
-          </MenuItem>
-
-          <Divider />
+          {!isAllChain && (
+            <>
+              <MenuItem to={networkPrefix(networkInfo) + 'accounts'} isActive={pathname.includes('account')}>
+                <Wallet />
+                Wallet Analytics
+              </MenuItem>
+              <Divider />
+            </>
+          )}
 
           <ExternalMenu
             href={addNetworkIdQueryString(process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com', networkInfo)}

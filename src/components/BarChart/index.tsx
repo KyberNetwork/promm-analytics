@@ -186,17 +186,13 @@ const BarChart = ({
   return (
     <Wrapper minHeight={minHeight}>
       <RowBetween>
-        <>
-          {topLeft ?? null}
-          {topRight ?? null}
-        </>
+        {topLeft ?? null}
+        {topRight ?? null}
       </RowBetween>
       <div ref={chartRef} id="bar-chart" {...rest} />
       <RowBetween>
-        <>
-          {bottomLeft ?? null}
-          {bottomRight ?? null}
-        </>
+        {bottomLeft ?? null}
+        {bottomRight ?? null}
       </RowBetween>
     </Wrapper>
   )
