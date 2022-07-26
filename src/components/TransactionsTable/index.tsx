@@ -128,7 +128,7 @@ const DataRow = ({ transaction, color }: { transaction: Transaction; color?: str
   )
 }
 const ListTabs = [
-  { value: '', label: 'All' },
+  { value: TransactionType.ALL, label: 'All' },
   { value: TransactionType.SWAP, label: 'Swaps' },
   { value: TransactionType.MINT, label: 'Adds' },
   { value: TransactionType.BURN, label: 'Removes' },
@@ -152,11 +152,13 @@ export default function TransactionTable({
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
   // filter on txn type
-  const [txFilter, setTxFilter] = useState<TransactionType | string>('')
-  const filteredTxn = useMemo(
-    () => (!txFilter ? transactions : transactions?.filter((x) => x.type.toString() === txFilter.toString()) || []),
-    [transactions, txFilter]
-  )
+  const [txFilter, setTxFilter] = useState<TransactionType | string>(TransactionType.ALL)
+
+  const filteredTxn = useMemo(() => {
+    return txFilter === TransactionType.ALL
+      ? transactions
+      : transactions?.filter((x) => x.type.toString() === txFilter.toString()) || []
+  }, [transactions, txFilter])
 
   useEffect(() => {
     let extraPages = 1
