@@ -25,6 +25,7 @@ import Panel from 'components/Panel'
 import GlobalChart, { CHART_VIEW } from './components/GlobalChart'
 import Search from 'components/Search'
 import { UnSelectable } from 'components'
+import { QuestionHelper } from 'components/QuestionHelper'
 
 const ChartWrapper = styled.div`
   width: 49%;
@@ -116,7 +117,10 @@ export default function Home(): JSX.Element {
             <DarkGreyCard>
               <AutoColumn gap="8px">
                 <RowBetween>
-                  <TYPE.title>Trading Volume</TYPE.title>
+                  <Flex>
+                    <TYPE.title>Trading Volume</TYPE.title>
+                    <QuestionHelper text="Total Trading volume through our aggregator on all chains" />
+                  </Flex>
 
                   <RowFixed>
                     <ButtonText
