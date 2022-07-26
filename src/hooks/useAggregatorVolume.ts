@@ -17,6 +17,9 @@ export default function useAggregatorVolume(): VolumeResponse {
       .then((res) => {
         setData(res)
       })
+      .catch((e) => {
+        console.error(e)
+      })
   }, [])
 
   return data

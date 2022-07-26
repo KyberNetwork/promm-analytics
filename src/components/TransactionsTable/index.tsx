@@ -155,9 +155,10 @@ export default function TransactionTable({
   const [txFilter, setTxFilter] = useState<TransactionType | string>(TransactionType.ALL)
 
   const filteredTxn = useMemo(() => {
-    return txFilter === TransactionType.ALL
+    const txFilterStr = txFilter.toString()
+    return txFilterStr === TransactionType.ALL.toString()
       ? transactions
-      : transactions?.filter((x) => x.type.toString() === txFilter.toString()) || []
+      : transactions?.filter((x) => x.type.toString() === txFilterStr) || []
   }, [transactions, txFilter])
 
   useEffect(() => {
@@ -217,6 +218,7 @@ export default function TransactionTable({
     [sortDirection, sortField]
   )
   const below960 = useMedia('(max-width: 960px)')
+  console.log(txFilter)
 
   return (
     <Wrapper>
