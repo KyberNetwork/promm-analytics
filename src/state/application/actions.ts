@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ChainId } from 'constants/networks'
+import { ChainId, ChainIdType } from 'constants/networks'
 
 export enum ApplicationModal {
   WALLET = 'WALLET',
@@ -19,4 +19,4 @@ export const updateSubgraphStatus = createAction<{
   syncedBlock: number | undefined
   headBlock: number | undefined
 }>('application/updateSubgraphStatus')
-export const updateActiveNetwork = createAction<{ chainId: ChainId | 'allChain' }>('application/updateActiveNetwork')
+export const updateActiveNetwork = createAction<{ chainId: ChainIdType }>('application/updateActiveNetwork')

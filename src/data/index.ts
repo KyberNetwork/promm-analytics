@@ -1,5 +1,5 @@
 import { ALL_CHAIN_ID } from 'constants/index'
-import { ChainIdType, NET_WORKS_SUPPORTED } from 'constants/networks'
+import { ChainIdType, SUPPORTED_NETWORKS } from 'constants/networks'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -64,7 +64,7 @@ export function useGlobalData(): Array<any> {
   const ethPrices = useEthPrices()
   const activeNetworks = useActiveNetworks()
   const networks = activeNetworks.filter(
-    (e) => NET_WORKS_SUPPORTED.find((el: ChainIdType) => el == e.chainId) && e.chainId.toString() != ALL_CHAIN_ID
+    (e) => SUPPORTED_NETWORKS.find((el: ChainIdType) => el == e.chainId) && e.chainId.toString() != ALL_CHAIN_ID
   )
 
   const { isAllChain, chainId, networkInfo } = useActiveNetworkUtils()

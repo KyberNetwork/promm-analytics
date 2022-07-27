@@ -204,9 +204,8 @@ const HoverIcon = styled.div`
 
 export const SavedIcon = ({
   fill = false,
-  // size = '20px',
   ...rest
-}: { fill: boolean; size?: string } & HTMLAttributes<HTMLDivElement>): JSX.Element => {
+}: { fill: boolean } & HTMLAttributes<HTMLDivElement>): JSX.Element => {
   return (
     <HoverIcon {...rest}>
       <Bookmark style={{ opacity: fill ? 0.8 : 0.4, cursor: 'pointer' }} />

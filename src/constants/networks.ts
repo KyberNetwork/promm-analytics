@@ -38,7 +38,7 @@ export enum ChainId {
   OPTIMISM = 10,
 }
 
-export type ChainIdType = ChainId | string
+export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
 
 export type NetworkInfo = {
   chainId: ChainId
@@ -378,4 +378,4 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
 }
 
-export const NET_WORKS_SUPPORTED: ChainIdType[] = [...SHOW_NETWORKS, ALL_CHAIN_ID].filter((e) => e != ChainId.AURORA)
+export const SUPPORTED_NETWORKS = [...SHOW_NETWORKS, ALL_CHAIN_ID].filter((e) => e != ChainId.AURORA) as ChainIdType[]

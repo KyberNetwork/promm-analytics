@@ -2,7 +2,7 @@ import { currentTimestamp } from './../../utils/index'
 import { updateProtocolData, updateChartData, updateTransactions } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { ChartDayData, Transaction } from 'types'
-import { NET_WORKS_SUPPORTED } from 'constants/networks'
+import { SUPPORTED_NETWORKS } from 'constants/networks'
 
 export interface ProtocolData {
   // volume
@@ -38,7 +38,7 @@ export interface ProtocolState {
 
 export const initialState: ProtocolState = {}
 
-NET_WORKS_SUPPORTED.forEach((net) => {
+SUPPORTED_NETWORKS.forEach((net) => {
   initialState[net] = { data: undefined, chartData: undefined, transactions: undefined, lastUpdated: undefined }
 })
 

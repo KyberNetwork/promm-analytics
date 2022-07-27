@@ -580,7 +580,9 @@ export default function AccountPage(): JSX.Element {
                     >
                       <Arrow faded={page === 1 ? true : false}>←</Arrow>
                     </div>
-                    <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
+                    <TYPE.body>
+                      Page {page} of {maxPage}
+                    </TYPE.body>
                     <div
                       onClick={() => {
                         setPage(page === maxPage ? page : page + 1)

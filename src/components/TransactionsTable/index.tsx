@@ -218,7 +218,6 @@ export default function TransactionTable({
     [sortDirection, sortField]
   )
   const below960 = useMedia('(max-width: 960px)')
-  console.log(txFilter)
 
   return (
     <Wrapper>

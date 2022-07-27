@@ -1,5 +1,5 @@
 import { getAddress } from '@ethersproject/address'
-import { NetworkInfo } from 'constants/networks'
+import { ChainId, NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 import dayjs from 'dayjs'
 import Numeral from 'numeral'
@@ -19,20 +19,20 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-  if (!networkInfo) return ''
+  const { etherscanUrl } = networkInfo || NETWORKS_INFO_MAP[ChainId.ETHEREUM]
   switch (type) {
     case 'transaction': {
-      return `${networkInfo.etherscanUrl}/tx/${data}`
+      return `${etherscanUrl}/tx/${data}`
     }
     case 'token': {
-      return `${networkInfo.etherscanUrl}/token/${data}`
+      return `${etherscanUrl}/token/${data}`
     }
     case 'block': {
-      return `${networkInfo.etherscanUrl}/block/${data}`
+      return `${etherscanUrl}/block/${data}`
     }
     case 'address':
     default: {
-      return `${networkInfo.etherscanUrl}/address/${data}`
+      return `${etherscanUrl}/address/${data}`
     }
   }
 }
