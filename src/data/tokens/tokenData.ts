@@ -1,7 +1,7 @@
 import { getPercentChange } from './../../utils/data'
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { getDeltaTimestamps, useDeltaTimestamps } from 'utils/queries'
+import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { get2DayChange } from 'utils/data'
 import { TokenData } from 'state/tokens/reducer'
@@ -73,7 +73,7 @@ export function useFetchedTokenDatas(
   const { dataClient } = useClients()[0]
 
   // get blocks from historic timestamps
-  const [t24, t48, tWeek] = useDeltaTimestamps()
+  const [t24, t48, tWeek] = getDeltaTimestamps()
 
   const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
   const [block24, block48, blockWeek] = blocks ?? []

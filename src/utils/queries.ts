@@ -60,7 +60,3 @@ export function getDeltaTimestamps(): [number, number, number, number] {
   const t2Weeks = utcCurrentTime.subtract(2, 'week').startOf('minute').unix()
   return [t1, t2, tWeek, t2Weeks]
 }
-
-export function useDeltaTimestamps(): [number, number, number, number] {
-  return getDeltaTimestamps()
-}
