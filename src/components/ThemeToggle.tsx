@@ -17,7 +17,7 @@ const ToggleElement = styled.span<{ isDarkMode: boolean }>`
 const StyledToggle = styled.button`
   border-radius: 999px;
   border: none;
-  background: ${({ theme }) => theme.bg3};
+  background: ${({ theme }) => theme.buttonBlack};
   display: flex;
   width: fit-content;
   cursor: pointer;
@@ -48,7 +48,7 @@ export default function ThemeToggle(): JSX.Element {
         ) : (
           <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 14 14">
             <g fill="none" fillRule="evenodd">
-              <g fill="#859AA5" fillRule="nonzero">
+              <g fill="#A9A9A9" fillRule="nonzero">
                 <g>
                   <g>
                     <g>
@@ -79,7 +79,7 @@ export default function ThemeToggle(): JSX.Element {
         ) : (
           <svg xmlns="http://www.w3.org/2000/svg" width={10} height={12} viewBox="0 0 10 12">
             <g fill="none" fillRule="evenodd">
-              <g fill="#859AA5" fillRule="nonzero">
+              <g fill="#5E5E5E" fillRule="nonzero">
                 <g>
                   <g>
                     <g>
