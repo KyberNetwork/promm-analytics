@@ -70,9 +70,9 @@ export default function AccountsOverview(): JSX.Element {
     window.scrollTo(0, 0)
   }, [])
   const theme = useTheme()
-  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
+  const activeNetwork = useActiveNetworks()[0]
 
-  const { data } = useFetchedPositionsDatas()
+  const { positions } = useFetchedPositionsDatas()
 
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -83,13 +83,13 @@ export default function AccountsOverview(): JSX.Element {
   const maxItems = 10
   useEffect(() => {
     let extraPages = 1
-    if (data) {
-      if (data.length % maxItems === 0) {
+    if (positions) {
+      if (positions.length % maxItems === 0) {
         extraPages = 0
       }
-      setMaxPage(Math.floor(data.length / maxItems) + extraPages)
+      setMaxPage(Math.floor(positions.length / maxItems) + extraPages)
     }
-  }, [maxItems, data])
+  }, [maxItems, positions])
 
   return (
     <PageWrapper>
@@ -118,36 +118,38 @@ export default function AccountsOverview(): JSX.Element {
             <TableTitle end>VALUE</TableTitle>
           </TableHeader>
           <AutoColumn gap="19.75px" style={{ padding: '20px' }}>
-            {data ? (
-              data.slice(maxItems * (page - 1), page * maxItems).map((item, index) => (
-                <React.Fragment key={item.id}>
+            {positions ? (
+              positions.slice(maxItems * (page - 1), page * maxItems).map((item, index) => (
+                <React.Fragment key={item.data.id}>
                   <ResponsiveGrid>
                     {!below1024 && <Label>{(page - 1) * maxItems + index + 1}</Label>}
-                    <LinkWrapper to={'account/' + item.owner}>
+                    <LinkWrapper to={'account/' + item.data.owner}>
                       <Label color={theme.primary}>
-                        {below800 ? item.owner.slice(0, 5) + '...' + item.owner.slice(39, 42) : item.owner}
+                        {below800
+                          ? item.data.owner.slice(0, 5) + '...' + item.data.owner.slice(39, 42)
+                          : item.data.owner}
                       </Label>
                     </LinkWrapper>
                     {!below600 && (
                       <Label end={1}>
                         <RowFixed>
                           <DoubleCurrencyLogo
-                            address0={item.token0.id}
-                            address1={item.token1.id}
+                            address0={item.data.token0.id}
+                            address1={item.data.token1.id}
                             activeNetwork={activeNetwork}
                           />
                           <Label marginLeft="4px">
-                            {item.token0.symbol} - {item.token1.symbol}
+                            {item.data.token0.symbol} - {item.data.token1.symbol}
                           </Label>
                         </RowFixed>
                       </Label>
                     )}
-                    <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
+                    <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.data.pool.id}>
                       <Label end={1} color={theme.primary}>
-                        {shortenAddress(item.pool.id)}
+                        {shortenAddress(item.data.pool.id)}
                       </Label>
                     </LinkWrapper>
-                    <Label end={1}>{formatDollarAmount(Number(item.amountDepositedUSD))}</Label>
+                    <Label end={1}>{formatDollarAmount(Number(item.valueUSD))}</Label>
                   </ResponsiveGrid>
                   <Break />
                 </React.Fragment>

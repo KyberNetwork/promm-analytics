@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { notEmpty } from 'utils'
 import { TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
-import { calcPosition } from 'utils/position'
+import { formatPositions } from 'utils/position'
 import { useEthPrices } from 'hooks/useEthPrices'
 
 export const POSITION_FRAGMENT = gql`
@@ -130,11 +130,18 @@ export interface PositionFields {
   tickUpper: {
     tickIdx: string
   }
-  amountDepositedUSD: string
 }
 
 interface PositionDataResponse {
   positions: PositionFields[]
+}
+
+export type FormattedPosition = {
+  address: string
+  valueUSD: number
+  token0Amount: number
+  token1Amount: number
+  data: PositionFields
 }
 
 /**
@@ -143,11 +150,11 @@ interface PositionDataResponse {
 export function useFetchedPositionsDatas(): {
   loading: boolean
   error: boolean
-  data: PositionFields[] | undefined
+  positions: FormattedPosition[] | undefined
 } {
   const { dataClient } = useClients()[0]
   const ethPriceUSD = useEthPrices()
-  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
+  const activeNetwork = useActiveNetworks()[0]
 
   const allPoolData = useAllPoolData()
 
@@ -162,23 +169,15 @@ export function useFetchedPositionsDatas(): {
     client: dataClient,
   })
 
-  const res = useMemo(() => {
-    return data?.positions
-      .map((p) => {
-        const position = calcPosition({ p, chainId: activeNetwork.chainId, ethPriceUSD: ethPriceUSD?.current })
-
-        return {
-          ...p,
-          amountDepositedUSD: position.userPositionUSD,
-        }
-      })
-      .sort((a, b) => b.amountDepositedUSD - a.amountDepositedUSD)
-  }, [data, ethPriceUSD?.current, activeNetwork?.chainId])
+  const formattedPosition = useMemo(
+    () => formatPositions(data?.positions, ethPriceUSD?.current, activeNetwork.chainId),
+    [activeNetwork.chainId, data?.positions, ethPriceUSD]
+  )
 
   return {
     loading: loading,
     error: !!error,
-    data: res as any,
+    positions: formattedPosition,
   }
 }
 
@@ -187,17 +186,25 @@ export function useFetchedUserPositionData(
 ): {
   loading: boolean
   error?: boolean
-  data?: PositionFields[]
+  data?: FormattedPosition[]
 } {
   const { dataClient } = useClients()[0]
+  const ethPriceUSD = useEthPrices()
+  const activeNetwork = useActiveNetworks()[0]
+
   const { loading, error, data } = useQuery<PositionDataResponse>(USER_POSITIONS(address), {
     client: dataClient,
   })
 
+  const formattedPosition = useMemo(
+    () => formatPositions(data?.positions, ethPriceUSD?.current, activeNetwork.chainId),
+    [activeNetwork.chainId, data?.positions, ethPriceUSD]
+  )
+
   return {
     loading: loading,
     error: !!error,
-    data: data?.positions,
+    data: formattedPosition,
   }
 }
 

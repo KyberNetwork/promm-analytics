@@ -19,12 +19,10 @@ import { Arrow, Break, PageButtons } from 'components/shared'
 import { useActiveNetworks } from 'state/application/hooks'
 import { networkPrefix } from 'utils/networkPrefix'
 import KyberLoading from 'components/Loader/KyberLoading'
-import { PositionFields, useFetchedUserPositionData, useUserTransactions } from 'data/wallets/walletData'
+import { FormattedPosition, useFetchedUserPositionData, useUserTransactions } from 'data/wallets/walletData'
 import { Label, TableTitle } from 'components/Text'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import { useEthPrices } from 'hooks/useEthPrices'
 import { Box, BoxProps } from 'rebass/styled-components'
-import { calcPosition } from 'utils/position'
 import Panel from 'components/Panel'
 import { formatAmount, formatDollarAmount } from 'utils/numbers'
 import { ButtonDropdown } from 'components/Button'
@@ -172,19 +170,11 @@ const RemoveBtn = styled(ButtonLight)`
   background: ${({ theme }) => `${theme.subText}33`};
 `
 
-type FormattedPosition = {
-  address: string
-  valueUSD: number
-  token0Amount: number
-  token1Amount: number
-  data: PositionFields
-}
-
 export default function AccountPage(): JSX.Element {
   const { address } = useParams<{ address: string }>()
   const activeNetwork = useActiveNetworks()[0]
   const [showDropdown, setShowDropdown] = useState(false)
-  const [activePosition, setActivePosition] = useState<PositionFields | null>(null)
+  const [activePosition, setActivePosition] = useState<FormattedPosition | null>(null)
   const node = useRef<HTMLDivElement>(null)
 
   const lowercasedAddress = address.toLowerCase()
@@ -198,29 +188,18 @@ export default function AccountPage(): JSX.Element {
   const transactions = useUserTransactions(lowercasedAddress)
 
   const { data } = useFetchedUserPositionData(lowercasedAddress)
-  const ethPriceUSD = useEthPrices()
 
-  const positionsMap: { [key: string]: FormattedPosition } = useMemo(() => {
-    const positionMap: { [key: string]: FormattedPosition } = {}
+  const positionsMap = useMemo(() => {
+    const positionMap: { [position_id: string]: FormattedPosition } = {}
 
-    data?.forEach((p) => {
-      const position = calcPosition({ p, chainId: activeNetwork.chainId, ethPriceUSD: ethPriceUSD?.current })
-
-      positionMap[p.id] = {
-        address: p.pool.id,
-        valueUSD: position.userPositionUSD,
-        token0Amount: position.token0Amount,
-        token1Amount: position.token1Amount,
-        data: p,
-      }
-    })
+    data?.forEach((p) => (positionMap[p.data.id] = p))
     return positionMap
-  }, [data, activeNetwork.chainId, ethPriceUSD])
+  }, [data])
 
   const currentPosition = useMemo(() => (activePosition ? [activePosition] : data), [activePosition, data])
 
   const positionValue = useMemo(() => {
-    return currentPosition ? currentPosition.reduce((total, p) => total + positionsMap[p.id].valueUSD, 0) : null
+    return currentPosition ? currentPosition.reduce((total, p) => total + positionsMap[p.data.id].valueUSD, 0) : null
   }, [currentPosition, positionsMap])
 
   const [page, setPage] = useState(1)
@@ -276,7 +255,7 @@ export default function AccountPage(): JSX.Element {
               <RowFixed>
                 <SavedIcon
                   fill={!!savedAccounts?.[activeNetwork.chainId]?.[lowercasedAddress]}
-                  onClick={() => addSavedAccount(activeNetwork.chainId, data[0].owner)}
+                  onClick={() => addSavedAccount(activeNetwork.chainId, data[0].data.owner)}
                 />
                 <StyledExternalLink href={getEtherscanLink(activeNetwork, lowercasedAddress, 'address')}>
                   <ButtonPrimary width="fit-content" style={{ height: '38px', fontSize: '14px' }}>
@@ -307,14 +286,14 @@ export default function AccountPage(): JSX.Element {
                   {activePosition && (
                     <RowFixed>
                       <DoubleCurrencyLogo
-                        address0={activePosition.token0.id}
-                        address1={activePosition.token1.id}
+                        address0={activePosition.data.token0.id}
+                        address1={activePosition.data.token1.id}
                         size={16}
                         activeNetwork={activeNetwork}
                       />
                       <TYPE.body ml="16px">
-                        {activePosition.token0.symbol}-{activePosition.token1.symbol}{' '}
-                        {feeTierPercent(parseFloat(activePosition.pool.feeTier))} Position
+                        {activePosition.data.token0.symbol}-{activePosition.data.token1.symbol}{' '}
+                        {feeTierPercent(parseFloat(activePosition.data.pool.feeTier))} Position
                       </TYPE.body>
                     </RowFixed>
                   )}
@@ -323,14 +302,14 @@ export default function AccountPage(): JSX.Element {
                   <Flyout>
                     <AutoColumn gap="0px">
                       {data?.map((p, i) => {
-                        if (p.token1.symbol === 'WETH') {
-                          p.token1.symbol = 'ETH'
+                        if (p.data.token1.symbol === 'WETH') {
+                          p.data.token1.symbol = 'ETH'
                         }
-                        if (p.token0.symbol === 'WETH') {
-                          p.token0.symbol = 'ETH'
+                        if (p.data.token0.symbol === 'WETH') {
+                          p.data.token0.symbol = 'ETH'
                         }
                         return (
-                          p.id !== activePosition?.id && (
+                          p.data.id !== activePosition?.data.id && (
                             <MenuRow
                               onClick={() => {
                                 setActivePosition(p)
@@ -340,14 +319,14 @@ export default function AccountPage(): JSX.Element {
                               name="asd"
                             >
                               <DoubleCurrencyLogo
-                                address0={p.token0.id}
-                                address1={p.token1.id}
+                                address0={p.data.token0.id}
+                                address1={p.data.token1.id}
                                 size={16}
                                 activeNetwork={activeNetwork}
                               />
                               <TYPE.breadcrumb ml="16px">
-                                {p.token0.symbol}-{p.token1.symbol} {feeTierPercent(parseFloat(p.pool.feeTier))}{' '}
-                                Position
+                                {p.data.token0.symbol}-{p.data.token1.symbol}{' '}
+                                {feeTierPercent(parseFloat(p.data.pool.feeTier))} Position
                               </TYPE.breadcrumb>
                             </MenuRow>
                           )
@@ -393,7 +372,7 @@ export default function AccountPage(): JSX.Element {
               <PanelWrapper>
                 <Panel style={{ gridColumn: '1' }}>
                   {activePosition ? (
-                    <PositionChart account={lowercasedAddress} activePosition={activePosition} />
+                    <PositionChart account={lowercasedAddress} activePosition={activePosition.data} />
                   ) : (
                     <AllPositionChart account={lowercasedAddress} />
                   )}
@@ -415,58 +394,58 @@ export default function AccountPage(): JSX.Element {
                 <AutoColumn gap="16px" style={{ padding: '20px' }}>
                   {data ? (
                     data.slice(maxItems * (page - 1), page * maxItems).map((item) => (
-                      <React.Fragment key={item.id}>
+                      <React.Fragment key={item.data.id}>
                         <ResponsiveGrid>
                           {!below740 && (
                             <Label>
                               <RowFixed>
                                 <DoubleCurrencyLogo
-                                  address0={item.token0.id}
-                                  address1={item.token1.id}
+                                  address0={item.data.token0.id}
+                                  address1={item.data.token1.id}
                                   size={16}
                                   activeNetwork={activeNetwork}
                                 />
                                 <Label marginLeft="4px">
-                                  {item.token0.symbol} - {item.token1.symbol}{' '}
-                                  {feeTierPercent(parseFloat(item.pool.feeTier))}
+                                  {item.data.token0.symbol} - {item.data.token1.symbol}{' '}
+                                  {feeTierPercent(parseFloat(item.data.pool.feeTier))}
                                 </Label>
                               </RowFixed>
                             </Label>
                           )}
                           <Label end={1} color={theme.primary}>
-                            <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.pool.id}>
-                              {below520 || !below740 ? shortenAddress(item.pool.id) : item.pool.id}
+                            <LinkWrapper to={networkPrefix(activeNetwork) + 'pool/' + item.data.pool.id}>
+                              {below520 || !below740 ? shortenAddress(item.data.pool.id) : item.data.pool.id}
                               {below740 && (
                                 <Label marginTop="12px">
                                   <RowFixed>
                                     <DoubleCurrencyLogo
-                                      address0={item.token0.id}
-                                      address1={item.token1.id}
+                                      address0={item.data.token0.id}
+                                      address1={item.data.token1.id}
                                       size={16}
                                       activeNetwork={activeNetwork}
                                     />
                                     <Label marginLeft="4px">
-                                      {item.token0.symbol} - {item.token1.symbol}{' '}
-                                      {feeTierPercent(parseFloat(item.pool.feeTier))}
+                                      {item.data.token0.symbol} - {item.data.token1.symbol}{' '}
+                                      {feeTierPercent(parseFloat(item.data.pool.feeTier))}
                                     </Label>
                                   </RowFixed>
                                 </Label>
                               )}
                             </LinkWrapper>
                           </Label>
-                          <Label end={1}>{formatDollarAmount(positionsMap[item.id].valueUSD)}</Label>
+                          <Label end={1}>{formatDollarAmount(positionsMap[item.data.id].valueUSD)}</Label>
                           {!below740 && (
                             <AutoColumn justify="flex-end">
                               <Label end={1}>
-                                {formatAmount(positionsMap[item.id].token0Amount) +
+                                {formatAmount(positionsMap[item.data.id].token0Amount) +
                                   ' ' +
-                                  positionsMap[item.id].data.token0.symbol}
+                                  positionsMap[item.data.id].data.token0.symbol}
                               </Label>
                               {below900 && (
                                 <Label end={1} mt="12px">
-                                  {formatAmount(positionsMap[item.id].token1Amount) +
+                                  {formatAmount(positionsMap[item.data.id].token1Amount) +
                                     ' ' +
-                                    positionsMap[item.id].data.token1.symbol}
+                                    positionsMap[item.data.id].data.token1.symbol}
                                 </Label>
                               )}
                             </AutoColumn>
@@ -474,9 +453,9 @@ export default function AccountPage(): JSX.Element {
 
                           {!below900 && (
                             <Label end={1}>
-                              {formatAmount(positionsMap[item.id].token1Amount) +
+                              {formatAmount(positionsMap[item.data.id].token1Amount) +
                                 ' ' +
-                                positionsMap[item.id].data.token1.symbol}
+                                positionsMap[item.data.id].data.token1.symbol}
                             </Label>
                           )}
                           {!below740 && (
@@ -490,9 +469,9 @@ export default function AccountPage(): JSX.Element {
                                   href={getPoolLink(
                                     {
                                       type: 'add',
-                                      token0Address: positionsMap[item.id].data.token0.id,
-                                      token1Address: positionsMap[item.id].data.token1.id,
-                                      feeTier: positionsMap[item.id].data.pool.feeTier,
+                                      token0Address: positionsMap[item.data.id].data.token0.id,
+                                      token1Address: positionsMap[item.data.id].data.token1.id,
+                                      feeTier: positionsMap[item.data.id].data.pool.feeTier,
                                     },
                                     activeNetwork
                                   )}
@@ -503,7 +482,7 @@ export default function AccountPage(): JSX.Element {
                                   href={getPoolLink(
                                     {
                                       type: 'remove',
-                                      positionId: positionsMap[item.id].data.id,
+                                      positionId: positionsMap[item.data.id].data.id,
                                     },
                                     activeNetwork
                                   )}
@@ -529,9 +508,9 @@ export default function AccountPage(): JSX.Element {
                               href={getPoolLink(
                                 {
                                   type: 'add',
-                                  token0Address: positionsMap[item.id].data.token0.id,
-                                  token1Address: positionsMap[item.id].data.token1.id,
-                                  feeTier: positionsMap[item.id].data.pool.feeTier,
+                                  token0Address: positionsMap[item.data.id].data.token0.id,
+                                  token1Address: positionsMap[item.data.id].data.token1.id,
+                                  feeTier: positionsMap[item.data.id].data.pool.feeTier,
                                 },
                                 activeNetwork
                               )}
@@ -544,7 +523,7 @@ export default function AccountPage(): JSX.Element {
                               href={getPoolLink(
                                 {
                                   type: 'remove',
-                                  positionId: positionsMap[item.id].data.id,
+                                  positionId: positionsMap[item.data.id].data.id,
                                 },
                                 activeNetwork
                               )}
