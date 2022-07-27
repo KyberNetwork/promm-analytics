@@ -70,6 +70,7 @@ export default function AccountsOverview(): JSX.Element {
     window.scrollTo(0, 0)
   }, [])
   const theme = useTheme()
+  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
 
   const { data } = useFetchedPositionsDatas()
 
@@ -89,7 +90,6 @@ export default function AccountsOverview(): JSX.Element {
       setMaxPage(Math.floor(data.length / maxItems) + extraPages)
     }
   }, [maxItems, data])
-  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
 
   return (
     <PageWrapper>
