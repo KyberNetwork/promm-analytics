@@ -89,7 +89,7 @@
     "wcag-contrast": "^3.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3102 react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "integration-test": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'",
