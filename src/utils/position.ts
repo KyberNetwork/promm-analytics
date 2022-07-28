@@ -1,7 +1,7 @@
 import { Pool, Position } from '@vutien/dmm-v3-sdk'
 import { CurrencyAmount, Token } from '@vutien/sdk-core'
 import { ChainId } from 'constants/networks'
-import { PositionFields } from 'data/wallets/walletData'
+import { FormattedPosition, PositionFields } from 'data/wallets/walletData'
 import JSBI from 'jsbi'
 
 export const calcPosition = ({
@@ -50,4 +50,24 @@ export const calcPosition = ({
 
   const userPositionUSD = token0Usd + token1Usd
   return { token0Amount, token1Amount, token0Usd, token1Usd, userPositionUSD }
+}
+
+export const formatPositions = (
+  positions: PositionFields[] | undefined,
+  ethPriceUSD: number | undefined,
+  chainId: ChainId
+): FormattedPosition[] | undefined => {
+  return positions
+    ?.map((p) => {
+      const position = calcPosition({ p, chainId: chainId, ethPriceUSD: ethPriceUSD })
+
+      return {
+        address: p.pool.id,
+        valueUSD: position.userPositionUSD,
+        token0Amount: position.token0Amount,
+        token1Amount: position.token1Amount,
+        data: p,
+      }
+    })
+    .sort((a, b) => b.valueUSD - a.valueUSD)
 }
