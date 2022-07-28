@@ -40,16 +40,18 @@ export function colors(darkMode: boolean): Colors {
     white,
     black,
 
-    text: darkMode ? '#FFFFFF' : '#3A3A3A',
-    textReverse: !darkMode ? '#FFFFFF' : '#3A3A3A',
-    subText: darkMode ? '#A7B6BD' : '#5C6468',
-    disabledText: darkMode ? '#6C7284' : '#B6B6B6',
+    text: darkMode ? '#ffffff' : '#222222',
+    textReverse: darkMode ? '#222222' : '#ffffff',
+    subText: darkMode ? '#A9A9A9' : '#5E5E5E',
+    disabledText: darkMode ? '#373737' : '#B6B6B6',
 
-    background: darkMode ? '#243036' : '#FFFFFF',
-    buttonBlack: darkMode ? '#11171A' : '#F5F5F5',
-    tableHeader: darkMode ? '#303E46' : '#F9F9F9',
-    buttonGray: darkMode ? '#40444F' : '#DCDBDC',
-    border: darkMode ? '#40505A' : '#dcdbdc ',
+    background: darkMode ? '#1C1C1C' : '#ffffff',
+
+    tableHeader: darkMode ? '#313131' : '#FBFBFB',
+    buttonBlack: darkMode ? '#0F0F0F' : '#f5f5f5',
+    buttonGray: darkMode ? '#292929' : '#E2E2E2',
+
+    border: darkMode ? '#505050' : '#C1C1C1',
 
     primary: '#31CB9E',
 

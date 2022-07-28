@@ -1,11 +1,13 @@
 import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { useClients } from 'state/application/hooks'
+import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { useAllPoolData } from 'state/pools/hooks'
 import { useMemo } from 'react'
 import { notEmpty } from 'utils'
 import { TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
+import { formatPositions } from 'utils/position'
+import { useEthPrices } from 'hooks/useEthPrices'
 
 export const POSITION_FRAGMENT = gql`
   fragment PositionFragment on Position {
@@ -38,9 +40,6 @@ export const POSITION_FRAGMENT = gql`
       decimals
       derivedETH
     }
-    amountDepositedUSD
-    depositedToken1
-    depositedToken0
   }
 `
 
@@ -48,7 +47,7 @@ const USER_POSITIONS = (user: string) => {
   const queryString = gql`
   ${POSITION_FRAGMENT}
   query positions {
-    positions(where: {owner: "${user.toLowerCase()}",liquidity_gt: 0}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
+    positions(where: {owner: "${user.toLowerCase()}",liquidity_gt: 0}, first: 100) {
       ...PositionFragment
     }
   }
@@ -65,21 +64,36 @@ export const TOP_POSITIONS = (poolIds: string[]): import('graphql').DocumentNode
 
   const queryString = `
   query positions {
-    positions(where: {pool_in: ${poolStrings}, liquidity_gt: 0}, orderBy: amountDepositedUSD, orderDirection: desc, first: 100) {
+    positions(where: {pool_in: ${poolStrings}, liquidity_gt: 0}, first: 100) {
       id
       owner
-      pool {
-        id
+      liquidity
+      tickLower {
+        tickIdx
       }
-      token0 {
+      tickUpper {
+        tickIdx
+      }
+      pool {
+       id
+       feeTier
+       tick
+       liquidity
+       reinvestL
+       sqrtPrice
+     }
+     token0 {
         id
         symbol
+        decimals
+        derivedETH
       }
       token1 {
         symbol
         id
+        decimals
+        derivedETH
       }
-      amountDepositedUSD
     }
   }
    `
@@ -116,13 +130,18 @@ export interface PositionFields {
   tickUpper: {
     tickIdx: string
   }
-  amountDepositedUSD: string
-  depositedToken1: string
-  depositedToken0: string
 }
 
 interface PositionDataResponse {
   positions: PositionFields[]
+}
+
+export type FormattedPosition = {
+  address: string
+  valueUSD: number
+  token0Amount: number
+  token1Amount: number
+  data: PositionFields
 }
 
 /**
@@ -131,9 +150,11 @@ interface PositionDataResponse {
 export function useFetchedPositionsDatas(): {
   loading: boolean
   error: boolean
-  data: PositionFields[] | undefined
+  positions: FormattedPosition[] | undefined
 } {
   const { dataClient } = useClients()[0]
+  const ethPriceUSD = useEthPrices()
+  const activeNetwork = useActiveNetworks()[0]
 
   const allPoolData = useAllPoolData()
 
@@ -148,10 +169,15 @@ export function useFetchedPositionsDatas(): {
     client: dataClient,
   })
 
+  const formattedPosition = useMemo(
+    () => formatPositions(data?.positions, ethPriceUSD?.current, activeNetwork.chainId),
+    [activeNetwork.chainId, data?.positions, ethPriceUSD]
+  )
+
   return {
     loading: loading,
     error: !!error,
-    data: data?.positions,
+    positions: formattedPosition,
   }
 }
 
@@ -160,17 +186,25 @@ export function useFetchedUserPositionData(
 ): {
   loading: boolean
   error?: boolean
-  data?: PositionFields[]
+  data?: FormattedPosition[]
 } {
   const { dataClient } = useClients()[0]
+  const ethPriceUSD = useEthPrices()
+  const activeNetwork = useActiveNetworks()[0]
+
   const { loading, error, data } = useQuery<PositionDataResponse>(USER_POSITIONS(address), {
     client: dataClient,
   })
 
+  const formattedPosition = useMemo(
+    () => formatPositions(data?.positions, ethPriceUSD?.current, activeNetwork.chainId),
+    [activeNetwork.chainId, data?.positions, ethPriceUSD]
+  )
+
   return {
     loading: loading,
     error: !!error,
-    data: data?.positions,
+    data: formattedPosition,
   }
 }
 
