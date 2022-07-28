@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Search as SearchIcon, X } from 'react-feather'
 
 import Row, { RowFixed } from 'components/Row'
-import { useActiveNetworks } from 'state/application/hooks'
+import { useActiveNetworkUtils } from 'state/application/hooks'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { TYPE } from 'theme'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
@@ -132,8 +132,8 @@ const Blue = styled.span`
   }
 `
 
-export const Search = (): JSX.Element => {
-  const activeNetwork = useActiveNetworks()[0]
+export const Search = (): JSX.Element | null => {
+  const { isAllChain, networkInfo: activeNetwork } = useActiveNetworkUtils()
   const [showMenu, toggleMenu] = useState(false)
   const [value, setValue] = useState('')
   const { tokens, pools } = useFetchSearchResults(value)
@@ -174,6 +174,8 @@ export const Search = (): JSX.Element => {
       document.removeEventListener('click', handleClick)
     }
   }, [handleClick])
+
+  if (isAllChain) return null
 
   return (
     <Container>
@@ -262,7 +264,6 @@ export const Search = (): JSX.Element => {
           {tokens.slice(0, tokensShown).map((token) => {
             return (
               <BasicLink
-                // to={'/' + NETWORKS_INFO[token.chainId].urlKey + '/token/' + token.id} //todo namgold: support all chain view
                 to={'/' + activeNetwork.route + '/token/' + token.address}
                 key={token.address}
                 onClick={onDismiss}
@@ -272,7 +273,6 @@ export const Search = (): JSX.Element => {
                     <CurrencyLogo
                       address={token.address}
                       style={{ marginRight: '10px' }}
-                      // networkInfo={NETWORKS_INFO[token.chainId]} //todo namgold: support all chain view
                       activeNetwork={activeNetwork}
                     />
                     <FormattedName text={token.name} maxCharacters={20} style={{ marginRight: '6px' }} />

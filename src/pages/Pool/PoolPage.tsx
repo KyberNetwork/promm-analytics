@@ -226,7 +226,7 @@ export default function PoolPage(): JSX.Element {
                   <AutoColumn gap="16px">
                     <RowBetween>
                       <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
-                      <Percent fontSize={12} value={poolData.tvlUSDChange} />
+                      <Percent hideWhenZero fontSize={12} value={poolData.tvlUSDChange} />
                     </RowBetween>
                     <TYPE.label fontSize="20px">{formatDollarAmount(poolData.tvlUSD)}</TYPE.label>
                   </AutoColumn>
@@ -235,7 +235,7 @@ export default function PoolPage(): JSX.Element {
                   <AutoColumn gap="16px">
                     <RowBetween>
                       <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
-                      <Percent fontSize={12} value={poolData.volumeUSDChange} />
+                      <Percent hideWhenZero fontSize={12} value={poolData.volumeUSDChange} />
                     </RowBetween>
                     <TYPE.label fontSize="20px">{formatDollarAmount(poolData.volumeUSD)}</TYPE.label>
                   </AutoColumn>

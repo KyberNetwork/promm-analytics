@@ -155,7 +155,7 @@ export default function TokenPage(): JSX.Element {
                       <HideMedium>
                         <RowFlat style={{ marginLeft: '16px', marginTop: '8px' }}>
                           <PriceText mr="10px"> {formatDollarAmount(tokenData.priceUSD)}</PriceText>
-                          <Percent value={tokenData.priceUSDChange} />
+                          <Percent hideWhenZero value={tokenData.priceUSDChange} />
                         </RowFlat>
                       </HideMedium>
                     </RowFixed>
@@ -209,7 +209,7 @@ export default function TokenPage(): JSX.Element {
                     <AutoColumn gap="16px">
                       <Flex justifyContent="space-between">
                         <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
-                        <Percent fontSize={12} value={tokenData.tvlUSDChange} />
+                        <Percent hideWhenZero fontSize={12} value={tokenData.tvlUSDChange} />
                       </Flex>
                       <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.tvlUSD)}</TYPE.label>
                     </AutoColumn>
@@ -218,7 +218,7 @@ export default function TokenPage(): JSX.Element {
                     <AutoColumn gap="16px">
                       <Flex justifyContent="space-between">
                         <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
-                        <Percent fontSize={12} value={tokenData.volumeUSDChange} />
+                        <Percent hideWhenZero fontSize={12} value={tokenData.volumeUSDChange} />
                       </Flex>
                       <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.volumeUSD)}</TYPE.label>
                     </AutoColumn>
@@ -227,7 +227,7 @@ export default function TokenPage(): JSX.Element {
                     <AutoColumn gap="16px">
                       <Flex justifyContent="space-between">
                         <TYPE.title fontSize="14px">Fees (24H)</TYPE.title>
-                        <Percent fontSize={12} value={tokenData.feesUSDChange} />
+                        <Percent hideWhenZero fontSize={12} value={tokenData.feesUSDChange} />
                       </Flex>
                       <TYPE.label fontSize="20px">{formatDollarAmount(tokenData.feesUSD)}</TYPE.label>
                     </AutoColumn>

@@ -3,7 +3,7 @@ import { Menu as MenuIcon, Repeat, Activity } from 'react-feather'
 import styled from 'styled-components'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { ApplicationModal } from 'state/application/actions'
-import { useModalOpen, useToggleModal, useActiveNetworks } from 'state/application/hooks'
+import { useModalOpen, useToggleModal, useActiveNetworkUtils } from 'state/application/hooks'
 
 import { useLocation } from 'react-router-dom'
 import { networkPrefix } from 'utils/networkPrefix'
@@ -69,7 +69,7 @@ export default function Menu(): JSX.Element {
   const toggle = useToggleModal(ApplicationModal.MENU)
   useOnClickOutside(node, open ? toggle : undefined)
   const { pathname } = useLocation()
-  const activeNetworks = useActiveNetworks()[0]
+  const { networkInfo, isAllChain } = useActiveNetworkUtils()
 
   return (
     <StyledMenu ref={node}>
@@ -79,18 +79,18 @@ export default function Menu(): JSX.Element {
 
       {open && (
         <MenuFlyout>
-          <MenuItem to={networkPrefix(activeNetworks) + 'accounts'} isActive={pathname.includes('account')}>
-            <Wallet />
-            Wallet Analytics
-          </MenuItem>
-
-          <Divider />
+          {!isAllChain && (
+            <>
+              <MenuItem to={networkPrefix(networkInfo) + 'accounts'} isActive={pathname.includes('account')}>
+                <Wallet />
+                Wallet Analytics
+              </MenuItem>
+              <Divider />
+            </>
+          )}
 
           <ExternalMenu
-            href={addNetworkIdQueryString(
-              process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com',
-              activeNetworks
-            )}
+            href={addNetworkIdQueryString(process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com', networkInfo)}
           >
             <Repeat size={16} />
             Swap

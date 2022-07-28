@@ -1,5 +1,5 @@
 import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
-import { useDeltaTimestamps } from 'utils/queries'
+import { getDeltaTimestamps } from 'utils/queries'
 import { useState, useEffect, useMemo } from 'react'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
@@ -95,8 +95,7 @@ export function useEthPrices(): EthPrices | undefined {
   const [prices, setPrices] = useState<{ [network: string]: EthPrices | undefined }>()
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
-
-  const [t24, t48, tWeek] = useDeltaTimestamps()
+  const [t24, t48, tWeek] = getDeltaTimestamps()
   const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
 
   // index on active network

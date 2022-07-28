@@ -1,12 +1,12 @@
-import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
-import { useDeltaTimestamps } from 'utils/queries'
-import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { getDeltaTimestamps } from 'utils/queries'
+import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
-import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { FEE_BASE_UNITS } from 'utils'
+import { NetworkInfo } from 'constants/networks'
+import { fetchTopPoolAddresses } from './topPools'
 
 export const POOLS_BULK = (block: number | string | undefined, pools: string[]): import('graphql').DocumentNode => {
   let poolString = `[`
@@ -90,79 +90,43 @@ interface PoolDataResponse {
 /**
  * Fetch top addresses by volume
  */
-export function usePoolDatas(
-  poolAddresses: string[]
-): {
-  loading: boolean
-  error: boolean
-  data:
-    | {
-        [address: string]: PoolData
-      }
-    | undefined
-} {
-  // get client
-  const { dataClient } = useClients()[0]
-  const activeNetwork = useActiveNetworks()[0]
-
+export async function fetchPoolData(
+  network: NetworkInfo
+): Promise<{
+  [address: string]: PoolData
+}> {
   // get blocks from historic timestamps
-  const [t24, t48, tWeek] = useDeltaTimestamps()
-  const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
+  const [poolAddresses, blocks] = await Promise.all([
+    fetchTopPoolAddresses(network.client),
+    getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient),
+  ])
+
   const [block24, block48, blockWeek] = blocks ?? []
 
-  const { loading, error, data } = useQuery<PoolDataResponse>(POOLS_BULK(undefined, poolAddresses), {
-    client: dataClient,
+  // fetch all data
+  const inputs = [undefined, block24?.number ?? 0, block48?.number ?? 0, blockWeek?.number ?? 0]
+
+  const response = await Promise.allSettled(
+    inputs.map((val) =>
+      network.client.query({
+        query: POOLS_BULK(val, poolAddresses),
+        fetchPolicy: 'cache-first',
+      })
+    )
+  )
+
+  const [data, data24, data48, dataWeek] = response.map((e: PromiseSettledResult<any>) =>
+    e.status === 'fulfilled' ? e.value.data : ({} as PoolDataResponse)
+  )
+
+  const [parsed, parsed24, parsed48, parsedWeek] = [data, data24, data48, dataWeek].map((item) => {
+    return item?.pools
+      ? item.pools.reduce((accum: { [address: string]: PoolFields }, poolData: PoolFields) => {
+          accum[poolData.id] = poolData
+          return accum
+        }, {})
+      : {}
   })
-
-  const { loading: loading24, error: error24, data: data24 } = useQuery<PoolDataResponse>(
-    POOLS_BULK(block24?.number, poolAddresses),
-    { client: dataClient }
-  )
-  const { loading: loading48, error: error48, data: data48 } = useQuery<PoolDataResponse>(
-    POOLS_BULK(block48?.number, poolAddresses),
-    { client: dataClient }
-  )
-  const { loading: loadingWeek, error: errorWeek, data: dataWeek } = useQuery<PoolDataResponse>(
-    POOLS_BULK(blockWeek?.number, poolAddresses),
-    { client: dataClient }
-  )
-
-  const anyError = Boolean(error || error24 || error48 || blockError || errorWeek)
-  const anyLoading = Boolean(loading || loading24 || loading48 || loadingWeek)
-
-  // return early if not all data yet
-  if (anyError || anyLoading) {
-    return {
-      loading: anyLoading,
-      error: anyError,
-      data: undefined,
-    }
-  }
-
-  const parsed = data?.pools
-    ? data.pools.reduce((accum: { [address: string]: PoolFields }, poolData) => {
-        accum[poolData.id] = poolData
-        return accum
-      }, {})
-    : {}
-  const parsed24 = data24?.pools
-    ? data24.pools.reduce((accum: { [address: string]: PoolFields }, poolData) => {
-        accum[poolData.id] = poolData
-        return accum
-      }, {})
-    : {}
-  const parsed48 = data48?.pools
-    ? data48.pools.reduce((accum: { [address: string]: PoolFields }, poolData) => {
-        accum[poolData.id] = poolData
-        return accum
-      }, {})
-    : {}
-  const parsedWeek = dataWeek?.pools
-    ? dataWeek.pools.reduce((accum: { [address: string]: PoolFields }, poolData) => {
-        accum[poolData.id] = poolData
-        return accum
-      }, {})
-    : {}
 
   // format data and calculate daily changes
   const formatted = poolAddresses.reduce((accum: { [address: string]: PoolData }, address) => {
@@ -210,15 +174,15 @@ export function usePoolDatas(
         tick: parseFloat(current.tick),
         token0: {
           address: current.token0.id,
-          name: formatTokenName(current.token0.id, current.token0.name, activeNetwork),
-          symbol: formatTokenSymbol(current.token0.id, current.token0.symbol, activeNetwork),
+          name: formatTokenName(current.token0.id, current.token0.name, network),
+          symbol: formatTokenSymbol(current.token0.id, current.token0.symbol, network),
           decimals: parseInt(current.token0.decimals),
           derivedETH: parseFloat(current.token0.derivedETH),
         },
         token1: {
           address: current.token1.id,
-          name: formatTokenName(current.token1.id, current.token1.name, activeNetwork),
-          symbol: formatTokenSymbol(current.token1.id, current.token1.symbol, activeNetwork),
+          name: formatTokenName(current.token1.id, current.token1.name, network),
+          symbol: formatTokenSymbol(current.token1.id, current.token1.symbol, network),
           decimals: parseInt(current.token1.decimals),
           derivedETH: parseFloat(current.token1.derivedETH),
         },
@@ -232,15 +196,12 @@ export function usePoolDatas(
         tvlToken0,
         tvlToken1,
         apr: tvlUSD > 0 ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD : 0,
+        chainId: network.chainId,
       }
     }
 
     return accum
   }, {})
 
-  return {
-    loading: anyLoading,
-    error: anyError,
-    data: formatted,
-  }
+  return formatted
 }
