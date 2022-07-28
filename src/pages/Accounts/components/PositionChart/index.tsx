@@ -48,7 +48,7 @@ const PositionChart = ({ account, activePosition }: PositionChartProps): JSX.Ele
 
   const below600 = useMedia('(max-width: 600px)')
 
-  const [chartView, setChartView] = useState(CHART_VIEW.VALUE)
+  const [chartView] = useState(CHART_VIEW.VALUE)
 
   // based on window, get starttime
   const utcStartTime = getTimeframe(timeWindow)

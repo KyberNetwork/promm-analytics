@@ -1,4 +1,5 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { ChainId } from 'constants/networks'
 import gql from 'graphql-tag'
 import { Transaction, TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
@@ -293,7 +294,8 @@ interface TransactionResults {
 
 export async function fetchTokenTransactions(
   address: string,
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
+  chainId: ChainId
 ): Promise<{ data: Transaction[] | undefined; error: boolean; loading: boolean }> {
   try {
     const { data, error, loading } = await client.query<TransactionResults>({
@@ -333,6 +335,7 @@ export async function fetchTokenTransactions(
         amountUSD: parseFloat(m.amountUSD),
         amountToken0: parseFloat(m.amount0),
         amountToken1: parseFloat(m.amount1),
+        chainId,
       }
     })
     const mints1 = data.mintsAs1.map((m) => {
@@ -348,6 +351,7 @@ export async function fetchTokenTransactions(
         amountUSD: parseFloat(m.amountUSD),
         amountToken0: parseFloat(m.amount0),
         amountToken1: parseFloat(m.amount1),
+        chainId,
       }
     })
 
@@ -364,6 +368,7 @@ export async function fetchTokenTransactions(
         amountUSD: parseFloat(m.amountUSD),
         amountToken0: parseFloat(m.amount0),
         amountToken1: parseFloat(m.amount1),
+        chainId,
       }
     })
     const burns1 = data.burnsAs1.map((m) => {
@@ -379,6 +384,7 @@ export async function fetchTokenTransactions(
         amountUSD: parseFloat(m.amountUSD),
         amountToken0: parseFloat(m.amount0),
         amountToken1: parseFloat(m.amount1),
+        chainId,
       }
     })
 
@@ -395,6 +401,7 @@ export async function fetchTokenTransactions(
         amountUSD: parseFloat(m.amountUSD),
         amountToken0: parseFloat(m.amount0),
         amountToken1: parseFloat(m.amount1),
+        chainId,
       }
     })
 
@@ -411,6 +418,7 @@ export async function fetchTokenTransactions(
         amountUSD: parseFloat(m.amountUSD),
         amountToken0: parseFloat(m.amount0),
         amountToken1: parseFloat(m.amount1),
+        chainId,
       }
     })
 

@@ -1,3 +1,5 @@
+import { ChainId } from 'constants/networks'
+
 export interface Block {
   number: number
   timestamp: string
@@ -24,6 +26,7 @@ export enum TransactionType {
   SWAP,
   MINT,
   BURN,
+  ALL,
 }
 
 export type Transaction = {
@@ -38,6 +41,7 @@ export type Transaction = {
   amountUSD: number
   amountToken0: number
   amountToken1: number
+  chainId: ChainId
 }
 
 /**

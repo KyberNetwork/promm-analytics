@@ -14,6 +14,7 @@ import OASIS_LOGO_URL from '../assets/network-logo/oasis.svg'
 import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
 import VELAS_LOGO_URL from '../assets/network-logo/velas.png'
 import OPTIMISM_LOGO_URL from '../assets/network-logo/optimism.svg'
+import { ALL_CHAIN_ID } from 'constants/index'
 
 export enum ChainId {
   ETHEREUM = 1,
@@ -36,6 +37,8 @@ export enum ChainId {
   OASIS = 42262,
   OPTIMISM = 10,
 }
+
+export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
 
 export type NetworkInfo = {
   chainId: ChainId
@@ -324,39 +327,7 @@ const OptimismNetworkInfo: NetworkInfo = {
   startBlock: 12001267,
 }
 
-export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
-export const SHOW_NETWORKS = [
-  ChainId.ETHEREUM,
-  ChainId.POLYGON,
-  ChainId.BSCMAINNET,
-  ChainId.AVAXMAINNET,
-  ChainId.FANTOM,
-  ChainId.CRONOS,
-  ChainId.ARBITRUM,
-  ChainId.BTTC,
-  ChainId.VELAS,
-  ChainId.AURORA,
-  ChainId.OASIS,
-  ChainId.OPTIMISM,
-]
-
-export const NETWORKS_INFO_LIST: NetworkInfo[] = [
-  EthereumNetworkInfo,
-  BscNetworkInfo,
-  RopstenNetworkInfo,
-  RinkebyNetworkInfo,
-  ArbitrumNetworkInfo,
-  PolygonNetworkInfo,
-  AvaxNetworkInfo,
-  FantomNetworkInfo,
-  CronosNetworkInfo,
-  BTTCNetworkInfo,
-  VelasNetworkInfo,
-  AuroraNetworkInfo,
-  OasisNetworkInfo,
-  OptimismNetworkInfo,
-]
-
+// all mapping network info
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
   [ChainId.BSCMAINNET]: BscNetworkInfo,
@@ -373,3 +344,17 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.OASIS]: OasisNetworkInfo,
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
 }
+
+// all network info
+export const NETWORKS_INFO_LIST: NetworkInfo[] = Object.values(NETWORKS_INFO_MAP)
+
+// for fetch data
+export const SUPPORTED_NETWORKS = Object.keys(NETWORKS_INFO_MAP).map(Number) as ChainId[]
+export const ALL_SUPPORTED_NETWORKS = [ALL_CHAIN_ID, ...SUPPORTED_NETWORKS] as ChainIdType[]
+
+const NETWORK_NOT_IN_MENU = [ChainId.ROPSTEN, ChainId.RINKEBY, ChainId.AURORA] as ChainIdType[]
+const FILTER_NETWORK = ALL_SUPPORTED_NETWORKS.filter((e: ChainIdType) => !NETWORK_NOT_IN_MENU.includes(e))
+
+// network display menu network list
+export const CLASSIC_SUPPORTED_NETWORKS = [...FILTER_NETWORK, ChainId.AURORA]
+export const ELASTIC_SUPPORTED_NETWORKS = [...FILTER_NETWORK]

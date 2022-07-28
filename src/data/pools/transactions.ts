@@ -1,4 +1,5 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { ChainId } from 'constants/networks'
 import gql from 'graphql-tag'
 import { Transaction, TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
@@ -135,7 +136,8 @@ interface TransactionResults {
 
 export async function fetchPoolTransactions(
   address: string,
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
+  chainId: ChainId
 ): Promise<{ data: Transaction[] | undefined; error: boolean; loading: boolean }> {
   const { data, error, loading } = await client.query<TransactionResults>({
     query: POOL_TRANSACTIONS,
@@ -174,6 +176,7 @@ export async function fetchPoolTransactions(
       amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      chainId,
     }
   })
   const burns = data.burns.map((m) => {
@@ -189,6 +192,7 @@ export async function fetchPoolTransactions(
       amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      chainId,
     }
   })
 
@@ -205,6 +209,7 @@ export async function fetchPoolTransactions(
       amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      chainId,
     }
   })
 

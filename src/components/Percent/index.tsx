@@ -8,6 +8,7 @@ export interface LogoProps {
   decimals?: number
   fontSize?: number
   fontWeight?: number
+  hideWhenZero?: boolean
 }
 
 const PercentText = styled(Text)<{ fontWeight?: number; fontSize?: number; color?: string }>`
@@ -16,7 +17,13 @@ const PercentText = styled(Text)<{ fontWeight?: number; fontSize?: number; color
   color: ${({ color }) => color};
 `
 
-export default function Percent({ value, decimals = 2, fontSize, fontWeight }: LogoProps): JSX.Element {
+export default function Percent({
+  value,
+  decimals = 2,
+  fontSize,
+  fontWeight,
+  hideWhenZero = false,
+}: LogoProps): JSX.Element | null {
   if (value === undefined || value === null) {
     return (
       <PercentText fontWeight={fontWeight} fontSize={fontSize}>
@@ -27,6 +34,7 @@ export default function Percent({ value, decimals = 2, fontSize, fontWeight }: L
   const fixedPercent = value.toFixed(decimals)
 
   if (value === 0 || fixedPercent == '0.00') {
+    if (hideWhenZero) return null
     return (
       <PercentText fontWeight={fontWeight} fontSize={fontSize}>
         0%
@@ -43,6 +51,7 @@ export default function Percent({ value, decimals = 2, fontSize, fontWeight }: L
   }
 
   if (value < 0 && value > -0.0001) {
+    if (hideWhenZero) return null
     return (
       <PercentText fontWeight={fontWeight} fontSize={fontSize} color="#FF537B">
         {'-0%'}

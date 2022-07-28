@@ -2,7 +2,7 @@ import { currentTimestamp } from './../../utils/index'
 import { updateProtocolData, updateChartData, updateTransactions } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { ChartDayData, Transaction } from 'types'
-import { ChainId } from 'constants/networks'
+import { ALL_SUPPORTED_NETWORKS } from 'constants/networks'
 
 export interface ProtocolData {
   // volume
@@ -36,92 +36,11 @@ export interface ProtocolState {
   }
 }
 
-export const initialState: ProtocolState = {
-  [ChainId.ETHEREUM]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.BSCMAINNET]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.ROPSTEN]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.RINKEBY]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.ARBITRUM]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.POLYGON]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.AVAXMAINNET]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.FANTOM]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.CRONOS]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.BTTC]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.VELAS]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.AURORA]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.OASIS]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-  [ChainId.OPTIMISM]: {
-    data: undefined,
-    chartData: undefined,
-    transactions: undefined,
-    lastUpdated: undefined,
-  },
-}
+export const initialState: ProtocolState = {}
+
+ALL_SUPPORTED_NETWORKS.forEach((net) => {
+  initialState[net] = { data: undefined, chartData: undefined, transactions: undefined, lastUpdated: undefined }
+})
 
 export default createReducer(initialState, (builder) =>
   builder

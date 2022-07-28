@@ -31,12 +31,10 @@ const ResponsiveGrid = styled.div<{ isShowNetworkColumn?: boolean }>`
   display: grid;
   grid-gap: 1em;
   align-items: center;
-
+  padding: 0;
   grid-template-columns: 10px 1.5fr ${({ isShowNetworkColumn }) => (isShowNetworkColumn ? '75px' : '')} 1fr 1fr 1fr;
   grid-template-areas: 'number name ${({ isShowNetworkColumn }) =>
     isShowNetworkColumn ? 'network' : ''} pair pool value';
-  padding: 0;
-
   > * {
     justify-content: flex-end;
   }
@@ -89,7 +87,7 @@ export default function AccountsOverview(): JSX.Element {
       setMaxPage(Math.floor(data.length / maxItems) + extraPages)
     }
   }, [maxItems, data])
-  const activeNetwork = useActiveNetworks()[0] // todo namgold: handle all chain view + get network from tokenData
+  const activeNetwork = useActiveNetworks()[0] // todo namgold: get network from tokenData
 
   return (
     <PageWrapper>
@@ -176,7 +174,9 @@ export default function AccountsOverview(): JSX.Element {
               >
                 <Arrow faded={page === 1 ? true : false}>←</Arrow>
               </div>
-              <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
+              <TYPE.body>
+                Page {page} of {maxPage}
+              </TYPE.body>
               <div
                 onClick={() => {
                   setPage(page === maxPage ? page : page + 1)

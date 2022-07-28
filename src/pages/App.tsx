@@ -8,7 +8,7 @@ import TokensOverview from './Token/TokensOverview'
 import { RedirectInvalidToken } from './Token/redirects'
 import PoolPage from './Pool/PoolPage'
 import { ExternalLink, TYPE } from 'theme'
-import { useActiveNetworks, useSubgraphStatus } from 'state/application/hooks'
+import { useSubgraphStatus } from 'state/application/hooks'
 import { DarkGreyCard } from 'components/Card'
 import SideNav from 'components/Layout/SideNav'
 import KyberLoading from 'components/Loader/KyberLoading'
@@ -16,10 +16,11 @@ import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
-import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
+import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP } from 'constants/networks'
 import { updateActiveNetwork } from 'state/application/actions'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
+import { ALL_CHAIN_ID } from 'constants/index'
 
 const ContentWrapper = styled.div<{ open: boolean }>`
   width: 100%;
@@ -63,29 +64,29 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
-const Hide1080 = styled.div`
-  @media (max-width: 1080px) {
-    display: none;
-  }
-`
+// const Hide1080 = styled.div`
+//   @media (max-width: 1080px) {
+//     display: none;
+//   }
+// `
 
-const WarningWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`
+// const WarningWrapper = styled.div`
+//   width: 100%;
+//   display: flex;
+//   justify-content: center;
+// `
 
-const WarningBanner = styled.div`
-  background-color: ${({ theme }) => theme.bg3};
-  padding: 1rem;
-  color: white;
-  font-size: 14px;
-  width: 100%;
-  text-align: center;
-  font-weight: 500;
-`
+// const WarningBanner = styled.div`
+//   background-color: ${({ theme }) => theme.bg3};
+//   padding: 1rem;
+//   color: white;
+//   font-size: 14px;
+//   width: 100%;
+//   text-align: center;
+//   font-weight: 500;
+// `
 
-const BLOCK_DIFFERENCE_THRESHOLD = 30
+// const BLOCK_DIFFERENCE_THRESHOLD = 30
 
 const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ children }) => {
   const { networkID: currentNetworkURL } = useParams<{ networkID: string }>()
@@ -95,35 +96,44 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
 
   useEffect(() => {
     if (!currentNetworkURL) {
-      dispatch(updateActiveNetwork({ chainId: 'allchain' }))
+      dispatch(updateActiveNetwork({ chainId: ALL_CHAIN_ID }))
     } else if (networkInfoFromURL) {
-      dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || 'allchain' }))
+      dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || ALL_CHAIN_ID }))
     }
   }, [currentNetworkURL, networkInfoFromURL, dispatch])
-  // const homeLink = '/home'
-  const homeLink = `/${NETWORKS_INFO_MAP[SHOW_NETWORKS[0]].route}/home`
-  if (currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} />
-  if (!currentNetworkURL && !networkInfoFromURL) return <Redirect to={homeLink} /> //not support all chains yet
+  const homeLink = `/${NETWORKS_INFO_MAP[ChainId.ETHEREUM].route}/home`
+
   if (networkInfoFromURL?.chainId === ChainId.AURORA) return <Redirect to={homeLink} /> //not support Aurora yet
   return children
 }
 
+export const AppRoutes = [
+  { path: '/:networkID?/pools', element: (): JSX.Element => <PoolsOverview /> },
+  { path: '/:networkID?/pool/:address', element: (): JSX.Element => <PoolPage /> },
+  { path: '/:networkID?/tokens', element: (): JSX.Element => <TokensOverview /> },
+  { path: '/:networkID?/token/:address', element: (): JSX.Element => <RedirectInvalidToken /> },
+  { path: '/:networkID?/accounts', element: (): JSX.Element => <AccountsOverview /> },
+  { path: '/:networkID?/account/:address', element: (): JSX.Element => <AccountPage /> },
+  { path: '/:networkID?/home', element: (): JSX.Element => <Home />, strict: false },
+]
+
 export default function App(): JSX.Element {
   const [savedOpen, setSavedOpen] = useState(false)
   // pretend load buffer
+  // pretend load buffer
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1300)
+    setTimeout(() => setLoading(false), 1000)
   }, [])
 
-  const activeNetwork = useActiveNetworks()
+  // const activeNetwork = useActiveNetworks()
   // subgraph health
   const [subgraphStatus] = useSubgraphStatus()
 
-  const showNotSyncedWarning =
-    subgraphStatus.headBlock && subgraphStatus.syncedBlock
-      ? subgraphStatus.headBlock - subgraphStatus.syncedBlock > BLOCK_DIFFERENCE_THRESHOLD
-      : false
+  // const showNotSyncedWarning =
+  //   subgraphStatus.headBlock && subgraphStatus.syncedBlock
+  //     ? subgraphStatus.headBlock - subgraphStatus.syncedBlock > BLOCK_DIFFERENCE_THRESHOLD
+  //     : false
 
   return (
     <Suspense fallback={null}>
@@ -165,75 +175,15 @@ export default function App(): JSX.Element {
               <SideNav />
               <BodyWrapper>
                 <Switch>
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/pools"
-                    render={() => (
-                      <NetworkReader>
-                        <PoolsOverview />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/pool/:address"
-                    render={() => (
-                      <NetworkReader>
-                        <PoolPage />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/tokens"
-                    render={() => (
-                      <NetworkReader>
-                        <TokensOverview />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/token/:address"
-                    render={() => (
-                      <NetworkReader>
-                        <RedirectInvalidToken />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/accounts"
-                    render={() => (
-                      <NetworkReader>
-                        <AccountsOverview />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    strict
-                    path="/:networkID?/account/:address"
-                    render={() => (
-                      <NetworkReader>
-                        <AccountPage />
-                      </NetworkReader>
-                    )}
-                  />
-                  <Route
-                    exact
-                    path="/:networkID?/home"
-                    render={() => (
-                      <NetworkReader>
-                        <Home />
-                      </NetworkReader>
-                    )}
-                  />
+                  {AppRoutes.map((item) => (
+                    <Route
+                      key={item.path}
+                      exact
+                      strict={item.strict ?? true}
+                      path={item.path}
+                      render={() => <NetworkReader>{item.element()}</NetworkReader>}
+                    />
+                  ))}
                   <Route path="/:networkID" render={() => <RedirectToHome />} />
                   <Route path="*" render={() => <RedirectToHome />} />
                 </Switch>

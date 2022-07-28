@@ -9,7 +9,7 @@ import {
 } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { PriceChartEntry, Transaction } from 'types'
-import { ChainId } from 'constants/networks'
+import { ALL_SUPPORTED_NETWORKS, ChainId } from 'constants/networks'
 
 export type TokenData = {
   // token is in some pool on uniswap
@@ -38,6 +38,8 @@ export type TokenData = {
   priceUSD: number
   priceUSDChange: number
   priceUSDChangeWeek: number
+
+  chainId: ChainId
 }
 
 export interface TokenChartEntry {
@@ -66,23 +68,11 @@ export interface TokensState {
 }
 
 export const initialState: TokensState = {
-  byAddress: {
-    [ChainId.ETHEREUM]: {},
-    [ChainId.BSCMAINNET]: {},
-    [ChainId.ROPSTEN]: {},
-    [ChainId.RINKEBY]: {},
-    [ChainId.ARBITRUM]: {},
-    [ChainId.POLYGON]: {},
-    [ChainId.AVAXMAINNET]: {},
-    [ChainId.FANTOM]: {},
-    [ChainId.CRONOS]: {},
-    [ChainId.BTTC]: {},
-    [ChainId.VELAS]: {},
-    [ChainId.AURORA]: {},
-    [ChainId.OASIS]: {},
-    [ChainId.OPTIMISM]: {},
-  },
+  byAddress: {},
 }
+ALL_SUPPORTED_NETWORKS.forEach((chainId) => {
+  initialState.byAddress[chainId] = {}
+})
 
 export default createReducer(initialState, (builder) =>
   builder
