@@ -327,40 +327,7 @@ const OptimismNetworkInfo: NetworkInfo = {
   startBlock: 12001267,
 }
 
-export const ALL_SUPPORT_NETWORKS_ID = Object.values(ChainId).filter((i) => !isNaN(Number(i))) as ChainId[]
-
-export const SHOW_NETWORKS = [
-  ChainId.ETHEREUM,
-  ChainId.POLYGON,
-  ChainId.BSCMAINNET,
-  ChainId.AVAXMAINNET,
-  ChainId.FANTOM,
-  ChainId.CRONOS,
-  ChainId.ARBITRUM,
-  ChainId.BTTC,
-  ChainId.VELAS,
-  ChainId.AURORA,
-  ChainId.OASIS,
-  ChainId.OPTIMISM,
-]
-
-export const NETWORKS_INFO_LIST: NetworkInfo[] = [
-  EthereumNetworkInfo,
-  BscNetworkInfo,
-  RopstenNetworkInfo,
-  RinkebyNetworkInfo,
-  ArbitrumNetworkInfo,
-  PolygonNetworkInfo,
-  AvaxNetworkInfo,
-  FantomNetworkInfo,
-  CronosNetworkInfo,
-  BTTCNetworkInfo,
-  VelasNetworkInfo,
-  AuroraNetworkInfo,
-  OasisNetworkInfo,
-  OptimismNetworkInfo,
-]
-
+// all mapping network info
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
   [ChainId.BSCMAINNET]: BscNetworkInfo,
@@ -378,4 +345,14 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
 }
 
-export const SUPPORTED_NETWORKS = [...SHOW_NETWORKS, ALL_CHAIN_ID].filter((e) => e != ChainId.AURORA) as ChainIdType[]
+// all network info
+export const NETWORKS_INFO_LIST: NetworkInfo[] = Object.values(NETWORKS_INFO_MAP)
+
+const NETWORK_NOT_SUPPORT = [ChainId.ROPSTEN, ChainId.RINKEBY, ChainId.AURORA]
+
+const FILTER_NETWORK = Object.keys(NETWORKS_INFO_MAP)
+  .map(Number)
+  .filter((e) => !NETWORK_NOT_SUPPORT.includes(e))
+
+// for fetch data, display
+export const SUPPORTED_NETWORKS = [ALL_CHAIN_ID, ...FILTER_NETWORK] as ChainIdType[]

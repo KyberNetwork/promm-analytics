@@ -10,7 +10,7 @@ import KyberBlack from 'assets/svg/kyber-black.svg'
 import ProMMAnalyticsLogo from 'assets/svg/logo_dark.svg'
 import ProMMAnalyticsLogoLight from 'assets/svg/logo_light.svg'
 import SwitchNetWorkIcon from 'assets/svg/switch-network.svg'
-import { ChainId, ChainIdType, NETWORKS_INFO_MAP, SHOW_NETWORKS } from 'constants/networks'
+import { ChainId, ChainIdType, NETWORKS_INFO_MAP, SUPPORTED_NETWORKS } from 'constants/networks'
 import { UnSelectable } from 'components'
 import SocialLinks from 'components/SocialLinks'
 import { InfoHelper } from 'components/QuestionHelper'
@@ -238,9 +238,8 @@ function SideNav(): JSX.Element {
   const [isDark] = useDarkModeManager()
   const [tab, setTab] = useState<ListTabs>(ListTabs.ELASTIC)
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
-  const networkListToShow: ChainIdType[] = [...SHOW_NETWORKS]
 
-  networkListToShow.unshift(ALL_CHAIN_ID)
+  const networkListToShow: ChainIdType[] = [...SUPPORTED_NETWORKS, ChainId.AURORA]
 
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>

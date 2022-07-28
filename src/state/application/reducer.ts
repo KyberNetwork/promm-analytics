@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { ALL_CHAIN_ID } from 'constants/index'
-import { ChainId, ALL_SUPPORT_NETWORKS_ID, SHOW_NETWORKS } from 'constants/networks'
+import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
 import { updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal, updateActiveNetwork } from './actions'
 
 export interface ApplicationState {
@@ -23,7 +23,7 @@ const initialState: ApplicationState = {
     syncedBlock: undefined,
     headBlock: undefined,
   },
-  activeNetworksId: [SHOW_NETWORKS[0]],
+  activeNetworksId: [ChainId.ETHEREUM],
   isAppInit: false,
 }
 
@@ -41,7 +41,7 @@ export default createReducer(initialState, (builder) =>
       if (chainId === ALL_CHAIN_ID) {
         return {
           ...state,
-          activeNetworksId: ALL_SUPPORT_NETWORKS_ID,
+          activeNetworksId: Object.keys(NETWORKS_INFO_MAP).map(Number),
           isAppInit: true,
         }
       }
