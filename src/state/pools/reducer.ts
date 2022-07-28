@@ -11,7 +11,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { SerializedToken } from 'state/user/actions'
 import { Transaction } from 'types'
 import { PoolTickData } from 'data/pools/tickData'
-import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
+import { ALL_SUPPORTED_NETWORKS, ChainId } from 'constants/networks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 
 export interface Pool {
@@ -106,7 +106,7 @@ export const initialState: PoolsState = {
   byAddress: {},
 }
 
-SUPPORTED_NETWORKS.forEach((chainId) => {
+ALL_SUPPORTED_NETWORKS.forEach((chainId) => {
   initialState.byAddress[chainId] = {}
 })
 

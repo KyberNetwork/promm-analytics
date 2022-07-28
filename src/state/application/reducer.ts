@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { ALL_CHAIN_ID } from 'constants/index'
-import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
+import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
 import { updateBlockNumber, updateSubgraphStatus, ApplicationModal, setOpenModal, updateActiveNetwork } from './actions'
 
 export interface ApplicationState {
@@ -41,7 +41,7 @@ export default createReducer(initialState, (builder) =>
       if (chainId === ALL_CHAIN_ID) {
         return {
           ...state,
-          activeNetworksId: Object.keys(NETWORKS_INFO_MAP).map(Number),
+          activeNetworksId: SUPPORTED_NETWORKS,
           isAppInit: true,
         }
       }

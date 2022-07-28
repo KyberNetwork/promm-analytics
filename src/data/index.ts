@@ -1,5 +1,5 @@
 import { ALL_CHAIN_ID } from 'constants/index'
-import { ChainIdType, SUPPORTED_NETWORKS } from 'constants/networks'
+import { ChainIdType, ELASTIC_SUPPORTED_NETWORKS } from 'constants/networks'
 import { useEthPrices } from 'hooks/useEthPrices'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -63,11 +63,14 @@ const memoRequest = async (key: string, callback: () => Promise<any>) => {
 export function useGlobalData(): Array<any> {
   const ethPrices = useEthPrices()
   const activeNetworks = useActiveNetworks()
-  const networks = activeNetworks.filter(
-    (e) => SUPPORTED_NETWORKS.find((el: ChainIdType) => el == e.chainId) && e.chainId.toString() != ALL_CHAIN_ID
-  )
-
   const { isAllChain, chainId, networkInfo } = useActiveNetworkUtils()
+
+  const networks = !ELASTIC_SUPPORTED_NETWORKS.includes(chainId)
+    ? activeNetworks.filter((e) => e.chainId === chainId) // chain not in menu
+    : activeNetworks.filter(
+        (e) =>
+          ELASTIC_SUPPORTED_NETWORKS.find((el: ChainIdType) => el == e.chainId) && e.chainId.toString() != ALL_CHAIN_ID
+      )
 
   const getDataByNetwork = (result: { [chainId: string]: any }) => {
     if (isAllChain) return result[ALL_CHAIN_ID]

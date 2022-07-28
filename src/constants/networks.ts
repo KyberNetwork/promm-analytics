@@ -348,11 +348,13 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
 // all network info
 export const NETWORKS_INFO_LIST: NetworkInfo[] = Object.values(NETWORKS_INFO_MAP)
 
-const NETWORK_NOT_SUPPORT = [ChainId.ROPSTEN, ChainId.RINKEBY, ChainId.AURORA]
+// for fetch data
+export const SUPPORTED_NETWORKS = Object.keys(NETWORKS_INFO_MAP).map(Number) as ChainId[]
+export const ALL_SUPPORTED_NETWORKS = [ALL_CHAIN_ID, ...SUPPORTED_NETWORKS] as ChainIdType[]
 
-const FILTER_NETWORK = Object.keys(NETWORKS_INFO_MAP)
-  .map(Number)
-  .filter((e) => !NETWORK_NOT_SUPPORT.includes(e))
+const NETWORK_NOT_IN_MENU = [ChainId.ROPSTEN, ChainId.RINKEBY, ChainId.AURORA] as ChainIdType[]
+const FILTER_NETWORK = ALL_SUPPORTED_NETWORKS.filter((e: ChainIdType) => !NETWORK_NOT_IN_MENU.includes(e))
 
-// for fetch data, display
-export const SUPPORTED_NETWORKS = [ALL_CHAIN_ID, ...FILTER_NETWORK] as ChainIdType[]
+// network display menu network list
+export const CLASSIC_SUPPORTED_NETWORKS = [...FILTER_NETWORK, ChainId.AURORA]
+export const ELASTIC_SUPPORTED_NETWORKS = [...FILTER_NETWORK]
