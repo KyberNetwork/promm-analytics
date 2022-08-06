@@ -349,12 +349,23 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
 export const NETWORKS_INFO_LIST: NetworkInfo[] = Object.values(NETWORKS_INFO_MAP)
 
 // for fetch data
-export const SUPPORTED_NETWORKS = Object.keys(NETWORKS_INFO_MAP).map(Number) as ChainId[]
-export const ALL_SUPPORTED_NETWORKS = [ALL_CHAIN_ID, ...SUPPORTED_NETWORKS] as ChainIdType[]
-
-const NETWORK_NOT_IN_MENU = [ChainId.ROPSTEN, ChainId.RINKEBY, ChainId.AURORA] as ChainIdType[]
-const FILTER_NETWORK = ALL_SUPPORTED_NETWORKS.filter((e: ChainIdType) => !NETWORK_NOT_IN_MENU.includes(e))
+export const SUPPORTED_NETWORKS: ChainId[] = Object.keys(NETWORKS_INFO_MAP).map(Number)
+export const ALL_SUPPORTED_NETWORKS: ChainIdType[] = [ALL_CHAIN_ID, ...SUPPORTED_NETWORKS]
 
 // network display menu network list
-export const CLASSIC_SUPPORTED_NETWORKS = [...FILTER_NETWORK, ChainId.AURORA]
-export const ELASTIC_SUPPORTED_NETWORKS = [...FILTER_NETWORK]
+export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
+  ALL_CHAIN_ID,
+  ChainId.ETHEREUM,
+  ChainId.POLYGON,
+  ChainId.BSCMAINNET,
+  ChainId.AVAXMAINNET,
+  ChainId.FANTOM,
+  ChainId.CRONOS,
+  ChainId.ARBITRUM,
+  ChainId.BTTC,
+  ChainId.VELAS,
+  ChainId.AURORA,
+  ChainId.OASIS,
+  ChainId.OPTIMISM,
+] // sort by order that we want
+export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter((e: ChainIdType) => e !== ChainId.AURORA)
