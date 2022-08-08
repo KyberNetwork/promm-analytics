@@ -151,7 +151,6 @@ export async function fetchPoolsData(
 
     const tvlUSD = current ? parseFloat(current.totalValueLockedUSD) : 0
 
-    debugger
     const tvlUSDChange =
       current && oneDay
         ? ((parseFloat(current.totalValueLockedUSD) - parseFloat(oneDay.totalValueLockedUSD)) /
