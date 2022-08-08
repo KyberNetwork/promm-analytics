@@ -13,7 +13,7 @@ dayjs.extend(utc)
 dayjs.extend(weekOfYear)
 
 const HOURLY_POOL_RATES = (blocks: Block[], poolAddress: string): import('graphql').DocumentNode => {
-  let queryString = 'query poolRates {'
+  let queryString = 'query poolPriceByBlocks {'
   queryString += blocks.map(
     (block) => `
       t${block.timestamp}: pool(id:"${poolAddress.toLowerCase()}", block: { number: ${block.number} }) {

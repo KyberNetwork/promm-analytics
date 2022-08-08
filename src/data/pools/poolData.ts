@@ -16,7 +16,7 @@ export const POOLS_BULK = (block: number | string | undefined, pools: string[]):
   poolString += ']'
   const queryString =
     `
-    query pools {
+    query poolsByAddressesAtBlock {
       pools(where: {id_in: ${poolString}},` +
     (block ? `block: {number: ${block}} ,` : ``) +
     ` orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
@@ -90,7 +90,7 @@ interface PoolDataResponse {
 /**
  * Fetch top addresses by volume
  */
-export async function fetchPoolData(
+export async function fetchPoolsData(
   network: NetworkInfo
 ): Promise<{
   [address: string]: PoolData
@@ -154,7 +154,7 @@ export async function fetchPoolData(
     const tvlUSDChange =
       current && oneDay
         ? ((parseFloat(current.totalValueLockedUSD) - parseFloat(oneDay.totalValueLockedUSD)) /
-            parseFloat(oneDay.totalValueLockedUSD === '0' ? '1' : oneDay.totalValueLockedUSD)) *
+            parseFloat(oneDay.totalValueLockedUSD <= '0' ? Infinity.toString() : oneDay.totalValueLockedUSD)) *
           100
         : 0
 

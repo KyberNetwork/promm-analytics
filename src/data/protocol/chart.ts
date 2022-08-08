@@ -12,7 +12,7 @@ dayjs.extend(weekOfYear)
 const ONE_DAY_UNIX = 24 * 60 * 60
 
 const GLOBAL_CHART = gql`
-  query kyberSwapDayDatas($startTime: Int!, $skip: Int!) {
+  query KyberSwapDayDatas($startTime: Int!, $skip: Int!) {
     kyberSwapDayDatas(
       first: 1000
       skip: $skip

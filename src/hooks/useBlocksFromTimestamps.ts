@@ -6,7 +6,7 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { ChainId } from 'constants/networks'
 
 const GET_BLOCKS = (timestamps: number[]): import('graphql').DocumentNode => {
-  let queryString = 'query blocks {'
+  let queryString = 'query blocksByTimestamps {'
   queryString += timestamps.map((timestamp) => {
     return `t${timestamp}:blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: { timestamp_gt: ${timestamp}, timestamp_lt: ${
       timestamp + 600

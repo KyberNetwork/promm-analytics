@@ -12,7 +12,7 @@ dayjs.extend(utc)
 dayjs.extend(weekOfYear)
 
 const PRICES_BY_BLOCK = (blocks: Block[], tokenAddress: string): import('graphql').DocumentNode => {
-  let queryString = 'query blocks {'
+  let queryString = 'query tokenPricesByBlocks {'
   queryString += blocks.map(
     (block) => `
       t${block.timestamp}:token(id:"${tokenAddress.toLowerCase()}", block: { number: ${

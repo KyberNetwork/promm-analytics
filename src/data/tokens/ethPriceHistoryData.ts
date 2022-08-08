@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 
 const PRICES_BY_BLOCK = (blocks: Block[]): import('graphql').DocumentNode => {
-  const queryString = `query bundles {
+  const queryString = `query ethPricesByBlocks {
     ${blocks.map(
       (block) => `
         b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }, subgraphError: allow) {
