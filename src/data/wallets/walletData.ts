@@ -46,7 +46,7 @@ export const POSITION_FRAGMENT = gql`
 const USER_POSITIONS = (user: string) => {
   const queryString = gql`
   ${POSITION_FRAGMENT}
-  query positions {
+  query positionsByOwner {
     positions(where: {owner: "${user.toLowerCase()}",liquidity_gt: 0}, first: 100) {
       ...PositionFragment
     }
@@ -63,7 +63,7 @@ export const TOP_POSITIONS = (poolIds: string[]): import('graphql').DocumentNode
   poolStrings += ']'
 
   const queryString = `
-  query positions {
+  query positionsByPools {
     positions(where: {pool_in: ${poolStrings}, liquidity_gt: 0}, first: 100) {
       id
       owner

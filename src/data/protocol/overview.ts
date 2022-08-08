@@ -6,7 +6,7 @@ import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 
 const GLOBAL_DATA = (block?: string | number): import('graphql').DocumentNode => {
-  const queryString = ` query kyberswapFactories {
+  const queryString = ` query KyberSwapFactories {
       factories(
        ${block !== undefined ? `block: { number: ${block}}` : ``}
        first: 1, subgraphError: allow) {

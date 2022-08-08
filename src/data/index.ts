@@ -12,7 +12,7 @@ import { ProtocolData } from 'state/protocol/reducer'
 import { useUpdateTokenData } from 'state/tokens/hooks'
 import { TokenData } from 'state/tokens/reducer'
 import { ChartDayData, Transaction } from 'types'
-import { fetchPoolData } from './pools/poolData'
+import { fetchPoolsData } from './pools/poolData'
 import { fetchChartData } from './protocol/chart'
 import { calcProtocolData, Factory, fetchProtocolData } from './protocol/overview'
 import { fetchTopTransactions } from './protocol/transactions'
@@ -146,7 +146,7 @@ export function useGlobalData(): Array<any> {
   }
 
   async function fetchAllPoolData() {
-    const promises = networks.map((net) => memoRequest(KeysCaches.POOL + net.chainId, () => fetchPoolData(net)))
+    const promises = networks.map((net) => memoRequest(KeysCaches.POOL + net.chainId, () => fetchPoolsData(net)))
     const response = await Promise.allSettled(promises)
     const data = response.map((data) => (data.status === 'fulfilled' ? data.value : {}))
     const result: { [chainId: string]: { [address: string]: PoolData } } = {}
