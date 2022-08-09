@@ -47,13 +47,12 @@ const KeysCaches = {
 }
 const cacheData: { [key: string]: any } = {}
 const memoRequest = async (key: string, callback: () => Promise<any>) => {
-  if (cacheData[key]) {
-    return Promise.resolve(cacheData[key])
-  }
   try {
-    const data = await callback()
-    cacheData[key] = data
-    return data
+    if (cacheData[key]) {
+      return await cacheData[key]
+    }
+    cacheData[key] = callback()
+    return await cacheData[key]
   } catch (error) {
     throw error
   }
