@@ -1,6 +1,5 @@
 import { ALL_CHAIN_ID } from 'constants/index'
 import { ChainIdType, ELASTIC_SUPPORTED_NETWORKS } from 'constants/networks'
-import { useEthPrices } from 'hooks/useEthPrices'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
@@ -61,7 +60,6 @@ const memoRequest = async (key: string, callback: () => Promise<any>) => {
 }
 
 export function useGlobalData(): Array<any> {
-  const ethPrices = useEthPrices()
   const activeNetworks = useActiveNetworks()
   const { isAllChain, chainId, networkInfo } = useActiveNetworkUtils()
 
@@ -103,9 +101,7 @@ export function useGlobalData(): Array<any> {
   }
 
   async function fetchAllTokens() {
-    const promises = networks.map((net) =>
-      memoRequest(KeysCaches.TOKEN + net.chainId, () => fetchedTokenData(net, ethPrices))
-    )
+    const promises = networks.map((net) => memoRequest(KeysCaches.TOKEN + net.chainId, () => fetchedTokenData(net)))
     const response = await Promise.allSettled(promises)
     const result: { [chainId: string]: TokenData[] } = {}
     let resultAllChain: TokenData[] = []
@@ -215,14 +211,12 @@ export function useGlobalData(): Array<any> {
 
   useEffect(() => {
     if (!isAppInit) return
-    if (ethPrices) {
-      fetchAllTokens()
-        .then((data) => {
-          updateTokenData(getDataByNetwork(data))
-        })
-        .catch(console.error)
-    }
-  }, [isAppInit, ethPrices, chainId])
+    fetchAllTokens()
+      .then((data) => {
+        updateTokenData(getDataByNetwork(data))
+      })
+      .catch(console.error)
+  }, [isAppInit, chainId])
 
   return []
 }
