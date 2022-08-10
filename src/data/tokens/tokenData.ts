@@ -5,7 +5,7 @@ import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { get2DayChange } from 'utils/data'
 import { TokenData } from 'state/tokens/reducer'
-import { useEthPrices, EthPrices } from 'hooks/useEthPrices'
+import { useEthPrices, fetchEthPricesV2 } from 'hooks/useEthPrices'
 import { formatTokenSymbol, formatTokenName } from 'utils/tokens'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
 import { NetworkInfo } from 'constants/networks'
@@ -223,13 +223,11 @@ export function useFetchedTokenDatas(
   }
 }
 
-export async function fetchedTokenData(
-  network: NetworkInfo,
-  ethPrices: EthPrices | undefined
-): Promise<TokenData[] | undefined> {
-  const [tokenAddresses, blocks] = await Promise.all([
+export async function fetchedTokenData(network: NetworkInfo): Promise<TokenData[] | undefined> {
+  const [tokenAddresses, blocks, ethPrices] = await Promise.all([
     getTopTokenAddresses(network.client),
     getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient),
+    fetchEthPricesV2(network),
   ])
 
   const [block24, block48, blockWeek] = blocks ?? []

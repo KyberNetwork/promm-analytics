@@ -1,9 +1,10 @@
-import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { getDeltaTimestamps } from 'utils/queries'
 import { useState, useEffect, useMemo } from 'react'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
+import { NetworkInfo } from 'constants/networks'
 
 export interface EthPrices {
   current: number
@@ -126,4 +127,16 @@ export function useEthPrices(): EthPrices | undefined {
   }, [error, prices, formattedBlocks, blockError, dataClient, indexedPrices, activeNetwork.chainId])
 
   return prices?.[activeNetwork.chainId]
+}
+
+export async function fetchEthPricesV2(network: NetworkInfo): Promise<EthPrices | undefined> {
+  try {
+    const blocks = await getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient)
+    const [block24, block48, blockWeek] = blocks ?? []
+    const formattedBlocks = [block24, block48, blockWeek].map((b) => b.number)
+    const { data } = await fetchEthPrices(formattedBlocks as [number, number, number], network.client)
+    return data
+  } catch (error) {
+    return
+  }
 }
