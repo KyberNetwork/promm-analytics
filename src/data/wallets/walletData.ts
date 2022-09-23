@@ -283,6 +283,7 @@ export function useUserTransactions(
   error: boolean
   data: any[]
 } {
+  const activeNetwork = useActiveNetworks()[0]
   const { dataClient } = useClients()[0]
 
   const { loading, error, data } = useQuery(GLOBAL_TRANSACTIONS, {
@@ -306,6 +307,7 @@ export function useUserTransactions(
       amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      chainId: activeNetwork.chainId,
     }
   })
   const burns = data?.burns.map((m: any) => {
@@ -321,6 +323,7 @@ export function useUserTransactions(
       amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      chainId: activeNetwork.chainId,
     }
   })
 
@@ -337,6 +340,7 @@ export function useUserTransactions(
       amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
+      chainId: activeNetwork.chainId,
     }
   })
 
