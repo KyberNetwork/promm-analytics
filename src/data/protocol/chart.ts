@@ -43,7 +43,7 @@ export async function fetchChartData(client: ApolloClient<NormalizedCacheObject>
     volumeUSD: string
     tvlUSD: string
   }[] = []
-  const startTimestamp = client === NETWORKS_INFO_MAP[ChainId.ARBITRUM].client ? 1630423606 : 1619170975
+  const startTimestamp = client === NETWORKS_INFO_MAP[ChainId.ARBITRUM].client ? 1630423606 : 1619136000
   const endTimestamp = dayjs.utc().unix()
 
   let skip = 0
@@ -70,7 +70,7 @@ export async function fetchChartData(client: ApolloClient<NormalizedCacheObject>
       }
     }
   } catch {}
-  if (!data) return []
+  if (!data.length) return []
   const formattedExisting = data.reduce((accum: { [date: number]: ChartDayData }, dayData) => {
     const roundedDate = parseInt((dayData.date / ONE_DAY_UNIX).toFixed(0))
     accum[roundedDate] = {
