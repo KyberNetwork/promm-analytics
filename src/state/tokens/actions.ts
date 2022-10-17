@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
-import { TokenData, TokenChartEntry } from './reducer'
+import { TokenData, TokenChartEntry, WhiteListTokenMapByChain } from './reducer'
 import { PriceChartEntry, Transaction } from 'types'
 import { ChainId, ChainIdType } from 'constants/networks'
 
@@ -38,3 +38,5 @@ export const updatePriceData = createAction<{
   oldestFetchedTimestamp: number
   networkId: ChainIdType
 }>('tokens/updatePriceData')
+
+export const setWhitelistToken = createAction<WhiteListTokenMapByChain>('lists/setWhitelistToken')

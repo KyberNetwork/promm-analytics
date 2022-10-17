@@ -1,9 +1,12 @@
 import { ALL_CHAIN_ID } from 'constants/index'
 import { ChainIdType, ELASTIC_SUPPORTED_NETWORKS } from 'constants/networks'
+import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
+import { setWhitelistToken } from 'state/tokens/actions'
+import { fetchAllTokenWhiteList, useWhitelistTokenByChain } from 'state/tokens/hooks'
 import { useUpdatePoolData } from 'state/pools/hooks'
 import { PoolData } from 'state/pools/reducer'
 import { useProtocolChartData, useProtocolData, useProtocolTransactions } from 'state/protocol/hooks'
@@ -208,14 +211,21 @@ export function useGlobalData(): Array<any> {
       .catch(console.error)
   }, [isAppInit, chainId])
 
+  const dispatch = useAppDispatch()
+  const whitelistTokenMap = useWhitelistTokenByChain()
+
   useEffect(() => {
     if (!isAppInit) return
-    fetchAllTokens()
+    Promise.allSettled([
+      Object.keys(whitelistTokenMap).length ? Promise.resolve() : fetchAllTokenWhiteList(),
+      fetchAllTokens(),
+    ])
       .then((data) => {
-        updateTokenData(getDataByNetwork(data))
+        if (data[0].status === 'fulfilled' && data[0].value) dispatch(setWhitelistToken(data[0].value)) // call once, but before fetchAllTokens
+        if (data[1].status === 'fulfilled') updateTokenData(getDataByNetwork(data[1].value))
       })
       .catch(console.error)
-  }, [isAppInit, chainId])
+  }, [isAppInit, chainId, dispatch])
 
   return []
 }

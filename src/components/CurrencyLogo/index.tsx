@@ -2,13 +2,9 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { isAddress } from 'utils'
 import Logo from '../Logo'
-import { useCombinedActiveList } from 'state/lists/hooks'
+import { useWhitelistTokenByChain } from 'state/tokens/hooks'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { NetworkInfo } from 'constants/networks'
-
-export const getTokenLogoURL = (address: string): string => {
-  return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
-}
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
@@ -39,10 +35,12 @@ const CurrencyLogo: React.FunctionComponent<CurrencyLogoType> = ({
 }: CurrencyLogoType) => {
   const checkSummed = isAddress(address)
 
-  const tokenlist = useCombinedActiveList()?.[activeNetwork.chainId]
+  const tokenlist = useWhitelistTokenByChain()?.[activeNetwork.chainId]
+
   const URI = useMemo(() => {
-    if (checkSummed && tokenlist?.[checkSummed]) {
-      return tokenlist?.[checkSummed].token.logoURI
+    const tokenInfo = checkSummed ? tokenlist?.[checkSummed] || tokenlist?.[checkSummed.toLowerCase()] : undefined
+    if (checkSummed && tokenInfo) {
+      return tokenInfo?.logoURI || undefined
     }
     return undefined
   }, [tokenlist, checkSummed])
@@ -52,7 +50,7 @@ const CurrencyLogo: React.FunctionComponent<CurrencyLogoType> = ({
     const checkSummed = isAddress(address)
 
     if (checkSummed && address) {
-      return [getTokenLogoURL(checkSummed), ...uriLocations, TEMP_SOURCE[address]]
+      return [...uriLocations, TEMP_SOURCE[address]]
     }
     return []
   }, [address, uriLocations])

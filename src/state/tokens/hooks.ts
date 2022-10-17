@@ -22,6 +22,10 @@ import utc from 'dayjs/plugin/utc'
 import { useActiveNetworks, useActiveNetworkUtils, useClients } from 'state/application/hooks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 import { useFetchedSubgraphStatus } from 'data/application'
+import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
+import { stringify } from 'qs'
+import { WhiteListTokenMap, WhiteListTokenMapByChain, WrappedToken } from '../tokens/reducer'
+
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
 
@@ -282,4 +286,59 @@ export function useTokenTransactions(address: string): Transaction[] | undefined
 
   // return data
   return transactions
+}
+
+export function useWhitelistTokenByChain(): WhiteListTokenMapByChain {
+  return useSelector<AppState>((state) => state.tokens.mapWhitelistToken) as WhiteListTokenMapByChain
+}
+
+function formatWhitelistToken(tokens: WrappedToken[]): WhiteListTokenMap {
+  return tokens.reduce<WhiteListTokenMap>((tokenMap: WhiteListTokenMap, token: WrappedToken) => {
+    const address: string = token.address || ''
+    if (address) tokenMap[address] = token
+    return tokenMap
+  }, {}) as WhiteListTokenMap
+}
+
+export const fetchAllTokenWhiteList = async (): Promise<WhiteListTokenMapByChain> => {
+  try {
+    const chainPromises = SUPPORTED_NETWORKS.map((chainId) => getWhitelistToken(chainId))
+    const data = await Promise.allSettled(chainPromises)
+    const TokenMap: WhiteListTokenMapByChain = {}
+    data.forEach((e, index) => {
+      TokenMap[SUPPORTED_NETWORKS[index]] = e.status === 'fulfilled' ? e.value : {}
+    })
+    return TokenMap
+  } catch (error) {
+    return {} as WhiteListTokenMapByChain
+  }
+}
+
+// loop to fetch all whitelist token
+export async function getWhitelistToken(chainId: ChainId): Promise<WhiteListTokenMap> {
+  return new Promise(async (resolve, reject) => {
+    let tokens: WrappedToken[] = []
+    try {
+      const pageSize = 100
+      const maximumPage = 15
+      let page = 1
+      while (true) {
+        const { data } = await fetch(
+          `${process.env.REACT_APP_KS_SETTING_API}/v1/tokens?${stringify({
+            pageSize,
+            page,
+            isWhitelisted: true,
+            chainIds: chainId,
+          })}`
+        ).then((data) => data.json())
+        page++
+        const tokensResponse = data.tokens ?? []
+        tokens = tokens.concat(tokensResponse)
+        if (tokensResponse.length < pageSize || page >= maximumPage) break // out of tokens, and prevent infinity loop
+      }
+    } catch (error) {
+      return reject(`Failed to fetch list token of chainId ${chainId}`)
+    }
+    resolve(formatWhitelistToken(tokens))
+  })
 }

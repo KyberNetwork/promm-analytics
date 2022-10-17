@@ -4,18 +4,16 @@ import { save, load } from 'redux-localstorage-simple'
 import application from './application/reducer'
 import { updateVersion } from './global/actions'
 import user from './user/reducer'
-import lists from './lists/reducer'
 import protocol from './protocol/reducer'
 import tokens from './tokens/reducer'
 import pools from './pools/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'lists']
+const PERSISTED_KEYS: string[] = ['user']
 
 const store = configureStore({
   reducer: {
     application,
     user,
-    lists,
     protocol,
     tokens,
     pools,
