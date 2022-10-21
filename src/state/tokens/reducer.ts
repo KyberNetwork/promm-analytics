@@ -6,10 +6,12 @@ import {
   updateChartData,
   updatePriceData,
   updateTransactions,
+  setWhitelistToken,
 } from './actions'
 import { createReducer } from '@reduxjs/toolkit'
 import { PriceChartEntry, Transaction } from 'types'
 import { ALL_SUPPORTED_NETWORKS, ChainId } from 'constants/networks'
+import { Token } from '@vutien/sdk-core'
 
 export type TokenData = {
   // token is in some pool on uniswap
@@ -48,6 +50,16 @@ export interface TokenChartEntry {
   totalValueLockedUSD: number
 }
 
+export interface WrappedToken extends Token {
+  logoURI: string
+}
+export type WhiteListTokenMap = {
+  [address: string]: WrappedToken
+}
+export type WhiteListTokenMapByChain = {
+  [chainId: string]: WhiteListTokenMap
+}
+
 export interface TokensState {
   // analytics data from
   byAddress: {
@@ -65,10 +77,12 @@ export interface TokensState {
       }
     }
   }
+  mapWhitelistToken: WhiteListTokenMapByChain
 }
 
 export const initialState: TokensState = {
   byAddress: {},
+  mapWhitelistToken: {},
 }
 ALL_SUPPORTED_NETWORKS.forEach((chainId) => {
   initialState.byAddress[chainId] = {}
@@ -126,4 +140,7 @@ export default createReducer(initialState, (builder) =>
         }
       }
     )
+    .addCase(setWhitelistToken, (state, { payload }) => {
+      state.mapWhitelistToken = payload
+    })
 )
