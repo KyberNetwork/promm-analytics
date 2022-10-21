@@ -40,7 +40,7 @@ const CurrencyLogo: React.FunctionComponent<CurrencyLogoType> = ({
   const URI = useMemo(() => {
     const tokenInfo = checkSummed ? tokenlist?.[checkSummed] || tokenlist?.[checkSummed.toLowerCase()] : undefined
     if (checkSummed && tokenInfo) {
-      return tokenInfo?.logoURI || undefined
+      return tokenInfo.logoURI || undefined
     }
     return undefined
   }, [tokenlist, checkSummed])

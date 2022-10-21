@@ -292,7 +292,7 @@ export function useWhitelistTokenByChain(): WhiteListTokenMapByChain {
   return useSelector<AppState>((state) => state.tokens.mapWhitelistToken) as WhiteListTokenMapByChain
 }
 
-function formatWhitelistToken(tokens: WrappedToken[]): WhiteListTokenMap {
+function formatWhitelistTokens(tokens: WrappedToken[]): WhiteListTokenMap {
   return tokens.reduce<WhiteListTokenMap>((tokenMap: WhiteListTokenMap, token: WrappedToken) => {
     const address: string = token.address || ''
     if (address) tokenMap[address] = token
@@ -300,9 +300,9 @@ function formatWhitelistToken(tokens: WrappedToken[]): WhiteListTokenMap {
   }, {}) as WhiteListTokenMap
 }
 
-export const fetchAllTokenWhiteList = async (): Promise<WhiteListTokenMapByChain> => {
+export const fetchAllWhitelistToken = async (): Promise<WhiteListTokenMapByChain> => {
   try {
-    const chainPromises = SUPPORTED_NETWORKS.map((chainId) => getWhitelistToken(chainId))
+    const chainPromises = SUPPORTED_NETWORKS.map((chainId) => getWhitelistTokens(chainId))
     const data = await Promise.allSettled(chainPromises)
     const TokenMap: WhiteListTokenMapByChain = {}
     data.forEach((e, index) => {
@@ -310,35 +310,34 @@ export const fetchAllTokenWhiteList = async (): Promise<WhiteListTokenMapByChain
     })
     return TokenMap
   } catch (error) {
+    console.error('fetchAllTokenWhiteList error', error)
     return {} as WhiteListTokenMapByChain
   }
 }
 
 // loop to fetch all whitelist token
-export async function getWhitelistToken(chainId: ChainId): Promise<WhiteListTokenMap> {
-  return new Promise(async (resolve, reject) => {
+export async function getWhitelistTokens(chainId: ChainId): Promise<WhiteListTokenMap> {
+  try {
     let tokens: WrappedToken[] = []
-    try {
-      const pageSize = 100
-      const maximumPage = 15
-      let page = 1
-      while (true) {
-        const { data } = await fetch(
-          `${process.env.REACT_APP_KS_SETTING_API}/v1/tokens?${stringify({
-            pageSize,
-            page,
-            isWhitelisted: true,
-            chainIds: chainId,
-          })}`
-        ).then((data) => data.json())
-        page++
-        const tokensResponse = data.tokens ?? []
-        tokens = tokens.concat(tokensResponse)
-        if (tokensResponse.length < pageSize || page >= maximumPage) break // out of tokens, and prevent infinity loop
-      }
-    } catch (error) {
-      return reject(`Failed to fetch list token of chainId ${chainId}`)
+    const pageSize = 100
+    const maximumPage = 15
+    let page = 1
+    while (true) {
+      const { data } = await fetch(
+        `${process.env.REACT_APP_KS_SETTING_API}/v1/tokens?${stringify({
+          pageSize,
+          page,
+          isWhitelisted: true,
+          chainIds: chainId,
+        })}`
+      ).then((data) => data.json())
+      page++
+      const tokensResponse = data.tokens ?? []
+      tokens = tokens.concat(tokensResponse)
+      if (tokensResponse.length < pageSize || page >= maximumPage) break // out of tokens, and prevent infinity loop
     }
-    resolve(formatWhitelistToken(tokens))
-  })
+    return formatWhitelistTokens(tokens)
+  } catch (error) {
+    throw `Failed to fetch list token of chainId ${chainId}`
+  }
 }

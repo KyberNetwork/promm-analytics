@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { AppState } from 'state'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { setWhitelistToken } from 'state/tokens/actions'
-import { fetchAllTokenWhiteList, useWhitelistTokenByChain } from 'state/tokens/hooks'
+import { fetchAllWhitelistToken, useWhitelistTokenByChain } from 'state/tokens/hooks'
 import { useUpdatePoolData } from 'state/pools/hooks'
 import { PoolData } from 'state/pools/reducer'
 import { useProtocolChartData, useProtocolData, useProtocolTransactions } from 'state/protocol/hooks'
@@ -217,7 +217,7 @@ export function useGlobalData(): Array<any> {
   useEffect(() => {
     if (!isAppInit) return
     Promise.allSettled([
-      Object.keys(whitelistTokenMap).length ? Promise.resolve() : fetchAllTokenWhiteList(),
+      Object.keys(whitelistTokenMap).length ? Promise.resolve() : fetchAllWhitelistToken(),
       fetchAllTokens(),
     ])
       .then((data) => {
