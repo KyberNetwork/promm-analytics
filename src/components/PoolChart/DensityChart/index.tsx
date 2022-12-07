@@ -148,6 +148,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
 
   const [formattedData, setFormattedData] = useState<ChartEntry[] | undefined>()
   const tickCache = useRef<{ [key: string]: ChartEntry | undefined }>({})
+
   useEffect(() => {
     async function formatData() {
       if (poolTickData) {

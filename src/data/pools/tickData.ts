@@ -5,7 +5,6 @@ import { TickMath, tickToPrice } from '@vutien/dmm-v3-sdk'
 import { Token } from '@uniswap/sdk-core'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 
-const PRICE_FIXED_DIGITS = 4
 const DEFAULT_SURROUNDING_TICKS = 300
 
 const FEE_TIER_TO_TICK_SPACING = (feeTier: string): number => {
@@ -112,8 +111,6 @@ const fetchInitializedTicks = async (
         skip,
       },
     })
-
-    // console.log({ data, error, loading }, 'Result. Skip: ' + skip)
 
     if (loading) {
       continue
@@ -243,8 +240,8 @@ export const fetchTicksSurroundingPrice = async (
     liquidityActive: JSBI.BigInt(liquidity),
     tickIdx: activeTickIdx,
     liquidityNet: JSBI.BigInt(0),
-    price0: tickToPrice(token0, token1, activeTickIdxForPrice).toFixed(PRICE_FIXED_DIGITS),
-    price1: tickToPrice(token1, token0, activeTickIdxForPrice).toFixed(PRICE_FIXED_DIGITS),
+    price0: tickToPrice(token0, token1, activeTickIdxForPrice).toSignificant(8),
+    price1: tickToPrice(token1, token0, activeTickIdxForPrice).toSignificant(8),
     liquidityGross: JSBI.BigInt(0),
   }
 
@@ -295,8 +292,8 @@ export const fetchTicksSurroundingPrice = async (
           liquidityActive: previousTickProcessed.liquidityActive,
           tickIdx: currentTickIdx,
           liquidityNet: JSBI.BigInt(0),
-          price0: tickToPrice(token0, token1, currentTickIdx).toFixed(PRICE_FIXED_DIGITS),
-          price1: tickToPrice(token1, token0, currentTickIdx).toFixed(PRICE_FIXED_DIGITS),
+          price0: tickToPrice(token0, token1, currentTickIdx).toSignificant(8),
+          price1: tickToPrice(token1, token0, currentTickIdx).toSignificant(8),
           liquidityGross: JSBI.BigInt(0),
         }
 
