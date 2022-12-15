@@ -2,8 +2,8 @@ import { NormalizedCacheObject, ApolloClient } from '@apollo/client'
 import gql from 'graphql-tag'
 
 export const TOP_TOKENS = gql`
-  query topTokens {
-    tokens(first: 50, orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
+  query top500Tokens {
+    tokens(first: 500, orderBy: totalValueLockedUSD, orderDirection: desc, subgraphError: allow) {
       id
     }
   }
