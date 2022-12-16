@@ -52,7 +52,7 @@ const InfoLayout = styled.div`
 const TokenButton = styled(GreyCard)`
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid ${({ theme }) => theme.border}
+  border: 1px solid ${({ theme }) => theme.border};
   background: ${({ theme }) => theme.background};
   :hover {
     cursor: pointer;

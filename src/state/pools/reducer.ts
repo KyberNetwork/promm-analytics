@@ -113,7 +113,7 @@ ALL_SUPPORTED_NETWORKS.forEach((chainId) => {
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(updatePoolData, (state, { payload: { pools, networkId } }) => {
-      pools.map(
+      pools.forEach(
         (poolData) =>
           (state.byAddress[networkId][poolData.address] = {
             ...state.byAddress[networkId][poolData.address],
@@ -124,7 +124,7 @@ export default createReducer(initialState, (builder) =>
     })
     // add address to byAddress keys if not included yet
     .addCase(addPoolKeys, (state, { payload: { poolAddresses, networkId } }) => {
-      poolAddresses.map((address) => {
+      poolAddresses.forEach((address) => {
         if (!state.byAddress[networkId][address]) {
           state.byAddress[networkId][address] = {
             data: undefined,
