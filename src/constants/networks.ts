@@ -57,11 +57,13 @@ export type NetworkInfo = {
     address: string
   }
   startBlock: number
+  priceRoute: string
 }
 
 const RinkebyNetworkInfo: NetworkInfo = {
   chainId: ChainId.RINKEBY,
   route: 'rinkeby',
+  priceRoute: 'rinkeby',
   name: 'Rinkeby',
   imageURL: ETHEREUM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/promm-rinkeby'),
@@ -81,6 +83,7 @@ const RinkebyNetworkInfo: NetworkInfo = {
 const RopstenNetworkInfo: NetworkInfo = {
   chainId: ChainId.ROPSTEN,
   route: 'ropsten',
+  priceRoute: 'ropsten',
   name: 'Ropsten',
   imageURL: ETHEREUM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/promm-ropsten'),
@@ -100,6 +103,7 @@ const RopstenNetworkInfo: NetworkInfo = {
 const EthereumNetworkInfo: NetworkInfo = {
   chainId: ChainId.ETHEREUM,
   route: 'ethereum',
+  priceRoute: 'ethereum',
   name: 'Ethereum',
   imageURL: ETHEREUM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet'),
@@ -119,6 +123,7 @@ const EthereumNetworkInfo: NetworkInfo = {
 const BscNetworkInfo: NetworkInfo = {
   chainId: ChainId.BSCMAINNET,
   route: 'bnb',
+  priceRoute: 'bsc',
   name: 'BNB Chain',
   imageURL: BNB_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-bsc'),
@@ -138,6 +143,7 @@ const BscNetworkInfo: NetworkInfo = {
 const ArbitrumNetworkInfo: NetworkInfo = {
   chainId: ChainId.ARBITRUM,
   route: 'arbitrum',
+  priceRoute: 'arbitrum',
   name: 'Arbitrum',
   imageURL: ARBITRUM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum-one'),
@@ -157,6 +163,7 @@ const ArbitrumNetworkInfo: NetworkInfo = {
 const PolygonNetworkInfo: NetworkInfo = {
   chainId: ChainId.POLYGON,
   route: 'polygon',
+  priceRoute: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-matic'),
@@ -176,6 +183,7 @@ const PolygonNetworkInfo: NetworkInfo = {
 const AvaxNetworkInfo: NetworkInfo = {
   chainId: ChainId.AVAXMAINNET,
   route: 'avalanche',
+  priceRoute: 'avalanche',
   name: 'Avalanche',
   imageURL: AVAX_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-avalanche'),
@@ -195,6 +203,7 @@ const AvaxNetworkInfo: NetworkInfo = {
 const FantomNetworkInfo: NetworkInfo = {
   chainId: ChainId.FANTOM,
   route: 'fantom',
+  priceRoute: 'fantom',
   name: 'Fantom',
   imageURL: FANTOM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-fantom'),
@@ -215,6 +224,7 @@ const FantomNetworkInfo: NetworkInfo = {
 const CronosNetworkInfo: NetworkInfo = {
   chainId: ChainId.CRONOS,
   route: 'cronos',
+  priceRoute: 'cronos',
   name: 'Cronos',
   imageURL: CRONOS_LOGO_URL,
   client: createClient('https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-cronos'),
@@ -234,6 +244,7 @@ const CronosNetworkInfo: NetworkInfo = {
 const BTTCNetworkInfo: NetworkInfo = {
   chainId: ChainId.BTTC,
   route: 'bittorrent',
+  priceRoute: 'bttc',
   name: 'BitTorrent',
   imageURL: BTTC_LOGO_URL,
   client: createClient('https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc'),
@@ -253,6 +264,7 @@ const BTTCNetworkInfo: NetworkInfo = {
 const VelasNetworkInfo: NetworkInfo = {
   chainId: ChainId.VELAS,
   route: 'velas',
+  priceRoute: 'velas',
   name: 'Velas',
   imageURL: VELAS_LOGO_URL,
   client: createClient('https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas'),
@@ -273,6 +285,7 @@ const AuroraNetworkInfo: NetworkInfo = {
   // not support yet
   chainId: ChainId.AURORA,
   route: 'aurora',
+  priceRoute: 'aurora',
   name: 'Aurora',
   imageURL: AURORA_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora'),
@@ -292,6 +305,7 @@ const AuroraNetworkInfo: NetworkInfo = {
 const OasisNetworkInfo: NetworkInfo = {
   chainId: ChainId.OASIS,
   route: 'oasis',
+  priceRoute: 'oasis',
   name: 'Oasis',
   imageURL: OASIS_LOGO_URL,
   client: createClient('https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis'),
@@ -311,6 +325,7 @@ const OasisNetworkInfo: NetworkInfo = {
 const OptimismNetworkInfo: NetworkInfo = {
   chainId: ChainId.OPTIMISM,
   route: 'optimism',
+  priceRoute: 'optimism',
   name: 'Optimism',
   imageURL: OPTIMISM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism'),

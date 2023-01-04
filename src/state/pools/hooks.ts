@@ -20,6 +20,7 @@ import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 import { getHourlyRateData } from 'data/pools/hourlyRatesData'
 import dayjs from 'dayjs'
 import { useFetchedSubgraphStatus } from 'data/application'
+import { usePrevious } from 'react-use'
 
 export function useAllPoolData(): {
   [address: string]: { data: PoolData | undefined; lastUpdated: number | undefined }
@@ -112,7 +113,7 @@ export function usePoolChartData(address: string): PoolChartEntry[] | undefined 
  * Get all transactions on pool
  * @param address
  */
-export function usePoolTransactions(address: string): Transaction[] | undefined {
+export function usePoolTransactions(address: string, prices: number[]): Transaction[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
   const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address])
@@ -120,19 +121,21 @@ export function usePoolTransactions(address: string): Transaction[] | undefined 
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
 
+  const previousPriceLength = usePrevious(prices.length)
+
   useEffect(() => {
     async function fetch() {
-      const { error, data } = await fetchPoolTransactions(address, dataClient, activeNetwork.chainId)
+      const { error, data } = await fetchPoolTransactions(address, dataClient, activeNetwork.chainId, prices)
       if (error) {
         setError(true)
       } else if (data) {
         dispatch(updatePoolTransactions({ poolAddress: address, transactions: data, networkId: activeNetwork.chainId }))
       }
     }
-    if (!transactions && !error) {
+    if (previousPriceLength !== prices.length && !transactions && !error) {
       fetch()
     }
-  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId])
+  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId, prices])
 
   // return data
   return transactions
