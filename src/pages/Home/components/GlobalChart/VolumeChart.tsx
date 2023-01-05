@@ -27,6 +27,7 @@ const VolumeChart = (): React.ReactElement | null => {
       return []
     }
   }, [chartData])
+
   const weeklyVolumeData = useTransformedVolumeData(chartData, 'week')
   const monthlyVolumeData = useTransformedVolumeData(chartData, 'month')
 
