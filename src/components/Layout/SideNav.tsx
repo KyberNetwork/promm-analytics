@@ -418,7 +418,7 @@ function SideNav(): JSX.Element {
 
             <ExternalMenu
               href={addNetworkIdQueryString(
-                process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com',
+                process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com/swap',
                 isAllChain ? NETWORKS_INFO_MAP[ChainId.ETHEREUM] : networkInfo
               )}
             >
