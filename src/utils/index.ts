@@ -106,10 +106,11 @@ export function getTimeframe(timeWindow: TimeframeOptions): number {
 
 export function addNetworkIdQueryString(url: string, networkInfo: NetworkInfo): string {
   if (url.includes('?')) {
-    return `${url}&networkId=${networkInfo.chainId}`
+    const parts = url.split('?')
+    return `${parts[0]}/${networkInfo.route}?${parts[1]}`
   }
 
-  return `${url}?networkId=${networkInfo.chainId}`
+  return `${url}/${networkInfo.route}`
 }
 
 type PoolLinkInfo =
