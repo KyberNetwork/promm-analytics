@@ -7,6 +7,7 @@ import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 import { FEE_BASE_UNITS } from 'utils'
 import { NetworkInfo } from 'constants/networks'
 import { fetchTopPoolAddresses } from './topPools'
+import { fetchPoolsAPR } from './poolAPR'
 
 export const POOLS_BULK = (block: number | string | undefined, pools: string[]): import('graphql').DocumentNode => {
   let poolString = `[`
@@ -95,6 +96,8 @@ export async function fetchPoolsData(
 ): Promise<{
   [address: string]: PoolData
 }> {
+  const poolServiceCall = fetchPoolsAPR(network)
+
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([
     fetchTopPoolAddresses(network.client),
@@ -127,6 +130,7 @@ export async function fetchPoolsData(
         }, {})
       : {}
   })
+  const poolServiceAPRData: { [address: string]: number | undefined } = await poolServiceCall
 
   // format data and calculate daily changes
   const formatted = poolAddresses.reduce((accum: { [address: string]: PoolData }, address) => {
@@ -195,7 +199,7 @@ export async function fetchPoolsData(
         tvlUSDChange,
         tvlToken0,
         tvlToken1,
-        apr: tvlUSD > 0 ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD : 0,
+        apr: poolServiceAPRData[address.toLowerCase()] || 0,
         chainId: network.chainId,
       }
     }
