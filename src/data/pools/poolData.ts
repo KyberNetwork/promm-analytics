@@ -134,9 +134,6 @@ export async function fetchPoolsData(
 
   // format data and calculate daily changes
   const formatted = poolAddresses.reduce((accum: { [address: string]: PoolData }, address) => {
-    if (address.toLowerCase() === '0x990dae0ab65abbe4f5a3bae622825d0ff52d88a8'.toLowerCase()) {
-      debugger
-    }
     const current: PoolFields | undefined = parsed[address]
     const oneDay: PoolFields | undefined = parsed24[address]
     const twoDay: PoolFields | undefined = parsed48[address]
