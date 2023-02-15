@@ -5,7 +5,7 @@ import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 import { FEE_BASE_UNITS } from 'utils'
-import { NetworkInfo } from 'constants/networks'
+import { NetworkInfo, SUPPORT_POOL_FARM_API } from 'constants/networks'
 import { fetchTopPoolAddresses } from './topPools'
 import { fetchPoolsAPR } from './poolAPR'
 
@@ -199,7 +199,11 @@ export async function fetchPoolsData(
         tvlUSDChange,
         tvlToken0,
         tvlToken1,
-        apr: poolServiceAPRData[address.toLowerCase()] || 0,
+        apr: SUPPORT_POOL_FARM_API.includes(network.chainId)
+          ? poolServiceAPRData[address.toLowerCase()] || 0
+          : tvlUSD > 0
+          ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD
+          : 0,
         chainId: network.chainId,
       }
     }
