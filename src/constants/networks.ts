@@ -384,3 +384,20 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.OPTIMISM,
 ] // sort by order that we want
 export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter((e: ChainIdType) => e !== ChainId.AURORA)
+
+export const SUPPORT_POOL_FARM_API: ChainId[] = [
+  // ChainId.ETHEREUM,
+  // ChainId.BSCMAINNET,
+  // ChainId.ROPSTEN,
+  // ChainId.RINKEBY,
+  // ChainId.ARBITRUM,
+  // ChainId.POLYGON,
+  // ChainId.AVAXMAINNET,
+  // ChainId.FANTOM,
+  // ChainId.CRONOS,
+  // ChainId.BTTC,
+  // ChainId.VELAS,
+  // ChainId.AURORA,
+  // ChainId.OASIS,
+  // ChainId.OPTIMISM,
+]
