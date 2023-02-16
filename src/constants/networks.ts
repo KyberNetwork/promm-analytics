@@ -387,12 +387,12 @@ export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter((e: 
 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
   // ChainId.ETHEREUM,
-  // ChainId.BSCMAINNET,
+  ChainId.BSCMAINNET,
   // ChainId.ROPSTEN,
   // ChainId.RINKEBY,
   // ChainId.ARBITRUM,
   // ChainId.POLYGON,
-  // ChainId.AVAXMAINNET,
+  ChainId.AVAXMAINNET,
   // ChainId.FANTOM,
   // ChainId.CRONOS,
   // ChainId.BTTC,
