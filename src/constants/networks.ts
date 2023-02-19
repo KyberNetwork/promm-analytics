@@ -166,7 +166,9 @@ const PolygonNetworkInfo: NetworkInfo = {
   poolRoute: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-matic'),
+  client: createClient(
+    'https://polygon-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon'
+  ),
   blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-polygon'),
   subgraphName: 'kybernetwork/kyberswap-elastic-matic',
   etherscanUrl: 'https://polygonscan.com',
