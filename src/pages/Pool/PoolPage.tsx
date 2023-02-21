@@ -30,6 +30,7 @@ import CopyHelper from 'components/Copy'
 import Panel from 'components/Panel'
 import FormattedName from 'components/FormattedName'
 import PoolChart from 'components/PoolChart'
+import usePrices from 'hooks/useTokensPrice'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -111,8 +112,14 @@ export default function PoolPage(): JSX.Element {
 
   // token data
   const poolData = usePoolDatas([address])[0]
+
+  const prices = usePrices([poolData?.token0?.address, poolData?.token1?.address].filter(Boolean))
+
+  const tvl = +poolData?.tvlToken0 * prices[0] + +poolData?.tvlToken1 * prices[1]
+  const volume24h = +poolData?.volumeOneDayToken0 * prices[0] + +poolData?.volumeOneDayToken1 * prices[1]
+
   // const chartData = usePoolChartData(address)
-  const transactions = usePoolTransactions(address)
+  const transactions = usePoolTransactions(address, prices)
 
   //watchlist
   const [savedPools, addSavedPool] = useSavedPools()
@@ -166,7 +173,8 @@ export default function PoolPage(): JSX.Element {
                           <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
                             {`1 ${poolData.token0.symbol} = ${formatAmount(poolData.token1Price, 4)} ${
                               poolData.token1.symbol
-                            }`}
+                            }`}{' '}
+                            ({formatDollarAmount(prices[0])})
                           </TYPE.label>
                         </RowFixed>
                       </TokenButton>
@@ -178,7 +186,8 @@ export default function PoolPage(): JSX.Element {
                           <TYPE.label fontSize="16px" ml="4px" style={{ whiteSpace: 'nowrap' }} width="fit-content">
                             {`1 ${poolData.token1.symbol} = ${formatAmount(poolData.token0Price, 4)} ${
                               poolData.token0.symbol
-                            }`}
+                            }`}{' '}
+                            ({formatDollarAmount(prices[1])})
                           </TYPE.label>
                         </RowFixed>
                       </TokenButton>
@@ -228,7 +237,7 @@ export default function PoolPage(): JSX.Element {
                       <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
                       <Percent hideWhenZero fontSize={12} value={poolData.tvlUSDChange} />
                     </RowBetween>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(poolData.tvlUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(tvl || poolData.tvlUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
@@ -237,7 +246,7 @@ export default function PoolPage(): JSX.Element {
                       <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
                       <Percent hideWhenZero fontSize={12} value={poolData.volumeUSDChange} />
                     </RowBetween>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(poolData.volumeUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(volume24h || poolData.volumeUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
