@@ -48,6 +48,8 @@ export const POOLS_BULK = (block: number | string | undefined, pools: string[]):
         totalValueLockedToken0
         totalValueLockedToken1
         totalValueLockedUSD
+        volumeToken0
+        volumeToken1
       }
     }
     `
@@ -82,6 +84,8 @@ interface PoolFields {
   totalValueLockedToken0: string
   totalValueLockedToken1: string
   totalValueLockedUSD: string
+  volumeToken0: string
+  volumeToken1: string
 }
 
 interface PoolDataResponse {
@@ -146,6 +150,9 @@ export async function fetchPoolsData(
         ? [parseFloat(current.volumeUSD), 0]
         : [0, 0]
 
+    const volumeOneDayToken0 = parseFloat(current?.volumeToken0 || '0') - parseFloat(oneDay?.volumeToken0 || '0')
+    const volumeOneDayToken1 = parseFloat(current?.volumeToken1 || '0') - parseFloat(oneDay?.volumeToken1 || '0')
+
     const volumeUSDWeek =
       current && week
         ? parseFloat(current.volumeUSD) - parseFloat(week.volumeUSD)
@@ -205,6 +212,8 @@ export async function fetchPoolsData(
           ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD
           : 0,
         chainId: network.chainId,
+        volumeOneDayToken0,
+        volumeOneDayToken1,
       }
     }
 
