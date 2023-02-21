@@ -398,7 +398,7 @@ export const SUPPORT_POOL_FARM_API: ChainId[] = [
   ChainId.FANTOM,
   ChainId.CRONOS,
   // ChainId.BTTC,
-  ChainId.VELAS,
+  // ChainId.VELAS,
   // ChainId.AURORA,
   ChainId.OASIS,
   // ChainId.OPTIMISM,
