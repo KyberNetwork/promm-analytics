@@ -407,7 +407,7 @@ export const SUPPORT_POOL_FARM_API: ChainId[] = [
   ChainId.BSCMAINNET,
   // ChainId.ROPSTEN,
   // ChainId.RINKEBY,
-  // ChainId.ARBITRUM,
+  ChainId.ARBITRUM,
   ChainId.POLYGON,
   ChainId.AVAXMAINNET,
   ChainId.FANTOM,
@@ -416,5 +416,5 @@ export const SUPPORT_POOL_FARM_API: ChainId[] = [
   // ChainId.VELAS,
   // ChainId.AURORA,
   ChainId.OASIS,
-  // ChainId.OPTIMISM,
+  ChainId.OPTIMISM,
 ]
