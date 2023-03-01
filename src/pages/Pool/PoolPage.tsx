@@ -116,7 +116,7 @@ export default function PoolPage(): JSX.Element {
   const prices = usePrices([poolData?.token0?.address, poolData?.token1?.address].filter(Boolean))
 
   const tvl = +poolData?.tvlToken0 * prices[0] + +poolData?.tvlToken1 * prices[1]
-  const volume24h = +poolData?.volumeOneDayToken0 * prices[0] + +poolData?.volumeOneDayToken1 * prices[1]
+  const volume24h = +poolData?.volumeOneDayToken0 * prices[0] || +poolData?.volumeOneDayToken1 * prices[1]
 
   // const chartData = usePoolChartData(address)
   const transactions = usePoolTransactions(address, prices)
