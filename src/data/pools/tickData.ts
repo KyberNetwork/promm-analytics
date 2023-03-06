@@ -68,34 +68,29 @@ export interface TickProcessed {
   price1: string
 }
 
+const tickQuery = gql`
+  query surroundingTicks($poolAddress: String!, $tickIdxLowerBound: BigInt!, $tickIdxUpperBound: BigInt!, $skip: Int!) {
+    ticks(
+      subgraphError: allow
+      first: 1000
+      skip: $skip
+      where: { poolAddress: $poolAddress, tickIdx_lte: $tickIdxUpperBound, tickIdx_gte: $tickIdxLowerBound }
+    ) {
+      tickIdx
+      liquidityGross
+      liquidityNet
+      price0
+      price1
+    }
+  }
+`
+
 const fetchInitializedTicks = async (
   poolAddress: string,
   tickIdxLowerBound: number,
   tickIdxUpperBound: number,
   client: ApolloClient<NormalizedCacheObject>
 ): Promise<{ loading?: boolean; error?: boolean; ticks?: Tick[] }> => {
-  const tickQuery = gql`
-    query surroundingTicks(
-      $poolAddress: String!
-      $tickIdxLowerBound: BigInt!
-      $tickIdxUpperBound: BigInt!
-      $skip: Int!
-    ) {
-      ticks(
-        subgraphError: allow
-        first: 1000
-        skip: $skip
-        where: { poolAddress: $poolAddress, tickIdx_lte: $tickIdxUpperBound, tickIdx_gte: $tickIdxLowerBound }
-      ) {
-        tickIdx
-        liquidityGross
-        liquidityNet
-        price0
-        price1
-      }
-    }
-  `
-
   let surroundingTicks: Tick[] = []
   let surroundingTicksResult: Tick[] = []
   let skip = 0
