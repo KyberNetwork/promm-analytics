@@ -346,9 +346,7 @@ const OptimismNetworkInfo: NetworkInfo = {
   name: 'Optimism',
   imageURL: OPTIMISM_LOGO_URL,
   client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism'),
-  blockClient: createBlockClient(
-    'https://optimism-graph.kyberengineering.io/subgraphs/name/kybernetwork/optimism-blocks'
-  ),
+  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/ianlapham/uni-testing-subgraph'),
   subgraphName: 'kybernetwork/kyberswap-elastic-optimism',
   etherscanUrl: 'https://optimistic.etherscan.io',
   etherscanName: 'Optimistic Ethereum Explorer',
