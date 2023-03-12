@@ -152,7 +152,9 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   priceRoute: 'arbitrum',
   name: 'Arbitrum',
   imageURL: ARBITRUM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum-one'),
+  client: createClient(
+    'https://arbitrum-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum'
+  ),
   blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/kybernetwork/arbitrum-blocks'),
   subgraphName: 'kybernetwork/kyberswap-elastic-arbitrum-one',
   etherscanUrl: 'https://arbiscan.io',
