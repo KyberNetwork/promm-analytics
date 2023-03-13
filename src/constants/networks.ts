@@ -219,7 +219,7 @@ const FantomNetworkInfo: NetworkInfo = {
   priceRoute: 'fantom',
   name: 'Fantom',
   imageURL: FANTOM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-fantom'),
+  client: createClient('https://fantom-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-fantom'),
   blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-fantom'),
   subgraphName: 'kybernetwork/kyberswap-elastic-fantom',
   etherscanUrl: 'https://ftmscan.com',
