@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Redirect, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Plus } from 'react-feather'
 import { Flex } from 'rebass'

@@ -149,7 +149,6 @@ export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): strin
   }
 
   return resultURL
-  // return addNetworkIdQueryString(resultURL, networkInfo)
 }
 
 export const pushUnique = <T>(array: T[] | undefined, element: T): T[] => {
