@@ -12,6 +12,7 @@ import ThemeToggle from 'components/ThemeToggle'
 import SocialLinks from 'components/SocialLinks'
 import Wallet from 'components/Icons/Wallet'
 import { addNetworkIdQueryString } from 'utils'
+import { KYBERSWAP_URL } from 'constants/env'
 
 const StyledMenuIcon = styled(MenuIcon)`
   stroke: ${({ theme }) => theme.text};
@@ -90,7 +91,7 @@ export default function Menu(): JSX.Element {
           )}
 
           <ExternalMenu
-            href={addNetworkIdQueryString(process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com', networkInfo)}
+            href={isAllChain ? `${KYBERSWAP_URL}/swap` : addNetworkIdQueryString(`${KYBERSWAP_URL}/swap`, networkInfo)}
           >
             <Repeat size={16} />
             Swap

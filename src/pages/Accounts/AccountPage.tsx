@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Redirect, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Flex } from 'rebass'
 import { Activity } from 'react-feather'

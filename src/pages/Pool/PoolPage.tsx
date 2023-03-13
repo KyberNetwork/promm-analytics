@@ -1,12 +1,19 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Plus } from 'react-feather'
 import { Flex } from 'rebass'
 import { useMedia } from 'react-use'
 
 import { PageWrapper } from 'pages/styled'
-import { feeTierPercent, FEE_BASE_UNITS, getEtherscanLink, getPoolLink, shortenAddress } from 'utils'
+import {
+  addNetworkIdQueryString,
+  feeTierPercent,
+  FEE_BASE_UNITS,
+  getEtherscanLink,
+  getPoolLink,
+  shortenAddress,
+} from 'utils'
 import Column, { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -31,6 +38,7 @@ import Panel from 'components/Panel'
 import FormattedName from 'components/FormattedName'
 import PoolChart from 'components/PoolChart'
 import usePrices from 'hooks/useTokensPrice'
+import { KYBERSWAP_URL } from 'constants/env'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -219,7 +227,10 @@ export default function PoolPage(): JSX.Element {
                     </ButtonOutlined>
                   </StyledExternalLink>
                   <StyledExternalLink
-                    href={`${process.env.REACT_APP_DMM_SWAP_URL}/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
+                    href={addNetworkIdQueryString(
+                      `${KYBERSWAP_URL}/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}`,
+                      activeNetwork
+                    )}
                   >
                     <ButtonPrimary width="100px" style={{ height: '38px' }}>
                       Trade
