@@ -164,7 +164,7 @@ export default function App(): JSX.Element {
                 <TYPE.label>
                   The Graph hosted network which provides data for this site is temporarily experiencing issues. Check
                   current status{' '}
-                  <ExternalLink href="https://thegraph.com/hosted-service/subgraph/uniswap/uniswap-v3">
+                  <ExternalLink href="https://thegraph.com/hosted-service/subgraph/kybernetwork/kyberswap-elastic-mainet">
                     here.
                   </ExternalLink>
                 </TYPE.label>

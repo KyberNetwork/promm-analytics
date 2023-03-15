@@ -11,7 +11,7 @@ import {
 import { createReducer } from '@reduxjs/toolkit'
 import { PriceChartEntry, Transaction } from 'types'
 import { ALL_SUPPORTED_NETWORKS, ChainId } from 'constants/networks'
-import { Token } from '@vutien/sdk-core'
+import { Token } from '@kyberswap/ks-sdk-core'
 
 export type TokenData = {
   // token is in some pool on uniswap

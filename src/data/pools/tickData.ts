@@ -1,9 +1,9 @@
 import gql from 'graphql-tag'
 import JSBI from 'jsbi'
 import keyBy from 'lodash.keyby'
-import { TickMath, tickToPrice } from '@vutien/dmm-v3-sdk'
-import { Token } from '@uniswap/sdk-core'
+import { TickMath, tickToPrice } from '@kyberswap/ks-sdk-elastic'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
+import { Token } from '@kyberswap/ks-sdk-core'
 
 const DEFAULT_SURROUNDING_TICKS = 300
 

@@ -1,5 +1,5 @@
-import { Pool, Position } from '@vutien/dmm-v3-sdk'
-import { CurrencyAmount, Token } from '@vutien/sdk-core'
+import { Pool, Position } from '@kyberswap/ks-sdk-elastic'
+import { CurrencyAmount, Token } from '@kyberswap/ks-sdk-core'
 import { ChainId } from 'constants/networks'
 import { FormattedPosition, PositionFields } from 'data/wallets/walletData'
 import JSBI from 'jsbi'
