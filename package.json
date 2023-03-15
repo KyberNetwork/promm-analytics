@@ -30,13 +30,6 @@
     "@types/wcag-contrast": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
-    "@uniswap/governance": "^1.0.2",
-    "@uniswap/liquidity-staker": "^1.0.2",
-    "@uniswap/merkle-distributor": "1.0.1",
-    "@uniswap/token-lists": "^1.0.0-beta.25",
-    "@uniswap/v2-core": "1.0.0",
-    "@uniswap/v2-periphery": "^1.1.0-beta.0",
-    "@uniswap/v3-sdk": "^3.7.1",
     "ajv": "^6.12.3",
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
@@ -104,28 +97,18 @@
       "node_modules"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@apollo/client": "^3.3.15",
     "@data-ui/histogram": "^0.0.84",
     "@types/numeral": "^2.0.2",
-    "@uniswap/default-token-list": "^2.0.0",
-    "@uniswap/sdk-core": "^3.0.1",
-    "@uniswap/v2-sdk": "^3.0.0-alpha.0",
-    "@vutien/dmm-v3-sdk": "^0.0.38",
-    "@vutien/sdk-core": "^0.0.11",
+    "@kyberswap/ks-sdk-core": "^1.0.1",
+    "@kyberswap/ks-sdk-elastic": "^1.0.4-rc",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",

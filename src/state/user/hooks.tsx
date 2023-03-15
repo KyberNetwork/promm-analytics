@@ -1,4 +1,3 @@
-// import { Token } from '@uniswap/sdk-core'
 import { useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
