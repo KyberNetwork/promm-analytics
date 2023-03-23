@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address'
+import { DMM_SWAP_URL } from 'constants/env'
 import { ChainId, NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 import dayjs from 'dayjs'
@@ -126,7 +127,7 @@ type PoolLinkInfo =
     }
 
 export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): string {
-  const swapURL = (process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com') + '/elastic'
+  const swapURL = DMM_SWAP_URL + '/elastic'
   let resultURL
 
   if (info.type === 'remove') {

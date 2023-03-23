@@ -35,6 +35,7 @@ import { activeNetworkPrefix } from 'utils/networkPrefix'
 import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
 import { addNetworkIdQueryString } from 'utils'
 import { ALL_CHAIN_ID } from 'constants/index'
+import { DMM_SWAP_URL } from 'constants/env'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -418,7 +419,7 @@ function SideNav(): JSX.Element {
 
             <ExternalMenu
               href={addNetworkIdQueryString(
-                process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com/swap',
+                `${DMM_SWAP_URL}/swap`,
                 isAllChain ? NETWORKS_INFO_MAP[ChainId.ETHEREUM] : networkInfo
               )}
             >

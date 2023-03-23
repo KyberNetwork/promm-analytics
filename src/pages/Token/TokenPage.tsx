@@ -29,6 +29,7 @@ import Search from 'components/Search'
 import { UnSelectable } from 'components'
 import CopyHelper from 'components/Copy'
 import TokenChart from 'components/TokenChart'
+import { DMM_SWAP_URL } from 'constants/env'
 
 const PriceText = styled(TYPE.label)`
   font-size: 24px;
@@ -182,7 +183,7 @@ export default function TokenPage(): JSX.Element {
                       </ButtonOutlined>
                     </StyledExternalLink>
                     <StyledExternalLink
-                      href={`${process.env.REACT_APP_DMM_SWAP_URL}/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
+                      href={`${DMM_SWAP_URL}/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
                     >
                       <ButtonPrimary width="100px" style={{ height: '38px' }}>
                         Swap

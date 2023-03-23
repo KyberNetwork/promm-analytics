@@ -31,6 +31,7 @@ import Panel from 'components/Panel'
 import FormattedName from 'components/FormattedName'
 import PoolChart from 'components/PoolChart'
 import usePrices from 'hooks/useTokensPrice'
+import { DMM_SWAP_URL } from 'constants/env'
 
 const ContentLayout = styled.div`
   display: grid;
@@ -219,7 +220,7 @@ export default function PoolPage(): JSX.Element {
                     </ButtonOutlined>
                   </StyledExternalLink>
                   <StyledExternalLink
-                    href={`${process.env.REACT_APP_DMM_SWAP_URL}/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
+                    href={`${DMM_SWAP_URL}/swap?inputCurrency=${poolData.token0.address}&outputCurrency=${poolData.token1.address}&networkId=${activeNetwork.chainId}`}
                   >
                     <ButtonPrimary width="100px" style={{ height: '38px' }}>
                       Trade
