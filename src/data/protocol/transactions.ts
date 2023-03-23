@@ -1,5 +1,8 @@
-import { NetworkInfo } from 'constants/networks'
+import { ApolloClient } from '@apollo/client'
+import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
+
+import { NetworkInfo } from 'constants/networks'
 import { Transaction, TransactionType } from 'types'
 import { formatTokenSymbol } from 'utils/tokens'
 
@@ -121,9 +124,12 @@ interface TransactionResults {
   transactions: TransactionEntry[]
 }
 
-export async function fetchTopTransactions(network: NetworkInfo): Promise<Transaction[] | undefined> {
+export async function fetchTopTransactions(
+  network: NetworkInfo,
+  client: ApolloClient<NormalizedCacheObject>
+): Promise<Transaction[] | undefined> {
   try {
-    const { data, error, loading } = await network.client.query<TransactionResults>({
+    const { data, error, loading } = await client.query<TransactionResults>({
       query: GLOBAL_TRANSACTIONS,
       fetchPolicy: 'cache-first',
     })

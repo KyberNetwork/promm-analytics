@@ -1,4 +1,7 @@
+import { ApolloClient } from '@apollo/client'
+import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
+
 import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PoolData } from 'state/pools/reducer'
@@ -96,16 +99,18 @@ interface PoolDataResponse {
  * Fetch top addresses by volume
  */
 export async function fetchPoolsData(
-  network: NetworkInfo
+  network: NetworkInfo,
+  client: ApolloClient<NormalizedCacheObject>,
+  blockClient: ApolloClient<NormalizedCacheObject>
 ): Promise<{
   [address: string]: PoolData
 }> {
-  const poolServiceCall = fetchPoolsAPR(network)
+  const poolServiceCall = fetchPoolsAPR(network.poolRoute)
 
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([
-    fetchTopPoolAddresses(network.client),
-    getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient),
+    fetchTopPoolAddresses(client),
+    getBlocksFromTimestamps(getDeltaTimestamps(), blockClient),
   ])
 
   const [block24, block48, blockWeek] = blocks ?? []
@@ -115,7 +120,7 @@ export async function fetchPoolsData(
 
   const response = await Promise.allSettled(
     inputs.map((val) =>
-      network.client.query({
+      client.query({
         query: POOLS_BULK(val, poolAddresses),
         fetchPolicy: 'cache-first',
       })

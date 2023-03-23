@@ -9,8 +9,9 @@ import UserUpdater from './state/user/updater'
 import ApplicationUpdater from './state/application/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import { ApolloProvider } from '@apollo/client/react'
-import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
+import { EthereumNetworkInfo } from 'constants/networks'
 import { useGlobalData } from 'data'
+import { createClient } from 'apollo/client'
 
 function Updaters() {
   useGlobalData()
@@ -21,11 +22,12 @@ function Updaters() {
     </>
   )
 }
+const defaultClient = createClient(EthereumNetworkInfo.defaultSubgraph)
 
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <ApolloProvider client={NETWORKS_INFO_MAP[ChainId.ETHEREUM].client}>
+    <ApolloProvider client={defaultClient}>
       <Provider store={store}>
         <BrowserRouter basename="/elastic">
           <Updaters />

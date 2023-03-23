@@ -217,7 +217,8 @@ export function useTokenPriceData(
         startTimestamp,
         interval,
         latestBlock,
-        activeNetwork
+        dataClient,
+        blockClient
       )
 
       if (data?.length) {

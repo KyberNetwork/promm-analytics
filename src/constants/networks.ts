@@ -1,7 +1,3 @@
-import { ApolloClient } from '@apollo/client'
-import { NormalizedCacheObject } from 'apollo-cache-inmemory'
-import { createBlockClient, createClient } from 'apollo/client'
-
 import ARBITRUM_LOGO_URL from '../assets/network-logo/arbitrum.svg'
 import AURORA_LOGO_URL from '../assets/network-logo/aurora.svg'
 import AVAX_LOGO_URL from '../assets/network-logo/avax.png'
@@ -18,8 +14,6 @@ import { ALL_CHAIN_ID } from 'constants/index'
 
 export enum ChainId {
   ETHEREUM = 1,
-  ROPSTEN = 3,
-  RINKEBY = 4,
   POLYGON = 137,
   // MUMBAI = 80001,
   // BSCTESTNET = 97,
@@ -29,7 +23,6 @@ export enum ChainId {
   FANTOM = 250,
   // CRONOSTESTNET = 338,
   CRONOS = 25,
-  // ARBITRUM_TESTNET = 421611,
   ARBITRUM = 42161,
   BTTC = 199,
   VELAS = 106,
@@ -46,8 +39,8 @@ export type NetworkInfo = {
   poolRoute: string
   name: string
   imageURL: string
-  client: ApolloClient<NormalizedCacheObject>
-  blockClient: ApolloClient<NormalizedCacheObject>
+  defaultSubgraph: string
+  defaultBlockSubgraph: string
   subgraphName: string
   etherscanUrl: string
   etherscanName: string
@@ -61,57 +54,15 @@ export type NetworkInfo = {
   priceRoute: string
 }
 
-const RinkebyNetworkInfo: NetworkInfo = {
-  chainId: ChainId.RINKEBY,
-  route: 'rinkeby',
-  poolRoute: 'ethereum',
-  priceRoute: 'rinkeby',
-  name: 'Rinkeby',
-  imageURL: ETHEREUM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/promm-rinkeby'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/billjhlee/rinkeby-blocks'),
-  subgraphName: 'viet-nv/promm-rinkeby',
-  etherscanUrl: 'https://rinkeby.etherscan.io',
-  etherscanName: 'Rinkeby Explorer',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/rinkeby.tokenlist.json',
-  nativeToken: {
-    symbol: 'ETH',
-    name: 'ETH (Wrapped)',
-    address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
-  },
-  startBlock: 10781862,
-}
-
-const RopstenNetworkInfo: NetworkInfo = {
-  chainId: ChainId.ROPSTEN,
-  route: 'ropsten',
-  poolRoute: 'ethereum',
-  priceRoute: 'ropsten',
-  name: 'Ropsten',
-  imageURL: ETHEREUM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/viet-nv/promm-ropsten'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/edwardevans094/ropsten-blocks'),
-  subgraphName: 'viet-nv/promm-ropsten',
-  etherscanUrl: 'https://ropsten.etherscan.io',
-  etherscanName: 'Ropsten Explorer',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/ropsten.tokenlist.json',
-  nativeToken: {
-    symbol: 'ETH',
-    name: 'ETH (Wrapped)',
-    address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
-  },
-  startBlock: 12319943,
-}
-
-const EthereumNetworkInfo: NetworkInfo = {
+export const EthereumNetworkInfo: NetworkInfo = {
   chainId: ChainId.ETHEREUM,
   route: 'ethereum',
   poolRoute: 'ethereum',
   priceRoute: 'ethereum',
   name: 'Ethereum',
   imageURL: ETHEREUM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-ethereum'),
+  defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-ethereum',
   subgraphName: 'kybernetwork/kyberswap-elastic-mainnet',
   etherscanUrl: 'https://etherscan.io',
   etherscanName: 'Etherscan',
@@ -131,8 +82,8 @@ const BscNetworkInfo: NetworkInfo = {
   priceRoute: 'bsc',
   name: 'BNB Chain',
   imageURL: BNB_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-bsc'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc'),
+  defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-bsc',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-bsc',
   subgraphName: 'kybernetwork/kyberswap-elastic-bsc',
   etherscanUrl: 'https://bscscan.com',
   etherscanName: 'BscScan',
@@ -152,10 +103,8 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   priceRoute: 'arbitrum',
   name: 'Arbitrum',
   imageURL: ARBITRUM_LOGO_URL,
-  client: createClient(
-    'https://arbitrum-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum'
-  ),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/kybernetwork/arbitrum-blocks'),
+  defaultSubgraph: 'https://arbitrum-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/arbitrum-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-arbitrum-one',
   etherscanUrl: 'https://arbiscan.io',
   etherscanName: 'Arbiscan',
@@ -175,10 +124,8 @@ const PolygonNetworkInfo: NetworkInfo = {
   priceRoute: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
-  client: createClient(
-    'https://polygon-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon'
-  ),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-polygon'),
+  defaultSubgraph: 'https://polygon-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-polygon',
   subgraphName: 'kybernetwork/kyberswap-elastic-matic',
   etherscanUrl: 'https://polygonscan.com',
   etherscanName: 'Polygonscan',
@@ -198,8 +145,8 @@ const AvaxNetworkInfo: NetworkInfo = {
   priceRoute: 'avalanche',
   name: 'Avalanche',
   imageURL: AVAX_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-avalanche'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/ducquangkstn/avalache-blocks'),
+  defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-avalanche',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/ducquangkstn/avalache-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-avalanche',
   etherscanUrl: 'https://snowtrace.io',
   etherscanName: 'Snowtrace',
@@ -219,8 +166,8 @@ const FantomNetworkInfo: NetworkInfo = {
   priceRoute: 'fantom',
   name: 'Fantom',
   imageURL: FANTOM_LOGO_URL,
-  client: createClient('https://fantom-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-fantom'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-fantom'),
+  defaultSubgraph: 'https://fantom-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-fantom',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-fantom',
   subgraphName: 'kybernetwork/kyberswap-elastic-fantom',
   etherscanUrl: 'https://ftmscan.com',
   etherscanName: 'Ftmscan',
@@ -241,8 +188,8 @@ const CronosNetworkInfo: NetworkInfo = {
   priceRoute: 'cronos',
   name: 'Cronos',
   imageURL: CRONOS_LOGO_URL,
-  client: createClient('https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-cronos'),
-  blockClient: createBlockClient('https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/cronos-blocks'),
+  defaultSubgraph: 'https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-cronos',
+  defaultBlockSubgraph: 'https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/cronos-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-cronos',
   etherscanUrl: 'https://cronos.org/explorer',
   etherscanName: 'Cronos explorer',
@@ -262,8 +209,8 @@ const BTTCNetworkInfo: NetworkInfo = {
   priceRoute: 'bttc',
   name: 'BitTorrent',
   imageURL: BTTC_LOGO_URL,
-  client: createClient('https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc'),
-  blockClient: createBlockClient('https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/bttc-blocks'),
+  defaultSubgraph: 'https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc',
+  defaultBlockSubgraph: 'https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/bttc-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-bttc',
   etherscanUrl: 'https://bttcscan.com',
   etherscanName: 'Bttcscan',
@@ -283,8 +230,8 @@ const VelasNetworkInfo: NetworkInfo = {
   priceRoute: 'velas',
   name: 'Velas',
   imageURL: VELAS_LOGO_URL,
-  client: createClient('https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas'),
-  blockClient: createBlockClient('https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/velas-blocks'),
+  defaultSubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas',
+  defaultBlockSubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/velas-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-velas',
   etherscanUrl: 'https://evmexplorer.velas.com',
   etherscanName: 'Velas EVM Explorer',
@@ -305,8 +252,8 @@ const AuroraNetworkInfo: NetworkInfo = {
   priceRoute: 'aurora',
   name: 'Aurora',
   imageURL: AURORA_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora'),
-  blockClient: createBlockClient('https://aurora-graph.kyberengineering.io/subgraphs/name/kybernetwork/aurora-blocks'),
+  defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora',
+  defaultBlockSubgraph: 'https://aurora-graph.kyberengineering.io/subgraphs/name/kybernetwork/aurora-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-aurora',
   etherscanUrl: 'https://aurorascan.dev',
   etherscanName: 'Aurora Explorer',
@@ -326,8 +273,8 @@ const OasisNetworkInfo: NetworkInfo = {
   priceRoute: 'oasis',
   name: 'Oasis',
   imageURL: OASIS_LOGO_URL,
-  client: createClient('https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis'),
-  blockClient: createBlockClient('https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/oasis-blocks'),
+  defaultSubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis',
+  defaultBlockSubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/oasis-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-oasis',
   etherscanUrl: 'https://explorer.emerald.oasis.dev',
   etherscanName: 'Oasis Emerald Explorer',
@@ -347,8 +294,8 @@ const OptimismNetworkInfo: NetworkInfo = {
   priceRoute: 'optimism',
   name: 'Optimism',
   imageURL: OPTIMISM_LOGO_URL,
-  client: createClient('https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism'),
-  blockClient: createBlockClient('https://api.thegraph.com/subgraphs/name/ianlapham/uni-testing-subgraph'),
+  defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism',
+  defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/ianlapham/uni-testing-subgraph',
   subgraphName: 'kybernetwork/kyberswap-elastic-optimism',
   etherscanUrl: 'https://optimistic.etherscan.io',
   etherscanName: 'Optimistic Ethereum Explorer',
@@ -365,8 +312,6 @@ const OptimismNetworkInfo: NetworkInfo = {
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
   [ChainId.BSCMAINNET]: BscNetworkInfo,
-  [ChainId.ROPSTEN]: RopstenNetworkInfo,
-  [ChainId.RINKEBY]: RinkebyNetworkInfo,
   [ChainId.ARBITRUM]: ArbitrumNetworkInfo,
   [ChainId.POLYGON]: PolygonNetworkInfo,
   [ChainId.AVAXMAINNET]: AvaxNetworkInfo,
@@ -407,8 +352,6 @@ export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter((e: 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
   ChainId.ETHEREUM,
   ChainId.BSCMAINNET,
-  // ChainId.ROPSTEN,
-  // ChainId.RINKEBY,
   ChainId.ARBITRUM,
   ChainId.POLYGON,
   ChainId.AVAXMAINNET,

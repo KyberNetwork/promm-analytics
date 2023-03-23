@@ -167,7 +167,7 @@ export function useHourlyRateData(
   const ratesData = useSelector(
     (state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[poolAddress]?.ratesData?.[timeWindow]
   )
-  const { dataClient } = useClients()[0]
+  const { dataClient, blockClient } = useClients()[0]
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
 
   useEffect(() => {
@@ -202,7 +202,8 @@ export function useHourlyRateData(
         startTime,
         latestBlock,
         frequency,
-        activeNetwork
+        blockClient,
+        activeNetwork.startBlock
       )
       ratesData &&
         dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))

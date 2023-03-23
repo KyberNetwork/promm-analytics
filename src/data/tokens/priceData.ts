@@ -1,4 +1,3 @@
-import { NetworkInfo } from 'constants/networks'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
@@ -6,6 +5,8 @@ import gql from 'graphql-tag'
 import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { PriceChartEntry } from 'types'
 import { splitQuery } from 'utils/queries'
+import { ApolloClient } from '@apollo/client'
+import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -44,11 +45,9 @@ export const getIntervalTokenData = async (
   startTime: number,
   interval = 3600,
   latestBlock: number,
-  activeNetwork: NetworkInfo
+  client: ApolloClient<NormalizedCacheObject>,
+  blockClient: ApolloClient<NormalizedCacheObject>
 ): Promise<PriceChartEntry[]> => {
-  const client = activeNetwork.client
-  const blockClient = activeNetwork.blockClient
-
   const utcEndTime = dayjs.utc()
   let time = startTime
   // create an array of hour start times until we reach current hour

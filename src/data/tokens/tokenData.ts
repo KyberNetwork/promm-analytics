@@ -1,5 +1,7 @@
+import { ApolloClient, useQuery } from '@apollo/client'
+import { NormalizedCacheObject } from 'apollo-cache-inmemory'
+
 import { getPercentChange } from './../../utils/data'
-import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
@@ -223,11 +225,15 @@ export function useFetchedTokenDatas(
   }
 }
 
-export async function fetchedTokenData(network: NetworkInfo): Promise<TokenData[] | undefined> {
+export async function fetchedTokenData(
+  network: NetworkInfo,
+  client: ApolloClient<NormalizedCacheObject>,
+  blockClient: ApolloClient<NormalizedCacheObject>
+): Promise<TokenData[] | undefined> {
   const [tokenAddresses, blocks, ethPrices] = await Promise.all([
-    getTopTokenAddresses(network.client),
-    getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient),
-    fetchEthPricesV2(network),
+    getTopTokenAddresses(client),
+    getBlocksFromTimestamps(getDeltaTimestamps(), blockClient),
+    fetchEthPricesV2(client, blockClient),
   ])
 
   const [block24, block48, blockWeek] = blocks ?? []
@@ -236,7 +242,7 @@ export async function fetchedTokenData(network: NetworkInfo): Promise<TokenData[
   const inputs = [undefined, block24?.number ?? 0, block48?.number ?? 0, blockWeek?.number ?? 0]
   const response = await Promise.allSettled(
     inputs.map((val) =>
-      network.client.query({
+      client.query({
         query: TOKENS_BULK(val, tokenAddresses),
         fetchPolicy: 'cache-first',
       })

@@ -37,13 +37,16 @@ interface ChartResults {
   }[]
 }
 
-export async function fetchChartData(client: ApolloClient<NormalizedCacheObject>): Promise<ChartDayData[]> {
+export async function fetchChartData(
+  chainId: ChainId,
+  client: ApolloClient<NormalizedCacheObject>
+): Promise<ChartDayData[]> {
   let data: {
     date: number
     volumeUSD: string
     tvlUSD: string
   }[] = []
-  const startTimestamp = client === NETWORKS_INFO_MAP[ChainId.ARBITRUM].client ? 1630423606 : 1619136000
+  const startTimestamp = chainId === ChainId.ARBITRUM ? 1630423606 : 1619136000
   const endTimestamp = dayjs.utc().unix()
 
   let skip = 0

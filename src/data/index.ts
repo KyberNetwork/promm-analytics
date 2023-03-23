@@ -19,6 +19,7 @@ import { fetchChartData } from './protocol/chart'
 import { calcProtocolData, Factory, fetchProtocolData } from './protocol/overview'
 import { fetchTopTransactions } from './protocol/transactions'
 import { fetchedTokenData } from './tokens/tokenData'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 function mergeProtocolData(dataAllChain: Factory[], data1Chain: Factory[]) {
   dataAllChain.forEach((element, i) => {
@@ -63,6 +64,7 @@ const memoRequest = async (key: string, callback: () => Promise<any>) => {
 
 export function useGlobalData(): Array<any> {
   const activeNetworks = useActiveNetworks()
+  const kyberswapConfig = useKyberswapConfig()
   const { isAllChain, chainId, networkInfo } = useActiveNetworkUtils()
 
   const networks = !ELASTIC_SUPPORTED_NETWORKS.includes(chainId)
@@ -79,7 +81,9 @@ export function useGlobalData(): Array<any> {
 
   async function fetchAllProtocolData() {
     const promises = networks.map((net) =>
-      memoRequest(KeysCaches.PROTOCOL + net.chainId, () => fetchProtocolData(net.client, net.blockClient))
+      memoRequest(KeysCaches.PROTOCOL + net.chainId, () =>
+        fetchProtocolData(kyberswapConfig[net.chainId].client, kyberswapConfig[net.chainId].blockClient)
+      )
     )
 
     const data = await Promise.allSettled(promises)
@@ -103,7 +107,11 @@ export function useGlobalData(): Array<any> {
   }
 
   async function fetchAllTokens() {
-    const promises = networks.map((net) => memoRequest(KeysCaches.TOKEN + net.chainId, () => fetchedTokenData(net)))
+    const promises = networks.map((net) =>
+      memoRequest(KeysCaches.TOKEN + net.chainId, () =>
+        fetchedTokenData(net, kyberswapConfig[net.chainId].client, kyberswapConfig[net.chainId].blockClient)
+      )
+    )
     const response = await Promise.allSettled(promises)
     const result: { [chainId: string]: TokenData[] } = {}
     let resultAllChain: TokenData[] = []
@@ -118,7 +126,10 @@ export function useGlobalData(): Array<any> {
 
   async function fetchAllChartData() {
     const promises = networks.map((net) =>
-      memoRequest(KeysCaches.CHART + net.chainId, () => fetchChartData(net.client) as Promise<ChartDayData[]>)
+      memoRequest(
+        KeysCaches.CHART + net.chainId,
+        () => fetchChartData(net.chainId, kyberswapConfig[net.chainId].client) as Promise<ChartDayData[]>
+      )
     )
     const response = await Promise.allSettled(promises)
     const data = response.map((data) => (data.status === 'fulfilled' ? data.value : []))
@@ -144,7 +155,11 @@ export function useGlobalData(): Array<any> {
   }
 
   async function fetchAllPoolData() {
-    const promises = networks.map((net) => memoRequest(KeysCaches.POOL + net.chainId, () => fetchPoolsData(net)))
+    const promises = networks.map((net) =>
+      memoRequest(KeysCaches.POOL + net.chainId, () =>
+        fetchPoolsData(net, kyberswapConfig[net.chainId].client, kyberswapConfig[net.chainId].blockClient)
+      )
+    )
     const response = await Promise.allSettled(promises)
     const data = response.map((data) => (data.status === 'fulfilled' ? data.value : {}))
     const result: { [chainId: string]: { [address: string]: PoolData } } = {}
@@ -163,7 +178,9 @@ export function useGlobalData(): Array<any> {
 
   async function fetchAllTransactionData() {
     const promises = networks.map((net) =>
-      memoRequest(KeysCaches.TRANSACTION + net.chainId, () => fetchTopTransactions(net))
+      memoRequest(KeysCaches.TRANSACTION + net.chainId, () =>
+        fetchTopTransactions(net, kyberswapConfig[net.chainId].client)
+      )
     )
     const data = await Promise.allSettled(promises)
     const results: { [key: string]: Transaction[] } = {}
