@@ -15,6 +15,7 @@ import {
   ChainIdType,
   CLASSIC_SUPPORTED_NETWORKS,
   ELASTIC_SUPPORTED_NETWORKS,
+  NETWORKS_INFO_LIST,
   NETWORKS_INFO_MAP,
 } from 'constants/networks'
 import { UnSelectable } from 'components'
@@ -35,6 +36,7 @@ import { activeNetworkPrefix } from 'utils/networkPrefix'
 import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
 import { addNetworkIdQueryString } from 'utils'
 import { ALL_CHAIN_ID } from 'constants/index'
+import { KYBERSWAP_URL } from 'constants/env'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -247,6 +249,19 @@ function SideNav(): JSX.Element {
 
   const networkListToShow: ChainIdType[] =
     tab === ListTabs.ELASTIC ? ELASTIC_SUPPORTED_NETWORKS : CLASSIC_SUPPORTED_NETWORKS
+  const currentPage =
+    '/' +
+    pathname
+      .split('/')
+      .slice(NETWORKS_INFO_LIST.map((network) => network.route).includes(pathname.split('/')[1]) ? 2 : 1)
+      .join('/')
+  const newPage = currentPage.startsWith('/token/')
+    ? '/tokens'
+    : currentPage.startsWith('/pool/')
+    ? '/pools'
+    : currentPage.startsWith('/account/')
+    ? '/accounts'
+    : currentPage
 
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
@@ -293,7 +308,7 @@ function SideNav(): JSX.Element {
             ) : (
               <StyledInternalLink
                 key={chainId}
-                to={`/${isAllChainId ? '' : NETWORKS_INFO_MAP[chainId].route + '/'}home`}
+                to={`${isAllChainId ? '' : '/' + NETWORKS_INFO_MAP[chainId].route}${newPage}`}
               >
                 <NetworkItem
                   active={isAllChain ? isAllChainId : chainId === networkInfo.chainId}
@@ -417,10 +432,9 @@ function SideNav(): JSX.Element {
             <Divider />
 
             <ExternalMenu
-              href={addNetworkIdQueryString(
-                process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com/swap',
-                isAllChain ? NETWORKS_INFO_MAP[ChainId.ETHEREUM] : networkInfo
-              )}
+              href={
+                isAllChain ? `${KYBERSWAP_URL}/swap` : addNetworkIdQueryString(`${KYBERSWAP_URL}/swap`, networkInfo)
+              }
             >
               <Repeat size={16} />
               Swap

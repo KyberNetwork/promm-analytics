@@ -144,20 +144,6 @@ export default function App(): JSX.Element {
         </Flex>
       ) : (
         <>
-          {/* <HeaderWrapper> */}
-          {/*   {showNotSyncedWarning && ( */}
-          {/*     <WarningWrapper> */}
-          {/*       <WarningBanner> */}
-          {/*         {`Warning: */}
-          {/*         Data has only synced to Optimism block ${subgraphStatus.syncedBlock} (out of ${subgraphStatus.headBlock}). Please check back soon.`} */}
-          {/*       </WarningBanner> */}
-          {/*     </WarningWrapper> */}
-          {/*   )} */}
-          {/*   <Hide1080> */}
-          {/*     <TopBar /> */}
-          {/*   </Hide1080> */}
-          {/*   <Header /> */}
-          {/* </HeaderWrapper> */}
           {subgraphStatus.available === false ? (
             <BodyWrapper>
               <DarkGreyCard style={{ maxWidth: '340px' }}>

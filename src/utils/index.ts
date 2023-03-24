@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address'
+import { KYBERSWAP_URL } from 'constants/env'
 import { ChainId, NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 import dayjs from 'dayjs'
@@ -126,11 +127,10 @@ type PoolLinkInfo =
     }
 
 export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): string {
-  const swapURL = (process.env.REACT_APP_DMM_SWAP_URL || 'https://kyberswap.com') + '/elastic'
   let resultURL
 
   if (info.type === 'remove') {
-    resultURL = `${swapURL}/remove/${info.positionId}`
+    resultURL = `${KYBERSWAP_URL}/elastic/remove/${info.positionId}`
   } else {
     const token0 =
       info.token0Address == networkInfo.nativeToken.address ? networkInfo.nativeToken.symbol : info.token0Address
@@ -140,15 +140,15 @@ export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): strin
         : info.token1Address
       : undefined
     if (info.feeTier) {
-      resultURL = `${swapURL}/add/${token0}/${token1}/${info.feeTier}`
+      resultURL = `${KYBERSWAP_URL}/elastic/add/${token0}/${token1}/${info.feeTier}`
     } else if (info.token1Address) {
-      resultURL = `${swapURL}/add/${token0}/${token1}`
+      resultURL = `${KYBERSWAP_URL}/elastic/add/${token0}/${token1}`
     } else {
-      resultURL = `${swapURL}/add/${token0}`
+      resultURL = `${KYBERSWAP_URL}/elastic/add/${token0}`
     }
   }
 
-  return addNetworkIdQueryString(resultURL, networkInfo)
+  return resultURL
 }
 
 export const pushUnique = <T>(array: T[] | undefined, element: T): T[] => {
