@@ -255,6 +255,13 @@ function SideNav(): JSX.Element {
       .split('/')
       .slice(NETWORKS_INFO_LIST.map((network) => network.route).includes(pathname.split('/')[1]) ? 2 : 1)
       .join('/')
+  const newPage = currentPage.startsWith('/token/')
+    ? '/tokens'
+    : currentPage.startsWith('/pool/')
+    ? '/pools'
+    : currentPage.startsWith('/account/')
+    ? '/accounts'
+    : currentPage
 
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
@@ -301,7 +308,7 @@ function SideNav(): JSX.Element {
             ) : (
               <StyledInternalLink
                 key={chainId}
-                to={`${isAllChainId ? '' : '/' + NETWORKS_INFO_MAP[chainId].route}${currentPage}`}
+                to={`${isAllChainId ? '' : '/' + NETWORKS_INFO_MAP[chainId].route}${newPage}`}
               >
                 <NetworkItem
                   active={isAllChain ? isAllChainId : chainId === networkInfo.chainId}
