@@ -6,8 +6,7 @@ import { isAddress } from 'ethers/lib/utils'
 export function RedirectInvalidToken(): JSX.Element {
   const { address } = useParams<{ address: string }>()
 
-  if (!isAddress(address)) {
-    return <Redirect to={`/`} />
-  }
+  if (!isAddress(address)) return <Redirect to="/tokens" />
+
   return <TokenPage />
 }

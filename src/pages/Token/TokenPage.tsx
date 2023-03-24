@@ -7,7 +7,7 @@ import { Flex } from 'rebass'
 
 import { useTokenData, usePoolsForToken, useTokenTransactions } from 'state/tokens/hooks'
 import { PageWrapper } from 'pages/styled'
-import { shortenAddress, getEtherscanLink, getPoolLink } from 'utils'
+import { shortenAddress, getEtherscanLink, getPoolLink, addNetworkIdQueryString } from 'utils'
 import { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow, RowFlat } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -29,7 +29,7 @@ import Search from 'components/Search'
 import { UnSelectable } from 'components'
 import CopyHelper from 'components/Copy'
 import TokenChart from 'components/TokenChart'
-import { DMM_SWAP_URL } from 'constants/env'
+import { KYBERSWAP_URL } from 'constants/env'
 
 const PriceText = styled(TYPE.label)`
   font-size: 24px;
@@ -183,7 +183,7 @@ export default function TokenPage(): JSX.Element {
                       </ButtonOutlined>
                     </StyledExternalLink>
                     <StyledExternalLink
-                      href={`${DMM_SWAP_URL}/swap?inputCurrency=${address}&networkId=${activeNetwork.chainId}`}
+                      href={addNetworkIdQueryString(`${KYBERSWAP_URL}/swap?inputCurrency=${address}`, activeNetwork)}
                     >
                       <ButtonPrimary width="100px" style={{ height: '38px' }}>
                         Swap

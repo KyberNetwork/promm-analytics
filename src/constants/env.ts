@@ -7,9 +7,8 @@ const required = (envKey: string): string => {
   return envValue
 }
 
-export const KYBERSWAP_URL = required('DMM_SWAP_URL')
+export const KYBERSWAP_URL = required('KYBERSWAP_URL')
 export const KS_SETTING_API = required('KS_SETTING_API')
 export const POOL_SERVICE = required('POOL_SERVICE')
 export const AGGREGATOR_STATS_API = required('AGGREGATOR_STATS_API')
-export const DMM_SWAP_URL = required('DMM_SWAP_URL')
 export const PRICE_API = required('PRICE_API')
