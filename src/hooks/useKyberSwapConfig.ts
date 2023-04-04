@@ -1,62 +1,9 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { createBlockClient, createClient } from 'apollo/client'
-import { NETWORKS_INFO_MAP, ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
-import { KyberswapConfigurationResponse, useLazyGetKyberswapConfigurationQuery } from '../services/ksSetting'
+import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
+import { useLazyGetKyberswapConfigurationQuery, KyberswapConfig, parseResponse } from '../services/ksSetting'
 import { AppState } from 'state'
-
-type KyberswapConfig = {
-  blockClient: ApolloClient<NormalizedCacheObject>
-  client: ApolloClient<NormalizedCacheObject>
-}
-
-const cacheConfig: {
-  blockClient: { [subgraphLink: string]: ApolloClient<NormalizedCacheObject> }
-  client: { [subgraphLink: string]: ApolloClient<NormalizedCacheObject> }
-} = {
-  blockClient: {},
-  client: {},
-}
-
-const cacheCalc: <T extends keyof typeof cacheConfig, U extends typeof cacheConfig[T][string]>(
-  type: T,
-  value: string,
-  fallback: (value: string) => U
-) => U = <T extends keyof typeof cacheConfig, U extends typeof cacheConfig[T][string]>(
-  type: T,
-  value: string,
-  fallback: (value: string) => U
-) => {
-  if (!cacheConfig[type][value]) {
-    cacheConfig[type][value] = fallback(value)
-  }
-  return cacheConfig[type][value] as U
-}
-
-const parseResponse = (
-  responseData: KyberswapConfigurationResponse | undefined,
-  defaultChainId: ChainId
-): KyberswapConfig => {
-  const data = responseData?.data?.config
-
-  const blockClient = cacheCalc(
-    'blockClient',
-    responseData?.data?.config?.blockSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultBlockSubgraph,
-    (subgraph) => createBlockClient(subgraph)
-  )
-  const client = cacheCalc(
-    'client',
-    responseData?.data?.config?.elasticSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultSubgraph,
-    (subgraph) => createClient(subgraph)
-  )
-
-  return {
-    blockClient,
-    client,
-  }
-}
 
 export const useKyberswapConfig = (): {
   [chain in ChainId]: KyberswapConfig
@@ -68,19 +15,32 @@ export const useKyberswapConfig = (): {
       }
     | null
   >(null)
-  const [getKyberswapConfiguration] = useLazyGetKyberswapConfigurationQuery()
+  const [getKyberswapConfiguration, a] = useLazyGetKyberswapConfigurationQuery()
 
   useEffect(() => {
     const run = async () => {
       setKyberswapConfigs(null)
       const fetches = storeChainIds.map(async (chainId) => {
         try {
-          const { data } = await getKyberswapConfiguration({ chainId })
+          const { data, error } = await getKyberswapConfiguration({ chainId })
+          if (data)
+            return {
+              chainId,
+              result: data,
+            }
+          if (error)
+            return {
+              chainId,
+              result: parseResponse(undefined, chainId),
+            }
           return {
             chainId,
-            result: parseResponse(data, chainId),
+            result: parseResponse(undefined, chainId),
           }
-        } catch {
+        } catch (error) {
+          // This wont happended. Just leave here just in case ....
+          // If there is API error, it will return data = undefined.
+          console.error('🆘🆘🆘🆘🆘🆘🆘🆘 These lines should not be run', { error })
           return {
             chainId,
             result: parseResponse(undefined, chainId),

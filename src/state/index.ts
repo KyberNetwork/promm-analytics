@@ -7,6 +7,7 @@ import user from './user/reducer'
 import protocol from './protocol/reducer'
 import tokens from './tokens/reducer'
 import pools from './pools/reducer'
+import ksSettingApi from 'services/ksSetting'
 
 const PERSISTED_KEYS: string[] = ['user']
 
@@ -17,8 +18,12 @@ const store = configureStore({
     protocol,
     tokens,
     pools,
+    [ksSettingApi.reducerPath]: ksSettingApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(save({ states: PERSISTED_KEYS })),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ thunk: true, immutableCheck: false, serializableCheck: false })
+      .concat(save({ states: PERSISTED_KEYS }))
+      .concat(ksSettingApi.middleware),
   preloadedState: load({ states: PERSISTED_KEYS }),
 })
 
