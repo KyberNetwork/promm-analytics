@@ -12,14 +12,6 @@ export type KyberswapConfigurationResponse = {
   }
 }
 
-export type KyberswapGlobalConfigurationResponse = {
-  data: {
-    config: {
-      aggregator: string
-    }
-  }
-}
-
 const ksSettingApi = createApi({
   reducerPath: 'ksSettingConfigurationApi',
   baseQuery: fetchBaseQuery({
