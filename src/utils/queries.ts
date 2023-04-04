@@ -14,7 +14,7 @@ export async function splitQuery<ResultType, T, U>(
   client: ApolloClient<NormalizedCacheObject>,
   values: T[],
   vars: U[],
-  skipCount = 1000
+  skipCount = 500
 ): Promise<
   | {
       [key: string]: ResultType

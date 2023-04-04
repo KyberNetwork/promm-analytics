@@ -21,6 +21,7 @@ import { getHourlyRateData } from 'data/pools/hourlyRatesData'
 import dayjs from 'dayjs'
 import { useFetchedSubgraphStatus } from 'data/application'
 import { usePrevious } from 'react-use'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 export function useAllPoolData(): {
   [address: string]: { data: PoolData | undefined; lastUpdated: number | undefined }
@@ -168,6 +169,7 @@ export function useHourlyRateData(
     (state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[poolAddress]?.ratesData?.[timeWindow]
   )
   const { dataClient, blockClient } = useClients()[0]
+  const kyberswapConfig = useKyberswapConfig()
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
 
   useEffect(() => {
@@ -203,7 +205,9 @@ export function useHourlyRateData(
         latestBlock,
         frequency,
         blockClient,
-        activeNetwork.startBlock
+        activeNetwork.startBlock,
+        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
+        activeNetwork.chainId
       )
       ratesData &&
         dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))

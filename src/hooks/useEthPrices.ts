@@ -1,10 +1,11 @@
-import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { getDeltaTimestamps } from 'utils/queries'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
-import { NetworkInfo } from 'constants/networks'
+import { ChainId } from 'constants/networks'
+import { useKyberswapConfig } from './useKyberSwapConfig'
 
 export interface EthPrices {
   current: number
@@ -95,25 +96,26 @@ async function fetchEthPrices(
 export function useEthPrices(): EthPrices | undefined {
   const [prices, setPrices] = useState<{ [network: string]: EthPrices | undefined }>()
   const [error, setError] = useState(false)
-  const { dataClient } = useClients()[0]
+  const { dataClient, blockClient } = useClients()[0]
   const [t24, t48, tWeek] = getDeltaTimestamps()
-  const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
 
   // index on active network
   const activeNetwork = useActiveNetworks()[0]
   const indexedPrices = prices?.[activeNetwork.chainId]
-
-  const formattedBlocks = useMemo(() => {
-    if (blocks) {
-      return blocks.map((b) => b.number)
-    }
-    return undefined
-  }, [blocks])
+  const kyberswapConfig = useKyberswapConfig()
 
   useEffect(() => {
     async function fetch() {
+      const blocks = await getBlocksFromTimestamps(
+        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
+        [t24, t48, tWeek],
+        blockClient,
+        activeNetwork.chainId
+      )
+      const formattedBlocks = blocks.map((b) => b.number)
+
       const { data, error } = await fetchEthPrices(formattedBlocks as [number, number, number], dataClient)
-      if (error || blockError) {
+      if (error) {
         setError(true)
       } else if (data) {
         setPrices({
@@ -121,20 +123,23 @@ export function useEthPrices(): EthPrices | undefined {
         })
       }
     }
-    if (!indexedPrices && !error && formattedBlocks) {
+    if (!indexedPrices && !error) {
       fetch()
     }
-  }, [error, prices, formattedBlocks, blockError, dataClient, indexedPrices, activeNetwork.chainId])
+  }, [error, dataClient, indexedPrices, activeNetwork.chainId])
 
-  return prices?.[activeNetwork.chainId]
+  return indexedPrices
 }
 
 export async function fetchEthPricesV2(
   client: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId
 ): Promise<EthPrices | undefined> {
   try {
-    const blocks = await getBlocksFromTimestamps(getDeltaTimestamps(), blockClient)
+    const deltaTimestamps = getDeltaTimestamps()
+    const blocks = await getBlocksFromTimestamps(isEnableBlockService, deltaTimestamps, blockClient, chainId)
     const [block24, block48, blockWeek] = blocks ?? []
     const formattedBlocks = [block24, block48, blockWeek].map((b) => b.number)
     const { data } = await fetchEthPrices(formattedBlocks as [number, number, number], client)

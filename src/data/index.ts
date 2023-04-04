@@ -82,7 +82,12 @@ export function useGlobalData(): Array<any> {
   async function fetchAllProtocolData() {
     const promises = networks.map((net) =>
       memoRequest(KeysCaches.PROTOCOL + net.chainId, () =>
-        fetchProtocolData(kyberswapConfig[net.chainId].client, kyberswapConfig[net.chainId].blockClient)
+        fetchProtocolData(
+          kyberswapConfig[net.chainId].client,
+          kyberswapConfig[net.chainId].blockClient,
+          kyberswapConfig[net.chainId].isEnableBlockService,
+          net.chainId
+        )
       )
     )
 
@@ -109,7 +114,13 @@ export function useGlobalData(): Array<any> {
   async function fetchAllTokens() {
     const promises = networks.map((net) =>
       memoRequest(KeysCaches.TOKEN + net.chainId, () =>
-        fetchedTokenData(net, kyberswapConfig[net.chainId].client, kyberswapConfig[net.chainId].blockClient)
+        fetchedTokenData(
+          net,
+          kyberswapConfig[net.chainId].client,
+          kyberswapConfig[net.chainId].blockClient,
+          kyberswapConfig[net.chainId].isEnableBlockService,
+          net.chainId
+        )
       )
     )
     const response = await Promise.allSettled(promises)
@@ -157,7 +168,12 @@ export function useGlobalData(): Array<any> {
   async function fetchAllPoolData() {
     const promises = networks.map((net) =>
       memoRequest(KeysCaches.POOL + net.chainId, () =>
-        fetchPoolsData(net, kyberswapConfig[net.chainId].client, kyberswapConfig[net.chainId].blockClient)
+        fetchPoolsData(
+          net,
+          kyberswapConfig[net.chainId].client,
+          kyberswapConfig[net.chainId].blockClient,
+          kyberswapConfig[net.chainId].isEnableBlockService
+        )
       )
     )
     const response = await Promise.allSettled(promises)

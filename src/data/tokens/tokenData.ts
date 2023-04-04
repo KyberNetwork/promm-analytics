@@ -4,14 +4,16 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 import { getPercentChange } from './../../utils/data'
 import gql from 'graphql-tag'
 import { getDeltaTimestamps } from 'utils/queries'
-import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { get2DayChange } from 'utils/data'
 import { TokenData } from 'state/tokens/reducer'
 import { useEthPrices, fetchEthPricesV2 } from 'hooks/useEthPrices'
 import { formatTokenSymbol, formatTokenName } from 'utils/tokens'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
-import { NetworkInfo } from 'constants/networks'
+import { ChainId, NetworkInfo } from 'constants/networks'
 import { getTopTokenAddresses } from './topTokens'
+import { useEffect, useState } from 'react'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 export const TOKENS_BULK = (block: number | undefined, tokens: string[]): import('graphql').DocumentNode => {
   let tokenString = `[`
@@ -72,14 +74,36 @@ export function useFetchedTokenDatas(
   data: TokenData[] | undefined
 } {
   const activeNetworks = useActiveNetworks()[0]
-  const { dataClient } = useClients()[0]
+  const { dataClient, blockClient } = useClients()[0]
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = getDeltaTimestamps()
 
-  const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
+  const [blocks, setBlocks] = useState<Block[] | null>(null)
+  const [blockError, setBlockError] = useState<boolean>(false)
   const [block24, block48, blockWeek] = blocks ?? []
   const ethPrices = useEthPrices()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetworks.chainId]
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const blocks = await getBlocksFromTimestamps(
+          isEnableBlockService,
+          [t24, t48, tWeek],
+          blockClient,
+          activeNetworks.chainId
+        )
+        if (blocks) {
+          setBlocks(blocks)
+          setBlockError(false)
+        }
+      } catch {
+        setBlockError(true)
+      }
+    }
+    fetch()
+  }, [activeNetworks.chainId, t24, t48, tWeek, blockClient])
 
   const { loading, error, data } = useQuery<TokenDataResponse>(TOKENS_BULK(undefined, tokenAddresses), {
     client: dataClient,
@@ -228,13 +252,19 @@ export function useFetchedTokenDatas(
 export async function fetchedTokenData(
   network: NetworkInfo,
   client: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId
 ): Promise<TokenData[] | undefined> {
   const [tokenAddresses, blocks, ethPrices] = await Promise.all([
     getTopTokenAddresses(client),
-    getBlocksFromTimestamps(getDeltaTimestamps(), blockClient),
-    fetchEthPricesV2(client, blockClient),
+    getBlocksFromTimestamps(isEnableBlockService, getDeltaTimestamps(), blockClient, chainId),
+    fetchEthPricesV2(client, blockClient, isEnableBlockService, chainId),
   ])
+
+  if (!ethPrices) {
+    return undefined
+  }
 
   const [block24, block48, blockWeek] = blocks ?? []
 
@@ -251,10 +281,6 @@ export async function fetchedTokenData(
   const [data, data24, data48, dataWeek] = response.map((e: PromiseSettledResult<any>) =>
     e.status === 'fulfilled' ? e.value.data : ({} as TokenDataResponse)
   )
-
-  if (!ethPrices) {
-    return undefined
-  }
 
   const [parsed, parsed24, parsed48, parsedWeek] = [data, data24, data48, dataWeek].map((item) => {
     return item?.tokens

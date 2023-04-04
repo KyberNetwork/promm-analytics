@@ -26,6 +26,7 @@ import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
 import { stringify } from 'qs'
 import { WhiteListTokenMap, WhiteListTokenMapByChain, WrappedToken } from '../tokens/reducer'
 import { KS_SETTING_API } from 'constants/env'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -185,6 +186,7 @@ export function useTokenPriceData(
   // construct timestamps and check if we need to fetch more data
   const oldestTimestampFetched = token?.priceData?.oldestFetchedTimestamp
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
+  const kyberswapConfig = useKyberswapConfig()
 
   useEffect(() => {
     const currentTime = dayjs.utc()
@@ -219,7 +221,9 @@ export function useTokenPriceData(
         interval,
         latestBlock,
         dataClient,
-        blockClient
+        blockClient,
+        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
+        activeNetwork.chainId
       )
 
       if (data?.length) {

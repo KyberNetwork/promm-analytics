@@ -4,6 +4,7 @@ import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { ChainId } from 'constants/networks'
 
 const GLOBAL_DATA = (block?: string | number): import('graphql').DocumentNode => {
   const queryString = ` query KyberSwapFactories {
@@ -81,10 +82,12 @@ export function calcProtocolData(params: Factory[]): ProtocolData {
 
 export async function fetchProtocolData(
   activeDataClient: ApolloClient<NormalizedCacheObject>,
-  activeBlockClient: ApolloClient<NormalizedCacheObject>
+  activeBlockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId
 ): Promise<Factory[]> {
   // get blocks from historic timestamps
-  const blocks = await getBlocksFromTimestamps(getDeltaTimestamps(), activeBlockClient)
+  const blocks = await getBlocksFromTimestamps(isEnableBlockService, getDeltaTimestamps(), activeBlockClient, chainId)
 
   const [block24, block48, blockWeek, block2Weeks] = blocks ?? []
 

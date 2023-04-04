@@ -7,6 +7,7 @@ import { ChainId } from 'constants/networks'
 import dayjs from 'dayjs'
 import getETHPriceFromTimestamps from 'data/tokens/ethPriceHistoryData'
 import { calcPosition } from 'utils/position'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 export const POSITION_SNAPSHOT = gql`
   ${POSITION_FRAGMENT}
@@ -147,6 +148,7 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
 
   const [startDateTimestamp, setStartDateTimestamp] = useState<number>(Date.now())
   const [activeWindow] = useTimeframe()
+  const kyberswapConfig = useKyberswapConfig()
 
   // monitor the old date fetched
   useEffect(() => {
@@ -200,7 +202,13 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
           console.warn('namgold: something wrong here. This if branch should not be execute.')
         }
       })
-      const ethPrices = await getETHPriceFromTimestamps(dayTimestamps, dataClient, blockClient)
+      const ethPrices = await getETHPriceFromTimestamps(
+        dayTimestamps,
+        dataClient,
+        blockClient,
+        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
+        activeNetwork.chainId
+      )
 
       // map of current pair => ownership %
       const latestDataForPairs: { [positionId: string]: PositionSnapshotFields | undefined } = {}
@@ -263,6 +271,7 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
 
   const [startDateTimestamp, setStartDateTimestamp] = useState<number>(Date.now())
   const [activeWindow] = useTimeframe()
+  const kyberswapConfig = useKyberswapConfig()
 
   useEffect(() => {
     setFormattedHistory(null)
@@ -320,7 +329,13 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
           console.warn('namgold: something wrong here. This if branch should not be execute.')
         }
       })
-      const ethPrices = await getETHPriceFromTimestamps(dayTimestamps, dataClient, blockClient)
+      const ethPrices = await getETHPriceFromTimestamps(
+        dayTimestamps,
+        dataClient,
+        blockClient,
+        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
+        activeNetwork.chainId
+      )
 
       // map of current pair => ownership %
       let latestDataForPairs: PositionSnapshotFields | undefined

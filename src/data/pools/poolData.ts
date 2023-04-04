@@ -101,7 +101,8 @@ interface PoolDataResponse {
 export async function fetchPoolsData(
   network: NetworkInfo,
   client: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean
 ): Promise<{
   [address: string]: PoolData
 }> {
@@ -110,7 +111,7 @@ export async function fetchPoolsData(
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([
     fetchTopPoolAddresses(client),
-    getBlocksFromTimestamps(getDeltaTimestamps(), blockClient),
+    getBlocksFromTimestamps(isEnableBlockService, getDeltaTimestamps(), blockClient, network.chainId),
   ])
 
   const [block24, block48, blockWeek] = blocks ?? []
