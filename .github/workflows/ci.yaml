@@ -15,7 +15,7 @@ env:
 
 jobs:
   prepare:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     outputs:
       current_branch: ${{ steps.current_branch.outputs.value }}
       head_sha: ${{ steps.head_sha.outputs.value }}
@@ -73,7 +73,7 @@ jobs:
 
 
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs:
       - prepare
     steps:
