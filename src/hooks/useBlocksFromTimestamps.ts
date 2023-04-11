@@ -5,6 +5,7 @@ import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { ChainId } from 'constants/networks'
 import { BLOCK_SERVICE_API } from 'constants/env'
 import { chunk } from 'utils/array'
+import { AbortedError } from 'constants/index'
 
 const GET_BLOCKS = (timestamps: number[]): import('graphql').DocumentNode => {
   let queryString = 'query blocksByTimestamps {'
@@ -38,12 +39,21 @@ type BlockRawResult = {
  */
 export async function getBlocksFromTimestampsSubgraph(
   timestamps: number[],
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  signal?: AbortSignal
 ): Promise<Block[]> {
   if (timestamps?.length === 0) {
     return []
   }
-  const fetchedData = await splitQuery<BlockRawResult[], number, unknown>(GET_BLOCKS, blockClient, timestamps, [])
+  const fetchedData = await splitQuery<BlockRawResult[], number, unknown>(
+    GET_BLOCKS,
+    blockClient,
+    timestamps,
+    [],
+    500,
+    signal
+  )
+  if (signal?.aborted) throw new AbortedError()
 
   const blocks: Block[] = []
   if (fetchedData) {
@@ -56,10 +66,15 @@ export async function getBlocksFromTimestampsSubgraph(
       }
     }
   }
+
   return blocks
 }
 
-export async function getBlocksFromTimestampsBlockService(timestamps: number[], chainId: ChainId): Promise<Block[]> {
+export async function getBlocksFromTimestampsBlockService(
+  timestamps: number[],
+  chainId: ChainId,
+  signal?: AbortSignal
+): Promise<Block[]> {
   if (timestamps?.length === 0) {
     return []
   }
@@ -71,7 +86,8 @@ export async function getBlocksFromTimestampsBlockService(timestamps: number[], 
             await fetch(
               `${BLOCK_SERVICE_API}/${
                 NETWORKS_INFO_MAP[chainId].blockServiceRoute
-              }/api/v1/block?timestamps=${timestampsChunk.join(',')}`
+              }/api/v1/block?timestamps=${timestampsChunk.join(',')}`,
+              { signal }
             )
           ).json() as Promise<{ data: Block[] }>
       )
@@ -79,6 +95,7 @@ export async function getBlocksFromTimestampsBlockService(timestamps: number[], 
   )
     .map((chunk) => chunk.data)
     .flat()
+  if (signal?.aborted) throw new AbortedError()
 
   return allChunkResult
 }
@@ -87,8 +104,9 @@ export async function getBlocksFromTimestamps(
   isEnableBlockService: boolean,
   timestamps: number[],
   blockClient: ApolloClient<NormalizedCacheObject>,
-  chainId: ChainId
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<Block[]> {
-  if (isEnableBlockService) return getBlocksFromTimestampsBlockService(timestamps, chainId)
-  return getBlocksFromTimestampsSubgraph(timestamps, blockClient)
+  if (isEnableBlockService) return getBlocksFromTimestampsBlockService(timestamps, chainId, signal)
+  return getBlocksFromTimestampsSubgraph(timestamps, blockClient, signal)
 }

@@ -11,7 +11,6 @@ import ProMMAnalyticsLogo from 'assets/svg/logo_dark.svg'
 import ProMMAnalyticsLogoLight from 'assets/svg/logo_light.svg'
 import SwitchNetWorkIcon from 'assets/svg/switch-network.svg'
 import {
-  ChainId,
   ChainIdType,
   CLASSIC_SUPPORTED_NETWORKS,
   ELASTIC_SUPPORTED_NETWORKS,

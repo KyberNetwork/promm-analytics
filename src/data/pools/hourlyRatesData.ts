@@ -41,7 +41,8 @@ export const getHourlyRateData = async (
   blockClient: ApolloClient<NormalizedCacheObject>,
   startBlock: number,
   isEnableBlockService: boolean,
-  chainId: ChainId
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<[PoolRatesEntry[], PoolRatesEntry[]] | undefined> => {
   try {
     const utcEndTime = dayjs.utc()
@@ -60,7 +61,7 @@ export const getHourlyRateData = async (
     }
 
     // once you have all the timestamps, get the blocks for each timestamp in a bulk query
-    let blocks = await getBlocksFromTimestamps(isEnableBlockService, timestamps, blockClient, chainId)
+    let blocks = await getBlocksFromTimestamps(isEnableBlockService, timestamps, blockClient, chainId, signal)
 
     // catch failing case
     if (!blocks || blocks?.length === 0) {

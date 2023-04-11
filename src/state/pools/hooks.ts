@@ -136,7 +136,7 @@ export function usePoolTransactions(address: string, prices: number[]): Transact
     if (previousPriceLength !== prices.length && !transactions && !error) {
       fetch()
     }
-  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId, prices])
+  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId, prices, previousPriceLength])
 
   // return data
   return transactions
@@ -169,10 +169,11 @@ export function useHourlyRateData(
     (state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[poolAddress]?.ratesData?.[timeWindow]
   )
   const { dataClient, blockClient } = useClients()[0]
-  const kyberswapConfig = useKyberswapConfig()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
 
   useEffect(() => {
+    const abortController = new AbortController()
     const currentTime = dayjs.utc()
     let startTime: number
 
@@ -206,16 +207,30 @@ export function useHourlyRateData(
         frequency,
         blockClient,
         activeNetwork.startBlock,
-        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
-        activeNetwork.chainId
+        isEnableBlockService,
+        activeNetwork.chainId,
+        abortController.signal
       )
+      if (abortController.signal) return
       ratesData &&
         dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))
     }
     if (!ratesData) {
       fetch()
     }
-  }, [timeWindow, poolAddress, latestBlock, frequency, dataClient, ratesData, activeNetwork, dispatch])
+    return () => abortController.abort()
+  }, [
+    timeWindow,
+    poolAddress,
+    latestBlock,
+    frequency,
+    dataClient,
+    isEnableBlockService,
+    ratesData,
+    activeNetwork,
+    dispatch,
+    blockClient,
+  ])
 
   return ratesData
 }

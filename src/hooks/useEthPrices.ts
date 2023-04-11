@@ -48,7 +48,8 @@ interface PricesResponse {
 
 async function fetchEthPrices(
   blocks: [number, number, number],
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
+  signal: AbortSignal
 ): Promise<{ data: EthPrices | undefined; error: boolean }> {
   try {
     const { data, error } = await client.query<PricesResponse>({
@@ -57,6 +58,11 @@ async function fetchEthPrices(
         block24: blocks[0] ?? 1,
         block48: blocks[1] ?? 1,
         blockWeek: blocks[2] ?? 1,
+      },
+      context: {
+        fetchOptions: {
+          signal,
+        },
       },
     })
 
@@ -102,19 +108,25 @@ export function useEthPrices(): EthPrices | undefined {
   // index on active network
   const activeNetwork = useActiveNetworks()[0]
   const indexedPrices = prices?.[activeNetwork.chainId]
-  const kyberswapConfig = useKyberswapConfig()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
 
   useEffect(() => {
+    const abortController = new AbortController()
     async function fetch() {
       const blocks = await getBlocksFromTimestamps(
-        kyberswapConfig[activeNetwork.chainId].isEnableBlockService,
+        isEnableBlockService,
         [t24, t48, tWeek],
         blockClient,
-        activeNetwork.chainId
+        activeNetwork.chainId,
+        abortController.signal
       )
       const formattedBlocks = blocks.map((b) => b.number)
 
-      const { data, error } = await fetchEthPrices(formattedBlocks as [number, number, number], dataClient)
+      const { data, error } = await fetchEthPrices(
+        formattedBlocks as [number, number, number],
+        dataClient,
+        abortController.signal
+      )
       if (error) {
         setError(true)
       } else if (data) {
@@ -126,7 +138,8 @@ export function useEthPrices(): EthPrices | undefined {
     if (!indexedPrices && !error) {
       fetch()
     }
-  }, [error, dataClient, indexedPrices, activeNetwork.chainId])
+    return () => abortController.abort()
+  }, [error, dataClient, indexedPrices, activeNetwork.chainId, isEnableBlockService, t24, t48, tWeek, blockClient])
 
   return indexedPrices
 }
@@ -135,14 +148,15 @@ export async function fetchEthPricesV2(
   client: ApolloClient<NormalizedCacheObject>,
   blockClient: ApolloClient<NormalizedCacheObject>,
   isEnableBlockService: boolean,
-  chainId: ChainId
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<EthPrices | undefined> {
   try {
     const deltaTimestamps = getDeltaTimestamps()
-    const blocks = await getBlocksFromTimestamps(isEnableBlockService, deltaTimestamps, blockClient, chainId)
+    const blocks = await getBlocksFromTimestamps(isEnableBlockService, deltaTimestamps, blockClient, chainId, signal)
     const [block24, block48, blockWeek] = blocks ?? []
     const formattedBlocks = [block24, block48, blockWeek].map((b) => b.number)
-    const { data } = await fetchEthPrices(formattedBlocks as [number, number, number], client)
+    const { data } = await fetchEthPrices(formattedBlocks as [number, number, number], client, signal)
     return data
   } catch (error) {
     return

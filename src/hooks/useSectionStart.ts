@@ -1,23 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function useSessionStart(): number {
-  const [sessionStart, setSessionStart] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!sessionStart) {
-      setSessionStart(Date.now())
-    }
-  }, [])
+  const sessionStart = useRef(Date.now())
 
   const [seconds, setSeconds] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setSeconds(Date.now() - (sessionStart ?? Date.now()))
+      setSeconds(Date.now() - (sessionStart.current ?? Date.now()))
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [seconds, sessionStart])
+  }, [seconds])
 
   return Math.floor(seconds / 1000)
 }

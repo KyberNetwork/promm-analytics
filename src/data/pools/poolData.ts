@@ -11,6 +11,7 @@ import { FEE_BASE_UNITS } from 'utils'
 import { NetworkInfo, SUPPORT_POOL_FARM_API } from 'constants/networks'
 import { fetchTopPoolAddresses } from './topPools'
 import { fetchPoolsAPR } from './poolAPR'
+import { AbortedError } from 'constants/index'
 
 export const POOLS_BULK = (block: number | string | undefined, pools: string[]): import('graphql').DocumentNode => {
   let poolString = `[`
@@ -102,7 +103,8 @@ export async function fetchPoolsData(
   network: NetworkInfo,
   client: ApolloClient<NormalizedCacheObject>,
   blockClient: ApolloClient<NormalizedCacheObject>,
-  isEnableBlockService: boolean
+  isEnableBlockService: boolean,
+  signal: AbortSignal
 ): Promise<{
   [address: string]: PoolData
 }> {
@@ -110,10 +112,11 @@ export async function fetchPoolsData(
 
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([
-    fetchTopPoolAddresses(client),
-    getBlocksFromTimestamps(isEnableBlockService, getDeltaTimestamps(), blockClient, network.chainId),
+    fetchTopPoolAddresses(client, signal),
+    getBlocksFromTimestamps(isEnableBlockService, getDeltaTimestamps(), blockClient, network.chainId, signal),
   ])
 
+  if (signal.aborted) throw new AbortedError()
   const [block24, block48, blockWeek] = blocks ?? []
 
   // fetch all data
@@ -127,6 +130,7 @@ export async function fetchPoolsData(
       })
     )
   )
+  if (signal.aborted) throw new AbortedError()
 
   const [data, data24, data48, dataWeek] = response.map((e: PromiseSettledResult<any>) =>
     e.status === 'fulfilled' ? e.value.data : ({} as PoolDataResponse)
@@ -141,6 +145,7 @@ export async function fetchPoolsData(
       : {}
   })
   const poolServiceAPRData: { [address: string]: number | undefined } = await poolServiceCall
+  if (signal.aborted) throw new AbortedError()
 
   // format data and calculate daily changes
   const formatted = poolAddresses.reduce((accum: { [address: string]: PoolData }, address) => {

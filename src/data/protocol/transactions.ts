@@ -126,12 +126,18 @@ interface TransactionResults {
 
 export async function fetchTopTransactions(
   network: NetworkInfo,
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
+  signal: AbortSignal
 ): Promise<Transaction[] | undefined> {
   try {
     const { data, error, loading } = await client.query<TransactionResults>({
       query: GLOBAL_TRANSACTIONS,
       fetchPolicy: 'cache-first',
+      context: {
+        fetchOptions: {
+          signal,
+        },
+      },
     })
 
     if (error || loading || !data) {

@@ -15,10 +15,18 @@ interface TopTokensResponse {
   }[]
 }
 
-export async function getTopTokenAddresses(dataClient: ApolloClient<NormalizedCacheObject>): Promise<string[]> {
+export async function getTopTokenAddresses(
+  dataClient: ApolloClient<NormalizedCacheObject>,
+  signal: AbortSignal
+): Promise<string[]> {
   const { data } = await dataClient.query<TopTokensResponse>({
     query: TOP_TOKENS,
     fetchPolicy: 'cache-first',
+    context: {
+      fetchOptions: {
+        signal,
+      },
+    },
   })
   return data ? data.tokens.map((t) => t.id) : []
 }

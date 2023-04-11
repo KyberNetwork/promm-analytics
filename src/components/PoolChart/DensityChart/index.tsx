@@ -154,6 +154,7 @@ export default function DensityChart({ address }: DensityChartProps): JSX.Elemen
       if (poolTickData) {
         const newData = await Promise.all(
           poolTickData.ticksProcessed.map(async (t: TickProcessed, i) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (tickCache.current[t.tickIdx]) return tickCache.current[t.tickIdx]!
             const active = t.tickIdx === poolTickData.activeTickIdx
             const sqrtPriceX96 = TickMath.getSqrtRatioAtTick(t.tickIdx)

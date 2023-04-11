@@ -4,7 +4,8 @@ import utc from 'dayjs/plugin/utc'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { ChainId, NETWORKS_INFO_MAP } from 'constants/networks'
+import { ChainId } from 'constants/networks'
+import { AbortedError } from 'constants/index'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -39,7 +40,8 @@ interface ChartResults {
 
 export async function fetchChartData(
   chainId: ChainId,
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
+  signal: AbortSignal
 ): Promise<ChartDayData[]> {
   let data: {
     date: number
@@ -61,7 +63,13 @@ export async function fetchChartData(
           skip,
         },
         fetchPolicy: 'cache-first',
+        context: {
+          fetchOptions: {
+            signal,
+          },
+        },
       })
+      if (signal.aborted) throw new AbortedError()
       if (!loading) {
         skip += 1000
         if (chartResData.kyberSwapDayDatas.length < 1000 || error) {
