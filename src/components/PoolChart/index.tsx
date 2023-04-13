@@ -134,7 +134,9 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
     [priceView, formattedSymbol1, formattedSymbol0]
   )
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ONE_DAY, FOUR_HOURS, ALL_TIME, THREE_MONTHS, YEAR, ...timeWindowOptionsExcept1Day } = TimeframeOptions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ALL_TIME: _0, THREE_MONTHS: _1, YEAR: _2, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
 
   if (chartData && chartData.length === 0) {

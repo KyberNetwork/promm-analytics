@@ -14,7 +14,8 @@ export async function splitQuery<ResultType, T, U>(
   client: ApolloClient<NormalizedCacheObject>,
   values: T[],
   vars: U[],
-  skipCount = 1000
+  skipCount = 500,
+  signal?: AbortSignal
 ): Promise<
   | {
       [key: string]: ResultType
@@ -34,6 +35,11 @@ export async function splitQuery<ResultType, T, U>(
       const result = await client.query<{ [key: string]: ResultType }>({
         query: query(sliced, ...vars),
         fetchPolicy: 'network-only',
+        context: {
+          fetchOptions: {
+            signal,
+          },
+        },
       })
       fetchedData = {
         ...fetchedData,
@@ -45,6 +51,7 @@ export async function splitQuery<ResultType, T, U>(
         skip += skipCount
       }
     }
+    if (signal?.aborted) return undefined
     return fetchedData
   } catch (e) {
     console.log(e)

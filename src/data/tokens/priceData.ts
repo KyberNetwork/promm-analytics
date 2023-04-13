@@ -1,3 +1,4 @@
+import { AbortedError } from 'constants/index'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
@@ -7,6 +8,7 @@ import { PriceChartEntry } from 'types'
 import { splitQuery } from 'utils/queries'
 import { ApolloClient } from '@apollo/client'
 import { NormalizedCacheObject } from 'apollo-cache-inmemory'
+import { ChainId } from 'constants/networks'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -46,7 +48,10 @@ export const getIntervalTokenData = async (
   interval = 3600,
   latestBlock: number,
   client: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<PriceChartEntry[]> => {
   const utcEndTime = dayjs.utc()
   let time = startTime
@@ -66,7 +71,8 @@ export const getIntervalTokenData = async (
   // once you have all the timestamps, get the blocks for each timestamp in a bulk query
   let blocks
   try {
-    blocks = await getBlocksFromTimestamps(timestamps, blockClient, 200)
+    blocks = await getBlocksFromTimestamps(isEnableBlockService, timestamps, blockClient, chainId, signal)
+    if (signal.aborted) throw new AbortedError()
 
     // catch failing case
     if (!blocks || blocks.length === 0) {
@@ -86,6 +92,7 @@ export const getIntervalTokenData = async (
       [tokenAddress],
       100
     )
+    if (signal.aborted) throw new AbortedError()
 
     // format token ETH price results
     const values: { timestamp: number; derivedETH: number; priceUSD: number }[] = []

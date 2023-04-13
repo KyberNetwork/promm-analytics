@@ -1,5 +1,7 @@
 import { ApolloClient } from '@apollo/client'
 import { NormalizedCacheObject } from 'apollo-cache-inmemory'
+import { AbortedError } from 'constants/index'
+import { ChainId } from 'constants/networks'
 import gql from 'graphql-tag'
 import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 
@@ -27,15 +29,24 @@ type PriceBlockResults = {
 export default async function getETHPriceFromTimestamps(
   timestamps: number[],
   dataClient: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<{ [timestamp: number]: number }> {
   try {
-    const blocks = await getBlocksFromTimestamps(timestamps, blockClient, 500)
+    const blocks = await getBlocksFromTimestamps(isEnableBlockService, timestamps, blockClient, chainId, signal)
     if (blocks && blocks.length) {
       const { data, error } = await dataClient.query<PriceBlockResults>({
         query: PRICES_BY_BLOCK(blocks),
         fetchPolicy: 'cache-first',
+        context: {
+          fetchOptions: {
+            signal,
+          },
+        },
       })
+      if (signal.aborted) throw new AbortedError()
       if (error) throw error
       const result: { [timestamp: number]: number } = {}
       timestamps.forEach((timestamp) => (result[timestamp] = parseFloat(data['b' + timestamp]?.ethPriceUSD ?? '0')))

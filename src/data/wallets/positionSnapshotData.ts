@@ -7,6 +7,7 @@ import { ChainId } from 'constants/networks'
 import dayjs from 'dayjs'
 import getETHPriceFromTimestamps from 'data/tokens/ethPriceHistoryData'
 import { calcPosition } from 'utils/position'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 export const POSITION_SNAPSHOT = gql`
   ${POSITION_FRAGMENT}
@@ -147,6 +148,7 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
 
   const [startDateTimestamp, setStartDateTimestamp] = useState<number>(Date.now())
   const [activeWindow] = useTimeframe()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
 
   // monitor the old date fetched
   useEffect(() => {
@@ -171,6 +173,7 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
   }, [activeWindow, startDateTimestamp])
 
   useEffect(() => {
+    const abortController = new AbortController()
     async function fetchData() {
       const currentSnapshot = snapshots?.[activeNetwork.chainId]
       if (!currentSnapshot || !currentSnapshot.length) return
@@ -200,7 +203,15 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
           console.warn('namgold: something wrong here. This if branch should not be execute.')
         }
       })
-      const ethPrices = await getETHPriceFromTimestamps(dayTimestamps, dataClient, blockClient)
+      const ethPrices = await getETHPriceFromTimestamps(
+        dayTimestamps,
+        dataClient,
+        blockClient,
+        isEnableBlockService,
+        activeNetwork.chainId,
+        abortController.signal
+      )
+      if (abortController.signal) return
 
       // map of current pair => ownership %
       const latestDataForPairs: { [positionId: string]: PositionSnapshotFields | undefined } = {}
@@ -211,6 +222,7 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
           // case where pair not added yet
           if (
             !latestDataForPairs[currentPosition.id] ||
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             parseInt(latestDataForPairs[currentPosition.id]!.timestamp) < parseInt(currentPosition.timestamp)
           ) {
             latestDataForPairs[currentPosition.id] = currentPosition
@@ -221,6 +233,7 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
         Object.keys(latestDataForPairs).forEach((positionId) => {
           const usdValue = latestDataForPairs[positionId]
             ? calcPosition({
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 p: latestDataForPairs[positionId]!,
                 chainId: activeNetwork.chainId,
                 ethPriceUSD: ethPrices[dayTimestamp],
@@ -241,7 +254,8 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
     if (startDateTimestamp && (snapshots?.[activeNetwork.chainId]?.length || 0) > 0) {
       fetchData()
     }
-  }, [snapshots, startDateTimestamp, activeNetwork.chainId, blockClient, dataClient])
+    return () => abortController.abort()
+  }, [snapshots, startDateTimestamp, activeNetwork.chainId, blockClient, dataClient, isEnableBlockService])
 
   return formattedHistory
 }
@@ -263,6 +277,7 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
 
   const [startDateTimestamp, setStartDateTimestamp] = useState<number>(Date.now())
   const [activeWindow] = useTimeframe()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
 
   useEffect(() => {
     setFormattedHistory(null)
@@ -291,6 +306,7 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
   }, [activeWindow, startDateTimestamp])
 
   useEffect(() => {
+    const abortController = new AbortController()
     async function fetchData() {
       const currentSnapshot = snapshots?.[activeNetwork.chainId]?.filter((snapshot) => snapshot.id === positionID)
       if (!currentSnapshot || !currentSnapshot.length) return
@@ -314,13 +330,22 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
       dayTimestamps.forEach((dayTimestamp) => (snapshotMappedByTimestamp[dayTimestamp] = []))
       currentSnapshot.forEach((snapshot) => {
         const index = Math.floor(parseInt(snapshot.timestamp) / 86400) * 86400
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (snapshotMappedByTimestamp[index]) snapshotMappedByTimestamp[index]!.push(snapshot)
         else {
           snapshotMappedByTimestamp[index] = [snapshot]
           console.warn('namgold: something wrong here. This if branch should not be execute.')
         }
       })
-      const ethPrices = await getETHPriceFromTimestamps(dayTimestamps, dataClient, blockClient)
+      const ethPrices = await getETHPriceFromTimestamps(
+        dayTimestamps,
+        dataClient,
+        blockClient,
+        isEnableBlockService,
+        activeNetwork.chainId,
+        abortController.signal
+      )
+      if (abortController.signal) return
 
       // map of current pair => ownership %
       let latestDataForPairs: PositionSnapshotFields | undefined
@@ -353,7 +378,8 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
     if (startDateTimestamp && (snapshots?.[activeNetwork.chainId]?.length || 0) > 0) {
       fetchData()
     }
-  }, [snapshots, startDateTimestamp, activeNetwork.chainId, blockClient, dataClient, positionID])
+    return () => abortController.abort()
+  }, [snapshots, startDateTimestamp, activeNetwork.chainId, blockClient, dataClient, positionID, isEnableBlockService])
 
   return formattedHistory
 }

@@ -156,3 +156,23 @@ export const pushUnique = <T>(array: T[] | undefined, element: T): T[] => {
   set.add(element)
   return Array.from(set)
 }
+
+export const promiseWithSignal = async (promise: Promise<any>, signal?: AbortSignal): Promise<any> => {
+  if (!signal) return promise
+
+  let intervalId: NodeJS.Timeout | null = null
+  const result = await Promise.any([
+    promise,
+    new Promise((_, reject) => {
+      intervalId = setInterval(() => {
+        if (signal.aborted) {
+          reject('Aborted')
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          clearInterval(intervalId!)
+        }
+      }, 1_000)
+    }),
+  ])
+  if (intervalId) clearInterval(intervalId)
+  return result
+}

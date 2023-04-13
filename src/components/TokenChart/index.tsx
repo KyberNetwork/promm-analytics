@@ -95,7 +95,9 @@ const TokenChart = ({ address, base }: TokenChartProps): JSX.Element => {
     return () => window.removeEventListener('resize', handleResize)
   }, [isClient, width]) // Empty array ensures that effect is only run on mount and unmount
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ONE_DAY, FOUR_HOURS, ALL_TIME, ...timeWindowOptionsExcept1Day } = TimeframeOptions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ALL_TIME: alltime, ...timeWindowOptionsExceptAllTime } = TimeframeOptions
 
   const height = below960 ? 398 : 292

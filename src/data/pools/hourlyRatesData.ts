@@ -4,7 +4,7 @@ import weekOfYear from 'dayjs/plugin/weekOfYear'
 import gql from 'graphql-tag'
 import { PoolRatesEntry } from 'state/pools/reducer'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
-import { NetworkInfo } from 'constants/networks'
+import { ChainId } from 'constants/networks'
 import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { splitQuery } from 'utils/queries'
 
@@ -38,8 +38,11 @@ export const getHourlyRateData = async (
   startTime: number,
   latestBlock: number | undefined,
   frequency: number,
-  blockCLient: ApolloClient<NormalizedCacheObject>,
-  startBlock: number
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  startBlock: number,
+  isEnableBlockService: boolean,
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<[PoolRatesEntry[], PoolRatesEntry[]] | undefined> => {
   try {
     const utcEndTime = dayjs.utc()
@@ -58,7 +61,7 @@ export const getHourlyRateData = async (
     }
 
     // once you have all the timestamps, get the blocks for each timestamp in a bulk query
-    let blocks = await getBlocksFromTimestamps(timestamps, blockCLient)
+    let blocks = await getBlocksFromTimestamps(isEnableBlockService, timestamps, blockClient, chainId, signal)
 
     // catch failing case
     if (!blocks || blocks?.length === 0) {

@@ -37,6 +37,7 @@ export type NetworkInfo = {
   chainId: ChainId
   route: string
   poolRoute: string
+  blockServiceRoute: string
   name: string
   imageURL: string
   defaultSubgraph: string
@@ -59,6 +60,7 @@ export const EthereumNetworkInfo: NetworkInfo = {
   route: 'ethereum',
   poolRoute: 'ethereum',
   priceRoute: 'ethereum',
+  blockServiceRoute: 'ethereum',
   name: 'Ethereum',
   imageURL: ETHEREUM_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet',
@@ -80,6 +82,7 @@ const BscNetworkInfo: NetworkInfo = {
   route: 'bnb',
   poolRoute: 'bsc',
   priceRoute: 'bsc',
+  blockServiceRoute: 'bsc',
   name: 'BNB Chain',
   imageURL: BNB_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-bsc',
@@ -101,6 +104,7 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   route: 'arbitrum',
   poolRoute: 'arbitrum',
   priceRoute: 'arbitrum',
+  blockServiceRoute: 'arbitrum',
   name: 'Arbitrum',
   imageURL: ARBITRUM_LOGO_URL,
   defaultSubgraph: 'https://arbitrum-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum',
@@ -122,6 +126,7 @@ const PolygonNetworkInfo: NetworkInfo = {
   route: 'polygon',
   poolRoute: 'polygon',
   priceRoute: 'polygon',
+  blockServiceRoute: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
   defaultSubgraph: 'https://polygon-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon',
@@ -143,6 +148,7 @@ const AvaxNetworkInfo: NetworkInfo = {
   route: 'avalanche',
   poolRoute: 'avalanche',
   priceRoute: 'avalanche',
+  blockServiceRoute: 'avalanche',
   name: 'Avalanche',
   imageURL: AVAX_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-avalanche',
@@ -164,6 +170,7 @@ const FantomNetworkInfo: NetworkInfo = {
   route: 'fantom',
   poolRoute: 'fantom',
   priceRoute: 'fantom',
+  blockServiceRoute: 'fantom',
   name: 'Fantom',
   imageURL: FANTOM_LOGO_URL,
   defaultSubgraph: 'https://fantom-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-fantom',
@@ -186,6 +193,7 @@ const CronosNetworkInfo: NetworkInfo = {
   route: 'cronos',
   poolRoute: 'cronos',
   priceRoute: 'cronos',
+  blockServiceRoute: 'cronos',
   name: 'Cronos',
   imageURL: CRONOS_LOGO_URL,
   defaultSubgraph: 'https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-cronos',
@@ -207,6 +215,7 @@ const BTTCNetworkInfo: NetworkInfo = {
   route: 'bittorrent',
   poolRoute: 'bttc',
   priceRoute: 'bttc',
+  blockServiceRoute: 'bttc',
   name: 'BitTorrent',
   imageURL: BTTC_LOGO_URL,
   defaultSubgraph: 'https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc',
@@ -228,6 +237,7 @@ const VelasNetworkInfo: NetworkInfo = {
   route: 'velas',
   poolRoute: 'velas',
   priceRoute: 'velas',
+  blockServiceRoute: 'velas',
   name: 'Velas',
   imageURL: VELAS_LOGO_URL,
   defaultSubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas',
@@ -250,6 +260,7 @@ const AuroraNetworkInfo: NetworkInfo = {
   route: 'aurora',
   poolRoute: 'aurora',
   priceRoute: 'aurora',
+  blockServiceRoute: 'aurora',
   name: 'Aurora',
   imageURL: AURORA_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora',
@@ -271,6 +282,7 @@ const OasisNetworkInfo: NetworkInfo = {
   route: 'oasis',
   poolRoute: 'oasis',
   priceRoute: 'oasis',
+  blockServiceRoute: 'oasis',
   name: 'Oasis',
   imageURL: OASIS_LOGO_URL,
   defaultSubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis',
@@ -292,6 +304,7 @@ const OptimismNetworkInfo: NetworkInfo = {
   route: 'optimism',
   poolRoute: 'optimism',
   priceRoute: 'optimism',
+  blockServiceRoute: 'optimism',
   name: 'Optimism',
   imageURL: OPTIMISM_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism',

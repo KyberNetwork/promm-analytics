@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { ScrollableX, GreyCard, GreyBadge } from 'components/Card'
+import { GreyCard, GreyBadge } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import { RowFixed } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
@@ -10,7 +10,7 @@ import { PoolData } from 'state/pools/reducer'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import HoverInlineText from 'components/HoverInlineText'
 import { feeTierPercent } from 'utils'
-import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
+import { useActiveNetworkUtils } from 'state/application/hooks'
 
 const Container = styled(StyledInternalLink)`
   min-width: 210px;

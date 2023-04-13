@@ -21,6 +21,7 @@ import { getHourlyRateData } from 'data/pools/hourlyRatesData'
 import dayjs from 'dayjs'
 import { useFetchedSubgraphStatus } from 'data/application'
 import { usePrevious } from 'react-use'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 export function useAllPoolData(): {
   [address: string]: { data: PoolData | undefined; lastUpdated: number | undefined }
@@ -135,7 +136,7 @@ export function usePoolTransactions(address: string, prices: number[]): Transact
     if (previousPriceLength !== prices.length && !transactions && !error) {
       fetch()
     }
-  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId, prices])
+  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId, prices, previousPriceLength])
 
   // return data
   return transactions
@@ -168,9 +169,11 @@ export function useHourlyRateData(
     (state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[poolAddress]?.ratesData?.[timeWindow]
   )
   const { dataClient, blockClient } = useClients()[0]
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
 
   useEffect(() => {
+    const abortController = new AbortController()
     const currentTime = dayjs.utc()
     let startTime: number
 
@@ -203,15 +206,31 @@ export function useHourlyRateData(
         latestBlock,
         frequency,
         blockClient,
-        activeNetwork.startBlock
+        activeNetwork.startBlock,
+        isEnableBlockService,
+        activeNetwork.chainId,
+        abortController.signal
       )
+      if (abortController.signal) return
       ratesData &&
         dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))
     }
     if (!ratesData) {
       fetch()
     }
-  }, [timeWindow, poolAddress, latestBlock, frequency, dataClient, ratesData, activeNetwork, dispatch])
+    return () => abortController.abort()
+  }, [
+    timeWindow,
+    poolAddress,
+    latestBlock,
+    frequency,
+    dataClient,
+    isEnableBlockService,
+    ratesData,
+    activeNetwork,
+    dispatch,
+    blockClient,
+  ])
 
   return ratesData
 }

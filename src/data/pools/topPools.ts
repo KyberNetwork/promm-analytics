@@ -18,7 +18,18 @@ interface TopPoolsResponse {
 /**
  * Fetch top addresses by volume
  */
-export async function fetchTopPoolAddresses(dataClient: ApolloClient<NormalizedCacheObject>): Promise<string[]> {
-  const { data } = await dataClient.query<TopPoolsResponse>({ query: TOP_POOLS, fetchPolicy: 'cache-first' })
+export async function fetchTopPoolAddresses(
+  dataClient: ApolloClient<NormalizedCacheObject>,
+  signal: AbortSignal
+): Promise<string[]> {
+  const { data } = await dataClient.query<TopPoolsResponse>({
+    query: TOP_POOLS,
+    fetchPolicy: 'cache-first',
+    context: {
+      fetchOptions: {
+        signal,
+      },
+    },
+  })
   return data ? data.pools.map((p) => p.id) : []
 }

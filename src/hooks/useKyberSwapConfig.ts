@@ -15,7 +15,7 @@ export const useKyberswapConfig = (): {
       }
     | null
   >(null)
-  const [getKyberswapConfiguration, a] = useLazyGetKyberswapConfigurationQuery()
+  const [getKyberswapConfiguration] = useLazyGetKyberswapConfigurationQuery()
 
   useEffect(() => {
     const run = async () => {

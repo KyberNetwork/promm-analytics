@@ -4,6 +4,8 @@ import gql from 'graphql-tag'
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { getDeltaTimestamps } from 'utils/queries'
 import { getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { ChainId } from 'constants/networks'
+import { AbortedError } from 'constants/index'
 
 const GLOBAL_DATA = (block?: string | number): import('graphql').DocumentNode => {
   const queryString = ` query KyberSwapFactories {
@@ -81,11 +83,20 @@ export function calcProtocolData(params: Factory[]): ProtocolData {
 
 export async function fetchProtocolData(
   activeDataClient: ApolloClient<NormalizedCacheObject>,
-  activeBlockClient: ApolloClient<NormalizedCacheObject>
+  activeBlockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<Factory[]> {
   // get blocks from historic timestamps
-  const blocks = await getBlocksFromTimestamps(getDeltaTimestamps(), activeBlockClient)
-
+  const blocks = await getBlocksFromTimestamps(
+    isEnableBlockService,
+    getDeltaTimestamps(),
+    activeBlockClient,
+    chainId,
+    signal
+  )
+  if (signal.aborted) throw new AbortedError()
   const [block24, block48, blockWeek, block2Weeks] = blocks ?? []
 
   // fetch all data
@@ -101,9 +112,15 @@ export async function fetchProtocolData(
       activeDataClient.query({
         query: GLOBAL_DATA(val),
         fetchPolicy: 'cache-first',
+        context: {
+          fetchOptions: {
+            signal,
+          },
+        },
       })
     )
   )
+  if (signal.aborted) throw new AbortedError()
   const params = response
     .map((e: PromiseSettledResult<any>) => (e.status === 'fulfilled' ? e.value.data : ({} as GlobalResponse)))
     .map((e) => e?.factories?.[0])

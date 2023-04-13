@@ -4,14 +4,17 @@ import { NormalizedCacheObject } from 'apollo-cache-inmemory'
 import { getPercentChange } from './../../utils/data'
 import gql from 'graphql-tag'
 import { getDeltaTimestamps } from 'utils/queries'
-import { getBlocksFromTimestamps, useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
+import { Block, getBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamps'
 import { get2DayChange } from 'utils/data'
 import { TokenData } from 'state/tokens/reducer'
 import { useEthPrices, fetchEthPricesV2 } from 'hooks/useEthPrices'
 import { formatTokenSymbol, formatTokenName } from 'utils/tokens'
 import { useActiveNetworks, useClients } from 'state/application/hooks'
-import { NetworkInfo } from 'constants/networks'
+import { ChainId, NetworkInfo } from 'constants/networks'
 import { getTopTokenAddresses } from './topTokens'
+import { useEffect, useState } from 'react'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
+import { AbortedError } from 'constants/index'
 
 export const TOKENS_BULK = (block: number | undefined, tokens: string[]): import('graphql').DocumentNode => {
   let tokenString = `[`
@@ -71,15 +74,41 @@ export function useFetchedTokenDatas(
   error: boolean
   data: TokenData[] | undefined
 } {
-  const activeNetworks = useActiveNetworks()[0]
-  const { dataClient } = useClients()[0]
+  const activeNetwork = useActiveNetworks()[0]
+  const { dataClient, blockClient } = useClients()[0]
 
   // get blocks from historic timestamps
   const [t24, t48, tWeek] = getDeltaTimestamps()
 
-  const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
+  const [blocks, setBlocks] = useState<Block[] | null>(null)
+  const [blockError, setBlockError] = useState<boolean>(false)
   const [block24, block48, blockWeek] = blocks ?? []
   const ethPrices = useEthPrices()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    const fetch = async () => {
+      try {
+        const blocks = await getBlocksFromTimestamps(
+          isEnableBlockService,
+          [t24, t48, tWeek],
+          blockClient,
+          activeNetwork.chainId,
+          abortController.signal
+        )
+        if (abortController.signal.aborted) return
+        if (blocks) {
+          setBlocks(blocks)
+          setBlockError(false)
+        }
+      } catch {
+        setBlockError(true)
+      }
+    }
+    fetch()
+    return () => abortController.abort()
+  }, [activeNetwork.chainId, t24, t48, tWeek, blockClient, isEnableBlockService])
 
   const { loading, error, data } = useQuery<TokenDataResponse>(TOKENS_BULK(undefined, tokenAddresses), {
     client: dataClient,
@@ -198,8 +227,8 @@ export function useFetchedTokenDatas(
     accum.push({
       exists: !!current,
       address,
-      name: current ? formatTokenName(address, current.name, activeNetworks) : '',
-      symbol: current ? formatTokenSymbol(address, current.symbol, activeNetworks) : '',
+      name: current ? formatTokenName(address, current.name, activeNetwork) : '',
+      symbol: current ? formatTokenSymbol(address, current.symbol, activeNetwork) : '',
       volumeUSD,
       volumeUSDChange,
       volumeUSDWeek,
@@ -212,7 +241,7 @@ export function useFetchedTokenDatas(
       priceUSD,
       priceUSDChange,
       priceUSDChangeWeek,
-      chainId: activeNetworks.chainId,
+      chainId: activeNetwork.chainId,
     })
 
     return accum
@@ -228,13 +257,21 @@ export function useFetchedTokenDatas(
 export async function fetchedTokenData(
   network: NetworkInfo,
   client: ApolloClient<NormalizedCacheObject>,
-  blockClient: ApolloClient<NormalizedCacheObject>
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  chainId: ChainId,
+  signal: AbortSignal
 ): Promise<TokenData[] | undefined> {
   const [tokenAddresses, blocks, ethPrices] = await Promise.all([
-    getTopTokenAddresses(client),
-    getBlocksFromTimestamps(getDeltaTimestamps(), blockClient),
-    fetchEthPricesV2(client, blockClient),
+    getTopTokenAddresses(client, signal),
+    getBlocksFromTimestamps(isEnableBlockService, getDeltaTimestamps(), blockClient, chainId, signal),
+    fetchEthPricesV2(client, blockClient, isEnableBlockService, chainId, signal),
   ])
+  if (signal.aborted) throw new AbortedError()
+
+  if (!ethPrices) {
+    return undefined
+  }
 
   const [block24, block48, blockWeek] = blocks ?? []
 
@@ -245,16 +282,18 @@ export async function fetchedTokenData(
       client.query({
         query: TOKENS_BULK(val, tokenAddresses),
         fetchPolicy: 'cache-first',
+        context: {
+          fetchOptions: {
+            signal,
+          },
+        },
       })
     )
   )
+  if (signal.aborted) throw new AbortedError()
   const [data, data24, data48, dataWeek] = response.map((e: PromiseSettledResult<any>) =>
     e.status === 'fulfilled' ? e.value.data : ({} as TokenDataResponse)
   )
-
-  if (!ethPrices) {
-    return undefined
-  }
 
   const [parsed, parsed24, parsed48, parsedWeek] = [data, data24, data48, dataWeek].map((item) => {
     return item?.tokens

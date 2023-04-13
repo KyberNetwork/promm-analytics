@@ -26,6 +26,7 @@ import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
 import { stringify } from 'qs'
 import { WhiteListTokenMap, WhiteListTokenMapByChain, WrappedToken } from '../tokens/reducer'
 import { KS_SETTING_API } from 'constants/env'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -185,8 +186,10 @@ export function useTokenPriceData(
   // construct timestamps and check if we need to fetch more data
   const oldestTimestampFetched = token?.priceData?.oldestFetchedTimestamp
   const { syncedBlock: latestBlock } = useFetchedSubgraphStatus()
+  const { isEnableBlockService } = useKyberswapConfig()[activeNetwork.chainId]
 
   useEffect(() => {
+    const abortController = new AbortController()
     const currentTime = dayjs.utc()
     let startTimestamp: number
 
@@ -219,7 +222,10 @@ export function useTokenPriceData(
         interval,
         latestBlock,
         dataClient,
-        blockClient
+        blockClient,
+        isEnableBlockService,
+        activeNetwork.chainId,
+        abortController.signal
       )
 
       if (data?.length) {
@@ -240,6 +246,7 @@ export function useTokenPriceData(
     if (!priceData && !error && latestBlock) {
       fetch()
     }
+    return () => abortController.abort()
   }, [
     activeNetwork,
     chainId,
@@ -253,6 +260,7 @@ export function useTokenPriceData(
     oldestTimestampFetched,
     priceData,
     timeWindow,
+    isEnableBlockService,
   ])
 
   // return data
@@ -302,23 +310,24 @@ function formatWhitelistTokens(tokens: WrappedToken[]): WhiteListTokenMap {
   }, {}) as WhiteListTokenMap
 }
 
-export const fetchAllWhitelistToken = async (): Promise<WhiteListTokenMapByChain> => {
+export const fetchAllWhitelistToken = async (signal: AbortSignal): Promise<WhiteListTokenMapByChain> => {
   try {
-    const chainPromises = SUPPORTED_NETWORKS.map((chainId) => getWhitelistTokens(chainId))
+    const chainPromises = SUPPORTED_NETWORKS.map((chainId) => getWhitelistTokens(chainId, signal))
     const data = await Promise.allSettled(chainPromises)
+    if (signal.aborted) return {}
     const TokenMap: WhiteListTokenMapByChain = {}
     data.forEach((e, index) => {
       TokenMap[SUPPORTED_NETWORKS[index]] = e.status === 'fulfilled' ? e.value : {}
     })
     return TokenMap
   } catch (error) {
-    console.error('fetchAllTokenWhiteList error', error)
+    console.error('fetchAllWhitelistToken error', error)
     return {} as WhiteListTokenMapByChain
   }
 }
 
 // loop to fetch all whitelist token
-export async function getWhitelistTokens(chainId: ChainId): Promise<WhiteListTokenMap> {
+async function getWhitelistTokens(chainId: ChainId, signal: AbortSignal): Promise<WhiteListTokenMap> {
   try {
     let tokens: WrappedToken[] = []
     const pageSize = 100
@@ -331,8 +340,10 @@ export async function getWhitelistTokens(chainId: ChainId): Promise<WhiteListTok
           page,
           isWhitelisted: true,
           chainIds: chainId,
-        })}`
+        })}`,
+        { signal }
       ).then((data) => data.json())
+      if (signal.aborted) return {}
       page++
       const tokensResponse = data.tokens ?? []
       tokens = tokens.concat(tokensResponse)
