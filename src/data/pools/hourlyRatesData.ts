@@ -38,7 +38,8 @@ export const getHourlyRateData = async (
   startTime: number,
   latestBlock: number | undefined,
   frequency: number,
-  networksInfo: NetworkInfo
+  blockCLient: ApolloClient<NormalizedCacheObject>,
+  startBlock: number
 ): Promise<[PoolRatesEntry[], PoolRatesEntry[]] | undefined> => {
   try {
     const utcEndTime = dayjs.utc()
@@ -57,13 +58,13 @@ export const getHourlyRateData = async (
     }
 
     // once you have all the timestamps, get the blocks for each timestamp in a bulk query
-    let blocks = await getBlocksFromTimestamps(timestamps, networksInfo.blockClient)
+    let blocks = await getBlocksFromTimestamps(timestamps, blockCLient)
 
     // catch failing case
     if (!blocks || blocks?.length === 0) {
       return
     }
-    blocks = blocks.filter((b) => b.number >= networksInfo.startBlock)
+    blocks = blocks.filter((b) => b.number >= startBlock)
     if (latestBlock) {
       blocks = blocks.filter((b) => {
         return b.number <= latestBlock

@@ -1,3 +1,4 @@
+import { AGGREGATOR_STATS_API } from 'constants/env'
 import { useEffect, useState } from 'react'
 
 interface VolumeResponse {
@@ -12,7 +13,7 @@ export default function useAggregatorVolume(): VolumeResponse {
   })
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_AGGREGATOR_STATS_API}/api/volume`)
+    fetch(`${AGGREGATOR_STATS_API}/api/volume`)
       .then((res) => res.json())
       .then((res) => {
         setData(res)

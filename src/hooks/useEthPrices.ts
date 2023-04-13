@@ -129,12 +129,15 @@ export function useEthPrices(): EthPrices | undefined {
   return prices?.[activeNetwork.chainId]
 }
 
-export async function fetchEthPricesV2(network: NetworkInfo): Promise<EthPrices | undefined> {
+export async function fetchEthPricesV2(
+  client: ApolloClient<NormalizedCacheObject>,
+  blockClient: ApolloClient<NormalizedCacheObject>
+): Promise<EthPrices | undefined> {
   try {
-    const blocks = await getBlocksFromTimestamps(getDeltaTimestamps(), network.blockClient)
+    const blocks = await getBlocksFromTimestamps(getDeltaTimestamps(), blockClient)
     const [block24, block48, blockWeek] = blocks ?? []
     const formattedBlocks = [block24, block48, blockWeek].map((b) => b.number)
-    const { data } = await fetchEthPrices(formattedBlocks as [number, number, number], network.client)
+    const { data } = await fetchEthPrices(formattedBlocks as [number, number, number], client)
     return data
   } catch (error) {
     return

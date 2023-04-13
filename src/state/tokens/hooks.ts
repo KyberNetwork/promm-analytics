@@ -25,6 +25,7 @@ import { useFetchedSubgraphStatus } from 'data/application'
 import { ChainId, SUPPORTED_NETWORKS } from 'constants/networks'
 import { stringify } from 'qs'
 import { WhiteListTokenMap, WhiteListTokenMapByChain, WrappedToken } from '../tokens/reducer'
+import { KS_SETTING_API } from 'constants/env'
 
 // format dayjs with the libraries that we need
 dayjs.extend(utc)
@@ -217,7 +218,8 @@ export function useTokenPriceData(
         startTimestamp,
         interval,
         latestBlock,
-        activeNetwork
+        dataClient,
+        blockClient
       )
 
       if (data?.length) {
@@ -324,7 +326,7 @@ export async function getWhitelistTokens(chainId: ChainId): Promise<WhiteListTok
     let page = 1
     while (true) {
       const { data } = await fetch(
-        `${process.env.REACT_APP_KS_SETTING_API}/v1/tokens?${stringify({
+        `${KS_SETTING_API}/v1/tokens?${stringify({
           pageSize,
           page,
           isWhitelisted: true,

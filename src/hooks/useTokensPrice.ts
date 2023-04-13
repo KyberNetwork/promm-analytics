@@ -1,3 +1,4 @@
+import { PRICE_API } from 'constants/env'
 import { useEffect, useState } from 'react'
 import { useActiveNetworks } from 'state/application/hooks'
 
@@ -10,7 +11,7 @@ export default function usePrices(addresses: string[]) {
 
   useEffect(() => {
     const fetchPrices = async () => {
-      const res = await fetch(`${process.env.REACT_APP_PRICE_API}/${activeNetwork.priceRoute}/api/v1/prices`, {
+      const res = await fetch(`${PRICE_API}/${activeNetwork.priceRoute}/api/v1/prices`, {
         method: 'POST',
         body: JSON.stringify({
           ids,

@@ -1,6 +1,7 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { ALL_CHAIN_ID } from 'constants/index'
 import { ChainIdType, NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
+import { useKyberswapConfig } from 'hooks/useKyberSwapConfig'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isAllChain } from 'utils'
@@ -60,8 +61,20 @@ export function useClients(): {
   blockClient: ApolloClient<NormalizedCacheObject>
 }[] {
   const activeNetwork = useActiveNetworks()
-  return activeNetwork.map((network) => ({
-    dataClient: network.client,
-    blockClient: network.blockClient,
-  }))
+  const kyberswapConfig = useKyberswapConfig()
+
+  let result: {
+    dataClient: ApolloClient<NormalizedCacheObject>
+    blockClient: ApolloClient<NormalizedCacheObject>
+  }[]
+  try {
+    result = activeNetwork.map((network) => ({
+      dataClient: kyberswapConfig[network.chainId].client,
+      blockClient: kyberswapConfig[network.chainId].blockClient,
+    }))
+  } catch {
+    debugger
+    result = []
+  }
+  return result
 }
