@@ -73,7 +73,6 @@ export function useClients(): {
       blockClient: kyberswapConfig[network.chainId].blockClient,
     }))
   } catch {
-    debugger
     result = []
   }
   return result
