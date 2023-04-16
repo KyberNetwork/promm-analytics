@@ -6,7 +6,7 @@ import { formatTokenSymbol } from 'utils/tokens'
 
 const POOL_TRANSACTIONS = gql`
   query transactionsByPool($address: Bytes!) {
-    mints(first: 100, orderBy: timestamp, orderDirection: desc, where: { pool: $address }, subgraphError: allow) {
+    mints(first: 1000, orderBy: timestamp, orderDirection: desc, where: { pool: $address }, subgraphError: allow) {
       timestamp
       transaction {
         id
@@ -28,7 +28,7 @@ const POOL_TRANSACTIONS = gql`
       amount1
       amountUSD
     }
-    swaps(first: 100, orderBy: timestamp, orderDirection: desc, where: { pool: $address }, subgraphError: allow) {
+    swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: { pool: $address }, subgraphError: allow) {
       timestamp
       transaction {
         id
@@ -48,7 +48,7 @@ const POOL_TRANSACTIONS = gql`
       amount1
       amountUSD
     }
-    burns(first: 100, orderBy: timestamp, orderDirection: desc, where: { pool: $address }, subgraphError: allow) {
+    burns(first: 1000, orderBy: timestamp, orderDirection: desc, where: { pool: $address }, subgraphError: allow) {
       timestamp
       transaction {
         id
