@@ -129,7 +129,7 @@ const PolygonNetworkInfo: NetworkInfo = {
   blockServiceRoute: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
-  defaultSubgraph: 'https://polygon-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon',
+  defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/namgold/kyberswap-elastic-matic',
   defaultBlockSubgraph: 'https://api.thegraph.com/subgraphs/name/dynamic-amm/ethereum-blocks-polygon',
   subgraphName: 'kybernetwork/kyberswap-elastic-matic',
   etherscanUrl: 'https://polygonscan.com',
