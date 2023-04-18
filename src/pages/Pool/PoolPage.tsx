@@ -6,14 +6,7 @@ import { Flex } from 'rebass'
 import { useMedia } from 'react-use'
 
 import { PageWrapper } from 'pages/styled'
-import {
-  addNetworkIdQueryString,
-  feeTierPercent,
-  FEE_BASE_UNITS,
-  getEtherscanLink,
-  getPoolLink,
-  shortenAddress,
-} from 'utils'
+import { addNetworkIdQueryString, feeTierPercent, getEtherscanLink, getPoolLink, shortenAddress } from 'utils'
 import Column, { AutoColumn } from 'components/Column'
 import { RowBetween, RowFixed, AutoRow } from 'components/Row'
 import { TYPE, StyledInternalLink } from 'theme'
