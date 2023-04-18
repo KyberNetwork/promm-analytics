@@ -205,6 +205,7 @@ export function useGlobalData(): Array<any> {
           () =>
             fetchPoolsData(
               net,
+              kyberswapConfig[net.chainId].isEnableKNProtocol,
               kyberswapConfig[net.chainId].client,
               kyberswapConfig[net.chainId].blockClient,
               kyberswapConfig[net.chainId].isEnableBlockService,

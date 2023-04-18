@@ -38,6 +38,7 @@ export type NetworkInfo = {
   route: string
   poolRoute: string
   blockServiceRoute: string
+  poolFarmRoute: string
   name: string
   imageURL: string
   defaultSubgraph: string
@@ -61,6 +62,7 @@ export const EthereumNetworkInfo: NetworkInfo = {
   poolRoute: 'ethereum',
   priceRoute: 'ethereum',
   blockServiceRoute: 'ethereum',
+  poolFarmRoute: 'ethereum',
   name: 'Ethereum',
   imageURL: ETHEREUM_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-mainnet',
@@ -83,6 +85,7 @@ const BscNetworkInfo: NetworkInfo = {
   poolRoute: 'bsc',
   priceRoute: 'bsc',
   blockServiceRoute: 'bsc',
+  poolFarmRoute: 'bsc',
   name: 'BNB Chain',
   imageURL: BNB_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-bsc',
@@ -105,6 +108,7 @@ const ArbitrumNetworkInfo: NetworkInfo = {
   poolRoute: 'arbitrum',
   priceRoute: 'arbitrum',
   blockServiceRoute: 'arbitrum',
+  poolFarmRoute: 'arbitrum',
   name: 'Arbitrum',
   imageURL: ARBITRUM_LOGO_URL,
   defaultSubgraph: 'https://arbitrum-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-arbitrum',
@@ -127,6 +131,7 @@ const PolygonNetworkInfo: NetworkInfo = {
   poolRoute: 'polygon',
   priceRoute: 'polygon',
   blockServiceRoute: 'polygon',
+  poolFarmRoute: 'polygon',
   name: 'Polygon',
   imageURL: POLYGON_LOGO_URL,
   defaultSubgraph: 'https://polygon-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon',
@@ -149,6 +154,7 @@ const AvaxNetworkInfo: NetworkInfo = {
   poolRoute: 'avalanche',
   priceRoute: 'avalanche',
   blockServiceRoute: 'avalanche',
+  poolFarmRoute: 'avalanche',
   name: 'Avalanche',
   imageURL: AVAX_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-avalanche',
@@ -171,6 +177,7 @@ const FantomNetworkInfo: NetworkInfo = {
   poolRoute: 'fantom',
   priceRoute: 'fantom',
   blockServiceRoute: 'fantom',
+  poolFarmRoute: 'fantom',
   name: 'Fantom',
   imageURL: FANTOM_LOGO_URL,
   defaultSubgraph: 'https://fantom-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-fantom',
@@ -194,6 +201,7 @@ const CronosNetworkInfo: NetworkInfo = {
   poolRoute: 'cronos',
   priceRoute: 'cronos',
   blockServiceRoute: 'cronos',
+  poolFarmRoute: 'cronos',
   name: 'Cronos',
   imageURL: CRONOS_LOGO_URL,
   defaultSubgraph: 'https://cronos-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-cronos',
@@ -216,6 +224,7 @@ const BTTCNetworkInfo: NetworkInfo = {
   poolRoute: 'bttc',
   priceRoute: 'bttc',
   blockServiceRoute: 'bttc',
+  poolFarmRoute: 'bttc',
   name: 'BitTorrent',
   imageURL: BTTC_LOGO_URL,
   defaultSubgraph: 'https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc',
@@ -238,6 +247,7 @@ const VelasNetworkInfo: NetworkInfo = {
   poolRoute: 'velas',
   priceRoute: 'velas',
   blockServiceRoute: 'velas',
+  poolFarmRoute: 'velas',
   name: 'Velas',
   imageURL: VELAS_LOGO_URL,
   defaultSubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas',
@@ -261,6 +271,7 @@ const AuroraNetworkInfo: NetworkInfo = {
   poolRoute: 'aurora',
   priceRoute: 'aurora',
   blockServiceRoute: 'aurora',
+  poolFarmRoute: 'aurora',
   name: 'Aurora',
   imageURL: AURORA_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-aurora',
@@ -283,6 +294,7 @@ const OasisNetworkInfo: NetworkInfo = {
   poolRoute: 'oasis',
   priceRoute: 'oasis',
   blockServiceRoute: 'oasis',
+  poolFarmRoute: 'oasis',
   name: 'Oasis',
   imageURL: OASIS_LOGO_URL,
   defaultSubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis',
@@ -305,6 +317,7 @@ const OptimismNetworkInfo: NetworkInfo = {
   poolRoute: 'optimism',
   priceRoute: 'optimism',
   blockServiceRoute: 'optimism',
+  poolFarmRoute: 'optimism',
   name: 'Optimism',
   imageURL: OPTIMISM_LOGO_URL,
   defaultSubgraph: 'https://api.thegraph.com/subgraphs/name/kybernetwork/kyberswap-elastic-optimism',

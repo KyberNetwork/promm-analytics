@@ -14,6 +14,7 @@ type KyberswapConfigurationRawResponse =
                   blockSubgraph: string | undefined
                   elasticSubgraph: string | undefined
                   isEnableBlockService: boolean | undefined
+                  isEnableKNProtocol: boolean | undefined
                 }
               | undefined
           }
@@ -25,6 +26,7 @@ export type KyberswapConfig = {
   blockClient: ApolloClient<NormalizedCacheObject>
   client: ApolloClient<NormalizedCacheObject>
   isEnableBlockService: boolean
+  isEnableKNProtocol: boolean
 }
 
 export const parseResponse = (
@@ -33,6 +35,7 @@ export const parseResponse = (
 ): KyberswapConfig => {
   const data = responseData?.data?.config
   const isEnableBlockService = data?.isEnableBlockService ?? false
+  const isEnableKNProtocol = data?.isEnableKNProtocol ?? false
   const blockClient = createBlockClient(data?.blockSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultBlockSubgraph)
   const client = createBlockClient(data?.elasticSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultSubgraph)
 
@@ -40,6 +43,7 @@ export const parseResponse = (
     blockClient,
     client,
     isEnableBlockService,
+    isEnableKNProtocol,
   }
   return result
 }

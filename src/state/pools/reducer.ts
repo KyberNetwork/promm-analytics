@@ -31,7 +31,6 @@ export interface PoolData {
     symbol: string
     address: string
     decimals: number
-    derivedETH: number
   }
 
   token1: {
@@ -39,7 +38,6 @@ export interface PoolData {
     symbol: string
     address: string
     decimals: number
-    derivedETH: number
   }
 
   // for tick math
@@ -51,7 +49,6 @@ export interface PoolData {
   // volume
   volumeUSD: number
   volumeUSDChange: number
-  volumeUSDWeek: number
   volumeOneDayToken0: number
   volumeOneDayToken1: number
 
