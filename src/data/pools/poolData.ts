@@ -8,9 +8,8 @@ import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 import { FEE_BASE_UNITS } from 'utils'
-import { NetworkInfo, SUPPORT_POOL_FARM_API } from 'constants/networks'
+import { NetworkInfo } from 'constants/networks'
 import { fetchTopPoolAddresses } from './topPools'
-import { fetchPoolsAPR } from './poolAPR'
 import { AbortedError } from 'constants/index'
 import { fetchPoolsDataV2 } from './poolDataV2'
 
@@ -123,8 +122,6 @@ export async function fetchPoolsDataV1(
 ): Promise<{
   [address: string]: PoolData
 }> {
-  const poolServiceCall = fetchPoolsAPR(network.poolRoute)
-
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([
     fetchTopPoolAddresses(client, signal),
@@ -159,8 +156,6 @@ export async function fetchPoolsDataV1(
         }, {})
       : {}
   })
-  const poolServiceAPRData: { [address: string]: number | undefined } = await poolServiceCall
-  if (signal.aborted) throw new AbortedError()
 
   // format data and calculate daily changes
   const formatted = poolAddresses.reduce((accum: { [address: string]: PoolData }, address) => {
@@ -218,11 +213,7 @@ export async function fetchPoolsDataV1(
         tvlUSDChange,
         tvlToken0,
         tvlToken1,
-        apr: SUPPORT_POOL_FARM_API.includes(network.chainId)
-          ? poolServiceAPRData[address.toLowerCase()] || 0
-          : tvlUSD > 0
-          ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD
-          : 0,
+        apr: tvlUSD > 0 ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD : 0,
         chainId: network.chainId,
       }
     }

@@ -1,4 +1,4 @@
-import { POOL_FARM_BASE_URL } from 'constants/env'
+import { POOL_SERVICE } from 'constants/env'
 import { NetworkInfo } from 'constants/networks'
 import { PoolData } from 'state/pools/reducer'
 
@@ -47,10 +47,9 @@ export async function fetchPoolsDataV2(
   [address: string]: PoolData
 }> {
   const data: Response = await (
-    await fetch(
-      `${POOL_FARM_BASE_URL}/${network.poolFarmRoute}/api/v1/elastic/pools?includeLowTvl=true&page=1&perPage=10000`,
-      { signal }
-    )
+    await fetch(`${POOL_SERVICE}/${network.poolRoute}/api/v1/elastic/pools?includeLowTvl=true&page=1&perPage=10000`, {
+      signal,
+    })
   ).json()
 
   const poolData: {
