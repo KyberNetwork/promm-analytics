@@ -175,9 +175,6 @@ export async function fetchPoolsDataV1(
         ? [parseFloat(current.volumeUSD), 0]
         : [0, 0]
 
-    const volumeOneDayToken0 = parseFloat(current?.volumeToken0 || '0') - parseFloat(oneDay?.volumeToken0 || '0')
-    const volumeOneDayToken1 = parseFloat(current?.volumeToken1 || '0') - parseFloat(oneDay?.volumeToken1 || '0')
-
     const tvlUSD = current ? parseFloat(current.totalValueLockedUSD) : 0
 
     const tvlUSDChange =

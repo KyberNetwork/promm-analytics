@@ -83,8 +83,6 @@ export async function fetchPoolsDataV2(
 
           volumeUSD: Number(pool.volumeUsd) - Number(pool.volumeUsdOneDayAgo),
           // volumeUSDChange: pool.volumeUSDChange,
-          // volumeOneDayToken0: pool.volumeOneDayToken0,
-          // volumeOneDayToken1: pool.volumeOneDayToken1,
           volumeUSDChange: 0,
 
           tvlUSD: Number(pool.totalValueLockedUsd),
