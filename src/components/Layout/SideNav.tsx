@@ -45,11 +45,11 @@ const NetworkModalContent = styled.div`
 const Wrapper = styled.div`
   display: flex;
   position: sticky;
-  top: 0;
+  top: 68px;
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 68px);
   background: ${({ theme }) => theme.background};
   padding: 32px 24px 28px;
 `

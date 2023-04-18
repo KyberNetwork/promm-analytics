@@ -17,9 +17,9 @@ const RightColumn = styled.div<{ open: boolean }>`
   padding: 1.25rem;
   position: sticky;
   right: 0;
-  top: 0;
+  top: 68px;
   bottom: 0;
-  height: 100vh;
+  height: calc(100vh - 68px);
   background-color: ${({ theme }) => theme.background};
 
   ${({ theme }) => theme.mediaWidth.upToExtraLarge`
