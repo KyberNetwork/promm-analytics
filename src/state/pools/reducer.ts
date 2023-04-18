@@ -49,8 +49,6 @@ export interface PoolData {
   // volume
   volumeUSD: number
   volumeUSDChange: number
-  volumeOneDayToken0: number
-  volumeOneDayToken1: number
 
   // liquidity
   tvlUSD: number

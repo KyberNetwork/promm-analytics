@@ -123,9 +123,6 @@ export default function PoolPage(): JSX.Element {
 
   const prices = usePrices([poolData?.token0?.address, poolData?.token1?.address].filter(Boolean))
 
-  const tvl = +poolData?.tvlToken0 * prices[0] + +poolData?.tvlToken1 * prices[1]
-  const volume24h = +poolData?.volumeOneDayToken0 * prices[0] || +poolData?.volumeOneDayToken1 * prices[1]
-
   // const chartData = usePoolChartData(address)
   const transactions = usePoolTransactions(address, prices)
 
@@ -248,7 +245,7 @@ export default function PoolPage(): JSX.Element {
                       <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
                       <Percent hideWhenZero fontSize={12} value={poolData.tvlUSDChange} />
                     </RowBetween>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(tvl || poolData.tvlUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(poolData.tvlUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
@@ -257,15 +254,13 @@ export default function PoolPage(): JSX.Element {
                       <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
                       <Percent hideWhenZero fontSize={12} value={poolData.volumeUSDChange} />
                     </RowBetween>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(volume24h || poolData.volumeUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(poolData.volumeUSD)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
                   <AutoColumn gap="16px">
                     <TYPE.title fontSize="14px">Fees (24H)</TYPE.title>
-                    <TYPE.label fontSize="20px">
-                      {formatDollarAmount((volume24h || poolData.volumeUSD) * (poolData.feeTier / FEE_BASE_UNITS))}
-                    </TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(poolData.fee)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>

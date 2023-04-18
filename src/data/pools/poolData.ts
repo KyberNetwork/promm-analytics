@@ -227,8 +227,6 @@ export async function fetchPoolsDataV1(
           ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD
           : 0,
         chainId: network.chainId,
-        volumeOneDayToken0,
-        volumeOneDayToken1,
       }
     }
 

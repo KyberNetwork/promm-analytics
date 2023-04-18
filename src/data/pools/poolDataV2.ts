@@ -61,7 +61,7 @@ export async function fetchPoolsDataV2(
         acc[pool.id] = {
           address: pool.id,
           feeTier: Number(pool.feeTier),
-          fee: Number(pool.feesUsd),
+          fee: Number(pool.feesUsd) - Number(pool.feesUsdOneDayAgo),
 
           token0: {
             name: pool.token0.name,
@@ -86,8 +86,6 @@ export async function fetchPoolsDataV2(
           // volumeOneDayToken0: pool.volumeOneDayToken0,
           // volumeOneDayToken1: pool.volumeOneDayToken1,
           volumeUSDChange: 0,
-          volumeOneDayToken0: 0,
-          volumeOneDayToken1: 0,
 
           tvlUSD: Number(pool.totalValueLockedUsd),
           tvlUSDChange: 0,
