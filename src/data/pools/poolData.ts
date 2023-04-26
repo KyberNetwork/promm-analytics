@@ -106,7 +106,7 @@ export async function fetchPoolsData(
 ): Promise<{
   [address: string]: PoolData
 }> {
-  if (isEnableBlockService) return fetchPoolsDataV2(network, signal)
+  if (isEnableKNProtocol) return fetchPoolsDataV2(network, signal)
   return fetchPoolsDataV1(network, client, blockClient, isEnableBlockService, signal)
 }
 
