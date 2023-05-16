@@ -1,6 +1,11 @@
+import JSBI from 'jsbi'
+import { Token } from '@kyberswap/ks-sdk-core'
+import { Pool } from '@kyberswap/ks-sdk-elastic'
 import { POOL_SERVICE } from 'constants/env'
 import { NetworkInfo } from 'constants/networks'
 import { PoolData } from 'state/pools/reducer'
+import { get2DayChange } from 'utils/data'
+import { getPercentChange } from 'utils/data'
 
 export type RawToken = {
   id: string
@@ -25,8 +30,13 @@ export type ElasticPool = {
   feesUsd: string
 
   totalValueLockedUsd: string
+  totalValueLockedUsdOneDayAgo: string
   feesUsdOneDayAgo: string
   volumeUsdOneDayAgo: string
+  feesUsdTwoDayAgo: string
+  volumeUsdTwoDayAgo: string
+  totalValueLockedToken0: string
+  totalValueLockedToken1: string
 
   totalValueLockedUsdInRange: string
   apr: string
@@ -57,6 +67,24 @@ export async function fetchPoolsDataV2(
   } =
     data?.data?.pools.reduce(
       (acc, pool) => {
+        const token0 = new Token(network.chainId, pool.token0.id, parseInt(pool.token0.decimals))
+        const token1 = new Token(network.chainId, pool.token1.id, parseInt(pool.token1.decimals))
+        const sdkPool = new Pool(
+          token0,
+          token1,
+          Number(pool.feeTier),
+          JSBI.BigInt(pool.sqrtPrice),
+          JSBI.BigInt(pool.liquidity),
+          JSBI.BigInt(pool.reinvestL),
+          Number(pool.tick)
+        )
+        const [volumeUSD, volumeUSDChange] = get2DayChange(
+          Number(pool.volumeUsd),
+          Number(pool.volumeUsdOneDayAgo),
+          Number(pool.volumeUsdTwoDayAgo)
+        )
+        const tvlUSDChange = getPercentChange(pool.totalValueLockedUsd, pool.totalValueLockedUsdOneDayAgo)
+
         acc[pool.id] = {
           address: pool.id,
           feeTier: Number(pool.feeTier),
@@ -80,20 +108,17 @@ export async function fetchPoolsDataV2(
           sqrtPrice: Number(pool.sqrtPrice),
           tick: Number(pool.tick),
 
-          volumeUSD: Number(pool.volumeUsd) - Number(pool.volumeUsdOneDayAgo),
-          // volumeUSDChange: pool.volumeUSDChange,
-          volumeUSDChange: 0,
+          volumeUSD,
+          volumeUSDChange,
 
           tvlUSD: Number(pool.totalValueLockedUsd),
-          tvlUSDChange: 0,
+          tvlUSDChange,
 
-          token0Price: 0,
-          token1Price: 0,
+          token0Price: parseFloat(sdkPool.priceOf(token0).toSignificant(30)),
+          token1Price: parseFloat(sdkPool.priceOf(token1).toSignificant(30)),
 
-          // tvlToken0: pool.tvlToken0,
-          // tvlToken1: pool.tvlToken1,
-          tvlToken0: 0,
-          tvlToken1: 0,
+          tvlToken0: Number(pool.totalValueLockedToken0),
+          tvlToken1: Number(pool.totalValueLockedToken1),
           apr: Number(pool.apr),
 
           chainId: network.chainId,
