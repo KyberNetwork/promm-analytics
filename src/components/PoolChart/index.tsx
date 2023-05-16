@@ -72,15 +72,20 @@ const PoolChart = ({ address }: PoolChartProps): JSX.Element => {
   }, [address, addressPrev])
 
   useEffect(() => {
+    const abortController = new AbortController()
     if (!isClient) {
       return
     }
     function handleResize() {
+      if (abortController.signal.aborted) return
       setWidth((ref?.current as any | undefined)?.container?.clientWidth ?? width)
       setHeight((ref?.current as any | undefined)?.container?.clientHeight ?? height)
     }
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      abortController.abort()
+      window.removeEventListener('resize', handleResize)
+    }
   }, [height, isClient, width]) // Empty array ensures that effect is only run on mount and unmount
 
   // get data for pool, and rates

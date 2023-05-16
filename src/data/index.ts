@@ -205,6 +205,7 @@ export function useGlobalData(): Array<any> {
           () =>
             fetchPoolsData(
               net,
+              kyberswapConfig[net.chainId].isEnableKNProtocol,
               kyberswapConfig[net.chainId].client,
               kyberswapConfig[net.chainId].blockClient,
               kyberswapConfig[net.chainId].isEnableBlockService,
@@ -238,7 +239,10 @@ export function useGlobalData(): Array<any> {
       .then((data) => {
         !abortController.signal.aborted && updatePoolData(Object.values(getDataByNetwork(data)))
       })
-      .catch(console.error)
+      .catch((error: unknown) => {
+        if (error instanceof AbortedError) return
+        console.error('fetchAllPoolData error:', { error })
+      })
     return () => abortController.abort()
   }, [fetchAllPoolData, getDataByNetwork, isAppInit, updatePoolData])
 

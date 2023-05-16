@@ -8,10 +8,10 @@ import { PoolData } from 'state/pools/reducer'
 import { get2DayChange } from 'utils/data'
 import { formatTokenName, formatTokenSymbol } from 'utils/tokens'
 import { FEE_BASE_UNITS } from 'utils'
-import { NetworkInfo, SUPPORT_POOL_FARM_API } from 'constants/networks'
+import { NetworkInfo } from 'constants/networks'
 import { fetchTopPoolAddresses } from './topPools'
-import { fetchPoolsAPR } from './poolAPR'
 import { AbortedError } from 'constants/index'
+import { fetchPoolsDataV2 } from './poolDataV2'
 
 export const POOLS_BULK = (block: number | string | undefined, pools: string[]): import('graphql').DocumentNode => {
   let poolString = `[`
@@ -96,10 +96,24 @@ interface PoolDataResponse {
   pools: PoolFields[]
 }
 
+export async function fetchPoolsData(
+  network: NetworkInfo,
+  isEnableKNProtocol: boolean,
+  client: ApolloClient<NormalizedCacheObject>,
+  blockClient: ApolloClient<NormalizedCacheObject>,
+  isEnableBlockService: boolean,
+  signal: AbortSignal
+): Promise<{
+  [address: string]: PoolData
+}> {
+  if (isEnableKNProtocol) return fetchPoolsDataV2(network, signal)
+  return fetchPoolsDataV1(network, client, blockClient, isEnableBlockService, signal)
+}
+
 /**
  * Fetch top addresses by volume
  */
-export async function fetchPoolsData(
+export async function fetchPoolsDataV1(
   network: NetworkInfo,
   client: ApolloClient<NormalizedCacheObject>,
   blockClient: ApolloClient<NormalizedCacheObject>,
@@ -108,8 +122,6 @@ export async function fetchPoolsData(
 ): Promise<{
   [address: string]: PoolData
 }> {
-  const poolServiceCall = fetchPoolsAPR(network.poolRoute)
-
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([
     fetchTopPoolAddresses(client, signal),
@@ -117,10 +129,10 @@ export async function fetchPoolsData(
   ])
 
   if (signal.aborted) throw new AbortedError()
-  const [block24, block48, blockWeek] = blocks ?? []
+  const [block24, block48] = blocks ?? []
 
   // fetch all data
-  const inputs = [undefined, block24?.number ?? 0, block48?.number ?? 0, blockWeek?.number ?? 0]
+  const inputs = [undefined, block24?.number ?? 0, block48?.number ?? 0]
 
   const response = await Promise.allSettled(
     inputs.map((val) =>
@@ -132,11 +144,11 @@ export async function fetchPoolsData(
   )
   if (signal.aborted) throw new AbortedError()
 
-  const [data, data24, data48, dataWeek] = response.map((e: PromiseSettledResult<any>) =>
+  const [data, data24, data48] = response.map((e: PromiseSettledResult<any>) =>
     e.status === 'fulfilled' ? e.value.data : ({} as PoolDataResponse)
   )
 
-  const [parsed, parsed24, parsed48, parsedWeek] = [data, data24, data48, dataWeek].map((item) => {
+  const [parsed, parsed24, parsed48] = [data, data24, data48].map((item) => {
     return item?.pools
       ? item.pools.reduce((accum: { [address: string]: PoolFields }, poolData: PoolFields) => {
           accum[poolData.id] = poolData
@@ -144,15 +156,12 @@ export async function fetchPoolsData(
         }, {})
       : {}
   })
-  const poolServiceAPRData: { [address: string]: number | undefined } = await poolServiceCall
-  if (signal.aborted) throw new AbortedError()
 
   // format data and calculate daily changes
   const formatted = poolAddresses.reduce((accum: { [address: string]: PoolData }, address) => {
     const current: PoolFields | undefined = parsed[address]
     const oneDay: PoolFields | undefined = parsed24[address]
     const twoDay: PoolFields | undefined = parsed48[address]
-    const week: PoolFields | undefined = parsedWeek[address]
 
     const [volumeUSD, volumeUSDChange] =
       current && oneDay && twoDay
@@ -160,16 +169,6 @@ export async function fetchPoolsData(
         : current
         ? [parseFloat(current.volumeUSD), 0]
         : [0, 0]
-
-    const volumeOneDayToken0 = parseFloat(current?.volumeToken0 || '0') - parseFloat(oneDay?.volumeToken0 || '0')
-    const volumeOneDayToken1 = parseFloat(current?.volumeToken1 || '0') - parseFloat(oneDay?.volumeToken1 || '0')
-
-    const volumeUSDWeek =
-      current && week
-        ? parseFloat(current.volumeUSD) - parseFloat(week.volumeUSD)
-        : current
-        ? parseFloat(current.volumeUSD)
-        : 0
 
     const tvlUSD = current ? parseFloat(current.totalValueLockedUSD) : 0
 
@@ -199,32 +198,23 @@ export async function fetchPoolsData(
           name: formatTokenName(current.token0.id, current.token0.name, network),
           symbol: formatTokenSymbol(current.token0.id, current.token0.symbol, network),
           decimals: parseInt(current.token0.decimals),
-          derivedETH: parseFloat(current.token0.derivedETH),
         },
         token1: {
           address: current.token1.id,
           name: formatTokenName(current.token1.id, current.token1.name, network),
           symbol: formatTokenSymbol(current.token1.id, current.token1.symbol, network),
           decimals: parseInt(current.token1.decimals),
-          derivedETH: parseFloat(current.token1.derivedETH),
         },
         token0Price: parseFloat(current.token0Price),
         token1Price: parseFloat(current.token1Price),
         volumeUSD,
         volumeUSDChange,
-        volumeUSDWeek,
         tvlUSD,
         tvlUSDChange,
         tvlToken0,
         tvlToken1,
-        apr: SUPPORT_POOL_FARM_API.includes(network.chainId)
-          ? poolServiceAPRData[address.toLowerCase()] || 0
-          : tvlUSD > 0
-          ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD
-          : 0,
+        apr: tvlUSD > 0 ? (volumeUSD * (feeTier / FEE_BASE_UNITS) * 100 * 365) / tvlUSD : 0,
         chainId: network.chainId,
-        volumeOneDayToken0,
-        volumeOneDayToken1,
       }
     }
 

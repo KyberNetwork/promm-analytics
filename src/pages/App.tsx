@@ -16,7 +16,7 @@ import { Flex } from 'rebass'
 import PinnedData from 'components/PinnedData'
 import AccountsOverview from './Accounts/AccountsOverview'
 import AccountPage from './Accounts/AccountPage'
-import { ChainId, NETWORKS_INFO_LIST, NETWORKS_INFO_MAP } from 'constants/networks'
+import { ChainId, EthereumNetworkInfo, NETWORKS_INFO_LIST } from 'constants/networks'
 import { updateActiveNetwork } from 'state/application/actions'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'state'
@@ -101,7 +101,7 @@ const NetworkReader: React.FunctionComponent<React.PropsWithChildren<any>> = ({ 
       dispatch(updateActiveNetwork({ chainId: networkInfoFromURL.chainId || ALL_CHAIN_ID }))
     }
   }, [currentNetworkURL, networkInfoFromURL, dispatch])
-  const homeLink = `/${NETWORKS_INFO_MAP[ChainId.ETHEREUM].route}/home`
+  const homeLink = `/${EthereumNetworkInfo.route}/home`
 
   if (networkInfoFromURL?.chainId === ChainId.AURORA) return <Redirect to={homeLink} /> //not support Aurora yet
   return children

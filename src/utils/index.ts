@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address'
 import { KYBERSWAP_URL } from 'constants/env'
-import { ChainId, NetworkInfo, NETWORKS_INFO_MAP } from 'constants/networks'
+import { EthereumNetworkInfo, NetworkInfo } from 'constants/networks'
 import { TimeframeOptions } from 'data/wallets/positionSnapshotData'
 import dayjs from 'dayjs'
 import Numeral from 'numeral'
@@ -20,7 +20,7 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-  const { etherscanUrl } = networkInfo || NETWORKS_INFO_MAP[ChainId.ETHEREUM]
+  const { etherscanUrl } = networkInfo || EthereumNetworkInfo
   switch (type) {
     case 'transaction': {
       return `${etherscanUrl}/tx/${data}`
