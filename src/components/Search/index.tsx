@@ -160,20 +160,26 @@ export const Search = (): JSX.Element | null => {
   const wrapperRef = useRef<HTMLInputElement | null>(null)
   const menuRef = useRef<HTMLDivElement | null>(null)
 
-  const handleClick = useCallback((e) => {
-    if (!menuRef.current?.contains(e.target) && !wrapperRef.current?.contains(e.target)) {
-      setPoolsShown(3)
-      setTokensShown(3)
-      toggleMenu(false)
-    }
-  }, [])
-
   useEffect(() => {
+    const abortController = new AbortController()
+    const handleClick = (e: MouseEvent) => {
+      if (abortController.signal.aborted) return
+      if (
+        e?.target &&
+        !menuRef.current?.contains(e.target as HTMLDivElement) &&
+        !wrapperRef.current?.contains(e.target as HTMLDivElement)
+      ) {
+        setPoolsShown(3)
+        setTokensShown(3)
+        toggleMenu(false)
+      }
+    }
     document.addEventListener('click', handleClick)
     return () => {
+      abortController.abort()
       document.removeEventListener('click', handleClick)
     }
-  }, [handleClick])
+  }, [])
 
   if (isAllChain) return null
 
