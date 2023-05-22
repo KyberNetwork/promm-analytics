@@ -70,8 +70,8 @@ export function useFetchedSubgraphStatus(): {
     }
   }
 
-  const syncedBlock = parsed?.chains[0].latestBlock.number
-  const headBlock = parsed?.chains[0].chainHeadBlock.number
+  const syncedBlock = parsed?.chains[0].latestBlock?.number
+  const headBlock = parsed?.chains[0].chainHeadBlock?.number
 
   return {
     available: true,
