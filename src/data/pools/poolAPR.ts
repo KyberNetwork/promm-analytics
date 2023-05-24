@@ -5,7 +5,7 @@ export async function fetchPoolsAPR(poolRoute: string): Promise<{ [address: stri
   for (let i = 1; i < 100; i++) {
     try {
       const callResult = await fetch(
-        `${POOL_SERVICE}/${poolRoute}/api/v1/elastic/pools?page=${i}&perPage=1000`
+        `${POOL_SERVICE}/${poolRoute}/api/v1/elastic-new/pools?page=${i}&perPage=1000`
       ).then((response) => response.json())
 
       if (!callResult?.data?.pools.length) throw ''
