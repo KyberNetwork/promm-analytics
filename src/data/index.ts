@@ -1,6 +1,6 @@
 import { AbortedError, ALL_CHAIN_ID } from 'constants/index'
 import { ChainIdType, ELASTIC_SUPPORTED_NETWORKS } from 'constants/networks'
-import { useAppDispatch } from 'hooks/useAppDispatch'
+import { useAppDispatch, useAppSelector } from 'hooks/useAppDispatch'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
@@ -197,6 +197,8 @@ export function useGlobalData(): Array<any> {
     return () => abortController.abort()
   }, [fetchAllChartData, getDataByNetwork, isAppInit, updateChartData])
 
+  const isLegacyMode = useAppSelector((state) => !!state.user.legacyMode)
+
   const fetchAllPoolData = useCallback(
     async function (signal: AbortSignal) {
       const promises = networks.map((net) =>
@@ -208,7 +210,8 @@ export function useGlobalData(): Array<any> {
               kyberswapConfig[net.chainId].client,
               kyberswapConfig[net.chainId].blockClient,
               kyberswapConfig[net.chainId].isEnableBlockService,
-              signal
+              signal,
+              isLegacyMode
             ),
           signal
         )

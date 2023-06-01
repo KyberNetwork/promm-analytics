@@ -1,11 +1,14 @@
 import { POOL_SERVICE } from 'constants/env'
 
-export async function fetchPoolsAPR(poolRoute: string): Promise<{ [address: string]: number | undefined }> {
+export async function fetchPoolsAPR(
+  poolRoute: string,
+  isLegacyMode: boolean
+): Promise<{ [address: string]: number | undefined }> {
   const result: { [address: string]: number | undefined } = {}
   for (let i = 1; i < 100; i++) {
     try {
       const callResult = await fetch(
-        `${POOL_SERVICE}/${poolRoute}/api/v1/elastic-new/pools?page=${i}&perPage=1000`
+        `${POOL_SERVICE}/${poolRoute}/api/v1/elastic${isLegacyMode ? '' : '-new'}/pools?page=${i}&perPage=1000`
       ).then((response) => response.json())
 
       if (!callResult?.data?.pools.length) throw ''

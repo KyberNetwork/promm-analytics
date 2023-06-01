@@ -104,11 +104,12 @@ export async function fetchPoolsData(
   client: ApolloClient<NormalizedCacheObject>,
   blockClient: ApolloClient<NormalizedCacheObject>,
   isEnableBlockService: boolean,
-  signal: AbortSignal
+  signal: AbortSignal,
+  isLegacyMode: boolean
 ): Promise<{
   [address: string]: PoolData
 }> {
-  const poolServiceCall = fetchPoolsAPR(network.poolRoute)
+  const poolServiceCall = fetchPoolsAPR(network.poolRoute, isLegacyMode)
 
   // get blocks from historic timestamps
   const [poolAddresses, blocks] = await Promise.all([

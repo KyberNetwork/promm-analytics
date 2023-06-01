@@ -36,6 +36,9 @@ import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
 import { addNetworkIdQueryString } from 'utils'
 import { ALL_CHAIN_ID } from 'constants/index'
 import { KYBERSWAP_URL } from 'constants/env'
+import { rgba } from 'polished'
+import { toggleLegacyMode } from 'state/user/actions'
+import { useAppDispatch, useAppSelector } from 'hooks/useAppDispatch'
 
 const NetworkModalContent = styled.div`
   width: 100%;
@@ -101,23 +104,34 @@ const Bottom = styled.div`
 
 const TabWrapper = styled.div`
   border-radius: 999px;
-  background: ${({ theme }) => theme.buttonBlack};
   display: flex;
   width: 100%;
   margin-top: 24px;
+  gap: 8px;
 `
 const TabItem = styled.div<{ active?: boolean }>`
-  flex: 1;
+  flex: 4;
   display: flex;
+  gap: 4px;
   align-items: center;
   justify-content: center;
   padding: 8px;
   border-radius: 999px;
-  background: ${({ theme, active }) => (!active ? theme.buttonBlack : theme.primary)};
-  color: ${({ theme, active }) => (active ? theme.textReverse : theme.subText)};
+  border: 1px solid ${({ theme, active }) => (active ? 'transparent' : theme.border)};
+  background: ${({ theme, active }) => (!active ? 'transparent' : rgba(theme.primary, 0.3))};
+  color: ${({ theme, active }) => (active ? theme.primary : theme.subText)};
   cursor: pointer;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
+`
+
+const LegacyTag = styled.div`
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 500;
+  line-height: 16px;
+  background: ${({ theme }) => rgba(theme.subText, 0.2)};
 `
 
 const NetworkList = styled.div`
@@ -209,6 +223,7 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
 
 enum ListTabs {
   ELASTIC = 'Elastic',
+  ELASTIC_LEGACY = 'Elastic Legacy',
   CLASSIC = 'Classic',
 }
 
@@ -243,11 +258,14 @@ function SideNav(): JSX.Element {
   const prefixNetworkURL = currentNetworkURL ? `/${currentNetworkURL}` : ''
   const below1080 = useMedia('(max-width: 1080px)')
   const [isDark] = useDarkModeManager()
-  const [tab, setTab] = useState<ListTabs>(ListTabs.ELASTIC)
+  const isLegacyMode = useAppSelector((state) => !!state.user.legacyMode)
+  const [tab, setTab] = useState<ListTabs>(() => (isLegacyMode ? ListTabs.ELASTIC_LEGACY : ListTabs.ELASTIC))
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
 
   const networkListToShow: ChainIdType[] =
-    tab === ListTabs.ELASTIC ? ELASTIC_SUPPORTED_NETWORKS : CLASSIC_SUPPORTED_NETWORKS
+    tab === ListTabs.ELASTIC || tab === ListTabs.ELASTIC_LEGACY
+      ? ELASTIC_SUPPORTED_NETWORKS
+      : CLASSIC_SUPPORTED_NETWORKS
   const currentPage =
     '/' +
     pathname
@@ -262,12 +280,14 @@ function SideNav(): JSX.Element {
     ? '/accounts'
     : currentPage
 
+  const dispatch = useAppDispatch()
+
   const networkModal = (
     <Modal onDismiss={() => setShowNetworkModal(false)} isOpen={showNetworkModal} maxWidth={624}>
       <NetworkModalContent>
         <Flex width="100%" justifyContent="space-between" alignItems="center">
           <Text fontSize={16} fontWeight="500">
-            Select a Network
+            Select a Chain
           </Text>
           <ButtonEmpty width="fit-content" onClick={() => setShowNetworkModal(false)} style={{ padding: 0 }}>
             <X size={16} color={theme.text} />
@@ -275,11 +295,21 @@ function SideNav(): JSX.Element {
         </Flex>
 
         <TabWrapper>
-          {Object.entries(ListTabs).map(([key, value]) => (
-            <TabItem key={key} active={tab === value} role="button" onClick={() => setTab(value)}>
-              {value} Analytics
-            </TabItem>
-          ))}
+          <TabItem active={tab === ListTabs.ELASTIC} role="button" onClick={() => setTab(ListTabs.ELASTIC)}>
+            Elastic Analytics
+          </TabItem>
+          <TabItem
+            active={tab === ListTabs.ELASTIC_LEGACY}
+            role="button"
+            onClick={() => setTab(ListTabs.ELASTIC_LEGACY)}
+            style={{ flex: 5 }}
+          >
+            Elastic Analytics <LegacyTag>Legacy</LegacyTag>
+          </TabItem>
+
+          <TabItem active={tab === ListTabs.CLASSIC} role="button" onClick={() => setTab(ListTabs.CLASSIC)}>
+            Classic Analytics
+          </TabItem>
         </TabWrapper>
 
         <NetworkList>
@@ -308,6 +338,15 @@ function SideNav(): JSX.Element {
               <StyledInternalLink
                 key={chainId}
                 to={`${isAllChainId ? '' : '/' + NETWORKS_INFO_MAP[chainId].route}${newPage}`}
+                onClick={() => {
+                  if (
+                    (isLegacyMode && tab === ListTabs.ELASTIC) ||
+                    (!isLegacyMode && tab === ListTabs.ELASTIC_LEGACY)
+                  ) {
+                    dispatch(toggleLegacyMode())
+                    window.location.href = window.location.origin
+                  }
+                }}
               >
                 <NetworkItem
                   active={isAllChain ? isAllChainId : chainId === networkInfo.chainId}
@@ -392,15 +431,15 @@ function SideNav(): JSX.Element {
             </DMMIcon>
             <UnSelectable>
               <Text fontSize="12px" color={theme.subText} textAlign="right" marginTop="-12px">
-                Elastic Analytics
+                Elastic {isLegacyMode ? 'Legacy' : 'Analytics'}
               </Text>
             </UnSelectable>
           </div>
           <Flex marginTop="1.5rem" alignItems="flex-start" width="100%">
             <Text fontSize={16} fontWeight="500" color={theme.subText}>
-              Select a network
+              Select a chain
             </Text>
-            <InfoHelper text="You can switch between networks in our Elastic Analytics and Classic Analytics below" />
+            <InfoHelper text="You can switch between networks in our Elastic Analytics, Elastic Analytics (Legacy) and Classic Analytics below" />
           </Flex>
 
           <SelectNetworkButton onClick={() => setShowNetworkModal(true)} marginTop="1rem" />

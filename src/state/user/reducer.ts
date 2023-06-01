@@ -11,6 +11,7 @@ import {
   addSavedPool,
   toggleIsFirstTimeVisit,
   addSavedAccount,
+  toggleLegacyMode,
 } from './actions'
 
 const currentTimestamp = () => new Date().getTime()
@@ -41,6 +42,7 @@ export interface UserState {
   timestamp: number
 
   isFirstTimeVisit: boolean
+  legacyMode: boolean
 }
 
 export const initialState: UserState = {
@@ -51,6 +53,7 @@ export const initialState: UserState = {
   savedAccounts: {},
   timestamp: currentTimestamp(),
   isFirstTimeVisit: true,
+  legacyMode: false,
 }
 
 export default createReducer(initialState, (builder) =>
@@ -119,5 +122,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(toggleIsFirstTimeVisit, (state) => {
       state.isFirstTimeVisit = false
+    })
+    .addCase(toggleLegacyMode, (state) => {
+      const current = state.legacyMode
+      state.legacyMode = !current
     })
 )

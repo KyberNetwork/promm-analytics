@@ -9,6 +9,8 @@ export const useKyberswapConfig = (): {
   [chain in ChainId]: KyberswapConfig
 } => {
   const storeChainIds = useSelector<AppState, ChainId[]>((state) => state.application.activeNetworksId) // read directly from store instead of useActiveWeb3React to prevent circular loop
+  const isLegacyMode = useSelector<AppState, boolean>((state) => !!state.user.legacyMode)
+
   const [kyberswapConfigs, setKyberswapConfigs] = useState<
     | {
         [chain in ChainId]: KyberswapConfig
@@ -22,7 +24,7 @@ export const useKyberswapConfig = (): {
       setKyberswapConfigs(null)
       const fetches = storeChainIds.map(async (chainId) => {
         try {
-          const { data, error } = await getKyberswapConfiguration({ chainId })
+          const { data, error } = await getKyberswapConfiguration({ chainId, isLegacyMode })
           if (data)
             return {
               chainId,
@@ -31,11 +33,11 @@ export const useKyberswapConfig = (): {
           if (error)
             return {
               chainId,
-              result: parseResponse(undefined, chainId),
+              result: parseResponse(undefined, chainId, isLegacyMode),
             }
           return {
             chainId,
-            result: parseResponse(undefined, chainId),
+            result: parseResponse(undefined, chainId, isLegacyMode),
           }
         } catch (error) {
           // This wont happended. Just leave here just in case ....
@@ -43,7 +45,7 @@ export const useKyberswapConfig = (): {
           console.error('🆘🆘🆘🆘🆘🆘🆘🆘 These lines should not be run', { error })
           return {
             chainId,
-            result: parseResponse(undefined, chainId),
+            result: parseResponse(undefined, chainId, isLegacyMode),
           }
         }
       })
@@ -51,7 +53,7 @@ export const useKyberswapConfig = (): {
 
       const resultWithDefaultConfigs = SUPPORTED_NETWORKS.reduce(
         (acc, cur) => {
-          acc[cur] = parseResponse(undefined, cur)
+          acc[cur] = parseResponse(undefined, cur, isLegacyMode)
           return acc
         },
         {} as {
@@ -70,7 +72,7 @@ export const useKyberswapConfig = (): {
     () =>
       SUPPORTED_NETWORKS.reduce(
         (acc, cur) => {
-          acc[cur] = parseResponse(undefined, cur)
+          acc[cur] = parseResponse(undefined, cur, isLegacyMode)
           return acc
         },
         {} as {

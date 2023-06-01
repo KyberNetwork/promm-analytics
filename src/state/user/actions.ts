@@ -17,3 +17,4 @@ export const addSavedToken = createAction<{ networkId: ChainId; token: TokenData
 export const addSavedPool = createAction<{ networkId: ChainId; pool: PoolData }>('user/addSavedPool')
 export const addSavedAccount = createAction<{ networkId: ChainId; accountAddress: string }>('user/addSavedAccount')
 export const toggleIsFirstTimeVisit = createAction<void>('user/toggleIsFirstTimeVisit')
+export const toggleLegacyMode = createAction('user/toggleLegacyMode')

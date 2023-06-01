@@ -29,12 +29,17 @@ export type KyberswapConfig = {
 
 export const parseResponse = (
   responseData: KyberswapConfigurationRawResponse,
-  defaultChainId: ChainId
+  defaultChainId: ChainId,
+  isLegacyMode: boolean
 ): KyberswapConfig => {
   const data = responseData?.data?.config
   const isEnableBlockService = data?.isEnableBlockService ?? false
   const blockClient = createBlockClient(data?.blockSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultBlockSubgraph)
-  const client = createBlockClient(data?.elasticSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultSubgraph)
+  const client = createBlockClient(
+    isLegacyMode
+      ? NETWORKS_INFO_MAP[defaultChainId].legacySubgraph
+      : data?.elasticSubgraph ?? NETWORKS_INFO_MAP[defaultChainId].defaultSubgraph
+  )
 
   const result = {
     blockClient,
@@ -50,15 +55,18 @@ const ksSettingApi = createApi({
     baseUrl: `${KS_SETTING_API}/v1`,
   }),
   endpoints: (builder) => ({
-    getKyberswapConfiguration: builder.query<KyberswapConfig, { chainId: ChainId }>({
-      query: ({ chainId }) => ({
+    getKyberswapConfiguration: builder.query<KyberswapConfig, { chainId: ChainId; isLegacyMode: boolean }>({
+      query: ({ chainId, isLegacyMode }) => ({
         url: '/configurations/fetch',
         params: {
           serviceCode: `kyberswap-${chainId}`,
         },
       }),
-      transformResponse: (response: KyberswapConfigurationRawResponse, meta, { chainId }): KyberswapConfig =>
-        parseResponse(response, chainId),
+      transformResponse: (
+        response: KyberswapConfigurationRawResponse,
+        meta,
+        { chainId, isLegacyMode }
+      ): KyberswapConfig => parseResponse(response, chainId, isLegacyMode),
     }),
   }),
 })
