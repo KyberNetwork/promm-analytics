@@ -137,8 +137,7 @@ interface TransactionResults {
 export async function fetchPoolTransactions(
   address: string,
   client: ApolloClient<NormalizedCacheObject>,
-  chainId: ChainId,
-  prices: number[]
+  chainId: ChainId
 ): Promise<{ data: Transaction[] | undefined; error: boolean; loading: boolean }> {
   const { data, error, loading } = await client.query<TransactionResults>({
     query: POOL_TRANSACTIONS,
@@ -174,7 +173,7 @@ export async function fetchPoolTransactions(
       token1Symbol: formatTokenSymbol(m.pool.token1.id, m.pool.token1.symbol),
       token0Address: m.pool.token0.id,
       token1Address: m.pool.token1.id,
-      amountUSD: prices[0] && prices[1] ? prices[0] * +m.amount0 + prices[1] * +m.amount1 : parseFloat(m.amountUSD),
+      amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
       chainId,
@@ -190,7 +189,7 @@ export async function fetchPoolTransactions(
       token1Symbol: formatTokenSymbol(m.pool.token1.id, m.pool.token1.symbol),
       token0Address: m.pool.token0.id,
       token1Address: m.pool.token1.id,
-      amountUSD: prices[0] && prices[1] ? prices[0] * +m.amount0 + prices[1] * +m.amount1 : parseFloat(m.amountUSD),
+      amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
       chainId,
@@ -207,10 +206,7 @@ export async function fetchPoolTransactions(
       token1Symbol: formatTokenSymbol(m.pool.token1.id, m.pool.token1.symbol),
       token0Address: m.pool.token0.id,
       token1Address: m.pool.token1.id,
-      amountUSD:
-        prices[0] && prices[1]
-          ? (prices[0] * Math.abs(+m.amount0) + prices[1] * Math.abs(+m.amount1)) / 2
-          : parseFloat(m.amountUSD),
+      amountUSD: parseFloat(m.amountUSD),
       amountToken0: parseFloat(m.amount0),
       amountToken1: parseFloat(m.amount1),
       chainId,

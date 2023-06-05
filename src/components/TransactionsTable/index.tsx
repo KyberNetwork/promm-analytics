@@ -17,6 +17,7 @@ import { ToggleElementFree, ToggleWrapper } from 'components/Toggle'
 import { Link } from 'react-router-dom'
 import { NETWORKS_INFO_MAP } from 'constants/networks'
 import { useMedia } from 'react-use'
+import usePrices from 'hooks/useTokensPrice'
 
 const Wrapper = styled(DarkGreyCard)`
   width: 100%;
@@ -144,6 +145,21 @@ export default function TransactionTable({
   const theme = useTheme()
   const { isAllChain, chainId } = useActiveNetworkUtils()
 
+  const tokens = Object.keys(
+    transactions.reduce((acc, cur) => {
+      acc[cur.token0Address] = 1
+      acc[cur.token1Address] = 1
+      return acc
+    }, {} as { [key: string]: 1 })
+  )
+
+  const prices = usePrices(tokens)
+
+  const priceMap = tokens.reduce((acc, cur, index) => {
+    acc[cur] = prices[index]
+    return acc
+  }, {} as { [key: string]: number })
+
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.timestamp)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
@@ -199,6 +215,14 @@ export default function TransactionTable({
             }
           })
           .slice(maxItems * (page - 1), page * maxItems)
+          .map((item) => {
+            const cloneItem = { ...item }
+            if (priceMap[item.token0Address] && priceMap[item.token1Address]) {
+              cloneItem.amountUSD =
+                priceMap[item.token0Address] * item.amountToken0 + priceMap[item.token1Address] * item.amountToken1
+            }
+            return cloneItem
+          })
       : []
   }, [filteredTxn, maxItems, page, sortField, sortDirection])
 

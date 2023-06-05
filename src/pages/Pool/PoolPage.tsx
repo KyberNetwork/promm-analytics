@@ -127,7 +127,7 @@ export default function PoolPage(): JSX.Element {
   const volume24h = +poolData?.volumeOneDayToken0 * prices[0] || +poolData?.volumeOneDayToken1 * prices[1]
 
   // const chartData = usePoolChartData(address)
-  const transactions = usePoolTransactions(address, prices)
+  const transactions = usePoolTransactions(address)
 
   //watchlist
   const [savedPools, addSavedPool] = useSavedPools()
