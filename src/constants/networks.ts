@@ -10,6 +10,7 @@ import OASIS_LOGO_URL from '../assets/network-logo/oasis.svg'
 import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
 import VELAS_LOGO_URL from '../assets/network-logo/velas.png'
 import OPTIMISM_LOGO_URL from '../assets/network-logo/optimism.svg'
+import ZKSYNC_LOGO_URL from '../assets/network-logo/zksync.png'
 import { ALL_CHAIN_ID } from 'constants/index'
 
 export enum ChainId {
@@ -29,6 +30,7 @@ export enum ChainId {
   AURORA = 1313161554,
   OASIS = 42262,
   OPTIMISM = 10,
+  ZKSYNC = 324,
 }
 
 export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
@@ -342,6 +344,29 @@ const OptimismNetworkInfo: NetworkInfo = {
     'https://optimism-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-optimism-legacy',
 }
 
+const ZkSyncNetworkInfo: NetworkInfo = {
+  chainId: ChainId.ZKSYNC,
+  route: 'zksync',
+  poolRoute: 'zksync',
+  priceRoute: 'zksync',
+  blockServiceRoute: 'zksync',
+  name: 'zkSync Era',
+  imageURL: ZKSYNC_LOGO_URL,
+  defaultSubgraph: '',
+  defaultBlockSubgraph: '',
+  subgraphName: '',
+  etherscanUrl: '',
+  etherscanName: '',
+  tokenListUrl: '',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
+  },
+  startBlock: 0,
+  legacySubgraph: '',
+}
+
 // all mapping network info
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
@@ -356,6 +381,7 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.AURORA]: AuroraNetworkInfo,
   [ChainId.OASIS]: OasisNetworkInfo,
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
+  [ChainId.ZKSYNC]: ZkSyncNetworkInfo,
 }
 
 // all network info
@@ -380,8 +406,11 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.AURORA,
   ChainId.OASIS,
   ChainId.OPTIMISM,
+  ChainId.ZKSYNC,
 ] // sort by order that we want
-export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter((e: ChainIdType) => e !== ChainId.AURORA)
+export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
+  (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC].includes(e)
+)
 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
   ChainId.ETHEREUM,
