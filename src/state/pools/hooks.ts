@@ -114,7 +114,7 @@ export function usePoolChartData(address: string): PoolChartEntry[] | undefined 
  * Get all transactions on pool
  * @param address
  */
-export function usePoolTransactions(address: string, prices: number[]): Transaction[] | undefined {
+export function usePoolTransactions(address: string): Transaction[] | undefined {
   const dispatch = useDispatch<AppDispatch>()
   const activeNetwork = useActiveNetworks()[0]
   const pool = useSelector((state: AppState) => state.pools.byAddress[activeNetwork.chainId]?.[address])
@@ -122,21 +122,19 @@ export function usePoolTransactions(address: string, prices: number[]): Transact
   const [error, setError] = useState(false)
   const { dataClient } = useClients()[0]
 
-  const previousPriceLength = usePrevious(prices.length)
-
   useEffect(() => {
     async function fetch() {
-      const { error, data } = await fetchPoolTransactions(address, dataClient, activeNetwork.chainId, prices)
+      const { error, data } = await fetchPoolTransactions(address, dataClient, activeNetwork.chainId)
       if (error) {
         setError(true)
       } else if (data) {
         dispatch(updatePoolTransactions({ poolAddress: address, transactions: data, networkId: activeNetwork.chainId }))
       }
     }
-    if (previousPriceLength !== prices.length && !transactions && !error) {
+    if (!transactions && !error) {
       fetch()
     }
-  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId, prices, previousPriceLength])
+  }, [address, dispatch, error, transactions, dataClient, activeNetwork.chainId])
 
   // return data
   return transactions
