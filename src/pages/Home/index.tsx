@@ -119,7 +119,7 @@ export default function Home(): JSX.Element {
                 <RowBetween>
                   <Flex>
                     <TYPE.title>Trading Volume</TYPE.title>
-                    <QuestionHelper text="Total Trading volume through our aggregator on all chains" />
+                    <QuestionHelper text="Total trading volume through aggregator and liquidity pools on all chains" />
                   </Flex>
 
                   <RowFixed>
