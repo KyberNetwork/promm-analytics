@@ -33,9 +33,8 @@ import { useDarkModeManager, useIsFirstTimeVisit } from 'state/user/hooks'
 import { useActiveNetworks, useActiveNetworkUtils } from 'state/application/hooks'
 import { activeNetworkPrefix } from 'utils/networkPrefix'
 import { MEDIA_WIDTHS, StyledInternalLink, StyledLink } from 'theme'
-import { addNetworkIdQueryString } from 'utils'
+import { generateSwapURL } from 'utils'
 import { ALL_CHAIN_ID } from 'constants/index'
-import { KYBERSWAP_URL } from 'constants/env'
 import { rgba } from 'polished'
 import { toggleLegacyMode } from 'state/user/actions'
 import { useAppDispatch, useAppSelector } from 'hooks/useAppDispatch'
@@ -469,11 +468,7 @@ function SideNav(): JSX.Element {
 
             <Divider />
 
-            <ExternalMenu
-              href={
-                isAllChain ? `${KYBERSWAP_URL}/swap` : addNetworkIdQueryString(`${KYBERSWAP_URL}/swap`, networkInfo)
-              }
-            >
+            <ExternalMenu href={generateSwapURL(isAllChain ? undefined : networkInfo)}>
               <Repeat size={16} />
               Swap
             </ExternalMenu>
