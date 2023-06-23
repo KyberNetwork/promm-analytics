@@ -21,7 +21,7 @@ export default function usePrices(addresses: string[]) {
       if (res?.data?.prices?.length) {
         const formattedPrices = ids.split(',').map((address) => {
           const price = res.data.prices.find((p: any) => p.address.toLowerCase() === address)
-          return price.preferPriceSource === 'kyberswap' ? price?.price || 0 : price?.marketPrice || 0
+          return price?.preferPriceSource === 'kyberswap' ? price?.price || 0 : price?.marketPrice || 0
         })
 
         setPrices(formattedPrices)

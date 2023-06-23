@@ -114,6 +114,32 @@ export function addNetworkIdQueryString(url: string, networkInfo: NetworkInfo): 
   return `${url}/${networkInfo.route}`
 }
 
+export function generateSwapURL(networkInfo?: NetworkInfo, token0Address = '', token1Address = '') {
+  const baseUrl = KYBERSWAP_URL
+  if (!networkInfo) {
+    return `${baseUrl}/swap`
+  }
+
+  const nativeTokenSymbol = networkInfo.nativeToken.symbol
+  const wrappedNativeTokenAddress = networkInfo.nativeToken.address
+  const chainRoute = networkInfo.route
+
+  const tokenIn =
+    token0Address?.toLowerCase() === wrappedNativeTokenAddress.toLowerCase() ? nativeTokenSymbol : token0Address
+  const tokenOut =
+    token1Address?.toLowerCase() === wrappedNativeTokenAddress.toLowerCase() ? nativeTokenSymbol : token1Address
+
+  if (!token0Address && !token1Address) {
+    return `${baseUrl}/swap/${chainRoute}`
+  }
+
+  if (!token1Address) {
+    return `${baseUrl}/swap/${chainRoute}?inputCurrency=${token0Address}`
+  }
+
+  return `${baseUrl}/swap/${chainRoute}?inputCurrency=${tokenIn}&outputCurrency=${tokenOut}`
+}
+
 type PoolLinkInfo =
   | {
       type: 'add'
@@ -127,28 +153,27 @@ type PoolLinkInfo =
     }
 
 export function getPoolLink(info: PoolLinkInfo, networkInfo: NetworkInfo): string {
-  let resultURL
+  const baseUrl = KYBERSWAP_URL
+  const chainRoute = networkInfo.route
 
   if (info.type === 'remove') {
-    resultURL = `${KYBERSWAP_URL}/elastic/remove/${info.positionId}`
-  } else {
-    const token0 =
-      info.token0Address == networkInfo.nativeToken.address ? networkInfo.nativeToken.symbol : info.token0Address
-    const token1 = info.token1Address
-      ? info.token1Address === networkInfo.nativeToken.address
-        ? networkInfo.nativeToken.symbol
-        : info.token1Address
-      : undefined
-    if (info.feeTier) {
-      resultURL = `${KYBERSWAP_URL}/elastic/add/${token0}/${token1}/${info.feeTier}`
-    } else if (info.token1Address) {
-      resultURL = `${KYBERSWAP_URL}/elastic/add/${token0}/${token1}`
-    } else {
-      resultURL = `${KYBERSWAP_URL}/elastic/add/${token0}`
-    }
+    return `${baseUrl}/${chainRoute}/elastic/remove/${info.positionId}`
   }
 
-  return resultURL
+  const token0 =
+    info.token0Address == networkInfo.nativeToken.address ? networkInfo.nativeToken.symbol : info.token0Address
+  const token1 = info.token1Address
+    ? info.token1Address === networkInfo.nativeToken.address
+      ? networkInfo.nativeToken.symbol
+      : info.token1Address
+    : undefined
+
+  if (info.feeTier) {
+    return `${baseUrl}/${chainRoute}/elastic/add/${token0}/${token1}/${info.feeTier}`
+  } else if (info.token1Address) {
+    return `${baseUrl}/${chainRoute}/elastic/add/${token0}/${token1}`
+  }
+  return `${baseUrl}/${chainRoute}/elastic/add/${token0}`
 }
 
 export const pushUnique = <T>(array: T[] | undefined, element: T): T[] => {
