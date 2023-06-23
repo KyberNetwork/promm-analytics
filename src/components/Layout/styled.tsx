@@ -1,15 +1,22 @@
+/* eslint-disable react/prop-types */
+
+import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, LinkProps } from 'react-router-dom'
 import { ExternalLink as ExternalLinkRaw } from 'theme'
 
-export const MenuItem = styled(Link)<{ isActive: boolean }>`
+const CustomLink = styled(Link)`
   display: flex;
   text-decoration: none;
   gap: 8px;
   align-items: center;
   font-weight: 500;
   font-size: 1rem;
-  color: ${({ theme, isActive }) => (isActive ? theme.primary : theme.subText)};
+  color: ${({ theme }) => theme.subText};
+
+  &[data-active='true'] {
+    color: ${({ theme }) => theme.primary};
+  }
   @media (hover: hover) {
     :hover {
       color: ${({ theme }) => theme.text};
@@ -17,10 +24,22 @@ export const MenuItem = styled(Link)<{ isActive: boolean }>`
   }
   svg {
     ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-      display: none;
-    `}
+    display: none;
+  `}
   }
 `
+
+type MenuItemProps = {
+  isActive: boolean
+  children?: React.ReactNode
+} & LinkProps
+export const MenuItem: React.FC<MenuItemProps> = ({ isActive, children, ...others }) => {
+  return (
+    <CustomLink data-active={isActive} {...others}>
+      {children}
+    </CustomLink>
+  )
+}
 
 export const ExternalMenu = styled(ExternalLinkRaw)`
   display: flex;
