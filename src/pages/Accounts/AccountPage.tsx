@@ -302,12 +302,6 @@ export default function AccountPage(): JSX.Element {
                   <Flyout>
                     <AutoColumn gap="0px">
                       {data?.map((p, i) => {
-                        if (p.data.token1.symbol === 'WETH') {
-                          p.data.token1.symbol = 'ETH'
-                        }
-                        if (p.data.token0.symbol === 'WETH') {
-                          p.data.token0.symbol = 'ETH'
-                        }
                         return (
                           p.data.id !== activePosition?.data.id && (
                             <MenuRow

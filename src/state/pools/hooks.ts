@@ -209,7 +209,7 @@ export function useHourlyRateData(
         activeNetwork.chainId,
         abortController.signal
       )
-      if (abortController.signal) return
+      if (abortController.signal.aborted) return
       ratesData &&
         dispatch(updatePoolRatesData({ poolAddress, ratesData, timeWindow, networkId: activeNetwork.chainId }))
     }
