@@ -203,6 +203,7 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
           console.warn('namgold: something wrong here. This if branch should not be execute.')
         }
       })
+
       const ethPrices = await getETHPriceFromTimestamps(
         dayTimestamps,
         dataClient,
@@ -211,7 +212,8 @@ export function useAllPoolChartData(account: string): AllPoolChartDatas | null {
         activeNetwork.chainId,
         abortController.signal
       )
-      if (abortController.signal) return
+
+      if (abortController.signal.aborted) return
 
       // map of current pair => ownership %
       const latestDataForPairs: { [positionId: string]: PositionSnapshotFields | undefined } = {}
@@ -345,7 +347,7 @@ export function usePoolChartData(account: string, positionID: string): PoolChart
         activeNetwork.chainId,
         abortController.signal
       )
-      if (abortController.signal) return
+      if (abortController.signal.aborted) return
 
       // map of current pair => ownership %
       let latestDataForPairs: PositionSnapshotFields | undefined
