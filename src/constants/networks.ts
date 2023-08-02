@@ -379,7 +379,7 @@ const LineaNetworkInfo: NetworkInfo = {
   defaultSubgraph: 'https://graph-query.linea.build/subgraphs/name/kybernetwork/kyberswap-elastic-linea',
   defaultBlockSubgraph: 'https://graph-query.linea.build/subgraphs/name/kybernetwork/linea-blocks',
   subgraphName: 'kybernetwork/kyberswap-elastic-linea',
-  etherscanUrl: 'https://lineascan.build/',
+  etherscanUrl: 'https://lineascan.build',
   etherscanName: 'Linea Explorer',
   tokenListUrl: '', // TODO(viet-nv)
   nativeToken: {

@@ -206,6 +206,7 @@ export function useFetchedTokenDatas(
         : current
         ? parseFloat(current.volumeUSD)
         : 0
+
     const tvlUSD = current ? parseFloat(current.totalValueLockedUSD) : 0
     const tvlUSDChange = getPercentChange(current?.totalValueLockedUSD, oneDay?.totalValueLockedUSD)
     const tvlToken = current ? parseFloat(current.totalValueLocked) : 0
@@ -281,7 +282,7 @@ export async function fetchedTokenData(
     inputs.map((val) =>
       client.query({
         query: TOKENS_BULK(val, tokenAddresses),
-        fetchPolicy: 'cache-first',
+        fetchPolicy: 'network-only',
         context: {
           fetchOptions: {
             signal,

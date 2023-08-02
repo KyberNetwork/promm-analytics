@@ -115,8 +115,11 @@ export default function PoolPage(): JSX.Element {
 
   const prices = usePrices([poolData?.token0?.address, poolData?.token1?.address].filter(Boolean))
 
-  const tvl = +poolData?.tvlToken0 * prices[0] + +poolData?.tvlToken1 * prices[1]
-  const volume24h = +poolData?.volumeOneDayToken0 * prices[0] || +poolData?.volumeOneDayToken1 * prices[1]
+  const isPriceServiceOk = prices[0] && prices[1]
+  const tvl = isPriceServiceOk ? +poolData?.tvlToken0 * prices[0] + +poolData?.tvlToken1 * prices[1] : poolData?.tvlUSD
+  const volume24h = isPriceServiceOk
+    ? +poolData?.volumeOneDayToken0 * prices[0] || +poolData?.volumeOneDayToken1 * prices[1]
+    : poolData?.volumeUSD
 
   // const chartData = usePoolChartData(address)
   const transactions = usePoolTransactions(address)
@@ -237,7 +240,7 @@ export default function PoolPage(): JSX.Element {
                       <TYPE.title fontSize="14px">Total Value Locked</TYPE.title>
                       <Percent hideWhenZero fontSize={12} value={poolData.tvlUSDChange} />
                     </RowBetween>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(tvl || poolData.tvlUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(tvl)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
@@ -246,7 +249,7 @@ export default function PoolPage(): JSX.Element {
                       <TYPE.title fontSize="14px">Volume (24H)</TYPE.title>
                       <Percent hideWhenZero fontSize={12} value={poolData.volumeUSDChange} />
                     </RowBetween>
-                    <TYPE.label fontSize="20px">{formatDollarAmount(volume24h || poolData.volumeUSD)}</TYPE.label>
+                    <TYPE.label fontSize="20px">{formatDollarAmount(volume24h)}</TYPE.label>
                   </AutoColumn>
                 </DarkGreyCard>
                 <DarkGreyCard>
