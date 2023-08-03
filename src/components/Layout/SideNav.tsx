@@ -13,6 +13,7 @@ import SwitchNetWorkIcon from 'assets/svg/switch-network.svg'
 import {
   ChainIdType,
   CLASSIC_SUPPORTED_NETWORKS,
+  ELASTIC_LEGACY_SUPPORTED_NETWORKS,
   ELASTIC_SUPPORTED_NETWORKS,
   NETWORKS_INFO_LIST,
   NETWORKS_INFO_MAP,
@@ -261,10 +262,17 @@ function SideNav(): JSX.Element {
   const [tab, setTab] = useState<ListTabs>(() => (isLegacyMode ? ListTabs.ELASTIC_LEGACY : ListTabs.ELASTIC))
   const hideNav = width && width <= MEDIA_WIDTHS.upToLarge
 
-  const networkListToShow: ChainIdType[] =
-    tab === ListTabs.ELASTIC || tab === ListTabs.ELASTIC_LEGACY
-      ? ELASTIC_SUPPORTED_NETWORKS
-      : CLASSIC_SUPPORTED_NETWORKS
+  const networkListToShow: ChainIdType[] = (() => {
+    switch (tab) {
+      case ListTabs.CLASSIC:
+        return CLASSIC_SUPPORTED_NETWORKS
+      case ListTabs.ELASTIC:
+        return ELASTIC_SUPPORTED_NETWORKS
+      case ListTabs.ELASTIC_LEGACY:
+        return ELASTIC_LEGACY_SUPPORTED_NETWORKS
+    }
+  })()
+
   const currentPage =
     '/' +
     pathname

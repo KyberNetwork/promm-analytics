@@ -31,6 +31,7 @@ export enum ChainId {
   OASIS = 42262,
   OPTIMISM = 10,
   ZKSYNC = 324,
+  LINEA = 59144,
 }
 
 export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
@@ -367,6 +368,29 @@ const ZkSyncNetworkInfo: NetworkInfo = {
   legacySubgraph: '',
 }
 
+const LineaNetworkInfo: NetworkInfo = {
+  chainId: ChainId.LINEA,
+  route: 'linea',
+  poolRoute: 'linea',
+  priceRoute: 'linea',
+  blockServiceRoute: 'linea',
+  name: 'Linea',
+  imageURL: 'https://linea.build/apple-touch-icon.png',
+  defaultSubgraph: 'https://graph-query.linea.build/subgraphs/name/kybernetwork/kyberswap-elastic-linea',
+  defaultBlockSubgraph: 'https://graph-query.linea.build/subgraphs/name/kybernetwork/linea-blocks',
+  subgraphName: 'kybernetwork/kyberswap-elastic-linea',
+  etherscanUrl: 'https://lineascan.build',
+  etherscanName: 'Linea Explorer',
+  tokenListUrl: '', // TODO(viet-nv)
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
+  },
+  startBlock: 0,
+  legacySubgraph: '',
+}
+
 // all mapping network info
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
@@ -382,6 +406,7 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.OASIS]: OasisNetworkInfo,
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
   [ChainId.ZKSYNC]: ZkSyncNetworkInfo,
+  [ChainId.LINEA]: LineaNetworkInfo,
 }
 
 // all network info
@@ -406,10 +431,15 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.AURORA,
   ChainId.OASIS,
   ChainId.OPTIMISM,
+  ChainId.LINEA,
   ChainId.ZKSYNC,
 ] // sort by order that we want
 export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
   (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC].includes(e)
+)
+
+export const ELASTIC_LEGACY_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
+  (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA].includes(e)
 )
 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
