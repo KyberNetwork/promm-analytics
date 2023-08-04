@@ -146,8 +146,8 @@ export async function fetchPoolsData(
       : {}
   })
   const poolServiceAPRData: { [address: string]: number | undefined } = SUPPORT_POOL_FARM_API.includes(network.chainId)
-    ? {}
-    : await poolServiceCall
+    ? await poolServiceCall
+    : {}
   if (signal.aborted) throw new AbortedError()
 
   // format data and calculate daily changes

@@ -2,6 +2,9 @@
   "name": "@kyberswap/promm-analytics",
   "description": "KyberSwap Elastic Analytics",
   "homepage": "/elastic",
+  "engines": {
+    "node": "14 || 16"
+  },
   "private": true,
   "devDependencies": {
     "@emotion/core": "^11.0.0",
