@@ -32,6 +32,7 @@ export enum ChainId {
   OPTIMISM = 10,
   ZKSYNC = 324,
   LINEA = 59144,
+  ZKEVM = 1101,
 }
 
 export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
@@ -391,6 +392,30 @@ const LineaNetworkInfo: NetworkInfo = {
   legacySubgraph: '',
 }
 
+const ZkEvmNetworkInfo: NetworkInfo = {
+  chainId: ChainId.ZKEVM,
+  route: 'polygon-zkevm',
+  poolRoute: 'polygon-zkevm',
+  priceRoute: 'polygon-zkevm',
+  blockServiceRoute: 'polygon-zkevm',
+  name: 'Polygon zkEvm',
+  imageURL: 'https://wallet.polygon.technology/assets/img/zkEVM.svg',
+  defaultSubgraph:
+    'https://polygon-zkevm-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon-zkevm',
+  defaultBlockSubgraph: '',
+  subgraphName: 'kybernetwork/kyberswap-elastic-polygon-zkevm',
+  etherscanUrl: 'https://zkevm.polygonscan.com/',
+  etherscanName: 'Polygon zkEvm Explorer',
+  tokenListUrl: '',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
+  },
+  startBlock: 4164470,
+  legacySubgraph: '',
+}
+
 // all mapping network info
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
@@ -407,6 +432,7 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
   [ChainId.ZKSYNC]: ZkSyncNetworkInfo,
   [ChainId.LINEA]: LineaNetworkInfo,
+  [ChainId.ZKEVM]: ZkEvmNetworkInfo,
 }
 
 // all network info
@@ -433,13 +459,14 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.OPTIMISM,
   ChainId.LINEA,
   ChainId.ZKSYNC,
+  ChainId.ZKEVM,
 ] // sort by order that we want
 export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
   (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC].includes(e)
 )
 
 export const ELASTIC_LEGACY_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
-  (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA].includes(e)
+  (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA, ChainId.ZKEVM].includes(e)
 )
 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
