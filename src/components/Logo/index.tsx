@@ -11,6 +11,7 @@ export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className
 
 const WhiteHelpCircle = styled(HelpCircle)`
   background-color: ${({ theme }) => theme.white};
+  border-radius: 50% !important;
 `
 
 /**

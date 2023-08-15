@@ -42,7 +42,7 @@ export async function getBlocksFromTimestampsSubgraph(
   blockClient: ApolloClient<NormalizedCacheObject>,
   signal?: AbortSignal
 ): Promise<Block[]> {
-  if (timestamps?.length === 0) {
+  if (timestamps?.length === 0 || !blockClient) {
     return []
   }
   const fetchedData = await splitQuery<BlockRawResult[], number, unknown>(

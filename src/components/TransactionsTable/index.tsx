@@ -197,6 +197,18 @@ export default function TransactionTable({
     return filteredTxn.length
       ? filteredTxn
           .slice()
+          .map((item) => {
+            const cloneItem = { ...item }
+            const isSwapTx = item.amountToken0 * item.amountToken1 < 0
+
+            if (priceMap[item.token0Address] && priceMap[item.token1Address]) {
+              cloneItem.amountUSD =
+                priceMap[item.token0Address] * Math.abs(item.amountToken0) +
+                priceMap[item.token1Address] * Math.abs(item.amountToken1)
+            }
+            if (isSwapTx) cloneItem.amountUSD /= 2
+            return cloneItem
+          })
           .sort((a, b) => {
             let valueToCompareA = null
             let valueToCompareB = null
@@ -215,18 +227,6 @@ export default function TransactionTable({
             }
           })
           .slice(maxItems * (page - 1), page * maxItems)
-          .map((item) => {
-            const cloneItem = { ...item }
-            const isSwapTx = item.amountToken0 * item.amountToken1 < 0
-
-            if (priceMap[item.token0Address] && priceMap[item.token1Address]) {
-              cloneItem.amountUSD =
-                priceMap[item.token0Address] * Math.abs(item.amountToken0) +
-                priceMap[item.token1Address] * Math.abs(item.amountToken1)
-            }
-            if (isSwapTx) cloneItem.amountUSD /= 2
-            return cloneItem
-          })
       : []
   }, [filteredTxn, maxItems, page, sortField, sortDirection])
 
