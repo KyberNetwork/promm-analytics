@@ -211,7 +211,17 @@ const SelectNetworkButton: React.FunctionComponent<SelectNetworkButtonPropType> 
         height="20px"
         alt={`${isAllChain ? 'All Chains' : networkInfo.name} Logo`}
       />
-      <Text fontWeight="500" color={theme.primary} fontSize="1rem">
+      <Text
+        fontWeight="500"
+        color={theme.primary}
+        fontSize="1rem"
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          marginRight: '2px',
+        }}
+      >
         {isAllChain ? 'All Chains' : networkInfo.name}
       </Text>
       <Flex flex={1} justifyContent="flex-end" alignItems="center" marginLeft="8px" marginTop="3px">
@@ -338,7 +348,15 @@ function SideNav(): JSX.Element {
                     height="24px"
                     alt={isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
                   />
-                  <Text>{isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
+                  <Text
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
+                  </Text>
                 </NetworkItem>
               </StyledLink>
             ) : (
@@ -366,7 +384,15 @@ function SideNav(): JSX.Element {
                     height="24px"
                     alt={isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
                   />
-                  <Text>{isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}</Text>
+                  <Text
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {isAllChainId ? 'All Chains' : NETWORKS_INFO_MAP[chainId].name}
+                  </Text>
                 </NetworkItem>
               </StyledInternalLink>
             )

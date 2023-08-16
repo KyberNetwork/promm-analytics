@@ -33,6 +33,7 @@ import Search from 'components/Search'
 import { useSavedAccounts } from 'state/user/hooks'
 import { StyledIcon, UnSelectable } from 'components'
 import CopyHelper from 'components/Copy'
+import usePrices from 'hooks/useTokensPrice'
 
 const ResponsiveRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -189,18 +190,40 @@ export default function AccountPage(): JSX.Element {
 
   const { data } = useFetchedUserPositionData(lowercasedAddress)
 
+  const tokens = [
+    ...new Set(
+      data?.reduce((acc, cur) => {
+        return [...acc, cur.data.token0.id, cur.data.token1.id]
+      }, [] as string[]) || []
+    ),
+  ]
+
+  const prices = usePrices(tokens)
+  const priceMap = tokens.reduce((acc, cur, index) => {
+    acc[cur] = prices[index]
+    return acc
+  }, {} as { [key: string]: number })
+
   const positionsMap = useMemo(() => {
     const positionMap: { [position_id: string]: FormattedPosition } = {}
-
-    data?.forEach((p) => (positionMap[p.data.id] = p))
+    data?.forEach((p) => {
+      const amount0USD = priceMap[p.data.token0.id] * p.token0Amount
+      const amount1USD = priceMap[p.data.token1.id] * p.token1Amount
+      positionMap[p.data.id] = p
+      positionMap[p.data.id].valueUSD = amount0USD + amount1USD
+    })
     return positionMap
   }, [data])
 
   const currentPosition = useMemo(() => (activePosition ? [activePosition] : data), [activePosition, data])
 
   const positionValue = useMemo(() => {
-    return currentPosition ? currentPosition.reduce((total, p) => total + positionsMap[p.data.id].valueUSD, 0) : null
-  }, [currentPosition, positionsMap])
+    return currentPosition
+      ? currentPosition.reduce((total, p) => {
+          return total + positionsMap[p.data.id].valueUSD
+        }, 0)
+      : null
+  }, [currentPosition, positionsMap, priceMap])
 
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
