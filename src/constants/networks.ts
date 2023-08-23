@@ -430,7 +430,7 @@ const BaseNetworkInfo: NetworkInfo = {
   defaultBlockSubgraph: '',
   subgraphName: 'kybernetwork/kyberswap-elastic-base',
   etherscanUrl: 'https://basescan.org',
-  etherscanName: 'Polygon zkEvm Explorer',
+  etherscanName: 'Base Explorer',
   tokenListUrl: '',
   nativeToken: {
     symbol: 'ETH',
