@@ -33,6 +33,7 @@ export enum ChainId {
   ZKSYNC = 324,
   LINEA = 59144,
   ZKEVM = 1101,
+  BASE = 8453,
 }
 
 export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
@@ -404,7 +405,7 @@ const ZkEvmNetworkInfo: NetworkInfo = {
     'https://polygon-zkevm-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-polygon-zkevm',
   defaultBlockSubgraph: '',
   subgraphName: 'kybernetwork/kyberswap-elastic-polygon-zkevm',
-  etherscanUrl: 'https://zkevm.polygonscan.com/',
+  etherscanUrl: 'https://zkevm.polygonscan.com',
   etherscanName: 'Polygon zkEvm Explorer',
   tokenListUrl: '',
   nativeToken: {
@@ -413,6 +414,30 @@ const ZkEvmNetworkInfo: NetworkInfo = {
     address: '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
   },
   startBlock: 4164470,
+  legacySubgraph: '',
+}
+
+const BaseNetworkInfo: NetworkInfo = {
+  chainId: ChainId.BASE,
+  route: 'base',
+  poolRoute: 'base',
+  priceRoute: 'base',
+  blockServiceRoute: 'base',
+  name: 'Base',
+  imageURL:
+    'https://raw.githubusercontent.com/base-org/brand-kit/001c0e9b40a67799ebe0418671ac4e02a0c683ce/logo/in-product/Base_Network_Logo.svg',
+  defaultSubgraph: 'https://base-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-base',
+  defaultBlockSubgraph: '',
+  subgraphName: 'kybernetwork/kyberswap-elastic-base',
+  etherscanUrl: 'https://basescan.org',
+  etherscanName: 'Base Explorer',
+  tokenListUrl: '',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x4200000000000000000000000000000000000006',
+  },
+  startBlock: 2949023,
   legacySubgraph: '',
 }
 
@@ -433,6 +458,7 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ZKSYNC]: ZkSyncNetworkInfo,
   [ChainId.LINEA]: LineaNetworkInfo,
   [ChainId.ZKEVM]: ZkEvmNetworkInfo,
+  [ChainId.BASE]: BaseNetworkInfo,
 }
 
 // all network info
@@ -461,12 +487,16 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.ZKSYNC,
   ChainId.ZKEVM,
 ] // sort by order that we want
-export const ELASTIC_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
-  (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC].includes(e)
-)
+export const ELASTIC_SUPPORTED_NETWORKS = [
+  ...CLASSIC_SUPPORTED_NETWORKS.filter(
+    (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC].includes(e)
+  ),
+  ChainId.BASE,
+]
 
 export const ELASTIC_LEGACY_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
-  (e: ChainIdType) => e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA, ChainId.ZKEVM].includes(e)
+  (e: ChainIdType) =>
+    e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA, ChainId.ZKEVM, ChainId.BASE].includes(e)
 )
 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
