@@ -6,9 +6,7 @@ import BNB_LOGO_URL from '../assets/network-logo/bnb.png'
 import CRONOS_LOGO_URL from '../assets/network-logo/cronos.png'
 import ETHEREUM_LOGO_URL from '../assets/network-logo/ethereum.png'
 import FANTOM_LOGO_URL from '../assets/network-logo/fantom.png'
-import OASIS_LOGO_URL from '../assets/network-logo/oasis.svg'
 import POLYGON_LOGO_URL from '../assets/network-logo/polygon.png'
-import VELAS_LOGO_URL from '../assets/network-logo/velas.png'
 import OPTIMISM_LOGO_URL from '../assets/network-logo/optimism.svg'
 import ZKSYNC_LOGO_URL from '../assets/network-logo/zksync.png'
 import { ALL_CHAIN_ID } from 'constants/index'
@@ -26,9 +24,7 @@ export enum ChainId {
   CRONOS = 25,
   ARBITRUM = 42161,
   BTTC = 199,
-  VELAS = 106,
   AURORA = 1313161554,
-  OASIS = 42262,
   OPTIMISM = 10,
   ZKSYNC = 324,
   LINEA = 59144,
@@ -253,29 +249,6 @@ const BTTCNetworkInfo: NetworkInfo = {
   legacySubgraph: 'https://bttc-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-bttc-legacy',
 }
 
-const VelasNetworkInfo: NetworkInfo = {
-  chainId: ChainId.VELAS,
-  route: 'velas',
-  poolRoute: 'velas',
-  priceRoute: 'velas',
-  blockServiceRoute: 'velas',
-  name: 'Velas',
-  imageURL: VELAS_LOGO_URL,
-  defaultSubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas',
-  defaultBlockSubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/velas-blocks',
-  subgraphName: 'kybernetwork/kyberswap-elastic-velas',
-  etherscanUrl: 'https://evmexplorer.velas.com',
-  etherscanName: 'Velas EVM Explorer',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/velas.tokenlist.json',
-  nativeToken: {
-    symbol: 'VLX',
-    name: 'VLX (Wrapped)',
-    address: '0xc579D1f3CF86749E05CD06f7ADe17856c2CE3126',
-  },
-  startBlock: 40962641,
-  legacySubgraph: 'https://velas-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-velas-legacy',
-}
-
 const AuroraNetworkInfo: NetworkInfo = {
   // not support yet
   chainId: ChainId.AURORA,
@@ -298,29 +271,6 @@ const AuroraNetworkInfo: NetworkInfo = {
   },
   startBlock: 0,
   legacySubgraph: '',
-}
-
-const OasisNetworkInfo: NetworkInfo = {
-  chainId: ChainId.OASIS,
-  route: 'oasis',
-  poolRoute: 'oasis',
-  priceRoute: 'oasis',
-  blockServiceRoute: 'oasis',
-  name: 'Oasis',
-  imageURL: OASIS_LOGO_URL,
-  defaultSubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis',
-  defaultBlockSubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/oasis-blocks',
-  subgraphName: 'kybernetwork/kyberswap-elastic-oasis',
-  etherscanUrl: 'https://explorer.emerald.oasis.dev',
-  etherscanName: 'Oasis Emerald Explorer',
-  tokenListUrl: 'https://raw.githubusercontent.com/KyberNetwork/ks-assets/main/tokenLists/oasis.tokenlist.json',
-  nativeToken: {
-    symbol: 'ROSE',
-    name: 'ROSE (Wrapped)',
-    address: '0x21C718C22D52d0F3a789b752D4c2fD5908a8A733',
-  },
-  startBlock: 1656923,
-  legacySubgraph: 'https://oasis-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-oasis-legacy',
 }
 
 const OptimismNetworkInfo: NetworkInfo = {
@@ -451,9 +401,7 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.FANTOM]: FantomNetworkInfo,
   [ChainId.CRONOS]: CronosNetworkInfo,
   [ChainId.BTTC]: BTTCNetworkInfo,
-  [ChainId.VELAS]: VelasNetworkInfo,
   [ChainId.AURORA]: AuroraNetworkInfo,
-  [ChainId.OASIS]: OasisNetworkInfo,
   [ChainId.OPTIMISM]: OptimismNetworkInfo,
   [ChainId.ZKSYNC]: ZkSyncNetworkInfo,
   [ChainId.LINEA]: LineaNetworkInfo,
@@ -479,9 +427,7 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.CRONOS,
   ChainId.ARBITRUM,
   ChainId.BTTC,
-  ChainId.VELAS,
   ChainId.AURORA,
-  ChainId.OASIS,
   ChainId.OPTIMISM,
   ChainId.LINEA,
   ChainId.ZKSYNC,
@@ -508,8 +454,6 @@ export const SUPPORT_POOL_FARM_API: ChainId[] = [
   ChainId.FANTOM,
   ChainId.CRONOS,
   // ChainId.BTTC,
-  // ChainId.VELAS,
   // ChainId.AURORA,
-  ChainId.OASIS,
   ChainId.OPTIMISM,
 ]
