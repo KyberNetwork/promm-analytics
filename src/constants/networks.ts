@@ -30,6 +30,7 @@ export enum ChainId {
   LINEA = 59144,
   ZKEVM = 1101,
   BASE = 8453,
+  SCROLL = 534352,
 }
 
 export type ChainIdType = ChainId | typeof ALL_CHAIN_ID
@@ -391,6 +392,30 @@ const BaseNetworkInfo: NetworkInfo = {
   legacySubgraph: '',
 }
 
+const ScrollNetworkInfo: NetworkInfo = {
+  chainId: ChainId.SCROLL,
+  route: 'scroll',
+  poolRoute: 'scroll',
+  priceRoute: 'scroll',
+  blockServiceRoute: 'scroll',
+  name: 'Scroll',
+  imageURL:
+    'https://file.notion.so/f/s/253723b6-f537-4968-a2e6-f102b893ef4c/Scroll_logo_mark_300300px_RGB.svg?id=2ecfe530-2ce5-48d0-8bed-537a584a92ce&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1697558400000&signature=-PD15tUbD8xuN5VOSpwW0B1Cl30TILAHe-LsLjqPhlQ&downloadName=Scroll_logo+mark_300*300px_RGB.svg',
+  defaultSubgraph: 'https://scroll-graph.kyberengineering.io/subgraphs/name/kybernetwork/kyberswap-elastic-scroll',
+  defaultBlockSubgraph: '',
+  subgraphName: 'kybernetwork/kyberswap-elastic-scroll',
+  etherscanUrl: 'https://scrollscan.com',
+  etherscanName: 'Scroll Explorer',
+  tokenListUrl: '',
+  nativeToken: {
+    symbol: 'ETH',
+    name: 'ETH (Wrapped)',
+    address: '0x5300000000000000000000000000000000000004',
+  },
+  startBlock: 36376,
+  legacySubgraph: '',
+}
+
 // all mapping network info
 export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.ETHEREUM]: EthereumNetworkInfo,
@@ -407,6 +432,7 @@ export const NETWORKS_INFO_MAP: { [id in ChainId]: NetworkInfo } = {
   [ChainId.LINEA]: LineaNetworkInfo,
   [ChainId.ZKEVM]: ZkEvmNetworkInfo,
   [ChainId.BASE]: BaseNetworkInfo,
+  [ChainId.SCROLL]: ScrollNetworkInfo,
 }
 
 // all network info
@@ -432,6 +458,7 @@ export const CLASSIC_SUPPORTED_NETWORKS: ChainIdType[] = [
   ChainId.LINEA,
   ChainId.ZKSYNC,
   ChainId.ZKEVM,
+  ChainId.SCROLL,
 ] // sort by order that we want
 export const ELASTIC_SUPPORTED_NETWORKS = [
   ...CLASSIC_SUPPORTED_NETWORKS.filter(
@@ -442,7 +469,8 @@ export const ELASTIC_SUPPORTED_NETWORKS = [
 
 export const ELASTIC_LEGACY_SUPPORTED_NETWORKS = CLASSIC_SUPPORTED_NETWORKS.filter(
   (e: ChainIdType) =>
-    e === 'allChain' || ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA, ChainId.ZKEVM, ChainId.BASE].includes(e)
+    e === 'allChain' ||
+    ![ChainId.AURORA, ChainId.ZKSYNC, ChainId.LINEA, ChainId.ZKEVM, ChainId.BASE, ChainId.SCROLL].includes(e)
 )
 
 export const SUPPORT_POOL_FARM_API: ChainId[] = [
